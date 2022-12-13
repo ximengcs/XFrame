@@ -7,17 +7,17 @@ namespace XFrame.Collections
     {
         public int Id { get; private set; }
 
-        public void OnCreate(IPool from)
+        public void OnCreate()
         {
             Id = IDGenerator.Inst.Next();
         }
 
-        public void OnRelease(IPool from)
+        public void OnRelease()
         {
             Id = default;
         }
 
-        public void OnDestroy(IPool from)
+        public void OnDestroyFrom()
         {
             Id = default;
         }

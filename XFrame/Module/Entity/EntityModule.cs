@@ -10,14 +10,12 @@ namespace XFrame.Modules
     {
         #region Inner Field
         private XCollection<Entity> m_Entities;
-        private IPoolSystem m_Pool;
         #endregion
 
         #region Life Fun
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Pool = PoolModule.Inst.Register<Entity>(128);
             m_Entities = new XCollection<Entity>();
             TypeModule.Inst.RegisterWithAtr<EntityPropAttribute>();
         }
@@ -70,28 +68,16 @@ namespace XFrame.Modules
 
         public void Destroy(Entity entity)
         {
-            IPool pool = m_Pool.Get(entity.GetType());
-            pool.Release(entity);
-        }
-
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            foreach (IPool pool in m_Pool)
-            {
-                foreach (IPoolObject obj in pool)
-                    obj.OnDestroy(pool);
-            }
+            PoolModule.Inst.GetOrNew<Entity>(entity.GetType())
+                .Require()
+                .Release(entity);
         }
 
         private Entity InnerCreate(Type entityType, Scene scene, Entity parent, EntityData data)
         {
             Entity entity;
-            m_Pool.Get(entityType).Require(entityType, out IPoolObject obj);
-            entity = obj as Entity;
+            PoolModule.Inst.GetOrNew<Entity>(entityType).Require().Require(out entity);
             entity.Initialize(IDGenerator.Inst.Next(), scene, parent, data);
-
             if (parent == null)
                 m_Entities.Add(entity);
             return entity;

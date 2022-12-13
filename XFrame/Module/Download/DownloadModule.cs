@@ -9,13 +9,13 @@ namespace XFrame.Modules
         private const int TRY_TIMES = 8;
         private XCollection<Downloader> m_Downloaders;
         private Type m_Helper;
-        private IPool m_DownloaderPool;
+        private IPool<Downloader> m_DownloaderPool;
 
         public override void OnInit(object data)
         {
             base.OnInit(data);
             m_Downloaders = new XCollection<Downloader>();
-            m_DownloaderPool = PoolModule.Inst.Get<IXItem>().Get<Downloader>();
+            m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>().Require();
         }
 
         public void Register<T>() where T : IDownloadHelper

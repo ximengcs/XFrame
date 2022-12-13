@@ -33,23 +33,23 @@ namespace XFrame.Modules
             m_ActQueue.Enqueue(() => d(state));
         }
 
-        public void OnDestroy()
+        public void OnDestroyFrom()
         {
             m_ActQueue.Clear();
             m_ActQueue = null;
         }
 
-        public void OnCreate(IPool from)
+        public void OnCreate()
         {
 
         }
 
-        public void OnRelease(IPool from)
+        public void OnRelease()
         {
 
         }
 
-        public void OnDestroy(IPool from)
+        public void OnDestroy()
         {
 
         }

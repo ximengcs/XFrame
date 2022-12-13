@@ -1,54 +1,50 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using XFrame.Modules;
+﻿using XFrame.Collections;
 
 namespace XFrame.Modules
 {
-    public class PoolSystem : IPoolSystem
+    internal class PoolSystem<T> : IPoolSystem<T> where T : IPoolObject
     {
-        private int m_Capacity;
-        private Dictionary<Type, IPool> m_Pools;
+        private const int DEFAULT_SIZE = 8;
+        private XLoopQueue<IPool<T>> m_PoolContainer;
 
-        public PoolSystem(Type type, int capacity)
+        public PoolSystem(int capacity)
         {
-            RootType = type;
-            m_Capacity = capacity;
-            m_Pools = new Dictionary<Type, IPool>();
+            m_PoolContainer = new XLoopQueue<IPool<T>>(capacity);
         }
 
-        public Type RootType { get; }
-
-        public IPool Get<T>() where T : IPoolObject
+        public IPool<T> Require(int capacity)
         {
-            return Get(typeof(T));
-        }
+            if (capacity <= 0)
+                capacity = DEFAULT_SIZE;
 
-        public IPool Get(Type type)
-        {
-            if (!m_Pools.TryGetValue(type, out IPool pool))
+            IPool<T> pool;
+            if (m_PoolContainer.Empty)
             {
-                pool = new ObjectPool(type, m_Capacity);
-                m_Pools.Add(type, pool);
+                pool = new ObjectPool<T>(capacity);
+
             }
+            else
+                pool = m_PoolContainer.RemoveFirst();
 
             return pool;
         }
 
-        public IEnumerator<IPool> GetEnumerator()
+        public IPool<T> Require()
         {
-            return m_Pools.Values.GetEnumerator();
+            return Require(DEFAULT_SIZE);
         }
 
-        public void Remove(IPool pool)
+        public void Release(IPool<T> pool)
         {
-            m_Pools.Remove(pool.GetType());
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            if (m_PoolContainer.Full)
+            {
+                Log.Warning("XFrame", $"PoolSystem Release failed, container is full. {typeof(T).Name}");
+                return;
+            }
+            else
+            {
+                m_PoolContainer.AddLast(pool);
+            }
         }
     }
 }

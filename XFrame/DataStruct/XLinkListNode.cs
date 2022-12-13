@@ -1,50 +1,72 @@
-
-using XFrame.Collections;
 using XFrame.Modules;
 
-public class LinkNode<T> : IPoolObject
+namespace XFrame.Collections
 {
-    internal LinkList<T> m_List;
-    public LinkNode<T> Pre { get; internal set; }
-    public LinkNode<T> Next { get; internal set; }
-    public T Value { get; internal set; }
-
-    public void Delete()
+    /// <summary>
+    /// 双向链表节点
+    /// </summary>
+    /// <typeparam name="T">存储数据类型</typeparam>
+    public class XLinkNode<T> : IPoolObject
     {
-        if (Pre != null)
-            Pre.Next = Next;
-        else
-            m_List.m_First = Next;
+        internal XLinkList<T> m_List;
 
-        if (Next != null)
-            Next.Pre = Pre;
-        else
-            m_List.m_Last = Pre;
+        /// <summary>
+        /// 前一个节点，如果当前是头节点，则为null
+        /// </summary>
+        public XLinkNode<T> Pre { get; internal set; }
 
-        m_List.m_Count--;
-        m_List.m_NodePool.Release(this);
-        Value = default;
-        m_List = default;
-    }
+        /// <summary>
+        /// 后一个节点，如果当前是尾节点，则为null
+        /// </summary>
+        public XLinkNode<T> Next { get; internal set; }
 
-    public void OnCreate(IPool from)
-    {
-        m_List = null;
-        Pre = null;
-        Next = null;
-        Value = default;
-    }
+        /// <summary>
+        /// 数据
+        /// </summary>
+        public T Value { get; internal set; }
 
-    public void OnRelease(IPool from)
-    {
-        m_List = null;
-        Pre = null;
-        Next = null;
-        Value = default;
-    }
+        /// <summary>
+        /// 删除当前节点，并释放节点到池中
+        /// </summary>
+        public void Delete()
+        {
+            if (Pre != null)
+                Pre.Next = Next;
+            else
+                m_List.First = Next;
 
-    public void OnDestroy(IPool from)
-    {
+            if (Next != null)
+                Next.Pre = Pre;
+            else
+                m_List.Last = Pre;
 
+            m_List.Count--;
+            m_List.NodePool.Release(this);
+            Value = default;
+            m_List = default;
+        }
+
+        #region Pool Life Fun
+        public void OnCreate()
+        {
+            m_List = null;
+            Pre = null;
+            Next = null;
+            Value = default;
+        }
+
+        public void OnRelease()
+        {
+            m_List = null;
+            Pre = null;
+            Next = null;
+            Value = default;
+        }
+
+        public void OnDestroyFrom()
+        {
+
+        }
+        #endregion
     }
 }

@@ -25,9 +25,9 @@ namespace XFrame.Modules
                 base.Update(elapseTime);
         }
 
-        public override void OnRelease(IPool from)
+        public override void OnRelease()
         {
-            base.OnRelease(from);
+            base.OnRelease();
             IsRunning = false;
         }
 

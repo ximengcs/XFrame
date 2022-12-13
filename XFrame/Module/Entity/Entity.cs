@@ -40,23 +40,23 @@ namespace XFrame.Modules
             m_Children = null;
         }
 
-        public void OnCreate(IPool from)
+        public void OnCreate()
         {
         }
 
-        public virtual void OnRelease(IPool from)
+        public virtual void OnRelease()
         {
             foreach (Entity child in m_Children)
-                child.OnRelease(from);
+                child.OnRelease();
 
             m_Data = null;
             m_Scene = null;
             m_Parent = null;
         }
 
-        public void OnDestroy(IPool from)
+        public virtual void OnDestroyFrom()
         {
-            Destroy(false);
+
         }
         #endregion
 

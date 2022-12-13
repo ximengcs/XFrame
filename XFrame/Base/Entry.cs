@@ -53,7 +53,7 @@ namespace XFrame.Core
         {
             var it = s_Modules.GetBackEnumerator();
             while (it.MoveNext())
-                it.Current.OnDestroy();
+                it.Current.OnDestroyFrom();
             s_Modules.Clear();
             s_Modules = null;
         }
@@ -108,7 +108,7 @@ namespace XFrame.Core
         #region Inner Implement
         private static void InnerInitBase()
         {
-            PoolModule.Inst.Register<IXItem>(32);
+            PoolModule.Inst.GetOrNew<IXItem>(32);
         }
 
         private static void InnerInitCore()
