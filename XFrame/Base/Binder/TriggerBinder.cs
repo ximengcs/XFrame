@@ -7,20 +7,16 @@ namespace XFrame.Core
     /// 数值绑定器
     /// </summary>
     /// <typeparam name="T">绑定类型</typeparam>
-    /// <typeparam name="VT">监听绑定器类型</typeparam>
-    public class ValueBinder<T, VT> : IDisposable
+    public class TriggerBinder<T> : IDisposable
     {
-        private ValueBinder<VT> m_ChangeBinder;
         private Func<T> m_GetHandler;
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
 
-        public ValueBinder(Func<T> getHandler, ValueBinder<VT> changeBinder)
+        public TriggerBinder(Func<T> getHandler)
         {
             m_GetHandler = getHandler;
             m_CondUpdateHandler = new List<Func<T, bool>>();
-            m_ChangeBinder = changeBinder;
-            m_ChangeBinder.AddHandler(InnerHandleChange);
         }
 
         public T Value
@@ -28,16 +24,8 @@ namespace XFrame.Core
             get { return m_GetHandler(); }
         }
 
-        private void InnerHandleChange(VT newValue)
+        public void Trigger()
         {
-            if (newValue != null)
-            {
-                if (newValue.Equals(Value))
-                    return;
-            }
-            else if (Value == null)
-                return;
-
             m_UpdateHandler?.Invoke(Value);
 
             for (int i = m_CondUpdateHandler.Count - 1; i >= 0; i--)
@@ -50,8 +38,6 @@ namespace XFrame.Core
 
         public void Dispose()
         {
-            m_ChangeBinder.RemoveHandler(InnerHandleChange);
-            m_ChangeBinder = null;
             m_GetHandler = null;
             m_UpdateHandler = null;
             m_CondUpdateHandler = null;
@@ -95,7 +81,7 @@ namespace XFrame.Core
             m_CondUpdateHandler.Remove(handler);
         }
 
-        public static implicit operator T(ValueBinder<T, VT> binder)
+        public static implicit operator T(TriggerBinder<T> binder)
         {
             return binder.Value;
         }

@@ -58,10 +58,11 @@ namespace XFrame.Core
         /// 添加一个数值变更处理委托
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
-        public void AddHandler(Action<T> handler)
+        public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
             m_UpdateHandler += handler;
-            handler?.Invoke(Value);
+            if (atonceInvoke)
+                handler?.Invoke(Value);
         }
 
         /// <summary>
