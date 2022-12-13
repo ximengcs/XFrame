@@ -1,4 +1,7 @@
 
+using XFrame.Collections;
+using XFrame.Modules;
+
 public class LinkNode<T> : IPoolObject
 {
     internal LinkList<T> m_List;
