@@ -4,13 +4,12 @@ namespace XFrame.Modules
 {
     public interface IResourceHelper
     {
-        XTask Init();
-        void LoadAllAsync(Action complete);
-        object Load(string dirName, string fileName);
-        object Load(params string[] namePart);
-        T Load<T>(string dirName, string fileName);
-        T Load<T>(params string[] namePart);
-        void Unload(string package);
+        void Init(string resPath);
+        object Load(string resPath, Type type);
+        T Load<T>(string resPath);
+        ResLoadTask LoadAsync(string resPath, Type type);
+        ResLoadTask<T> LoadAsync<T>(string resPath);
+        void Unload(string target);
         void UnloadAll();
     }
 }

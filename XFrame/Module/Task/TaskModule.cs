@@ -1,37 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using XFrame.Core;
 
 namespace XFrame.Modules
 {
     public class TaskModule : SingleModule<TaskModule>
     {
-        private List<XTask> m_Tasks;
-        private Dictionary<string, XTask> m_TaskWithName;
+        private List<ITask> m_Tasks;
+        private Dictionary<string, ITask> m_TaskWithName;
         private List<string> m_WillDel;
 
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Tasks = new List<XTask>();
+            m_Tasks = new List<ITask>();
             m_WillDel = new List<string>();
-            m_TaskWithName = new Dictionary<string, XTask>();
+            m_TaskWithName = new Dictionary<string, ITask>();
         }
 
-        public XTask New()
+        public T New<T>() where T : ITask
         {
-            XTask task = new XTask();
+            T task = Activator.CreateInstance<T>();
+            task.OnInit();
             m_Tasks.Add(task);
             return task;
         }
 
-        public XTask GetOrNew(string name)
+        public T GetOrNew<T>(string name) where T : ITask
         {
-            if (!m_TaskWithName.TryGetValue(name, out XTask task))
+            if (!m_TaskWithName.TryGetValue(name, out ITask task))
             {
-                task = new XTask();
+                task = Activator.CreateInstance<T>();
                 m_TaskWithName[name] = task;
+                task.OnInit();
             }
-            return task;
+            return (T)task;
         }
 
         public override void OnUpdate(float escapeTime)
@@ -40,10 +43,10 @@ namespace XFrame.Modules
 
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
             {
-                XTask task = m_Tasks[i];
+                ITask task = m_Tasks[i];
                 if (task.IsStart)
                 {
-                    task.Update();
+                    task.OnUpdate();
                     if (task.IsComplete)
                         m_Tasks.RemoveAt(i);
                 }
@@ -52,10 +55,10 @@ namespace XFrame.Modules
             m_WillDel.Clear();
             foreach (var item in m_TaskWithName)
             {
-                XTask task = item.Value;
+                ITask task = item.Value;
                 if (task.IsStart)
                 {
-                    task.Update();
+                    task.OnUpdate();
                     if (task.IsComplete)
                         m_WillDel.Add(item.Key);
                 }

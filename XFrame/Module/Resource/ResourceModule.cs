@@ -7,40 +7,43 @@ namespace XFrame.Core
     {
         private IResourceHelper m_ResHelper;
 
-        public void Register<T>() where T : IResourceHelper
+        public T SetHelper<T>() where T : IResourceHelper
         {
             m_ResHelper = Activator.CreateInstance<T>();
+            return (T)m_ResHelper;
         }
 
-        public XTask LoadAllAsync()
+        public void SetResPath(string resPath)
         {
-            if (m_ResHelper != null)
-            {
-                bool loadDone = false;
-                return m_ResHelper.Init().Add(() =>
-                {
-                    m_ResHelper.LoadAllAsync(() => loadDone = true);
-                    return loadDone;
-                });
-            }
-            else
-            {
-                Log.Error($"ResHelper Init Error!");
-                return default;
-            }
+            m_ResHelper.Init(resPath);
         }
 
-        public T Load<T>(string dir, string name) where T : class
+        public object Load(string resPath, Type type)
         {
-            return m_ResHelper.Load<T>(dir, name);
+            return m_ResHelper.Load(resPath, type);
         }
 
-        public T Load<T>(params string[] filePart) where T : class
+        public T Load<T>(string resPath)
         {
-            return m_ResHelper.Load<T>(filePart);
+            return m_ResHelper.Load<T>(resPath);
         }
 
-        public void Unload()
+        public ResLoadTask LoadAsync(string resPath, Type type)
+        {
+            return m_ResHelper.LoadAsync(resPath, type);
+        }
+
+        public ResLoadTask<T> LoadAsync<T>(string resPath)
+        {
+            return m_ResHelper.LoadAsync<T>(resPath);
+        }
+
+        public void Unload(string target)
+        {
+            m_ResHelper.Unload(target);
+        }
+
+        public void UnloadAll()
         {
             m_ResHelper.UnloadAll();
         }
