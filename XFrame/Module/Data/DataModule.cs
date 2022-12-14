@@ -6,7 +6,7 @@ namespace XFrame.Modules
     /// <summary>
     /// 数据模块
     /// </summary>
-    public class DataModule : SingleModule<DataModule>
+    public class DataModule : SingletonModule<DataModule>
     {
         #region Life Fun
         private DataTableHelper m_Helper;

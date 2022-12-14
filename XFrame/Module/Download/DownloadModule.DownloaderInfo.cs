@@ -5,13 +5,13 @@ namespace XFrame.Modules
 {
     public partial class DownloadModule
     {
-        public enum DownLoadType
+        private enum DownLoadType
         {
             Text,
             Bytes
         }
 
-        public struct DownloadInfo
+        private struct DownloadInfo
         {
             public int Times;
             public string Url;

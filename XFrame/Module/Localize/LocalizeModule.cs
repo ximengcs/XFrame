@@ -1,10 +1,14 @@
 ﻿using XFrame.Core;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace XFrame.Modules
 {
-    public class LocalizeModule : SingleModule<LocalizeModule>
+    /// <summary>
+    /// 本地化模块
+    /// </summary>
+    public class LocalizeModule : SingletonModule<LocalizeModule>
     {
         private const int REQUIRE = 2;
         private const string CSV_PATTERN = "(?:^|,)(?=[^\"]|(\")?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)";
@@ -12,7 +16,56 @@ namespace XFrame.Modules
         private Language m_Language;
         private Dictionary<int, string> m_Content;
 
-        public void Init(string csv, Language language)
+        public override void OnInit(object data)
+        {
+            base.OnInit(data);
+
+            if (!string.IsNullOrEmpty(XConfig.LocalizeFile))
+            {
+                if (File.Exists(XConfig.LocalizeFile))
+                {
+                    string file = File.ReadAllText(XConfig.LocalizeFile);
+                    InnerInit(file, XConfig.Lang);
+                }
+            }
+        }
+
+        #region Interface
+        /// <summary>
+        /// 获取本地化值
+        /// </summary>
+        /// <param name="key">Id</param>
+        /// <param name="values">参数</param>
+        /// <returns>值</returns>
+        public string GetValue(int key, params object[] values)
+        {
+            if (m_Content.ContainsKey(key))
+                return string.Format(m_Content[key], values);
+            else
+                return string.Empty;
+        }
+
+        /// <summary>
+        /// 获取本地化值
+        /// </summary>
+        /// <param name="key">Id</param>
+        /// <param name="args">参数Id</param>
+        /// <returns>值</returns>
+        public string GetValueParam(int key, params int[] args)
+        {
+            if (m_Content.ContainsKey(key))
+            {
+                string result = m_Content[key];
+                foreach (int id in args)
+                    result = string.Format(result, GetValue(id));
+                return result;
+            }
+            else
+                return default;
+        }
+        #endregion
+
+        private void InnerInit(string csv, Language language)
         {
             m_Language = language;
             m_Content = new Dictionary<int, string>();
@@ -49,27 +102,6 @@ namespace XFrame.Modules
                     m_Content.Add(IntParser.Parse(numStr), lanStr);
                 }
             }
-        }
-
-        public string GetValue(int key, params object[] values)
-        {
-            if (m_Content.ContainsKey(key))
-                return string.Format(m_Content[key], values);
-            else
-                return string.Empty;
-        }
-
-        public string GetValueParam(int key, params int[] args)
-        {
-            if (m_Content.ContainsKey(key))
-            {
-                string result = m_Content[key];
-                foreach (int id in args)
-                    result = string.Format(result, GetValue(id));
-                return result;
-            }
-            else
-                return default;
         }
     }
 }

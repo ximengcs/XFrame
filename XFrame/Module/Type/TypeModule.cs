@@ -5,7 +5,7 @@ using XFrame.Utility;
 
 namespace XFrame.Core
 {
-    public partial class TypeModule : SingleModule<TypeModule>
+    public partial class TypeModule : SingletonModule<TypeModule>
     {
         private Assembly[] m_Assemblys;
         private Type[] m_Types;

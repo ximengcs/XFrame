@@ -4,7 +4,7 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
-    public class TaskModule : SingleModule<TaskModule>
+    public class TaskModule : SingletonModule<TaskModule>
     {
         private List<ITask> m_Tasks;
         private Dictionary<string, ITask> m_TaskWithName;

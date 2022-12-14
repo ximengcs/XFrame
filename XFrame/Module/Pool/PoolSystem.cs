@@ -60,7 +60,7 @@ namespace XFrame.Modules
 
         public IPool Require(Type poolObjType)
         {
-            throw new NotImplementedException();
+            return Require(poolObjType, DEFAULT_SIZE);
         }
 
         public IPool<PoolType> Require<PoolType>() where PoolType : T

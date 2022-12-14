@@ -3,7 +3,10 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
-    public class ProcedureModule : SingleModule<ProcedureModule>
+    /// <summary>
+    /// 流程模块
+    /// </summary>
+    public class ProcedureModule : SingletonModule<ProcedureModule>
     {
         private static string ENTRANCE = "MainProcedure";
         private TypeModule.Set m_Procedures;
@@ -15,7 +18,7 @@ namespace XFrame.Modules
             if (m_Procedures.TryGetByName(ENTRANCE, out Type entrance))
             {
                 Log.Debug("XFrame", "Enter Main Procedure");
-                FsmModule.Inst.Create(m_Procedures.ToArray()).Start(entrance);
+                FsmModule.Inst.GetOrNew(m_Procedures.ToArray()).Start(entrance);
             }
             else
                 Log.Error("XFrame", $"Main Procedure do not define");

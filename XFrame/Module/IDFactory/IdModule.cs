@@ -2,7 +2,10 @@
 
 namespace XFrame.Core
 {
-    public class IdModule : SingleModule<IdModule>
+    /// <summary>
+    /// Id模块
+    /// </summary>
+    public class IdModule : SingletonModule<IdModule>
     {
         private int m_Time;
         private int m_Count;
@@ -13,6 +16,10 @@ namespace XFrame.Core
             m_Time =(int)(DateTime.Now.Ticks / 1000);
         }
 
+        /// <summary>
+        /// 生成一个Id
+        /// </summary>
+        /// <returns>生成的Id</returns>
         public int Next()
         {
             return m_Time + m_Count++;

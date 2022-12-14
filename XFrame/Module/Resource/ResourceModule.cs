@@ -3,19 +3,20 @@ using XFrame.Modules;
 
 namespace XFrame.Core
 {
-    public class ResModule : SingleModule<ResModule>
+    /// <summary>
+    /// 资源模块
+    /// </summary>
+    public class ResModule : SingletonModule<ResModule>
     {
         private IResourceHelper m_ResHelper;
 
-        public T SetHelper<T>() where T : IResourceHelper
+        public override void OnInit(object data)
         {
-            m_ResHelper = Activator.CreateInstance<T>();
-            return (T)m_ResHelper;
-        }
-
-        public void SetResPath(string resPath)
-        {
-            m_ResHelper.Init(resPath);
+            base.OnInit(data);
+            if (XConfig.DefaultRes != null && XConfig.DefaultRes is IResourceHelper)
+                InnerSetHelper(XConfig.DefaultRes);
+            if (!string.IsNullOrEmpty(XConfig.ResPath))
+                m_ResHelper.OnInit(XConfig.ResPath);
         }
 
         public object Load(string resPath, Type type)
@@ -46,6 +47,12 @@ namespace XFrame.Core
         public void UnloadAll()
         {
             m_ResHelper.UnloadAll();
+        }
+
+        private IResourceHelper InnerSetHelper(Type type)
+        {
+            m_ResHelper = Activator.CreateInstance(type) as IResourceHelper;
+            return m_ResHelper;
         }
     }
 }

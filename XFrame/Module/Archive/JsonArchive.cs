@@ -121,7 +121,7 @@ namespace XFrame.Modules
         /// <param name="v">此值将会被序列化并保存</param>
         public void Set(string key, object v)
         {
-            m_Root[key] = JSONNode.Parse(JsonConvert.SerializeObject(v));
+            m_Root[key] = JSONNode.Parse(SerializeModule.Inst.SerializeObjectToJson(v));
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace XFrame.Modules
         public T Get<T>(string key)
         {
             string objStr = m_Root[key].ToString();
-            return JsonConvert.DeserializeObject<T>(objStr);
+            return SerializeModule.Inst.DeserializeJsonToObject<T>(objStr);
         }
 
         /// <summary>

@@ -3,6 +3,9 @@ using System;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 资源加载任务
+    /// </summary>
     public class ResLoadTask : TaskBase
     {
         private class Strategy : ITaskStrategy
@@ -26,16 +29,30 @@ namespace XFrame.Modules
         private Type m_HandleType = typeof(ResLoadTask);
         private Action<object> m_Callback;
 
+        /// <summary>
+        /// 加载到的资源
+        /// </summary>
         public object Res { get; private set; }
 
+        /// <summary>
+        /// 资源加载处理器类 IResHandler类
+        /// </summary> 
         public override Type HandleType => m_HandleType;
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
         public override void OnInit()
         {
             base.OnInit();
             AddStrategy(new Strategy());
         }
 
+        /// <summary>
+        /// 设置完成回调
+        /// </summary>
+        /// <param name="callback">回调</param>
+        /// <returns>资源加载任务</returns>
         public ITask OnComplete(Action<object> callback)
         {
             m_Callback += callback;
@@ -50,6 +67,10 @@ namespace XFrame.Modules
         }
     }
 
+    /// <summary>
+    /// 资源加载任务
+    /// </summary>
+    /// <typeparam name="T">资源类型</typeparam>
     public class ResLoadTask<T> : TaskBase
     {
         private class Strategy : ITaskStrategy
@@ -73,16 +94,30 @@ namespace XFrame.Modules
         private Type m_HandleType = typeof(ResLoadTask);
         private Action<T> m_Callback;
 
+        /// <summary>
+        /// 资源加载处理器类 IResHandler类
+        /// </summary> 
         public override Type HandleType => m_HandleType;
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
         public override void OnInit()
         {
             base.OnInit();
             AddStrategy(new Strategy());
         }
 
+        /// <summary>
+        /// 加载到的资源
+        /// </summary>
         public T Res { get; private set; }
 
+        /// <summary>
+        /// 设置加载回调
+        /// </summary>
+        /// <param name="callback">回调</param>
+        /// <returns>资源加载任务</returns>
         public ITask OnComplete(Action<T> callback)
         {
             m_Callback += callback;

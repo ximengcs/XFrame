@@ -4,23 +4,16 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
-    public class Fsm : DataProvider, IFsm
+    internal class Fsm : DataProvider, IFsm
     {
+        #region Inner Fields
         private string m_Name;
         private Dictionary<Type, FsmState> m_States;
         private FsmState m_Current;
+        #endregion
 
         public string Name => m_Name;
         public FsmState Current => m_Current;
-
-        public Fsm(string name, List<FsmState> states)
-        {
-            m_Name = name;
-            m_Current = null;
-            m_States = new Dictionary<Type, FsmState>();
-            foreach (FsmState state in states)
-                m_States[state.GetType()] = state;
-        }
 
         public TState GetState<TState>() where TState : FsmState
         {
@@ -64,7 +57,16 @@ namespace XFrame.Modules
             }
         }
 
-        internal void ChangeState(Type type)
+        public Fsm(string name, List<FsmState> states)
+        {
+            m_Name = name;
+            m_Current = null;
+            m_States = new Dictionary<Type, FsmState>();
+            foreach (FsmState state in states)
+                m_States[state.GetType()] = state;
+        }
+
+        public void ChangeState(Type type)
         {
             m_Current?.OnLeave();
             if (m_States.TryGetValue(type, out FsmState state))

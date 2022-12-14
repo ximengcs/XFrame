@@ -11,15 +11,10 @@ namespace XFrame.Modules
 
             public bool IsComplete => m_Info.IsComplete;
 
-            public Downloader(IDownloadHelper helper, DownloadInfo info)
+            public void Init(IDownloadHelper helper, DownloadInfo info)
             {
                 m_Info = info;
                 m_Helper = helper;
-            }
-
-            public void Init(IDownloadHelper helper, DownloadInfo info)
-            {
-
             }
 
             public void Start()

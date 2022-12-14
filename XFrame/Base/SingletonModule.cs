@@ -5,7 +5,7 @@ namespace XFrame.Core
     /// 单例模块基类
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class SingleModule<T> : IModule where T : SingleModule<T>
+    public abstract class SingletonModule<T> : IModule where T : SingletonModule<T>
     {
         /// <summary>
         /// 模块Id

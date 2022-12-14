@@ -2,7 +2,7 @@
 
 namespace XFrame.Modules
 {
-    public class TimeModule : SingleModule<TimeModule>
+    public class TimeModule : SingletonModule<TimeModule>
     {
         public float Time { get; private set; }
 

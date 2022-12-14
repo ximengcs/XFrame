@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Core
 {
-    public class GenericFsm<T> : DataProvider, IGenericFsm<T>
+    internal class GenericFsm<T> : DataProvider, IGenericFsm<T>
     {
         private T m_Owner;
         private string m_Name;
@@ -15,9 +15,10 @@ namespace XFrame.Core
         public string Name => m_Name;
         public FsmState<T> Current => m_Current;
 
-        public GenericFsm(string name, List<FsmState<T>> states)
+        public GenericFsm(string name, List<FsmState<T>> states, T owner)
         {
             m_Name = name;
+            m_Owner = owner;
             m_Current = null;
             m_States = new Dictionary<Type, FsmState<T>>();
             foreach (FsmState<T> state in states)
@@ -63,9 +64,8 @@ namespace XFrame.Core
             }
         }
 
-        public void OnInit(T owner)
+        public void OnInit()
         {
-            m_Owner = owner;
             foreach (FsmState<T> state in m_States.Values)
                 state.OnInit(this);
         }

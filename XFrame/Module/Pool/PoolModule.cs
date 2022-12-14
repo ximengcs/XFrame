@@ -7,7 +7,7 @@ namespace XFrame.Modules
     /// <summary>
     /// 对象池模块
     /// </summary>
-    public class PoolModule : SingleModule<PoolModule>
+    public class PoolModule : SingletonModule<PoolModule>
     {
         private const int DEFAULT_SIZE = 8;
         private Dictionary<Type, object> m_Objects;

@@ -7,9 +7,8 @@ namespace XFrame.Modules
 {
     /// <summary>
     /// 存档模块
-    /// 使用前需设置存档路径
     /// </summary>
-    public class ArchiveModule : SingleModule<ArchiveModule>
+    public class ArchiveModule : SingletonModule<ArchiveModule>
     {
         #region Inner Field
         private const string JSON_SUFFIX = ".jsonacv";
@@ -29,6 +28,15 @@ namespace XFrame.Modules
             m_Timer = new CDTimer();
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
+
+            m_RootPath = XConfig.ArchivePath;
+            if (!string.IsNullOrEmpty(m_RootPath))
+            {
+                if (Directory.Exists(m_RootPath))
+                    InnerInitRootPath(m_RootPath);
+                else
+                    Directory.CreateDirectory(m_RootPath);
+            }
         }
 
         public override void OnUpdate(float escapeTime)
@@ -43,32 +51,10 @@ namespace XFrame.Modules
             base.OnDestroy();
             InnerSaveAll();
         }
-
-        private void OnApplicationFocus(bool focus)
-        {
-            if (!focus)
-                InnerSaveAll();
-        }
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 设置存档根路径
-        /// </summary>
-        /// <param name="rootPath">根路径</param>
-        public void SetPath(string rootPath)
-        {
-            m_RootPath = rootPath;
-            foreach (string file in Directory.EnumerateFiles(m_RootPath))
-            {
-                string suffix = Path.GetExtension(file).ToLower();
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                if (suffix == JSON_SUFFIX)
-                    GetOrNew<JsonArchive>(fileName);
-                else if (suffix == BIN_SUFFIX)
-                    GetOrNew<DataArchive>(fileName);
-            }
-        }
+
 
         /// <summary>
         /// 获取或创建一个存档实例
@@ -90,6 +76,14 @@ namespace XFrame.Modules
                 m_Archives.Add(name, source);
                 return source;
             }
+        }
+
+        /// <summary>
+        /// 保存
+        /// </summary>
+        public void Save()
+        {
+            InnerSaveAll();
         }
 
         /// <summary>
@@ -121,6 +115,19 @@ namespace XFrame.Modules
         {
             foreach (IArchive archive in m_Archives.Values)
                 archive.Save();
+        }
+
+        private void InnerInitRootPath(string rootPath)
+        {
+            foreach (string file in Directory.EnumerateFiles(m_RootPath))
+            {
+                string suffix = Path.GetExtension(file).ToLower();
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                if (suffix == JSON_SUFFIX)
+                    GetOrNew<JsonArchive>(fileName);
+                else if (suffix == BIN_SUFFIX)
+                    GetOrNew<DataArchive>(fileName);
+            }
         }
         #endregion
     }

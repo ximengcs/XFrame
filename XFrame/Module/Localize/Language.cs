@@ -1,6 +1,9 @@
 ﻿
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 语言
+    /// </summary>
     public enum Language
     {
         Afrikaans = 0,

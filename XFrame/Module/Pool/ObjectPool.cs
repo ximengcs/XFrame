@@ -4,7 +4,7 @@ using XFrame.Collections;
 
 namespace XFrame.Modules
 {
-    public class ObjectPool<T> : IPool<T> where T : IPoolObject
+    internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {
         private Type m_Type;
         private XLoopQueue<IPoolObject> m_Objects;

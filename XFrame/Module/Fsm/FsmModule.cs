@@ -4,11 +4,17 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
-    public class FsmModule : SingleModule<FsmModule>
+    /// <summary>
+    /// 有限状态机模块
+    /// </summary>
+    public class FsmModule : SingletonModule<FsmModule>
     {
+        #region Inner Field
         private Dictionary<string, IFsmBase> m_Fsms;
         private List<IFsmBase> m_FsmList;
+        #endregion
 
+        #region Module Life Fun
         public override void OnInit(object data)
         {
             base.OnInit(data);
@@ -28,56 +34,94 @@ namespace XFrame.Modules
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnDestroy();
         }
+        #endregion
 
-        public IFsm Create(string name, List<Type> states)
+        #region Interface
+        /// <summary>
+        /// 获取(不存在时创建)有限状态机
+        /// </summary>
+        /// <param name="name">状态机名</param>
+        /// <param name="states">状态机状态集合</param>
+        /// <returns>获取到的状态机</returns>
+        public IFsm GetOrNew(string name, params Type[] states)
         {
             return InnerCreateFsm(name, states);
         }
 
-        public IFsm Create(params Type[] states)
+        /// <summary>
+        /// 获取(不存在时创建)有限状态机
+        /// </summary>
+        /// <param name="states">状态机状态集合</param>
+        /// <returns>获取到的状态机</returns>
+        public IFsm GetOrNew(params Type[] states)
         {
-            return Create(string.Empty, new List<Type>(states));
+            return GetOrNew(string.Empty, states);
         }
 
-        public IGenericFsm<T> Create<T>(string name, T owner, List<Type> states)
+        /// <summary>
+        /// 获取(不存在时创建)有限状态机
+        /// </summary>
+        /// <typeparam name="T">状态机拥有者类型</typeparam>
+        /// <param name="name">状态机名</param>
+        /// <param name="owner">状态机拥有者</param>
+        /// <param name="states">状态机状态集合</param>
+        /// <returns>获取到的状态机</returns>
+        public IGenericFsm<T> GetOrNew<T>(string name, T owner, params Type[] states)
         {
-            return InnerCreateFsm<T>(name, owner, states);
+            return InnerCreateFsm(name, owner, states);
         }
 
-        public IGenericFsm<T> Create<T>(string name, T owner, params Type[] states)
+        /// <summary>
+        /// 获取(不存在时创建)有限状态机
+        /// </summary>
+        /// <typeparam name="T">状态机拥有者类型</typeparam>
+        /// <param name="owner">状态机拥有者</param>
+        /// <param name="states">状态机状态集合</param>
+        /// <returns>获取到的状态机</returns>
+        public IGenericFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
-            return Create<T>(name, owner, new List<Type>(states));
+            return GetOrNew(string.Empty, owner, states);
         }
 
+        /// <summary>
+        /// 移除有限状态机
+        /// </summary>
+        /// <param name="name">需要移除的状态机</param>
         public void Remove(string name)
         {
             InnerRemoveFsm(name);
         }
 
+        /// <summary>
+        /// 移除状态机
+        /// </summary>
+        /// <param name="fsm">需要移除的状态机</param>
         public void Remove(IFsmBase fsm)
         {
             Remove(fsm.Name);
         }
+        #endregion
 
-        private IGenericFsm<T> InnerCreateFsm<T>(string name, T owner, List<Type> types)
+        #region Inner Implement
+        private IGenericFsm<T> InnerCreateFsm<T>(string name, T owner, Type[] types)
         {
-            List<FsmState<T>> states = new List<FsmState<T>>(types.Count);
+            List<FsmState<T>> states = new List<FsmState<T>>(types.Length);
             foreach (Type type in types)
             {
                 FsmState<T> state = (FsmState<T>)Activator.CreateInstance(type);
                 states.Add(state);
             }
 
-            GenericFsm<T> fsm = new GenericFsm<T>(name, states);
-            fsm.OnInit(owner);
+            GenericFsm<T> fsm = new GenericFsm<T>(name, states, owner);
+            fsm.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);
             return fsm;
         }
 
-        private IFsm InnerCreateFsm(string name, List<Type> types)
+        private IFsm InnerCreateFsm(string name, Type[] types)
         {
-            List<FsmState> states = new List<FsmState>(types.Count);
+            List<FsmState> states = new List<FsmState>(types.Length);
             foreach (Type type in types)
             {
                 FsmState state = (FsmState)Activator.CreateInstance(type);
@@ -93,18 +137,12 @@ namespace XFrame.Modules
 
         private void InnerRemoveFsm(string name)
         {
-            if (m_Fsms.ContainsKey(name))
+            if (m_Fsms.TryGetValue(name, out IFsmBase fsm))
             {
                 m_Fsms.Remove(name);
-                foreach (IFsmBase willDel in m_FsmList)
-                {
-                    if (willDel.Name == name)
-                    {
-                        m_FsmList.Remove(willDel);
-                        break;
-                    }
-                }
+                m_FsmList.Remove(fsm);
             }
         }
+        #endregion
     }
 }

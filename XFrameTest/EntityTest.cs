@@ -1,4 +1,5 @@
-﻿using XFrame.Core;
+﻿using NUnit.Framework.Internal;
+using XFrame.Core;
 using XFrame.Modules;
 
 namespace XFrameTest
@@ -7,17 +8,45 @@ namespace XFrameTest
     {
         protected override void OnInit(EntityData data)
         {
-
+            Console.WriteLine("OnInit");
         }
 
         protected override void OnUpdate(float elapseTime)
         {
-
+            Console.WriteLine("OnUpdate");
         }
 
         protected override void OnDestroy()
         {
+            Console.WriteLine("OnDestroy");
+        }
 
+        protected override void OnDelete()
+        {
+            Console.WriteLine("OnDelete");
+        }
+    }
+
+    public class Entity2 : Entity
+    {
+        protected override void OnDelete()
+        {
+            Console.WriteLine("OnDelete 2");
+        }
+
+        protected override void OnDestroy()
+        {
+            Console.WriteLine("OnDestroy 2");
+        }
+
+        protected override void OnInit(EntityData data)
+        {
+            Console.WriteLine("OnInit 2");
+        }
+
+        protected override void OnUpdate(float elapseTime)
+        {
+            Console.WriteLine("OnUpdate 2");
         }
     }
 
@@ -27,6 +56,7 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
+            new IdModule().OnInit(default);
             new PoolModule().OnInit(default);
             new TypeModule().OnInit(default);
             EntityModule module = new EntityModule();
@@ -34,6 +64,10 @@ namespace XFrameTest
             module.RegisterEntity<Entity>();
 
             Entity1 entity = module.Create<Entity1>(null);
+            entity.Add<Entity2>();
+            module.OnUpdate(0.1f);
+            module.Destroy(entity);
+            module.OnDestroy();
         }
     }
 }
