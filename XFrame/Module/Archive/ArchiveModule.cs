@@ -5,6 +5,10 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 存档模块
+    /// 使用前需设置存档路径
+    /// </summary>
     public class ArchiveModule : SingleModule<ArchiveModule>
     {
         #region Inner Field
@@ -48,6 +52,10 @@ namespace XFrame.Modules
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 设置存档根路径
+        /// </summary>
+        /// <param name="rootPath">根路径</param>
         public void SetPath(string rootPath)
         {
             m_RootPath = rootPath;
@@ -62,6 +70,12 @@ namespace XFrame.Modules
             }
         }
 
+        /// <summary>
+        /// 获取或创建一个存档实例
+        /// </summary>
+        /// <typeparam name="T">存档类型</typeparam>
+        /// <param name="name">存档名</param>
+        /// <returns>存档实例</returns>
         public T GetOrNew<T>(string name) where T : IArchive
         {
             if (m_Archives.TryGetValue(name, out IArchive archieve))
@@ -72,12 +86,16 @@ namespace XFrame.Modules
             {
                 Type type = typeof(T);
                 T source = (T)Activator.CreateInstance(type);
-                source.Init(InnerGetPath(type, name));
+                source.OnInit(InnerGetPath(type, name));
                 m_Archives.Add(name, source);
                 return source;
             }
         }
 
+        /// <summary>
+        /// 删除一份存档
+        /// </summary>
+        /// <param name="name"></param>
         public void Delete(string name)
         {
             if (m_Archives.TryGetValue(name, out IArchive source))

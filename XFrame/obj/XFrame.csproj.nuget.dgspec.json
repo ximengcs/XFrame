@@ -1,25 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj": {}
+    "E:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj": {}
   },
   "projects": {
-    "D:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj": {
+    "E:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
+        "projectUniqueName": "E:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
         "projectName": "XFrame",
-        "projectPath": "D:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
-        "packagesPath": "C:\\Users\\98259\\.nuget\\packages\\",
-        "outputPath": "D:\\XiMeng\\XFrame\\XFrame\\obj\\",
+        "projectPath": "E:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
+        "packagesPath": "C:\\Users\\XM\\.nuget\\packages\\",
+        "outputPath": "E:\\XiMeng\\XFrame\\XFrame\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\98259\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\XM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -58,11 +53,12 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

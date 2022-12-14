@@ -1,15 +1,17 @@
 ﻿using XFrame.Core;
-using XFrame.Modules;
 
 namespace XFrame.Collections
 {
+    /// <summary>
+    /// XCollection集合元素抽象类，Id自动通过IDModule获取
+    /// </summary>
     public abstract class XItem : IXItem
     {
         public int Id { get; private set; }
 
         public void OnCreate()
         {
-            Id = IDGenerator.Inst.Next();
+            Id = IdModule.Inst.Next();
         }
 
         public void OnRelease()

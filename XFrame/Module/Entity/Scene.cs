@@ -19,10 +19,10 @@ namespace XFrame.Modules
         #endregion
 
         #region Life Fun
-        internal override void Update(float elapseTime)
+        internal override void OnInternalUpdate(float elapseTime)
         {
             if (IsRunning)
-                base.Update(elapseTime);
+                base.OnInternalUpdate(elapseTime);
         }
 
         public override void OnRelease()

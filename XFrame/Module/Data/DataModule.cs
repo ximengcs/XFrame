@@ -3,6 +3,9 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 数据模块
+    /// </summary>
     public class DataModule : SingleModule<DataModule>
     {
         #region Life Fun

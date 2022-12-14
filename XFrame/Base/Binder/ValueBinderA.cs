@@ -6,7 +6,7 @@ namespace XFrame.Core
     /// <summary>
     /// 数值绑定器
     /// </summary>
-    /// <typeparam name="T">绑定类型</typeparam>
+    /// <typeparam name="T">持有数值类型</typeparam>
     public class ValueBinder<T> : IDisposable
     {
         private Func<T> m_GetHandler;
@@ -14,6 +14,11 @@ namespace XFrame.Core
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
 
+        /// <summary>
+        /// 构造数值绑定器
+        /// </summary>
+        /// <param name="getHandler">获取值委托</param>
+        /// <param name="setHandler">设置值委托</param>
         public ValueBinder(Func<T> getHandler, Action<T> setHandler)
         {
             m_GetHandler = getHandler;
@@ -21,6 +26,9 @@ namespace XFrame.Core
             m_CondUpdateHandler = new List<Func<T, bool>>();
         }
 
+        /// <summary>
+        /// 持有的数值
+        /// </summary>
         public T Value
         {
             get { return m_GetHandler(); }
@@ -46,6 +54,9 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 释放
+        /// </summary>
         public void Dispose()
         {
             m_GetHandler = null;
@@ -58,6 +69,7 @@ namespace XFrame.Core
         /// 添加一个数值变更处理委托
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
+        /// <param name="atonceInvoke">是否立即执行</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
             m_UpdateHandler += handler;

@@ -6,24 +6,34 @@ namespace XFrame.Core
     /// <summary>
     /// 数值绑定器
     /// </summary>
-    /// <typeparam name="T">绑定类型</typeparam>
+    /// <typeparam name="T">持有的数值类型</typeparam>
     public class TriggerBinder<T> : IDisposable
     {
         private Func<T> m_GetHandler;
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
 
+        /// <summary>
+        /// 构造数值绑定器
+        /// </summary>
+        /// <param name="getHandler">获取值的委托</param>
         public TriggerBinder(Func<T> getHandler)
         {
             m_GetHandler = getHandler;
             m_CondUpdateHandler = new List<Func<T, bool>>();
         }
 
+        /// <summary>
+        /// 持有的数值
+        /// </summary>
         public T Value
         {
             get { return m_GetHandler(); }
         }
 
+        /// <summary>
+        /// 触发数值更新
+        /// </summary>
         public void Trigger()
         {
             m_UpdateHandler?.Invoke(Value);
@@ -36,6 +46,9 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 释放
+        /// </summary>
         public void Dispose()
         {
             m_GetHandler = null;
@@ -47,6 +60,7 @@ namespace XFrame.Core
         /// 添加一个数值变更处理委托
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
+        /// <param name="atonceInvoke">是否立即执行</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
             m_UpdateHandler += handler;

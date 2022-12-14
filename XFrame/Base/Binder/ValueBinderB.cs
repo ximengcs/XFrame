@@ -15,6 +15,11 @@ namespace XFrame.Core
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
 
+        /// <summary>
+        /// 构造数值绑定器
+        /// </summary>
+        /// <param name="getHandler">获取值委托</param>
+        /// <param name="changeBinder">值改变绑定器</param>
         public ValueBinder(Func<T> getHandler, ValueBinder<VT> changeBinder)
         {
             m_GetHandler = getHandler;
@@ -23,6 +28,9 @@ namespace XFrame.Core
             m_ChangeBinder.AddHandler(InnerHandleChange);
         }
 
+        /// <summary>
+        /// 持有的数值
+        /// </summary>
         public T Value
         {
             get { return m_GetHandler(); }
@@ -48,6 +56,9 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 释放
+        /// </summary>
         public void Dispose()
         {
             m_ChangeBinder.RemoveHandler(InnerHandleChange);

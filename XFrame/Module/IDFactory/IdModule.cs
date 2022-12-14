@@ -2,7 +2,7 @@
 
 namespace XFrame.Core
 {
-    public class IDGenerator : SingleModule<IDGenerator>
+    public class IdModule : SingleModule<IdModule>
     {
         private int m_Time;
         private int m_Count;

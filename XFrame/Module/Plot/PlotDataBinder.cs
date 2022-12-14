@@ -1,5 +1,5 @@
 ﻿using XFrame.Core;
-using System.Collections.Generic;
+using XFrame.SimpleJSON;
 
 namespace XFrame.Modules
 {
@@ -10,14 +10,14 @@ namespace XFrame.Modules
         public PlotDataBinder(JsonArchive data)
         {
             m_Persist = data;
-            Steps = m_Persist.GetArray<bool>(nameof(Steps));
+            Steps = m_Persist.GetOrNewArray(nameof(Steps));
             Finish = new ValueBinder<bool>(
-                () => m_Persist.Get<bool>(nameof(Finish)), 
-                (v) => m_Persist.Set(nameof(Finish), v));
+                () => m_Persist.GetBool(nameof(Finish)), 
+                (v) => m_Persist.SetBool(nameof(Finish), v));
         }
 
         public ValueBinder<bool> Finish { get; set; }
-        public List<bool> Steps { get; set; }
+        public JSONArray Steps { get; set; }
 
         public void Dispose()
         {

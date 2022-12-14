@@ -24,7 +24,7 @@ namespace XFrame.Modules
         {
             base.OnUpdate(escapeTime);
             foreach (Entity entity in m_Entities)
-                entity.Update(escapeTime);
+                entity.OnInternalUpdate(escapeTime);
         }
         #endregion
 
@@ -77,7 +77,7 @@ namespace XFrame.Modules
         {
             Entity entity;
             PoolModule.Inst.GetOrNew<Entity>(entityType).Require().Require(out entity);
-            entity.Initialize(IDGenerator.Inst.Next(), scene, parent, data);
+            entity.OnInternalInit(IdModule.Inst.Next(), scene, parent, data);
             if (parent == null)
                 m_Entities.Add(entity);
             return entity;

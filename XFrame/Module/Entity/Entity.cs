@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using XFrame.Collections;
+﻿using XFrame.Collections;
 
 namespace XFrame.Modules
 {
@@ -13,7 +12,7 @@ namespace XFrame.Modules
         #endregion
 
         #region Life Fun
-        internal virtual void Initialize(int id, Scene scene, Entity parent, EntityData data)
+        internal virtual void OnInternalInit(int id, Scene scene, Entity parent, EntityData data)
         {
             Id = id;
             m_Parent = parent;
@@ -23,17 +22,17 @@ namespace XFrame.Modules
             OnInit(data);
         }
 
-        internal virtual void Update(float elapseTime)
+        internal virtual void OnInternalUpdate(float elapseTime)
         {
             OnUpdate(elapseTime);
             foreach (Entity child in m_Children)
-                child.Update(elapseTime);
+                child.OnInternalUpdate(elapseTime);
         }
 
-        internal virtual void Destroy(bool onlyRoot)
+        internal virtual void OnInternalDestroy(bool onlyRoot)
         {
             foreach (Entity child in m_Children)
-                child.Destroy(onlyRoot);
+                child.OnInternalDestroy(onlyRoot);
             OnDestroy();
 
             m_Parent = null;

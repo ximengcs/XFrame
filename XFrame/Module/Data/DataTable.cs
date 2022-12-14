@@ -5,13 +5,14 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
-    public class DataTable<T> : IDataTable<T> where T : IDataRaw
+    internal class DataTable<T> : IDataTable<T> where T : IDataRaw
     {
         private Type m_Type;
         private List<T> m_List;
         private Dictionary<int, T> m_Datas;
         private Dictionary<string, FieldInfo> m_Fields;
         private const string UNIQUE_KEY = "Id";
+        private int m_MinId = -1;
 
         public DataTable(List<T> data)
         {
@@ -29,6 +30,10 @@ namespace XFrame.Modules
                     int id = (int)info.GetValue(item);
                     if (id == 0)
                         continue;
+
+                    if (m_MinId == -1 || id < m_MinId)
+                        m_MinId = id;
+
                     if (m_Datas.ContainsKey(id))
                     {
                         Log.Warning("XFrame", $"DataTable Error {id} Multiple");
@@ -43,7 +48,7 @@ namespace XFrame.Modules
 
         public T Get()
         {
-            return Get(0);
+            return Get(m_MinId);
         }
 
         public T Get(int id)

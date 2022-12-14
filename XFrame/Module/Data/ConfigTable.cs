@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
-    public class ConfigTable<T> : IDataTable<T> where T : IDataRaw
+    internal class ConfigTable<T> : IDataTable<T> where T : IDataRaw
     {
         private List<T> m_UnUse;
         private T m_Data;

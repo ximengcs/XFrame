@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "2VqkTmZQ5IJ2xsDz49OUI/c1tGvmoloyxiPEoeKzxlVMWpLgmTYzXWcRj+yElfgqyXOXtpQxtQiUbFKKv4jJlQ==",
+  "dgSpecHash": "BHwlRxPsaFdhTOhdu8ybX/RI9iNIg/xJhMCgSdYDe3pyX3bkKUa3P2jqBmOWGJI4SnJPPQLfOptXTY2dLn6/8A==",
   "success": true,
-  "projectFilePath": "D:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
+  "projectFilePath": "E:\\XiMeng\\XFrame\\XFrame\\XFrame.csproj",
   "expectedPackageFiles": [
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+    "C:\\Users\\XM\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\XM\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
   ],
   "logs": []
 }
