@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace XFrame.Modules
 {
     /// <summary>
@@ -13,7 +15,14 @@ namespace XFrame.Modules
         /// 从对象池系统的缓存中获取一个对象池，如果没有则创建一个默认容量的对象池
         /// </summary>
         /// <returns>获取到的对象池</returns>
-        IPool<T> Require();
+        IPool<PoolObjType> Require<PoolObjType>() where PoolObjType : T;
+
+        /// <summary>
+        /// 获取一个对象池
+        /// </summary>
+        /// <param name="poolObjType">对象池持有类型</param>
+        /// <returns>获取到的对象池</returns>
+        IPool Require(Type poolObjType);
 
         /// <summary>
         /// 获取一个对象池
@@ -21,12 +30,20 @@ namespace XFrame.Modules
         /// </summary>
         /// <param name="capacity">对象池容量</param>
         /// <returns>获取到的对象池</returns>
-        IPool<T> Require(int capacity);
+        IPool<PoolType> Require<PoolType>(int capacity) where PoolType : T;
+
+        /// <summary>
+        /// 获取一个对象池
+        /// </summary>
+        /// <param name="poolObjType">对象池持有对象类型</param>
+        /// <param name="capacity">对象池容量</param>
+        /// <returns>获取到的对象池</returns>
+        IPool Require(Type poolObjType, int capacity);
 
         /// <summary>
         /// 释放一个对象池
         /// </summary>
         /// <param name="pool">要释放的对象池</param>
-        void Release(IPool<T> pool);
+        void Release(IPool pool);
     }
 }

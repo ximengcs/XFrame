@@ -1,49 +1,90 @@
-﻿using XFrame.Collections;
+﻿using System;
+using XFrame.Collections;
+using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
     internal class PoolSystem<T> : IPoolSystem<T> where T : IPoolObject
     {
         private const int DEFAULT_SIZE = 8;
-        private XLoopQueue<IPool<T>> m_PoolContainer;
+        private Dictionary<Type, XLoopQueue<IPool>> m_PoolContainers;
 
         public PoolSystem(int capacity)
         {
-            m_PoolContainer = new XLoopQueue<IPool<T>>(capacity);
+            m_PoolContainers = new Dictionary<Type, XLoopQueue<IPool>>(capacity);
         }
 
-        public IPool<T> Require(int capacity)
+        public IPool Require(Type poolObjType, int capacity)
         {
             if (capacity <= 0)
                 capacity = DEFAULT_SIZE;
 
-            IPool<T> pool;
-            if (m_PoolContainer.Empty)
+            if (!m_PoolContainers.TryGetValue(poolObjType, out XLoopQueue<IPool> poolQueue))
             {
-                pool = new ObjectPool<T>(capacity);
+                poolQueue = new XLoopQueue<IPool>(capacity);
+                m_PoolContainers[poolObjType] = poolQueue;
+            }
 
+            IPool pool;
+            if (poolQueue.Empty)
+            {
+                Type poolType = typeof(ObjectPool<>).MakeGenericType(poolObjType);
+                pool = Activator.CreateInstance(poolType, capacity) as IPool;
             }
             else
-                pool = m_PoolContainer.RemoveFirst();
+                pool = poolQueue.RemoveFirst();
 
             return pool;
         }
 
-        public IPool<T> Require()
+        public IPool<PoolType> Require<PoolType>(int capacity) where PoolType : T
         {
-            return Require(DEFAULT_SIZE);
+            if (capacity <= 0)
+                capacity = DEFAULT_SIZE;
+
+            Type type = typeof(PoolType);
+            if (!m_PoolContainers.TryGetValue(type, out XLoopQueue<IPool> poolQueue))
+            {
+                poolQueue = new XLoopQueue<IPool>(capacity);
+                m_PoolContainers[type] = poolQueue;
+            }
+
+            IPool<PoolType> pool;
+            if (poolQueue.Empty)
+                pool = new ObjectPool<PoolType>(capacity);
+            else
+                pool = poolQueue.RemoveFirst() as IPool<PoolType>;
+
+            return pool;
         }
 
-        public void Release(IPool<T> pool)
+        public IPool Require(Type poolObjType)
         {
-            if (m_PoolContainer.Full)
+            throw new NotImplementedException();
+        }
+
+        public IPool<PoolType> Require<PoolType>() where PoolType : T
+        {
+            return Require<PoolType>(DEFAULT_SIZE);
+        }
+
+        public void Release(IPool pool)
+        {
+            Type type = pool.ObjectType;
+            if (!m_PoolContainers.TryGetValue(type, out XLoopQueue<IPool> poolQueue))
+            {
+                poolQueue = new XLoopQueue<IPool>(DEFAULT_SIZE);
+                m_PoolContainers[type] = poolQueue;
+            }
+
+            if (poolQueue.Full)
             {
                 Log.Warning("XFrame", $"PoolSystem Release failed, container is full. {typeof(T).Name}");
                 return;
             }
             else
             {
-                m_PoolContainer.AddLast(pool);
+                poolQueue.AddLast(pool);
             }
         }
     }

@@ -55,7 +55,7 @@ namespace XFrame.Collections
         public XLinkList(int poolCapacity)
         {
             m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
-                .Require(poolCapacity);
+                .Require<XLinkNode<T>>(poolCapacity);
             m_First = null;
             m_Last = null;
         }
@@ -67,7 +67,7 @@ namespace XFrame.Collections
         public XLinkList()
         {
             m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
-                .Require(DEFAULT_POOL);
+                .Require<XLinkNode<T>>(DEFAULT_POOL);
             m_First = null;
             m_Last = null;
         }

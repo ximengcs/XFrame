@@ -68,8 +68,8 @@ namespace XFrame.Modules
 
         public void Destroy(Entity entity)
         {
-            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>(entity.GetType());
-            IPool<Entity> pool = poolSystem.Require();
+            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>();
+            IPool pool = poolSystem.Require(entity.GetType());
             pool.Release(entity);
             poolSystem.Release(pool);
         }
@@ -77,7 +77,10 @@ namespace XFrame.Modules
         private Entity InnerCreate(Type entityType, Scene scene, Entity parent, EntityData data)
         {
             Entity entity;
-            PoolModule.Inst.GetOrNew<Entity>(entityType).Require().Require(out entity);
+            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>();
+            IPool pool = poolSystem.Require(entityType);
+            pool.Require(out IPoolObject obj);
+            entity = obj as Entity;
             entity.OnInternalInit(IdModule.Inst.Next(), scene, parent, data);
             if (parent == null)
                 m_Entities.Add(entity);

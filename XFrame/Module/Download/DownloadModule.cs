@@ -15,7 +15,8 @@ namespace XFrame.Modules
         {
             base.OnInit(data);
             m_Downloaders = new XCollection<Downloader>();
-            m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>().Require();
+            m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>()
+                .Require<Downloader>();
         }
 
         public void Register<T>() where T : IDownloadHelper
