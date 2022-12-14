@@ -37,8 +37,8 @@ namespace XFrame.Modules
         /// <summary>
         /// 创建或获取一个默认容量的对象池系统
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">对象池持有类型</typeparam>
+        /// <returns>获取到的对象池系统</returns>
         public IPoolSystem<T> GetOrNew<T>() where T : IPoolObject
         {
             return InnerGetOrNewPool<T>(DEFAULT_SIZE);
@@ -48,6 +48,7 @@ namespace XFrame.Modules
         /// 创建或获取一个给定容量的对象池系统
         /// </summary>
         /// <typeparam name="T">对象池持有类型</typeparam>
+        /// <param name="type">对象池系统类型</param>
         /// <param name="capacity">对象池系统容量</param>
         /// <returns>获取到的对象池系统</returns>
         public IPoolSystem<T> GetOrNew<T>(Type type, int capacity) where T : IPoolObject
@@ -60,8 +61,9 @@ namespace XFrame.Modules
         /// <summary>
         /// 创建或获取一个默认容量的对象池系统
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">对象池持有类型</typeparam>
+        /// <param name="type">对象池系统类型</param>
+        /// <returns>获取到的对象池系统</returns>
         public IPoolSystem<T> GetOrNew<T>(Type type) where T : IPoolObject
         {
             return InnerGetOrNewPool<T>(type, DEFAULT_SIZE);

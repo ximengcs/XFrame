@@ -68,9 +68,10 @@ namespace XFrame.Modules
 
         public void Destroy(Entity entity)
         {
-            PoolModule.Inst.GetOrNew<Entity>(entity.GetType())
-                .Require()
-                .Release(entity);
+            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>(entity.GetType());
+            IPool<Entity> pool = poolSystem.Require();
+            pool.Release(entity);
+            poolSystem.Release(pool);
         }
 
         private Entity InnerCreate(Type entityType, Scene scene, Entity parent, EntityData data)
