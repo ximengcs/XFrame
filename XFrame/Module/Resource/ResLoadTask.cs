@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Tasks;
 
 namespace XFrame.Modules.Resource
@@ -18,15 +19,16 @@ namespace XFrame.Modules.Resource
             {
                 IResHandler hander = target as IResHandler;
                 if (hander.IsDone)
+                    m_Pro = MAX_PRO;
+                else
+                    m_Pro = hander.Pro;
+
+                if (hander.IsDone || hander.Pro == MAX_PRO)
                 {
                     ResLoadTask task = from as ResLoadTask;
                     task.Res = hander.Data;
-                    m_Pro = MAX_PRO;
                 }
-                else
-                {
-                    m_Pro = hander.Pro;
-                }
+
                 return m_Pro;
             }
 
@@ -93,14 +95,14 @@ namespace XFrame.Modules.Resource
             {
                 IResHandler hander = target as IResHandler;
                 if (hander.IsDone)
+                    m_Pro = MAX_PRO;
+                else
+                    m_Pro = hander.Pro;
+
+                if (hander.IsDone || hander.Pro == MAX_PRO)
                 {
                     ResLoadTask<T> task = from as ResLoadTask<T>;
                     task.Res = (T)hander.Data;
-                    m_Pro = MAX_PRO;
-                }
-                else
-                {
-                    m_Pro = hander.Pro;
                 }
 
                 return m_Pro;
