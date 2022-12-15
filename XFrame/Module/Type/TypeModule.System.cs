@@ -1,50 +1,71 @@
 ﻿using System;
+using XFrame.Modules;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using XFrame.Modules;
 
 namespace XFrame.Core
 {
     public partial class TypeModule
     {
-        public class Set : IEnumerable<Type>
+        /// <summary>
+        /// 类型系统
+        /// </summary>
+        public class System : IEnumerable<Type>
         {
             private Type m_MainType;
             private List<Type> m_AllTypes;
-            private Dictionary<Type, Set> m_Classifyes;
-            private Dictionary<int, Type> m_Indexes;
+            private Dictionary<Type, System> m_Classifyes;
+            private Dictionary<int, Type> m_KeyTypes;
             private Dictionary<string, Type> m_NameTypes;
 
-            public Type Main => m_MainType;
-
-            public Set(Type mainType)
+            internal System(Type mainType)
             {
                 m_MainType = mainType;
                 m_AllTypes = new List<Type>();
-                m_Classifyes = new Dictionary<Type, Set>();
-                m_Indexes = new Dictionary<int, Type>();
+                m_Classifyes = new Dictionary<Type, System>();
+                m_KeyTypes = new Dictionary<int, Type>();
                 m_NameTypes = new Dictionary<string, Type>();
             }
 
-            public void AddIndex(int index, Type type)
+            #region Interface
+            /// <summary>
+            /// 主类
+            /// </summary>
+            public Type Main => m_MainType;
+
+            /// <summary>
+            /// 以key键标记一个类型
+            /// </summary>
+            /// <param name="key">键</param>
+            /// <param name="type">要标记的类型</param>
+            public void AddKey(int key, Type type)
             {
-                if ((!m_AllTypes.Contains(type) && m_MainType != type) || m_Indexes.ContainsKey(index))
+                if ((!m_AllTypes.Contains(type) && m_MainType != type) || m_KeyTypes.ContainsKey(key))
                 {
                     Log.Error("XFrame", $"Type module add index error.");
                     return;
                 }
-                m_Indexes[index] = type;
+                m_KeyTypes[key] = type;
             }
 
-            public Type GetIndex(int index)
+            /// <summary>
+            /// 获取一个被标记的类型
+            /// </summary>
+            /// <param name="key">键</param>
+            /// <returns>获取到的类型</returns>
+            public Type GetKey(int key)
             {
-                if (m_Indexes.TryGetValue(index, out Type type))
+                if (m_KeyTypes.TryGetValue(key, out Type type))
                     return type;
                 else
                     return default;
             }
 
+            /// <summary>
+            /// 通过名字获取类型
+            /// </summary>
+            /// <param name="name"></param>
+            /// <returns></returns>
             public Type GetByName(string name)
             {
                 if (m_NameTypes.TryGetValue(name, out Type type))
@@ -53,29 +74,30 @@ namespace XFrame.Core
                     return default;
             }
 
+            /// <summary>
+            /// 尝试通过名字获取类型
+            /// </summary>
+            /// <param name="name">类型名</param>
+            /// <param name="type">类型</param>
+            /// <returns>是否获取成功</returns>
             public bool TryGetByName(string name, out Type type)
             {
                 return m_NameTypes.TryGetValue(name, out type);
             }
 
-            public Set GetBySub<T>() where T : class
+            /// <summary>
+            /// 获取(不存在时创建)子类类型系统
+            /// </summary>
+            /// <typeparam name="T">基类</typeparam>
+            /// <returns>获取到的类型系统</returns>
+            public System GetOrNewBySub<T>() where T : class
             {
                 Type type = typeof(T);
-                if (m_Classifyes.TryGetValue(type, out Set module))
+                if (m_Classifyes.TryGetValue(type, out System module))
                     return module;
-                else
-                    return default;
-            }
 
-            public Set ClassifyBySub<T>() where T : class
-            {
-                Type type = typeof(T);
-                if (!m_Classifyes.TryGetValue(type, out Set module))
-                {
-                    module = new Set(type);
-                    m_Classifyes.Add(type, module);
-                }
-
+                module = new System(type);
+                m_Classifyes.Add(type, module);
                 foreach (Type subType in m_AllTypes)
                 {
                     if (subType.IsSubclassOf(type))
@@ -85,20 +107,29 @@ namespace XFrame.Core
                 return module;
             }
 
-            public void AddSubClass(Type type)
-            {
-                m_AllTypes.Add(type);
-                m_NameTypes[type.Name] = type;
-            }
-
+            /// <summary>
+            /// 获取所有类型
+            /// </summary>
+            /// <returns>类型集合</returns>
             public Type[] ToArray()
             {
                 return m_AllTypes.ToArray();
             }
 
+            /// <summary>
+            /// 迭代所有类型
+            /// </summary>
+            /// <returns>迭代器</returns>
             public IEnumerator<Type> GetEnumerator()
             {
                 return m_AllTypes.GetEnumerator();
+            }
+            #endregion
+
+            internal void AddSubClass(Type type)
+            {
+                m_AllTypes.Add(type);
+                m_NameTypes[type.Name] = type;
             }
 
             IEnumerator IEnumerable.GetEnumerator()

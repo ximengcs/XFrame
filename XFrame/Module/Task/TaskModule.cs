@@ -4,6 +4,9 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 任务模块
+    /// </summary>
     public class TaskModule : SingletonModule<TaskModule>
     {
         private List<ITask> m_Tasks;
@@ -18,14 +21,22 @@ namespace XFrame.Modules
             m_TaskWithName = new Dictionary<string, ITask>();
         }
 
-        public T New<T>() where T : ITask
+        /// <summary>
+        /// 获取(不存在时创建)一个任务
+        /// </summary>
+        /// <typeparam name="T">任务类型</typeparam>
+        /// <returns>获取到的任务</returns>
+        public T GetOrNew<T>() where T : ITask
         {
-            T task = Activator.CreateInstance<T>();
-            task.OnInit();
-            m_Tasks.Add(task);
-            return task;
+            return GetOrNew<T>(string.Empty);
         }
 
+        /// <summary>
+        /// 获取(不存在时创建)一个任务
+        /// </summary>
+        /// <typeparam name="T">任务类型</typeparam>
+        /// <param name="name">任务名</param>
+        /// <returns>获取到的任务</returns>
         public T GetOrNew<T>(string name) where T : ITask
         {
             if (!m_TaskWithName.TryGetValue(name, out ITask task))

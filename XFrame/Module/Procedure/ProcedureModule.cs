@@ -9,12 +9,12 @@ namespace XFrame.Modules
     public class ProcedureModule : SingletonModule<ProcedureModule>
     {
         private static string ENTRANCE = "MainProcedure";
-        private TypeModule.Set m_Procedures;
+        private TypeModule.System m_Procedures;
 
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Procedures = TypeModule.Inst.Register<ProcedureBase>();
+            m_Procedures = TypeModule.Inst.GetOrNew<ProcedureBase>();
             if (m_Procedures.TryGetByName(ENTRANCE, out Type entrance))
             {
                 Log.Debug("XFrame", "Enter Main Procedure");

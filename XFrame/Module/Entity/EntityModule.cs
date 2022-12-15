@@ -21,7 +21,7 @@ namespace XFrame.Modules
         {
             base.OnInit(data);
             m_Entities = new XCollection<Entity>();
-            TypeModule.Inst.RegisterWithAtr<EntityPropAttribute>();
+            TypeModule.Inst.GetOrNewWithAttr<EntityPropAttribute>();
         }
 
         public override void OnUpdate(float escapeTime)
@@ -53,7 +53,9 @@ namespace XFrame.Modules
         /// <typeparam name="T">实体基类或实体类</typeparam>
         public void RegisterEntity<T>() where T : Entity
         {
-            TypeModule.Set module = TypeModule.Inst.Get<EntityPropAttribute>().ClassifyBySub<T>();
+            TypeModule.System module = TypeModule.Inst
+                .GetOrNewWithAttr<EntityPropAttribute>()
+                .GetOrNewBySub<T>();
             List<Type> types = new List<Type>(module);
             if (TypeUtility.HasAttribute<EntityPropAttribute>(module.Main))
                 types.Add(module.Main);
@@ -61,7 +63,7 @@ namespace XFrame.Modules
             foreach (Type type in types)
             {
                 EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(type);
-                module.AddIndex(atr.Type, type);
+                module.AddKey(atr.Type, type);
             }
         }
 
@@ -97,7 +99,10 @@ namespace XFrame.Modules
         /// <returns>创建的实体</returns>
         public T Create<T>(Scene scene, EntityData data) where T : Entity
         {
-            Type type = TypeModule.Inst.Get<EntityPropAttribute>().GetBySub<T>().GetIndex(data.TypeId);
+            Type type = TypeModule.Inst
+                .GetOrNewWithAttr<EntityPropAttribute>()
+                .GetOrNewBySub<T>()
+                .GetKey(data.TypeId);
             T entity = InnerCreate(type, scene, default, data, true) as T;
             return entity;
         }
@@ -112,7 +117,10 @@ namespace XFrame.Modules
         /// <returns>创建的实体</returns>
         public T Create<T>(Scene scene, Entity parent, EntityData data) where T : Entity
         {
-            Type type = TypeModule.Inst.Get<EntityPropAttribute>().GetBySub<T>().GetIndex(data.TypeId);
+            Type type = TypeModule.Inst
+                .GetOrNewWithAttr<EntityPropAttribute>()
+                .GetOrNewBySub<T>()
+                .GetKey(data.TypeId);
             return InnerCreate(type, scene, parent, data, true) as T;
         }
 
@@ -134,7 +142,10 @@ namespace XFrame.Modules
         #region Inernal Implement
         internal T InnerCreate<T>(Scene scene, Entity parent, EntityData data) where T : Entity
         {
-            Type type = TypeModule.Inst.Get<EntityPropAttribute>().GetBySub<T>().GetIndex(data.TypeId);
+            Type type = TypeModule.Inst
+                .GetOrNewWithAttr<EntityPropAttribute>()
+                .GetOrNewBySub<T>()
+                .GetKey(data.TypeId);
             return InnerCreate(type, scene, parent, data, false) as T;
         }
 

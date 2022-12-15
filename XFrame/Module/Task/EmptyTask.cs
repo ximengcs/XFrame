@@ -2,6 +2,10 @@
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 空任务
+    /// 这个任务总是处于完成状态
+    /// </summary>
     public class EmptyTask : ITask
     {
         private Type m_HandleType = typeof(EmptyTask);

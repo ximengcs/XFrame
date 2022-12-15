@@ -5,6 +5,9 @@ using XFrame.Core;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 主线程上下文处理
+    /// </summary>
     public class MainSynchronizationContext : SynchronizationContext, IModule
     {
         private int m_MainThread;

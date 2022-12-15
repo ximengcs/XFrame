@@ -5,16 +5,19 @@ using XFrame.Utility;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 类型模块
+    /// </summary>
     public partial class TypeModule : SingletonModule<TypeModule>
     {
         private Assembly[] m_Assemblys;
         private Type[] m_Types;
-        private Dictionary<Type, Set> m_ClassRegister;
+        private Dictionary<Type, System> m_ClassRegister;
 
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            m_ClassRegister = new Dictionary<Type, Set>();
+            m_ClassRegister = new Dictionary<Type, System>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
 
             List<Type> types = new List<Type>(128);
@@ -23,6 +26,12 @@ namespace XFrame.Core
             m_Types = types.ToArray();
         }
 
+        #region Interface
+        /// <summary>
+        /// 获取类型
+        /// </summary>
+        /// <param name="name">类型名</param>
+        /// <returns>获取到的类型</returns>
         public Type GetType(string name)
         {
             foreach (Assembly assembly in m_Assemblys)
@@ -34,25 +43,21 @@ namespace XFrame.Core
             return default;
         }
 
-        public Set Get<T>() where T : class
+        /// <summary>
+        /// 获取(不存在时创建)一个类型系统
+        /// 类型都具有所给定的属性类
+        /// </summary>
+        /// <typeparam name="T">Attribute属性类</typeparam>
+        /// <returns>获取到的类型系统</returns>
+        public System GetOrNewWithAttr<T>() where T : Attribute
         {
             Type pType = typeof(T);
-            if (m_ClassRegister.TryGetValue(pType, out Set module))
+            System module;
+            if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
-            else
-                return default;
-        }
 
-        public Set RegisterWithAtr<T>() where T : Attribute
-        {
-            Type pType = typeof(T);
-            Set module;
-            if (!m_ClassRegister.TryGetValue(pType, out module))
-            {
-                module = new Set(pType);
-                m_ClassRegister.Add(pType, module);
-            }
-
+            module = new System(pType);
+            m_ClassRegister.Add(pType, module);
             foreach (Type subType in m_Types)
             {
                 if (TypeUtility.HasAttribute<T>(subType))
@@ -61,16 +66,21 @@ namespace XFrame.Core
             return module;
         }
 
-        public Set Register<T>() where T : class
+        /// <summary>
+        /// 获取(不存在时创建)一个类型系统
+        /// 类型都是所给定的类型或子类
+        /// </summary>
+        /// <typeparam name="T">基类</typeparam>
+        /// <returns>获取到的类型系统</returns>
+        public System GetOrNew<T>() where T : class
         {
             Type pType = typeof(T);
-            Set module;
-            if (!m_ClassRegister.TryGetValue(pType, out module))
-            {
-                module = new Set(pType);
-                m_ClassRegister.Add(pType, module);
-            }
+            System module;
+            if (m_ClassRegister.TryGetValue(pType, out module))
+                return module;
 
+            module = new System(pType);
+            m_ClassRegister.Add(pType, module);
             foreach (Type type in m_Types)
             {
                 if (type.IsSubclassOf(pType))
@@ -78,5 +88,6 @@ namespace XFrame.Core
             }
             return module;
         }
+        #endregion
     }
 }

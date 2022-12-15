@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 任务基类
+    /// </summary>
     public abstract class TaskBase : ITask
     {
         private ITaskHandler m_Current;

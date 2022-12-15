@@ -2,6 +2,9 @@
 
 namespace XFrame.Modules
 {
+    /// <summary>
+    /// 通用任务处理策略
+    /// </summary>
     public class TaskStrategy : ITaskStrategy
     {
         private Type m_Type = typeof(ITask);
