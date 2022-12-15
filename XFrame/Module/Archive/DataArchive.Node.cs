@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using XFrame.Utility;
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
 
@@ -133,7 +134,7 @@ namespace XFrame.Modules.Archives
 
             private Node InnerGet(string path)
             {
-                int count = Utility.CheckFileName(path, out string thisName, out string suplusName);
+                int count = PathUtility.CheckFileName(path, out string thisName, out string suplusName);
                 if (count > 0)
                 {
                     if (count == 1)
@@ -159,7 +160,7 @@ namespace XFrame.Modules.Archives
 
             private Node InnerGetOrNew(FileType type, string path)
             {
-                int count = Utility.CheckFileName(path, out string thisName, out string suplusName);
+                int count = PathUtility.CheckFileName(path, out string thisName, out string suplusName);
                 if (count > 0)
                 {
                     if (count == 1)

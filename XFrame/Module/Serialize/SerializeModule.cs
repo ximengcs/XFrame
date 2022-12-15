@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Modules.Config;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Serialize
 {
@@ -14,8 +15,11 @@ namespace XFrame.Modules.Serialize
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            if (XConfig.DefaultJsonSerializer != null && XConfig.DefaultJsonSerializer is IJsonSerializeHelper)
-                InnerInit(XConfig.DefaultJsonSerializer);
+            if (!string.IsNullOrEmpty(XConfig.DefaultJsonSerializer))
+            {
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultJsonSerializer);
+                InnerInit(type);
+            }
         }
 
         #region Interface

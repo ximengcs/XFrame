@@ -26,7 +26,7 @@ namespace XFrame.Modules.Download
         /// </summary>
         public string ErrorReason { get; }
 
-        internal DownloadResult(bool isSuccess, string text, byte[] data, string errorReason)
+        public DownloadResult(bool isSuccess, string text, byte[] data, string errorReason)
         {
             IsSuccess = isSuccess;
             Text = text;

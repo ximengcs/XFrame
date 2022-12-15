@@ -38,10 +38,10 @@ namespace XFrame.Core
             s_Helpers = new Dictionary<Type, List<IModuleHelper>>();
 
             InnerAddModule<IdModule>();
-            InnerAddModule<TimeModule>();
-            InnerAddModule<LogModule>();
-            InnerAddModule<PoolModule>();
             InnerAddModule<TypeModule>();
+            InnerAddModule<LogModule>();
+            InnerAddModule<TimeModule>();
+            InnerAddModule<PoolModule>();
             InnerAddModule<FsmModule>();
             InnerAddModule<TaskModule>();
             InnerAddModule<SerializeModule>();

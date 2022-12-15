@@ -28,16 +28,16 @@ namespace XFrame.Modules.Config
         /// <summary>
         /// 默认Log辅助器
         /// </summary>
-        public static Type DefaultLogger;
+        public static string DefaultLogger;
 
         /// <summary>
         /// 默认资源加载辅助器
         /// </summary>
-        public static Type DefaultRes;
+        public static string DefaultRes;
 
         /// <summary>
         /// 默认Json序列化处理器
         /// </summary>
-        public static Type DefaultJsonSerializer;
+        public static string DefaultJsonSerializer;
     }
 }

@@ -100,7 +100,7 @@ namespace XFrame.Modules.XType
                 m_Classifyes.Add(type, module);
                 foreach (Type subType in m_AllTypes)
                 {
-                    if (subType.IsSubclassOf(type))
+                    if (type.IsAssignableFrom(subType))
                         module.AddSubClass(subType);
                 }
 

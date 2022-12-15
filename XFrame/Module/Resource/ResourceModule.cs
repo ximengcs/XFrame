@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Modules.Config;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Resource
 {
@@ -14,10 +15,12 @@ namespace XFrame.Modules.Resource
         public override void OnInit(object data)
         {
             base.OnInit(data);
-            if (XConfig.DefaultRes != null && XConfig.DefaultRes is IResourceHelper)
-                InnerSetHelper(XConfig.DefaultRes);
-            if (!string.IsNullOrEmpty(XConfig.ResPath))
-                m_ResHelper.OnInit(XConfig.ResPath);
+            if (!string.IsNullOrEmpty(XConfig.DefaultRes))
+            {
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultRes);
+                InnerSetHelper(type);
+            }
+            m_ResHelper.OnInit(XConfig.ResPath);
         }
 
         public object Load(string resPath, Type type)

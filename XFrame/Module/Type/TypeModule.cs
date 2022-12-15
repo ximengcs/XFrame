@@ -84,7 +84,7 @@ namespace XFrame.Modules.XType
             m_ClassRegister.Add(pType, module);
             foreach (Type type in m_Types)
             {
-                if (type.IsSubclassOf(pType))
+                if (pType != type && pType.IsAssignableFrom(type))
                     module.AddSubClass(type);
             }
             return module;

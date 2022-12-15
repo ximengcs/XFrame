@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Diagnotics
 {
@@ -16,8 +17,11 @@ namespace XFrame.Modules.Diagnotics
         {
             base.OnInit(data);
             m_Loggers = new List<ILogger>();
-            if (XConfig.DefaultLogger != null && XConfig.DefaultLogger is ILogger)
-                InnerAddLogger(XConfig.DefaultLogger);
+            if (!string.IsNullOrEmpty(XConfig.DefaultLogger))
+            {
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultLogger);
+                InnerAddLogger(type);
+            }
         }
 
         #region Interface
