@@ -1,7 +1,7 @@
-﻿
-using System;
+﻿using System;
+using XFrame.Modules.Tasks;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Resource
 {
     /// <summary>
     /// 资源加载任务

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     /// <summary>
     /// 二进制存档

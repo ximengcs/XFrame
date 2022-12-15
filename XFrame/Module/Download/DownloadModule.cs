@@ -1,8 +1,9 @@
 ﻿using System;
-using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Collections;
+using XFrame.Modules.Pools;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Download
 {
     /// <summary>
     /// 下载器模块

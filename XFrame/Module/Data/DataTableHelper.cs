@@ -1,7 +1,8 @@
 ﻿using System;
+using XFrame.Modules.Serialize;
 using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Datas
 {
     public class DataTableHelper
     {

@@ -1,5 +1,6 @@
-﻿
-namespace XFrame.Modules
+﻿using XFrame.Modules.Tasks;
+
+namespace XFrame.Modules.Resource
 {
     /// <summary>
     /// 资源加载任务处理器

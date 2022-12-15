@@ -1,5 +1,5 @@
-﻿using XFrame.Core;
-using XFrame.Modules;
+﻿using XFrame.Modules.XType;
+using XFrame.Modules.Entities;
 
 namespace XFrameTest
 {

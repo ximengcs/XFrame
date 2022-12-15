@@ -1,6 +1,7 @@
 ﻿using System;
+using XFrame.Modules.Local;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Config
 {
     public static class XConfig
     {

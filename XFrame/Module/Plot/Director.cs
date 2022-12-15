@@ -1,4 +1,5 @@
 ﻿using XFrame.Utility;
+using XFrame.Modules.Archives;
 using System.Collections.Generic;
 
 namespace XFrame.Modules

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Tasks
 {
     /// <summary>
     /// 可处理的任务

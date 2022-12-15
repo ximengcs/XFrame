@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Newtonsoft.Json;
 using XFrame.SimpleJSON;
+using XFrame.Modules.Serialize;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     /// <summary>
     /// Json存档

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections;
+using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Datas
 {
     internal class DataTable<T> : IDataTable<T> where T : IDataRaw
     {

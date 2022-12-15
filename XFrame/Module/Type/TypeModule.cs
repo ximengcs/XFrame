@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+using XFrame.Core;
 using XFrame.Utility;
+using System.Reflection;
+using System.Collections.Generic;
 
-namespace XFrame.Core
+namespace XFrame.Modules.XType
 {
     /// <summary>
     /// 类型模块

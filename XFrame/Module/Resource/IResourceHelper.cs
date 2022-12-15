@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Resource
 {
     /// <summary>
     /// 资源加载辅助器

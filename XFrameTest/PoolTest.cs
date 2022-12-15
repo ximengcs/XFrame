@@ -1,4 +1,4 @@
-﻿using XFrame.Modules;
+﻿using XFrame.Modules.Pools;
 
 namespace XFrameTest
 {

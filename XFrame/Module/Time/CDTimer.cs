@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Times
 {
     /// <summary>
     /// CD计时器

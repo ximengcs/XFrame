@@ -1,8 +1,9 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.StateMachine
 {
     internal class Fsm : DataProvider, IFsm
     {

@@ -1,6 +1,7 @@
 ﻿using System;
+using XFrame.Core;
 
-namespace XFrame.Core
+namespace XFrame.Modules.ID
 {
     /// <summary>
     /// Id模块

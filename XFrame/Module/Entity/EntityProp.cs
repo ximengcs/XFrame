@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体属性

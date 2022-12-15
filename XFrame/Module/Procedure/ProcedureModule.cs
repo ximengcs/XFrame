@@ -1,7 +1,10 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Modules.XType;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.StateMachine;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Procedure
 {
     /// <summary>
     /// 流程模块

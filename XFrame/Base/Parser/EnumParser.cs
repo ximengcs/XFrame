@@ -1,5 +1,5 @@
 ﻿using System;
-using XFrame.Modules;
+using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
 namespace XFrame.Core

@@ -1,10 +1,13 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Utility;
-using System.Collections.Generic;
+using XFrame.Modules.ID;
 using XFrame.Collections;
+using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体模块

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Datas
 {
     internal class ConfigTable<T> : IDataTable<T> where T : IDataRaw
     {

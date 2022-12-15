@@ -1,5 +1,5 @@
 ﻿
-namespace XFrame.Modules
+namespace XFrame.Modules.Serialize
 {
     /// <summary>
     /// Json序列化辅助器

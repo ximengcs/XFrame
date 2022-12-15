@@ -1,7 +1,6 @@
-﻿
-using System;
+﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Pools
 {
     /// <summary>
     /// 对象池系统

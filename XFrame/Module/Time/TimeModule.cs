@@ -1,6 +1,6 @@
 ﻿using XFrame.Core;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Times
 {
     /// <summary>
     /// 时间模块

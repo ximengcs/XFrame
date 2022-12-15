@@ -1,5 +1,5 @@
 ﻿
-namespace XFrame.Modules
+namespace XFrame.Modules.Diagnotics
 {
     /// <summary>
     /// Log

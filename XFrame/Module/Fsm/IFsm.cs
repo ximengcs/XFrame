@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.StateMachine
 {
     /// <summary>
     /// 有限状态机

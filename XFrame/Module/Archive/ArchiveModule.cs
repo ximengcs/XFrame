@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using XFrame.Core;
+using XFrame.Modules.Times;
+using XFrame.Modules.Config;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     /// <summary>
     /// 存档模块

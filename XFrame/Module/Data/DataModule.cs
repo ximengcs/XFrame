@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using XFrame.Core;
+﻿using XFrame.Core;
+using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Datas
 {
     /// <summary>
     /// 数据模块

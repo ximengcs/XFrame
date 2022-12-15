@@ -1,6 +1,8 @@
-﻿using NUnit.Framework.Internal;
-using XFrame.Core;
-using XFrame.Modules;
+﻿using XFrame.Modules.ID;
+using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
+using XFrame.Modules.Entities;
+using NUnit.Framework.Internal;
 
 namespace XFrameTest
 {

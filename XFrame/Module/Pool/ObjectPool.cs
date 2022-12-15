@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Data;
 using XFrame.Collections;
+using XFrame.Modules.Diagnotics;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Pools
 {
     internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {

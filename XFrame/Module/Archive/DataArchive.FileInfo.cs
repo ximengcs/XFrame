@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     public partial class DataArchive
     {

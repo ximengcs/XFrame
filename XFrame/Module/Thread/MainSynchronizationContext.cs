@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 using XFrame.Core;
+using System.Threading;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Threads
 {
     /// <summary>
     /// 主线程上下文处理

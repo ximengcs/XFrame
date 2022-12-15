@@ -1,7 +1,8 @@
 ﻿using System;
-using XFrame.Modules;
+using XFrame.Core;
+using XFrame.Modules.Config;
 
-namespace XFrame.Core
+namespace XFrame.Modules.Resource
 {
     /// <summary>
     /// 资源模块

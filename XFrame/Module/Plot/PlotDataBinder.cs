@@ -1,5 +1,7 @@
 ﻿using XFrame.Core;
 using XFrame.SimpleJSON;
+using XFrame.Core.Binder;
+using XFrame.Modules.Archives;
 
 namespace XFrame.Modules
 {

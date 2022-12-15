@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Tasks
 {
     /// <summary>
     /// 空任务

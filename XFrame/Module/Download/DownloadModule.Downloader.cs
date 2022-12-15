@@ -1,6 +1,7 @@
 ﻿using XFrame.Collections;
+using XFrame.Modules.Diagnotics;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Download
 {
     public partial class DownloadModule
     {

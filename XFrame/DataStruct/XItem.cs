@@ -1,4 +1,4 @@
-﻿using XFrame.Core;
+﻿using XFrame.Modules.ID;
 
 namespace XFrame.Collections
 {

@@ -1,9 +1,10 @@
-﻿using XFrame.Core;
+﻿using System.IO;
+using XFrame.Core;
+using XFrame.Modules.Config;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.IO;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Local
 {
     /// <summary>
     /// 本地化模块

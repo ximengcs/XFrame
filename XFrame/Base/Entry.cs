@@ -1,7 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using XFrame.Collections;
-using XFrame.Modules;
+using XFrame.Modules.Archives;
+using XFrame.Modules.Datas;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Download;
+using XFrame.Modules.Entities;
+using XFrame.Modules.ID;
+using XFrame.Modules.Local;
+using XFrame.Modules.Pools;
+using XFrame.Modules.Procedure;
+using XFrame.Modules.Resource;
+using XFrame.Modules.Serialize;
+using XFrame.Modules.StateMachine;
+using XFrame.Modules.Tasks;
+using XFrame.Modules.Times;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {

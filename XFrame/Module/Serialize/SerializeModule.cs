@@ -1,7 +1,8 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Modules.Config;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Serialize
 {
     /// <summary>
     /// 序列化模块

@@ -1,6 +1,7 @@
 ﻿using XFrame.Collections;
+using XFrame.Modules.Pools;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体

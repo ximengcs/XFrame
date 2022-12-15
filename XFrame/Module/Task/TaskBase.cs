@@ -1,7 +1,8 @@
 ﻿using System;
+using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Tasks
 {
     /// <summary>
     /// 任务基类

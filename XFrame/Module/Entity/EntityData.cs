@@ -1,5 +1,5 @@
 ﻿
-namespace XFrame.Modules
+namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体数据

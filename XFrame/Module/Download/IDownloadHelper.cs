@@ -1,5 +1,5 @@
 ﻿
-namespace XFrame.Modules
+namespace XFrame.Modules.Download
 {
     /// <summary>
     /// 下载辅助器

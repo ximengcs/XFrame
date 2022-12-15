@@ -1,7 +1,8 @@
-﻿using System.IO;
-using System;
+﻿using System;
+using System.IO;
+using XFrame.Modules.Diagnotics;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     public partial class DataArchive
     {

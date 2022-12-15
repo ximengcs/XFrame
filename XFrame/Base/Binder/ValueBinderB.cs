@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XFrame.Core
+namespace XFrame.Core.Binder
 {
     /// <summary>
     /// 数值绑定器

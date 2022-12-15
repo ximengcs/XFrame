@@ -1,9 +1,9 @@
 ﻿using System;
-using XFrame.Modules;
 using System.Collections;
+using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
-namespace XFrame.Core
+namespace XFrame.Modules.XType
 {
     public partial class TypeModule
     {

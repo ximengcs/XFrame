@@ -1,7 +1,6 @@
-﻿
-using System;
+﻿using System;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Download
 {
     public partial class DownloadModule
     {

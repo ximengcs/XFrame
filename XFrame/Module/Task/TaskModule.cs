@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Core;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Tasks
 {
     /// <summary>
     /// 任务模块

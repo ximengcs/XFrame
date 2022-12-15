@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Archives
 {
     public partial class DataArchive
     {

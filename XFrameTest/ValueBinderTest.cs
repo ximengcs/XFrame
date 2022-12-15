@@ -1,4 +1,4 @@
-using XFrame.Core;
+using XFrame.Core.Binder;
 
 namespace XFrameTest
 {

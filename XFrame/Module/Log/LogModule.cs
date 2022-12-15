@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Core;
+using XFrame.Modules.Config;
+using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Diagnotics
 {
     /// <summary>
     /// Log模块
