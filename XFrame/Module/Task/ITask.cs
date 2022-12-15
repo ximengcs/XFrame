@@ -19,6 +19,11 @@ namespace XFrame.Modules
         bool IsStart { get; }
 
         /// <summary>
+        /// 任务进度
+        /// </summary>
+        float Pro { get; }
+
+        /// <summary>
         /// 初始化生命周期
         /// </summary>
         void OnInit();
@@ -53,5 +58,12 @@ namespace XFrame.Modules
         /// <param name="complete">回调</param>
         /// <returns>当前任务，用于连续调用</returns>
         ITask OnComplete(Action complete);
+
+        /// <summary>
+        /// 设置更新回调
+        /// </summary>
+        /// <param name="update">回调，参数为进度</param>
+        /// <returns>当前任务，用于连续调用</returns>
+        ITask OnUpdate(Action<float> update);
     }
 }

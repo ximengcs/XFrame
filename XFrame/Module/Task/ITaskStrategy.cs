@@ -13,11 +13,16 @@ namespace XFrame.Modules
         Type HandleType { get; }
 
         /// <summary>
+        /// 标记开始使用此策略
+        /// </summary>
+        void Use();
+
+        /// <summary>
         /// 处理任务
         /// </summary>
         /// <param name="from">宿主任务</param>
         /// <param name="target">要处理的目标</param>
         /// <returns>任务是否处理完成</returns>
-        bool Handle(ITask from, ITaskHandler target);
+        float Handle(ITask from, ITaskHandler target);
     }
 }

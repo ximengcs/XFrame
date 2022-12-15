@@ -8,15 +8,17 @@ namespace XFrame.Modules
     /// </summary>
     public abstract class TaskBase : ITask
     {
+        internal const float MAX_PRO = 1;
         private ITaskHandler m_Current;
         private Action m_OnComplete;
+        private Action<float> m_OnUpdate;
         private Queue<ITaskHandler> m_Targets;
         private Dictionary<Type, ITaskStrategy> m_Strategys;
+        private float m_PerProRate;
 
         public bool IsComplete { get; protected set; }
-
         public bool IsStart { get; protected set; }
-
+        public float Pro { get; protected set; }
         public abstract Type HandleType { get; }
 
         public ITask AddStrategy(ITaskStrategy strategy)
@@ -37,13 +39,28 @@ namespace XFrame.Modules
             return this;
         }
 
+        public ITask OnUpdate(Action<float> update)
+        {
+            m_OnUpdate += update;
+            return this;
+        }
+
         public void OnUpdate()
         {
             if (m_Current != null)
             {
                 if (m_Strategys.TryGetValue(m_Current.HandleType, out ITaskStrategy stategy))
                 {
-                    if (stategy.Handle(this, m_Current))
+                    float curPro = stategy.Handle(this, m_Current);
+                    bool finish = curPro >= MAX_PRO;
+                    curPro = Math.Min(curPro, MAX_PRO);
+                    curPro = Math.Max(curPro, 0);
+                    curPro *= m_PerProRate;
+                    Pro += curPro;
+                    Pro = Math.Min(Pro, MAX_PRO);
+                    m_OnUpdate?.Invoke(Pro);
+
+                    if (finish)
                     {
                         m_Current = null;
                         InnerCheckComplete();
@@ -58,7 +75,10 @@ namespace XFrame.Modules
             if (m_Targets.Count > 0)
             {
                 if (m_Current == null)
+                {
                     m_Current = m_Targets.Dequeue();
+                    InnerMarkUse();
+                }
             }
         }
 
@@ -72,14 +92,22 @@ namespace XFrame.Modules
         public void Start()
         {
             IsStart = true;
+            m_PerProRate = MAX_PRO / m_Targets.Count;
         }
 
         private void InnerCheckComplete()
         {
             if (m_Targets.Count == 0)
             {
+                Pro = MAX_PRO;
                 InnerComplete();
             }
+        }
+
+        private void InnerMarkUse()
+        {
+            foreach (ITaskStrategy strategy in m_Strategys.Values)
+                strategy.Use();
         }
 
         protected virtual void InnerComplete()

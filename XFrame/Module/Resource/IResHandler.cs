@@ -15,5 +15,10 @@ namespace XFrame.Modules
         /// 是否加载完成
         /// </summary>
         bool IsDone { get; }
+
+        /// <summary>
+        /// 加载进度
+        /// </summary>
+        float Pro { get; }
     }
 }

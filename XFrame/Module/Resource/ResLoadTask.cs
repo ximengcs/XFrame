@@ -10,19 +10,29 @@ namespace XFrame.Modules
     {
         private class Strategy : ITaskStrategy
         {
+            private float m_Pro;
             private Type m_Type = typeof(ResLoadTask);
             public Type HandleType => m_Type;
 
-            public bool Handle(ITask from, ITaskHandler target)
+            public float Handle(ITask from, ITaskHandler target)
             {
                 IResHandler hander = target as IResHandler;
                 if (hander.IsDone)
                 {
                     ResLoadTask task = from as ResLoadTask;
                     task.Res = hander.Data;
-                    return true;
+                    m_Pro = MAX_PRO;
                 }
-                return false;
+                else
+                {
+                    m_Pro = hander.Pro;
+                }
+                return m_Pro;
+            }
+
+            public void Use()
+            {
+                m_Pro = 0;
             }
         }
 
@@ -75,19 +85,30 @@ namespace XFrame.Modules
     {
         private class Strategy : ITaskStrategy
         {
+            private float m_Pro;
             private Type m_Type = typeof(ResLoadTask);
             public Type HandleType => m_Type;
 
-            public bool Handle(ITask from, ITaskHandler target)
+            public float Handle(ITask from, ITaskHandler target)
             {
                 IResHandler hander = target as IResHandler;
                 if (hander.IsDone)
                 {
                     ResLoadTask<T> task = from as ResLoadTask<T>;
                     task.Res = (T)hander.Data;
-                    return true;
+                    m_Pro = MAX_PRO;
                 }
-                return false;
+                else
+                {
+                    m_Pro = hander.Pro;
+                }
+
+                return m_Pro;
+            }
+
+            public void Use()
+            {
+                m_Pro = 0;
             }
         }
 
