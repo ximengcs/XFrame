@@ -35,6 +35,21 @@ namespace XFrame.Modules.Diagnotics
         }
 
         /// <summary>
+        /// 获取Log辅助器
+        /// </summary>
+        /// <typeparam name="T">辅助器类型</typeparam>
+        /// <returns>获取到的实例</returns>
+        public T GetLogger<T>() where T : ILogger
+        {
+            foreach (ILogger logger in m_Loggers)
+            {
+                if (logger.GetType() == typeof(T))
+                    return (T)logger;
+            }
+            return default;
+        }
+
+        /// <summary>
         /// 调试信息
         /// </summary>
         /// <param name="content">信息</param>
