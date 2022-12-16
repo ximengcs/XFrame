@@ -24,7 +24,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Life Fun
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Timer = new CDTimer();
@@ -41,14 +41,14 @@ namespace XFrame.Modules.Archives
             }
         }
 
-        public override void OnUpdate(float escapeTime)
+        protected override void OnUpdate(float escapeTime)
         {
             base.OnUpdate(escapeTime);
             if (m_Timer.Check(SAVE_KEY, true))
                 InnerSaveAll();
         }
 
-        public override void OnDestroy()
+        protected override void OnDestroy()
         {
             base.OnDestroy();
             InnerSaveAll();

@@ -18,7 +18,7 @@ namespace XFrame.Modules.Download
         #endregion
 
         #region Life Fun
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Downloaders = new XLinkList<Downloader>();
@@ -26,7 +26,7 @@ namespace XFrame.Modules.Download
                 .Require<Downloader>();
         }
 
-        public override void OnUpdate(float escapeTime)
+        protected override void OnUpdate(float escapeTime)
         {
             base.OnUpdate(escapeTime);
 

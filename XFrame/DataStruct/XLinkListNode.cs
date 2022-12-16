@@ -47,7 +47,7 @@ namespace XFrame.Collections
         }
 
         #region Pool Life Fun
-        public void OnCreate()
+        void IPoolObject.OnCreate()
         {
             m_List = null;
             Pre = null;
@@ -55,7 +55,7 @@ namespace XFrame.Collections
             Value = default;
         }
 
-        public void OnRelease()
+        void IPoolObject.OnRelease()
         {
             m_List = null;
             Pre = null;
@@ -63,7 +63,7 @@ namespace XFrame.Collections
             Value = default;
         }
 
-        public void OnDestroyFrom()
+        void IPoolObject.OnDestroyForever()
         {
 
         }

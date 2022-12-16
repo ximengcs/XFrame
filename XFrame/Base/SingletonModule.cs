@@ -1,4 +1,5 @@
-﻿
+﻿using XFrame.Modules.Pools;
+
 namespace XFrame.Core
 {
     /// <summary>
@@ -17,34 +18,43 @@ namespace XFrame.Core
         /// </summary>
         public static T Inst { get; private set; }
 
-        public virtual void OnInit(object data)
+        void IModule.OnInit(object data)
         {
             Inst = (T)this;
+            OnInit(data);
         }
 
-        public virtual void OnUpdate(float escapeTime)
+        void IModule.OnUpdate(float escapeTime)
         {
-
+            OnUpdate(escapeTime);
         }
 
-        public virtual void OnDestroy()
+        void IModule.OnDestroy()
         {
-
+            OnDestroy();
         }
 
-        public void OnCreate()
+
+        void IPoolObject.OnCreate()
         {
-
+            OnCreate();
         }
 
-        public void OnRelease()
+        void IPoolObject.OnRelease()
         {
-
+            OnRelease();
         }
 
-        public void OnDestroyFrom()
+        void IPoolObject.OnDestroyForever()
         {
-
+            OnDestroyFrom();
         }
+
+        protected virtual void OnInit(object data) { }
+        protected virtual void OnUpdate(float escapeTime) { }
+        protected virtual void OnDestroy() { }
+        protected virtual void OnCreate() { }
+        protected virtual void OnRelease() { }
+        protected virtual void OnDestroyFrom() { }
     }
 }

@@ -65,18 +65,18 @@ namespace XFrame.Modules.StateMachine
             }
         }
 
-        public void OnInit()
+        void IFsmBase.OnInit()
         {
             foreach (FsmState<T> state in m_States.Values)
                 state.OnInit(this);
         }
 
-        public void OnUpdate()
+        void IFsmBase.OnUpdate()
         {
             m_Current?.OnUpdate();
         }
 
-        public void OnDestroy()
+        void IFsmBase.OnDestroy()
         {
             foreach (FsmState<T> state in m_States.Values)
                 state.OnDestroy();

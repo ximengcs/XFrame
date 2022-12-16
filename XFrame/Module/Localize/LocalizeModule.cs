@@ -17,7 +17,7 @@ namespace XFrame.Modules.Local
         private Language m_Language;
         private Dictionary<int, string> m_Content;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
 

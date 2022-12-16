@@ -54,9 +54,8 @@ namespace XFrame.Modules.Resource
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        public override void OnInit()
+        protected override void OnInit()
         {
-            base.OnInit();
             AddStrategy(new Strategy());
         }
 
@@ -125,9 +124,8 @@ namespace XFrame.Modules.Resource
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        public override void OnInit()
+        protected override void OnInit()
         {
-            base.OnInit();
             AddStrategy(new Strategy());
         }
 

@@ -15,7 +15,7 @@ namespace XFrame.Modules.StateMachine
         #endregion
 
         #region Module Life Fun
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
 
@@ -23,13 +23,13 @@ namespace XFrame.Modules.StateMachine
             m_Fsms = new Dictionary<string, IFsmBase>();
         }
 
-        public override void OnUpdate(float escapeTime)
+        protected override void OnUpdate(float escapeTime)
         {
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnUpdate();
         }
 
-        public override void OnDestroy()
+        protected override void OnDestroy()
         {
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnDestroy();
@@ -112,7 +112,7 @@ namespace XFrame.Modules.StateMachine
                 states.Add(state);
             }
 
-            GenericFsm<T> fsm = new GenericFsm<T>(name, states, owner);
+            IGenericFsm<T> fsm = new GenericFsm<T>(name, states, owner);
             fsm.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);
@@ -128,7 +128,7 @@ namespace XFrame.Modules.StateMachine
                 states.Add(state);
             }
 
-            Fsm fsm = new Fsm(name, states);
+            IFsm fsm = new Fsm(name, states);
             fsm.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);

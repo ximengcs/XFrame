@@ -1,4 +1,5 @@
 ﻿using XFrame.Modules.ID;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Collections
 {
@@ -9,17 +10,17 @@ namespace XFrame.Collections
     {
         public int Id { get; private set; }
 
-        public void OnCreate()
+        void IPoolObject.OnCreate()
         {
             Id = IdModule.Inst.Next();
         }
 
-        public void OnRelease()
+        void IPoolObject.OnRelease()
         {
             Id = default;
         }
 
-        public void OnDestroyFrom()
+        void IPoolObject.OnDestroyForever()
         {
             Id = default;
         }

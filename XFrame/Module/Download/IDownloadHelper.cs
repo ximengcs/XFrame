@@ -20,16 +20,16 @@ namespace XFrame.Modules.Download
         /// 请求下载
         /// </summary>
         /// <param name="url"></param>
-        void Request(string url);
+        protected internal void Request(string url);
 
         /// <summary>
         /// 更新状态
         /// </summary>
-        void Update();
+        protected internal void Update();
 
         /// <summary>
         /// 释放持有的资源
         /// </summary>
-        void Dispose();
+        protected internal void Dispose();
     }
 }

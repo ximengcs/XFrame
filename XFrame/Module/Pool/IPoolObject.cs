@@ -9,16 +9,16 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 从对象池中创建时被调用
         /// </summary>
-        void OnCreate();
+        protected internal void OnCreate();
 
         /// <summary>
         /// 释放到对象池中时被调用
         /// </summary>
-        void OnRelease();
+        protected internal void OnRelease();
 
         /// <summary>
-        /// 释放到对象池失败时被调用
+        /// 释放到对象池失败时被调用或永久销毁时调用
         /// </summary>
-        void OnDestroyFrom();
+        protected internal void OnDestroyForever();
     }
 }

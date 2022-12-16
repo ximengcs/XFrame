@@ -2,6 +2,7 @@
 using XFrame.Core;
 using System.Threading;
 using System.Collections.Generic;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Threads
 {
@@ -15,14 +16,14 @@ namespace XFrame.Modules.Threads
 
         public int Id => default;
 
-        public void OnInit(object data)
+        void IModule.OnInit(object data)
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
             m_ActQueue = new Queue<Action>();
             SetSynchronizationContext(this);
         }
 
-        public void OnUpdate(float escapeTime)
+        void IModule.OnUpdate(float escapeTime)
         {
             if (m_ActQueue.Count <= 0)
                 return;
@@ -31,28 +32,28 @@ namespace XFrame.Modules.Threads
                 m_ActQueue.Dequeue()();
         }
 
+        void IModule.OnDestroy()
+        {
+
+        }
+
         public override void Post(SendOrPostCallback d, object state)
         {
             m_ActQueue.Enqueue(() => d(state));
         }
 
-        public void OnDestroyFrom()
+        void IPoolObject.OnDestroyForever()
         {
             m_ActQueue.Clear();
             m_ActQueue = null;
         }
 
-        public void OnCreate()
+        void IPoolObject.OnCreate()
         {
 
         }
 
-        public void OnRelease()
-        {
-
-        }
-
-        public void OnDestroy()
+        void IPoolObject.OnRelease()
         {
 
         }

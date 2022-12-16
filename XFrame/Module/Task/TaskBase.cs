@@ -46,7 +46,7 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        public void OnUpdate()
+        void ITask.OnUpdate()
         {
             if (m_Current != null)
             {
@@ -83,12 +83,15 @@ namespace XFrame.Modules.Tasks
             }
         }
 
-        public virtual void OnInit()
+        void ITask.OnInit()
         {
             m_OnComplete = null;
             m_Targets = new Queue<ITaskHandler>();
             m_Strategys = new Dictionary<Type, ITaskStrategy>();
+            OnInit();
         }
+
+        protected abstract void OnInit();
 
         public void Start()
         {

@@ -16,32 +16,32 @@ namespace XFrame.Modules.Entities
     public class EntityModule : SingletonModule<EntityModule>
     {
         #region Inner Field
-        private XCollection<Entity> m_Entities;
+        private XCollection<IEntity> m_Entities;
         #endregion
 
         #region Life Fun
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Entities = new XCollection<Entity>();
+            m_Entities = new XCollection<IEntity>();
             TypeModule.Inst.GetOrNewWithAttr<EntityPropAttribute>();
         }
 
-        public override void OnUpdate(float escapeTime)
+        protected override void OnUpdate(float escapeTime)
         {
             base.OnUpdate(escapeTime);
-            foreach (Entity entity in m_Entities)
-                entity.OnInternalUpdate(escapeTime);
+            foreach (IEntity entity in m_Entities)
+                entity.OnUpdate(escapeTime);
         }
 
-        public override void OnDestroy()
+        protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>();
-            foreach (Entity entity in m_Entities)
+            IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
+            foreach (IEntity entity in m_Entities)
             {
-                entity.OnInternalDestroy();
+                entity.OnDestroy();
                 IPool pool = poolSystem.Require(entity.GetType());
                 pool.Release(entity);
             }
@@ -54,7 +54,7 @@ namespace XFrame.Modules.Entities
         /// 注册实体，创建实体前需要注册实体
         /// </summary>
         /// <typeparam name="T">实体基类或实体类</typeparam>
-        public void RegisterEntity<T>() where T : Entity
+        public void RegisterEntity<T>() where T : class, IEntity
         {
             TypeModule.System module = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
@@ -76,7 +76,7 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="scene">实体所属场景</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(Scene scene) where T : Entity
+        public T Create<T>(IScene scene) where T : class, IEntity
         {
             return InnerCreate(typeof(T), scene, default, default, true) as T;
         }
@@ -88,7 +88,7 @@ namespace XFrame.Modules.Entities
         /// <param name="scene">实体所属场景</param>
         /// <param name="parent">父实体</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(Scene scene, Entity parent) where T : Entity
+        public T Create<T>(IScene scene, IEntity parent) where T : class, IEntity
         {
             return InnerCreate(typeof(T), scene, parent, default, true) as T;
         }
@@ -100,7 +100,7 @@ namespace XFrame.Modules.Entities
         /// <param name="scene">实体所属场景</param>
         /// <param name="data">实体数据</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(Scene scene, EntityData data) where T : Entity
+        public T Create<T>(IScene scene, EntityData data) where T : class, IEntity
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
@@ -118,7 +118,7 @@ namespace XFrame.Modules.Entities
         /// <param name="parent">父实体</param>
         /// <param name="data">实体数据</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(Scene scene, Entity parent, EntityData data) where T : Entity
+        public T Create<T>(IScene scene, IEntity parent, EntityData data) where T : class, IEntity
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
@@ -131,19 +131,19 @@ namespace XFrame.Modules.Entities
         /// 销毁一个实体
         /// </summary>
         /// <param name="entity">需要销毁的实体</param>
-        public void Destroy(Entity entity)
+        public void Destroy(IEntity entity)
         {
-            IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>();
+            IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
             IPool pool = poolSystem.Require(entity.GetType());
             pool.Release(entity);
             poolSystem.Release(pool);
-            entity.OnInternalDestroy();
+            entity.OnDestroy();
             m_Entities.Remove(entity);
         }
         #endregion
 
         #region Inernal Implement
-        internal T InnerCreate<T>(Scene scene, Entity parent, EntityData data) where T : Entity
+        internal T InnerCreate<T>(IScene scene, IEntity parent, EntityData data) where T : class, IEntity
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
@@ -152,28 +152,28 @@ namespace XFrame.Modules.Entities
             return InnerCreate(type, scene, parent, data, false) as T;
         }
 
-        internal T InnerCreate<T>(Scene scene, Entity parent) where T : Entity
+        internal T InnerCreate<T>(IScene scene, IEntity parent) where T : class, IEntity
         {
             return InnerCreate(typeof(T), scene, parent, default, false) as T;
         }
 
-        private Entity InnerCreate(Type entityType, Scene scene, Entity parent, EntityData data, bool fromPool)
+        private IEntity InnerCreate(Type entityType, IScene scene, IEntity parent, EntityData data, bool fromPool)
         {
-            Entity entity;
+            IEntity entity;
 
             if (fromPool)
             {
-                IPoolSystem<Entity> poolSystem = PoolModule.Inst.GetOrNew<Entity>();
+                IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
                 IPool pool = poolSystem.Require(entityType);
                 pool.Require(out IPoolObject obj);
-                entity = obj as Entity;
+                entity = obj as IEntity;
             }
             else
             {
-                entity = Activator.CreateInstance(entityType) as Entity;
+                entity = Activator.CreateInstance(entityType) as IEntity;
             }
 
-            entity.OnInternalInit(IdModule.Inst.Next(), scene, parent, data);
+            entity.OnInit(IdModule.Inst.Next(), scene, parent, data);
             if (parent == null)
                 m_Entities.Add(entity);
             return entity;

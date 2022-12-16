@@ -14,7 +14,7 @@ namespace XFrame.Modules.Procedure
         private static string ENTRANCE = "MainProcedure";
         private TypeModule.System m_Procedures;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Procedures = TypeModule.Inst.GetOrNew<ProcedureBase>();

@@ -6,7 +6,7 @@ namespace XFrame.Modules.Entities
     /// <summary>
     /// 实体
     /// </summary>
-    public abstract class Entity : IPoolObject, IXItem
+    public abstract class Entity : IEntity, IPoolObject
     {
         #region Inner Field
         private EntityData m_Data;
@@ -16,49 +16,62 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Life Fun
-        internal virtual void OnInternalInit(int id, Scene scene, Entity parent, EntityData data)
+        void IEntity.OnInit(int id, IScene scene, IEntity parent, EntityData data)
         {
             Id = id;
-            m_Parent = parent;
-            m_Scene = scene;
+            m_Parent = parent as Entity;
+            m_Scene = scene as Scene;
             if (m_Children == null)
                 m_Children = new XCollection<Entity>();
             OnInit(data);
         }
 
-        internal virtual void OnInternalUpdate(float elapseTime)
+        void IEntity.OnUpdate(float elapseTime)
         {
             OnUpdate(elapseTime);
-            foreach (Entity child in m_Children)
-                child.OnInternalUpdate(elapseTime);
         }
 
-        internal virtual void OnInternalDestroy()
+        void IEntity.OnDestroy()
         {
-            foreach (Entity child in m_Children)
-                child.OnInternalDestroy();
             OnDestroy();
         }
         #endregion
 
         #region Pool Life Fun
-        public virtual void OnCreate()
+        void IPoolObject.OnCreate()
         {
-
+            OnCreate();
         }
 
-        public virtual void OnRelease()
+        void IPoolObject.OnRelease()
         {
             Id = default;
             m_Data = null;
             m_Scene = null;
             m_Parent = null;
+            OnRelease();
         }
 
-        public virtual void OnDestroyFrom()
+        void IPoolObject.OnDestroyForever()
         {
-
+            OnDestroyForever();
+            OnDelete();
         }
+
+        /// <summary>
+        /// 实体创建生命周期，new或从对象池中获取到的对象都会被调用
+        /// </summary>
+        protected abstract void OnCreate();
+
+        /// <summary>
+        /// 实体释放生命周期, 释放到对象池中时被调用
+        /// </summary>
+        protected abstract void OnRelease();
+
+        /// <summary>
+        /// 实体永久销毁生命周期，当对象池满时会触发此生命周期
+        /// </summary>
+        protected abstract void OnDestroyForever();
         #endregion
 
         #region Sub Child Life Fun
@@ -66,25 +79,39 @@ namespace XFrame.Modules.Entities
         /// 实体初始化生命周期
         /// </summary>
         /// <param name="data">实体数据，数据在销毁时不会被回收或释放</param>
-        protected abstract void OnInit(EntityData data);
+        protected virtual void OnInit(EntityData data)
+        {
+
+        }
 
         /// <summary>
         /// 实体更新生命周期
         /// </summary>
         /// <param name="elapseTime">逃逸时间</param>
-        protected abstract void OnUpdate(float elapseTime);
+        protected virtual void OnUpdate(float elapseTime)
+        {
+            foreach (Entity child in m_Children)
+                child.OnUpdate(elapseTime);
+        }
 
         /// <summary>
         /// 实体销毁生命周期
         /// 这个方法无论是释放或者真正销毁时都会被调用
         /// </summary>
-        protected abstract void OnDestroy();
+        protected virtual void OnDestroy()
+        {
+            foreach (Entity child in m_Children)
+                child.OnDestroy();
+        }
 
         /// <summary>
         /// 实体销毁生命周期
         /// 这个方法只有在真正被销毁时才会被调用，如果是释放到对象池中时不会被调用
         /// </summary>
-        protected abstract void OnDelete();
+        protected virtual void OnDelete()
+        {
+
+        }
         #endregion
 
         #region Interface

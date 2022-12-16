@@ -16,7 +16,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        public void OnInit(string path)
+        void IArchive.OnInit(string path)
         {
             m_Path = path;
             m_Builder = new BytesBuilder(FILE_CODE);

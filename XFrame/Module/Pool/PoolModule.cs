@@ -13,7 +13,7 @@ namespace XFrame.Modules.Pools
         private Dictionary<Type, object> m_Objects;
 
         #region Life Fun
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Objects = new Dictionary<Type, object>();

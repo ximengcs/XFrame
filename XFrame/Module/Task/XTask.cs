@@ -11,9 +11,8 @@ namespace XFrame.Modules.Tasks
 
         public override Type HandleType => m_HandleType;
 
-        public override void OnInit()
+        protected override void OnInit()
         {
-            base.OnInit();
             AddStrategy(new TaskStrategy());
         }
     }

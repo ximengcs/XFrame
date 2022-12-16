@@ -1,4 +1,5 @@
 using XFrame.Core.Binder;
+using XFrame.Modules.Download;
 
 namespace XFrameTest
 {

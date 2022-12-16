@@ -41,11 +41,11 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        public void OnInit()
+        void ITask.OnInit()
         {
-        }
+        } 
 
-        public void OnUpdate()
+        void ITask.OnUpdate()
         {
             
         }

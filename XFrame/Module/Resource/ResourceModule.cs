@@ -12,7 +12,7 @@ namespace XFrame.Modules.Resource
     {
         private IResourceHelper m_ResHelper;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             if (!string.IsNullOrEmpty(XConfig.DefaultRes))

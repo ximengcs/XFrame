@@ -11,17 +11,17 @@ namespace XFrame.Core
         /// 初始化生命周期
         /// </summary>
         /// <param name="data">初始化数据</param>
-        void OnInit(object data);
+        protected internal void OnInit(object data);
 
         /// <summary>
         /// 更新生命周期
         /// </summary>
         /// <param name="escapeTime">逃逸时间</param>
-        void OnUpdate(float escapeTime);
+        protected internal void OnUpdate(float escapeTime);
 
         /// <summary>
         /// 销毁生命周期
         /// </summary>
-        void OnDestroy();
+        protected internal void OnDestroy();
     }
 }

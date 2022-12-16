@@ -10,7 +10,7 @@ namespace XFrame.Modules.Archives
         /// 初始化生命周期
         /// </summary>
         /// <param name="path">存储路径</param>
-        void OnInit(string path);
+        protected internal void OnInit(string path);
 
         /// <summary>
         /// 保存存档

@@ -6,7 +6,7 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public class SceneData : EntityData
     {
-        public SceneData(int id, int type) : base(id, type)
+        public SceneData(int type) : base(type)
         {
         }
     }

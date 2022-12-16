@@ -13,7 +13,7 @@ namespace XFrame.Modules.Diagnotics
     {
         private List<ILogger> m_Loggers;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Loggers = new List<ILogger>();

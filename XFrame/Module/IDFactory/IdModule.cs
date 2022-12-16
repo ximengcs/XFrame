@@ -11,7 +11,7 @@ namespace XFrame.Modules.ID
         private int m_Time;
         private int m_Count;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Time =(int)(DateTime.Now.Ticks / 1000);

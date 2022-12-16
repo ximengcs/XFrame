@@ -12,7 +12,7 @@ namespace XFrame.Modules.Serialize
     {
         private IJsonSerializeHelper m_JsonHelper;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             if (!string.IsNullOrEmpty(XConfig.DefaultJsonSerializer))

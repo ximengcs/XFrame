@@ -15,7 +15,7 @@ namespace XFrame.Modules.XType
         private Type[] m_Types;
         private Dictionary<Type, System> m_ClassRegister;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_ClassRegister = new Dictionary<Type, System>();

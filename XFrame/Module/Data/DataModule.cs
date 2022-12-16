@@ -12,7 +12,7 @@ namespace XFrame.Modules.Datas
         #region Life Fun
         private DataTableHelper m_Helper;
 
-        public override void OnInit(object data)
+        protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Helper = new DataTableHelper();

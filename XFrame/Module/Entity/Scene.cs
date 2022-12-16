@@ -5,7 +5,7 @@ namespace XFrame.Modules.Entities
     /// 场景
     /// </summary>
     [EntityProp]
-    public class Scene : Com
+    public class Scene : Com, IScene
     {
         #region Interface
         /// <summary>
@@ -30,41 +30,43 @@ namespace XFrame.Modules.Entities
         }
         #endregion
 
-        #region Life Fun
-        internal override void OnInternalUpdate(float elapseTime)
-        {
-            if (IsRunning)
-                base.OnInternalUpdate(elapseTime);
-        }
-        #endregion
-
         #region Pool Life Fun
-        public override void OnRelease()
+        protected override void OnRelease()
         {
-            base.OnRelease();
             IsRunning = false;
+        }
+
+        protected override void OnCreate()
+        {
+
+        }
+
+        protected override void OnDestroyForever()
+        {
+
         }
         #endregion
 
         #region Entity Life Fun
         protected override void OnInit(EntityData data)
         {
-
+            base.OnInit(data);
         }
 
         protected override void OnUpdate(float elapseTime)
         {
-
+            if (IsRunning)
+                base.OnUpdate(elapseTime);
         }
 
         protected override void OnDestroy()
         {
-
+            base.OnDestroy();
         }
 
         protected override void OnDelete()
         {
-
+            base.OnDelete();
         }
         #endregion
     }

@@ -184,7 +184,7 @@ namespace XFrame.Modules.Archives
                 File.Delete(m_Path);
         }
 
-        public void OnInit(string path)
+        void IArchive.OnInit(string path)
         {
             m_Path = path;
             if (File.Exists(m_Path))

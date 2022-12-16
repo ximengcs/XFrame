@@ -61,7 +61,7 @@ namespace XFrame.Modules.Pools
         {
             if (m_Objects.Full)
             {
-                obj.OnDestroyFrom();
+                obj.OnDestroyForever();
                 Log.Warning("XFrame", $"Object pool is full.release fail {typeof(T).Name}");
             }
             else

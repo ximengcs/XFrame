@@ -25,12 +25,12 @@ namespace XFrame.Modules.Tasks
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        void OnInit();
+        protected internal void OnInit();
 
         /// <summary>
         /// 更新生命周期
         /// </summary>
-        void OnUpdate();
+        protected internal void OnUpdate();
 
         /// <summary>
         /// 标记任务开始执行

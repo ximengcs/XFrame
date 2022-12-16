@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Collections;
+using System.Collections.Generic;
 using XFrame.Modules.Archives;
 using XFrame.Modules.Datas;
 using XFrame.Modules.Diagnotics;
@@ -80,7 +80,7 @@ namespace XFrame.Core
         {
             var it = s_Modules.GetBackEnumerator();
             while (it.MoveNext())
-                it.Current.OnDestroyFrom();
+                it.Current.OnDestroy();
             s_Modules.Clear();
             s_Modules = null;
         }
