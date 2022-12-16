@@ -63,11 +63,6 @@ namespace XFrame.Modules.Entities
         {
             base.OnDestroy();
         }
-
-        protected override void OnDelete()
-        {
-            base.OnDelete();
-        }
         #endregion
     }
 }

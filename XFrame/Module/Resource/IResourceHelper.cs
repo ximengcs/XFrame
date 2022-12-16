@@ -11,7 +11,7 @@ namespace XFrame.Modules.Resource
         /// 资源加载初始化生命周期
         /// </summary>
         /// <param name="rootPath">资源根路径</param>
-        void OnInit(string rootPath);
+        protected internal void OnInit(string rootPath);
 
         /// <summary>
         /// 加载资源

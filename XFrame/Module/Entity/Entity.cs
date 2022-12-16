@@ -55,7 +55,6 @@ namespace XFrame.Modules.Entities
         void IPoolObject.OnDestroyForever()
         {
             OnDestroyForever();
-            OnDelete();
         }
 
         /// <summary>
@@ -102,15 +101,6 @@ namespace XFrame.Modules.Entities
         {
             foreach (Entity child in m_Children)
                 child.OnDestroy();
-        }
-
-        /// <summary>
-        /// 实体销毁生命周期
-        /// 这个方法只有在真正被销毁时才会被调用，如果是释放到对象池中时不会被调用
-        /// </summary>
-        protected virtual void OnDelete()
-        {
-
         }
         #endregion
 

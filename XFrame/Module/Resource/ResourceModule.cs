@@ -19,8 +19,8 @@ namespace XFrame.Modules.Resource
             {
                 Type type = TypeModule.Inst.GetType(XConfig.DefaultRes);
                 InnerSetHelper(type);
+                m_ResHelper.OnInit(XConfig.ResPath);
             }
-            m_ResHelper.OnInit(XConfig.ResPath);
         }
 
         public object Load(string resPath, Type type)
