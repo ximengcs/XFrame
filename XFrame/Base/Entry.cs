@@ -1,30 +1,26 @@
-﻿using System;
-using XFrame.Collections;
-using System.Collections.Generic;
-using XFrame.Modules.Archives;
-using XFrame.Modules.Datas;
-using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Download;
-using XFrame.Modules.Entities;
+﻿using XFrame.Collections;
 using XFrame.Modules.ID;
+using XFrame.Modules.Datas;
 using XFrame.Modules.Local;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Procedure;
-using XFrame.Modules.Resource;
-using XFrame.Modules.Serialize;
-using XFrame.Modules.StateMachine;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Times;
 using XFrame.Modules.XType;
+using XFrame.Modules.Archives;
+using XFrame.Modules.Download;
+using XFrame.Modules.Entities;
+using XFrame.Modules.Resource;
+using XFrame.Modules.Procedure;
+using XFrame.Modules.Serialize;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.StateMachine;
 
 namespace XFrame.Core
 {
     public static class Entry
     {
         #region Inner Filed
-        private static XCollection<IModule> s_Modules;
-        private static Dictionary<Type, IModuleHelper> s_MainHelper;
-        private static Dictionary<Type, List<IModuleHelper>> s_Helpers;
+        private static XCore m_Core;
         #endregion
 
         #region Life Fun
@@ -33,24 +29,21 @@ namespace XFrame.Core
         /// </summary>
         public static void Init()
         {
-            s_Modules = new XCollection<IModule>();
-            s_MainHelper = new Dictionary<Type, IModuleHelper>();
-            s_Helpers = new Dictionary<Type, List<IModuleHelper>>();
-
-            InnerAddModule<IdModule>();
-            InnerAddModule<TypeModule>();
-            InnerAddModule<LogModule>();
-            InnerAddModule<TimeModule>();
-            InnerAddModule<PoolModule>();
-            InnerAddModule<FsmModule>();
-            InnerAddModule<TaskModule>();
-            InnerAddModule<SerializeModule>();
-            InnerAddModule<ResModule>();
-            InnerAddModule<ArchiveModule>();
-            InnerAddModule<DataModule>();
-            InnerAddModule<DownloadModule>();
-            InnerAddModule<LocalizeModule>();
-            InnerAddModule<EntityModule>();
+            m_Core.Init();
+            m_Core.Register<IdModule>();
+            m_Core.Register<TypeModule>();
+            m_Core.Register<LogModule>();
+            m_Core.Register<TimeModule>();
+            m_Core.Register<PoolModule>();
+            m_Core.Register<FsmModule>();
+            m_Core.Register<TaskModule>();
+            m_Core.Register<SerializeModule>();
+            m_Core.Register<ResModule>();
+            m_Core.Register<ArchiveModule>();
+            m_Core.Register<DataModule>();
+            m_Core.Register<DownloadModule>();
+            m_Core.Register<LocalizeModule>();
+            m_Core.Register<EntityModule>();
             InnerInitBase();
         }
 
@@ -59,7 +52,7 @@ namespace XFrame.Core
         /// </summary>
         public static void Start()
         {
-            InnerAddModule<ProcedureModule>();
+            m_Core.Register<ProcedureModule>();
             InnerInitCore();
         }
 
@@ -69,8 +62,7 @@ namespace XFrame.Core
         /// <param name="escapeTime">逃逸时间</param>
         public static void Update(float escapeTime)
         {
-            foreach (IModule manager in s_Modules)
-                manager.OnUpdate(escapeTime);
+            m_Core.Update(escapeTime);
         }
 
         /// <summary>
@@ -78,11 +70,8 @@ namespace XFrame.Core
         /// </summary>
         public static void ShutDown()
         {
-            var it = s_Modules.GetBackEnumerator();
-            while (it.MoveNext())
-                it.Current.OnDestroy();
-            s_Modules.Clear();
-            s_Modules = null;
+            m_Core.Destroy();
+            m_Core = null;
         }
 
         /// <summary>
@@ -92,7 +81,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public static T Register<T>() where T : IModule
         {
-            return InnerAddModule<T>();
+            return m_Core.Register<T>();
         }
 
         /// <summary>
@@ -103,7 +92,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public static T Register<T>(object data) where T : IModule
         {
-            return InnerAddModule<T>(data);
+            return m_Core.Register<T>(data);
         }
 
         /// <summary>
@@ -114,19 +103,7 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public static T RegisterHelper<T, ModuleT>() where T : IModuleHelper where ModuleT : IModule
         {
-            Type mType = typeof(ModuleT);
-            if (!s_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
-            {
-                helpers = new List<IModuleHelper>();
-                s_Helpers.Add(mType, helpers);
-            }
-            T helper = Activator.CreateInstance<T>();
-            helpers.Add(helper);
-
-            if (!s_MainHelper.ContainsKey(typeof(T)))
-                s_MainHelper[typeof(T)] = helper;
-
-            return helper;
+            return m_Core.RegisterHelper<T, ModuleT>();
         }
 
         /// <summary>
@@ -136,7 +113,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public static T GetModule<T>() where T : IModule
         {
-            return InnerGetManager<T>();
+            return m_Core.GetModule<T>();
         }
 
         /// <summary>
@@ -146,9 +123,7 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public static IModuleHelper GetHelper<T>() where T : IModule
         {
-            if (s_Helpers.TryGetValue(typeof(T), out List<IModuleHelper> helpers))
-                return helpers[0];
-            return default;
+            return m_Core.GetHelper<T>();
         }
 
         /// <summary>
@@ -158,9 +133,7 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public static T GetMainHelper<T>() where T : IModuleHelper
         {
-            if (s_MainHelper.TryGetValue(typeof(T), out IModuleHelper helper))
-                return (T)helper;
-            return default;
+            return m_Core.GetMainHelper<T>();
         }
         #endregion
 
@@ -173,19 +146,6 @@ namespace XFrame.Core
         private static void InnerInitCore()
         {
 
-        }
-
-        private static T InnerAddModule<T>(object data = null) where T : IModule
-        {
-            T module = Activator.CreateInstance<T>();
-            module.OnInit(data);
-            s_Modules.Add(module);
-            return module;
-        }
-
-        private static T InnerGetManager<T>() where T : IModule
-        {
-            return s_Modules.Get<T>();
         }
         #endregion
     }
