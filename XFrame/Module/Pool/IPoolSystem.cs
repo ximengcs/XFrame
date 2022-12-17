@@ -6,7 +6,7 @@ namespace XFrame.Modules.Pools
     /// 对象池系统
     /// 可以从对象池系统中获取对象池
     /// </summary>
-    /// <typeparam name="T">对象池持有类型</typeparam>
+    /// <typeparam name="T">对象池持有类型, 可为基类或接口</typeparam>
     public interface IPoolSystem<T> where T : IPoolObject
     {
         /// <summary>
