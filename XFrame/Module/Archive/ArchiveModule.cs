@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using XFrame.Core;
+using XFrame.Utility;
+using XFrame.Modules.XType;
 using XFrame.Modules.Times;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
@@ -13,14 +15,13 @@ namespace XFrame.Modules.Archives
     public class ArchiveModule : SingletonModule<ArchiveModule>
     {
         #region Inner Field
-        private const string JSON_SUFFIX = ".jsonacv";
-        private const string BIN_SUFFIX = ".binacv";
         private const int SAVE_KEY = 0;
         private const int SAVE_GAP = 60;
 
         private string m_RootPath;
         private CDTimer m_Timer;
         private Dictionary<string, IArchive> m_Archives;
+        private Dictionary<string, Type> m_ArchiveTypes;
         #endregion
 
         #region Life Fun
@@ -30,12 +31,21 @@ namespace XFrame.Modules.Archives
             m_Timer = new CDTimer();
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
+            m_ArchiveTypes = new Dictionary<string, Type>();
+
+            TypeModule.System system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
+            foreach (Type type in system)
+            {
+                ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
+                if (attri != null)
+                    m_ArchiveTypes.Add(attri.Suffix, type);
+            }
 
             m_RootPath = XConfig.ArchivePath;
             if (!string.IsNullOrEmpty(m_RootPath))
             {
                 if (Directory.Exists(m_RootPath))
-                    InnerInitRootPath(m_RootPath);
+                    InnerInitRootPath();
                 else
                     Directory.CreateDirectory(m_RootPath);
             }
@@ -66,18 +76,7 @@ namespace XFrame.Modules.Archives
         /// <returns>存档实例</returns>
         public T GetOrNew<T>(string name) where T : IArchive
         {
-            if (m_Archives.TryGetValue(name, out IArchive archieve))
-            {
-                return (T)archieve;
-            }
-            else
-            {
-                Type type = typeof(T);
-                T source = (T)Activator.CreateInstance(type);
-                source.OnInit(InnerGetPath(type, name));
-                m_Archives.Add(name, source);
-                return source;
-            }
+            return (T)InnerGetOrNew(name, typeof(T));
         }
 
         /// <summary>
@@ -105,12 +104,8 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            string fileName = default;
-            if (type == typeof(JsonArchive))
-                fileName = $"{name}{JSON_SUFFIX}";
-            else if (type == typeof(DataArchive))
-                fileName = $"{name}{BIN_SUFFIX}";
-            return Path.Combine(m_RootPath, fileName);
+            ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
+            return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 
         private void InnerSaveAll()
@@ -119,16 +114,29 @@ namespace XFrame.Modules.Archives
                 archive.Save();
         }
 
-        private void InnerInitRootPath(string rootPath)
+        private void InnerInitRootPath()
         {
             foreach (string file in Directory.EnumerateFiles(m_RootPath))
             {
                 string suffix = Path.GetExtension(file).ToLower();
                 string fileName = Path.GetFileNameWithoutExtension(file);
-                if (suffix == JSON_SUFFIX)
-                    GetOrNew<JsonArchive>(fileName);
-                else if (suffix == BIN_SUFFIX)
-                    GetOrNew<DataArchive>(fileName);
+                if (m_ArchiveTypes.TryGetValue(suffix, out Type archiveType))
+                    InnerGetOrNew(fileName, archiveType);
+            }
+        }
+
+        private IArchive InnerGetOrNew(string name, Type archiveType)
+        {
+            if (m_Archives.TryGetValue(name, out IArchive archieve))
+            {
+                return archieve;
+            }
+            else
+            {
+                IArchive source = (IArchive)Activator.CreateInstance(archiveType);
+                source.OnInit(InnerGetPath(archiveType, name));
+                m_Archives.Add(name, source);
+                return source;
             }
         }
         #endregion

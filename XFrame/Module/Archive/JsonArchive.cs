@@ -8,6 +8,7 @@ namespace XFrame.Modules.Archives
     /// <summary>
     /// Json存档
     /// </summary>
+    [Archive("json")]
     public class JsonArchive : IArchive
     {
         private string m_Path;

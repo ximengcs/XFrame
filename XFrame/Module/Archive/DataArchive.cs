@@ -5,6 +5,7 @@ namespace XFrame.Modules.Archives
     /// <summary>
     /// 二进制存档
     /// </summary>
+    [Archive("data")]
     public partial class DataArchive : IArchive
     {
         #region InnerField
