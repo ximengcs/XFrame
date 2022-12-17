@@ -55,7 +55,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public T Register<T>() where T : IModule
         {
-            return InnerAddModule<T>();
+            return (T)InnerAddModule(typeof(T), default);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public T Register<T>(object data) where T : IModule
         {
-            return InnerAddModule<T>(data);
+            return (T)InnerAddModule(typeof(T), data);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public T GetModule<T>() where T : IModule
         {
-            return InnerGetModule<T>();
+            return (T)InnerGetModule(typeof(T));
         }
 
         /// <summary>
@@ -128,17 +128,19 @@ namespace XFrame.Core
         #endregion
 
         #region Inner Implement
-        private T InnerAddModule<T>(object data = null) where T : IModule
+        private XCore() { }
+
+        private IModule InnerAddModule(Type moduleType, object data)
         {
-            T module = (T)Activator.CreateInstance(typeof(T));
+            IModule module = (IModule)Activator.CreateInstance(moduleType);
             module.OnInit(data);
             s_Modules.Add(module);
             return module;
         }
 
-        private T InnerGetModule<T>() where T : IModule
+        private IModule InnerGetModule(Type moduleType)
         {
-            return s_Modules.Get<T>();
+            return s_Modules.Get(moduleType);
         }
         #endregion
     }

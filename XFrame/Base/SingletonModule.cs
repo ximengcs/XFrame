@@ -32,6 +32,7 @@ namespace XFrame.Core
         void IModule.OnDestroy()
         {
             OnDestroy();
+            Inst = default;
         }
 
 

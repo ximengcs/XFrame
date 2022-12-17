@@ -29,6 +29,8 @@ namespace XFrame.Core
         /// </summary>
         public static void Init()
         {
+            m_Core = XCore.Create();
+
             m_Core.Init();
             m_Core.Register<IdModule>();
             m_Core.Register<TypeModule>();

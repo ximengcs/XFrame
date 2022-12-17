@@ -1,4 +1,5 @@
 ﻿using XFrame.Core;
+using XFrame.Modules.XType;
 
 namespace XFrameTest
 {
@@ -8,8 +9,9 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
-            Entry.Init();
-            Entry.ShutDown();
+            XCore core = XCore.Create(
+                typeof(TypeModule)
+                );
         }
     }
 }

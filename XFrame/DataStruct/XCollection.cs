@@ -127,6 +127,14 @@ namespace XFrame.Collections
                 return default;
         }
 
+        public T Get(Type elementType)
+        {
+            if (m_Mains.TryGetValue(elementType, out T entity))
+                return entity;
+            else
+                return default;
+        }
+
         /// <summary>
         /// 获取指定id和给定类型的元素 
         /// </summary>
@@ -138,6 +146,14 @@ namespace XFrame.Collections
             if (m_WithTypes.TryGetValue(typeof(TEntity), out Dictionary<int, T> entities))
                 if (entities.TryGetValue(entityId, out T entity))
                     return (TEntity)entity;
+            return default;
+        }
+
+        public T Get(Type elementType, int entityId)
+        {
+            if (m_WithTypes.TryGetValue(elementType, out Dictionary<int, T> entities))
+                if (entities.TryGetValue(entityId, out T entity))
+                    return entity;
             return default;
         }
 
