@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Collections
@@ -10,13 +11,14 @@ namespace XFrame.Collections
     ///	使用场景：需要顺序迭代，需要随时删除节点，不需要随机访问
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class XLinkList<T> : IDisposable
+    public partial class XLinkList<T> : IXEnumerable<T>, IUsePool
     {
         private const int DEFAULT_POOL = 16;
         private IPool<XLinkNode<T>> m_NodePool;
         private XLinkNode<T> m_First;
         private XLinkNode<T> m_Last;
         private int m_Count;
+        private XItType m_ItType;
 
         /// <summary>
         /// 链表第一个节点
@@ -56,20 +58,28 @@ namespace XFrame.Collections
         {
             m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
                 .Require<XLinkNode<T>>(poolCapacity);
+            m_ItType = XItType.Forward;
             m_First = null;
             m_Last = null;
+            m_Count = 0;
         }
 
         /// <summary>
         /// 构造一个链表
         /// 内部使用一个默认容量的对象池
         /// </summary>
-        public XLinkList()
+        public XLinkList(bool usePool = true)
         {
-            m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
+            if (usePool)
+            {
+                m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
                 .Require<XLinkNode<T>>(DEFAULT_POOL);
+            }
+
+            m_ItType = XItType.Forward;
             m_First = null;
             m_Last = null;
+            m_Count = 0;
         }
 
         /// <summary>
@@ -79,7 +89,11 @@ namespace XFrame.Collections
         /// <returns>添加的节点</returns>
         public XLinkNode<T> AddLast(T data)
         {
-            m_NodePool.Require(out XLinkNode<T> node);
+            XLinkNode<T> node;
+            if (m_NodePool != null)
+                m_NodePool.Require(out node);
+            else
+                node = new XLinkNode<T>();
             node.m_List = this;
             node.Value = data;
 
@@ -106,7 +120,11 @@ namespace XFrame.Collections
         /// <returns>添加的节点</returns>
         public XLinkNode<T> AddFirst(T data)
         {
-            m_NodePool.Require(out XLinkNode<T> node);
+            XLinkNode<T> node;
+            if (m_NodePool != null)
+                m_NodePool.Require(out node);
+            else
+                node = new XLinkNode<T>();
             node.m_List = this;
             node.Value = data;
 
@@ -126,14 +144,46 @@ namespace XFrame.Collections
             return node;
         }
 
+        public void Clear()
+        {
+            if (m_NodePool != null)
+            {
+                XLinkNode<T> node = m_First;
+                while (node != null)
+                    m_NodePool.Release(node);
+            }
+
+            m_First = null;
+            m_Last = null;
+            m_Count = 0;
+        }
+
+        public void SetIt(XItType type)
+        {
+            m_ItType = type;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            switch (m_ItType)
+            {
+                case XItType.Forward: return new ForwardIt(this);
+                case XItType.Backward: return new BackwardIt(this);
+                default: return default;
+            }
+        }
+
         /// <summary>
-        /// 释放链表
+        /// 释放Node池
         /// </summary>
         public void Dispose()
         {
-            PoolModule.Inst.GetOrNew<XLinkNode<T>>()
+            if (m_NodePool != null)
+            {
+                PoolModule.Inst.GetOrNew<XLinkNode<T>>()
                 .Release(m_NodePool);
-            m_NodePool = null;
+                m_NodePool = null;
+            }
         }
     }
 

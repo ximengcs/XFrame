@@ -41,9 +41,9 @@ namespace XFrame.Core
         /// </summary>
         public void Destroy()
         {
-            var it = s_Modules.GetBackEnumerator();
-            while (it.MoveNext())
-                it.Current.OnDestroy();
+            s_Modules.SetIt(XItType.Backward);
+            foreach (IModule manager in s_Modules)
+                manager.OnDestroy();
             s_Modules.Clear();
             s_Modules = null;
         }

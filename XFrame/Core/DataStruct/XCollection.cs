@@ -8,11 +8,14 @@ namespace XFrame.Collections
     /// XItem的集合, 可以通过Id快速读取元素
     /// </summary>
     /// <typeparam name="T">持有的数据类型</typeparam>
-    public partial class XCollection<T> : ICollection<T> where T : IXItem
+    public partial class XCollection<T> : IXEnumerable<T> where T : IXItem
     {
+        private const int DEFAULT_CAPACITY = 16;
+
         private Dictionary<Type, Dictionary<int, T>> m_WithTypes;
         private Dictionary<Type, T> m_Mains;
-        private List<T> m_Elements;
+        private XLinkList<T> m_Elements;
+        private Dictionary<Type, XLinkNode<T>> m_NodeMap;
 
         /// <summary>
         /// 元素数量
@@ -20,22 +23,18 @@ namespace XFrame.Collections
         public int Count => m_Elements.Count;
 
         /// <summary>
-        /// 是否只读，总是返回false
-        /// </summary>
-        public bool IsReadOnly => false;
-
-        /// <summary>
         /// 构造集合
         /// </summary>
-        public XCollection()
+        public XCollection(int startCapacity = DEFAULT_CAPACITY)
         {
-            m_WithTypes = new Dictionary<Type, Dictionary<int, T>>();
-            m_Mains = new Dictionary<Type, T>();
-            m_Elements = new List<T>();
+            m_WithTypes = new Dictionary<Type, Dictionary<int, T>>(startCapacity);
+            m_Mains = new Dictionary<Type, T>(startCapacity);
+            m_Elements = new XLinkList<T>(startCapacity);
+            m_NodeMap = new Dictionary<Type, XLinkNode<T>>(startCapacity);
         }
 
         /// <summary>
-        /// 添加一个元素
+        /// 添加一个元素 时间复杂度O(1)
         /// </summary>
         /// <param name="entity">要添加的元素</param>
         public void Add(T entity)
@@ -48,14 +47,16 @@ namespace XFrame.Collections
                 m_WithTypes.Add(type, entities);
             }
 
-            m_Elements.Add(entity);
+            XLinkNode<T> node = m_Elements.AddLast(entity);
+            m_NodeMap.Add(type, node);
+
             entities.Add(entity.Id, entity);
             if (!m_Mains.ContainsKey(type))
                 m_Mains.Add(type, entity);
         }
 
         /// <summary>
-        /// 移除一个元素
+        /// 移除一个元素 时间复杂度O(1)
         /// </summary>
         /// <param name="item">要移除的元素</param>
         /// <returns>是否移除成功</returns>
@@ -70,7 +71,10 @@ namespace XFrame.Collections
                 if (!success)
                     success = true;
             }
-            m_Elements.Remove(item);
+
+            if (m_NodeMap.TryGetValue(type, out XLinkNode<T> node))
+                node.Delete();
+
             return success;
         }
 
@@ -81,11 +85,12 @@ namespace XFrame.Collections
         {
             m_WithTypes.Clear();
             m_Mains.Clear();
+            m_NodeMap.Clear();
             m_Elements.Clear();
         }
 
         /// <summary>
-        /// 是否包含某项元素
+        /// 是否包含某项元素 时间复杂度O(1)
         /// </summary>
         /// <param name="item">检查的元素</param>
         /// <returns>true表是包含</returns>
@@ -103,15 +108,21 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// 拷贝元素到另一个数组
+        /// 拷贝元素到另一个数组 潜拷贝
         /// </summary>
-        /// <param name="array"></param>
-        /// <param name="arrayIndex"></param>
+        /// <param name="array">目标数组</param>
+        /// <param name="arrayIndex">起始下标</param>
         public void CopyTo(T[] array, int arrayIndex)
         {
             int count = array.Length;
+            var it = m_Elements.GetEnumerator();
             for (int i = arrayIndex; i < count; i++)
-                Add(array[i]);
+            {
+                if (it.MoveNext())
+                    array[i] = it.Current;
+                else
+                    break;
+            }
         }
 
         /// <summary>
@@ -157,27 +168,18 @@ namespace XFrame.Collections
             return default;
         }
 
+        public void SetIt(XItType type)
+        {
+            m_Elements.SetIt(type);
+        }
+
         /// <summary>
-        /// 获取正向迭代器
+        /// 获取迭代器
         /// </summary>
         /// <returns>正向迭代器</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return m_Elements.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <summary>
-        /// 获取反向迭代器
-        /// </summary>
-        /// <returns>反向迭代器</returns>
-        public IEnumerator<T> GetBackEnumerator()
-        {
-            return new BackEnumerator(m_Elements);
         }
     }
 }
