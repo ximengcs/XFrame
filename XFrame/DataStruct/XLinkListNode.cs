@@ -46,6 +46,43 @@ namespace XFrame.Collections
             m_List = default;
         }
 
+
+        public XLinkNode<T> AddBefore(T value)
+        {
+            XLinkNode<T> node = new XLinkNode<T>();
+            node.Value = value;
+            node.m_List = m_List;
+
+            node.Next = this;
+            node.Pre = Pre;
+            if (Pre != null)
+                Pre.Next = node;
+            else
+                m_List.First = node;
+            Pre = node;
+
+            m_List.Count++;
+            return node;
+        }
+
+        public XLinkNode<T> AddAfter(T value)
+        {
+            XLinkNode<T> node = new XLinkNode<T>();
+            node.Value = value;
+            node.m_List = m_List;
+
+            node.Next = Next;
+            node.Pre = this;
+            if (Next != null)
+                Next.Pre = node;
+            else
+                m_List.Last = node;
+            Next = node;
+
+            m_List.Count++;
+            return node;
+        }
+
         #region Pool Life Fun
         void IPoolObject.OnCreate()
         {
