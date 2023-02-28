@@ -19,6 +19,6 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 释放到对象池失败时被调用或永久销毁时调用
         /// </summary>
-        protected internal void OnDestroyForever();
+        protected internal void OnDelete();
     }
 }

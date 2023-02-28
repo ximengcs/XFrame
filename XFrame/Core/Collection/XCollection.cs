@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace XFrame.Collections
@@ -29,7 +28,7 @@ namespace XFrame.Collections
         {
             m_WithTypes = new Dictionary<Type, Dictionary<int, T>>(startCapacity);
             m_Mains = new Dictionary<Type, T>(startCapacity);
-            m_Elements = new XLinkList<T>(startCapacity);
+            m_Elements = new XLinkList<T>(false);
             m_NodeMap = new Dictionary<Type, XLinkNode<T>>(startCapacity);
         }
 
@@ -108,24 +107,6 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// 拷贝元素到另一个数组 潜拷贝
-        /// </summary>
-        /// <param name="array">目标数组</param>
-        /// <param name="arrayIndex">起始下标</param>
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            int count = array.Length;
-            var it = m_Elements.GetEnumerator();
-            for (int i = arrayIndex; i < count; i++)
-            {
-                if (it.MoveNext())
-                    array[i] = it.Current;
-                else
-                    break;
-            }
-        }
-
-        /// <summary>
         /// 获取给定类型的第一个添加到集合中的元素
         /// </summary>
         /// <typeparam name="TEntity">类型</typeparam>
@@ -179,7 +160,7 @@ namespace XFrame.Collections
         /// <returns>正向迭代器</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return m_Elements.GetEnumerator();
+            return new Enumerator(m_Elements);
         }
     }
 }

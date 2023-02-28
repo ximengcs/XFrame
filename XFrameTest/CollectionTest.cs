@@ -16,9 +16,15 @@ namespace XFrameTest
             list.AddLast("5");
 
             list.SetIt(XItType.Backward);
-            foreach (string item in list)
+            foreach (XLinkNode<string> node in list)
             {
-                Console.WriteLine(item);
+                if (node.Value == "2")
+                    node.Delete();
+            }
+
+            foreach (XLinkNode<string> node in list)
+            {
+                Console.WriteLine(node.Value);
             }
         }
     }

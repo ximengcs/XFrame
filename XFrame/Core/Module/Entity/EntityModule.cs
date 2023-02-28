@@ -38,11 +38,10 @@ namespace XFrame.Modules.Entities
         {
             base.OnDestroy();
 
-            IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
             foreach (IEntity entity in m_Entities)
             {
+                IPool pool = PoolModule.Inst.GetOrNew(entity.GetType());
                 entity.OnDestroy();
-                IPool pool = poolSystem.Require(entity.GetType());
                 pool.Release(entity);
             }
             m_Entities.Clear();
@@ -133,10 +132,8 @@ namespace XFrame.Modules.Entities
         /// <param name="entity">需要销毁的实体</param>
         public void Destroy(IEntity entity)
         {
-            IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
-            IPool pool = poolSystem.Require(entity.GetType());
+            IPool pool = PoolModule.Inst.GetOrNew(entity.GetType());
             pool.Release(entity);
-            poolSystem.Release(pool);
             entity.OnDestroy();
             m_Entities.Remove(entity);
         }
@@ -163,8 +160,7 @@ namespace XFrame.Modules.Entities
 
             if (fromPool)
             {
-                IPoolSystem<IEntity> poolSystem = PoolModule.Inst.GetOrNew<IEntity>();
-                IPool pool = poolSystem.Require(entityType);
+                IPool pool = PoolModule.Inst.GetOrNew(entityType);
                 pool.Require(out IPoolObject obj);
                 entity = obj as IEntity;
             }

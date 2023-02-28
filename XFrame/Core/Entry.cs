@@ -142,7 +142,7 @@ namespace XFrame.Core
         #region Inner Implement
         private static void InnerInitBase()
         {
-            PoolModule.Inst.GetOrNew<IXItem>(32);
+
         }
 
         private static void InnerInitCore()

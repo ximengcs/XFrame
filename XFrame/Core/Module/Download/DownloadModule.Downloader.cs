@@ -1,11 +1,12 @@
 ﻿using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Download
 {
     public partial class DownloadModule
     {
-        private class Downloader : XItem
+        private class Downloader : XItem, IPoolObject
         {
             private DownloadInfo m_Info;
             private IDownloadHelper m_Helper;
@@ -73,6 +74,21 @@ namespace XFrame.Modules.Download
             {
                 m_Helper?.Dispose();
                 m_Helper.Request(m_Info.Url);
+            }
+
+            void IPoolObject.OnCreate()
+            {
+
+            }
+
+            void IPoolObject.OnDelete()
+            {
+
+            }
+
+            void IPoolObject.OnRelease()
+            {
+
             }
         }
     }

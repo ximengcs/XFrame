@@ -41,7 +41,7 @@ namespace XFrame.Collections
                 m_List.Last = Pre;
 
             m_List.Count--;
-            m_List.NodePool.Release(this);
+            m_List.NodePool?.Release(this);
             Value = default;
             m_List = default;
         }
@@ -63,7 +63,7 @@ namespace XFrame.Collections
             Value = default;
         }
 
-        void IPoolObject.OnDestroyForever()
+        void IPoolObject.OnDelete()
         {
 
         }

@@ -5,17 +5,12 @@ namespace XFrame.Modules.Pools
     /// <summary>
     /// 对象池
     /// </summary>
-    public interface IPool
+    public interface IPool : IDisposable
     {
         /// <summary>
         /// 对象池持有类型
         /// </summary>
         Type ObjectType { get; }
-
-        /// <summary>
-        /// 对象池容量
-        /// </summary>
-        int Capacity { get; }
 
         /// <summary>
         /// 获取一个对象

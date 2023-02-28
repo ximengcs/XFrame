@@ -7,11 +7,11 @@ namespace XFrame.Collections
     /// <summary>
     /// 双向链表
     /// 注意点：	1.链表使用对象池，需要调用者使用完之后调用Dispose释放池
-    ///			2.链表可以调用Node节点的Remove直接删除节点
+    ///			2.链表可以调用Node节点的Delete直接删除节点
     ///	使用场景：需要顺序迭代，需要随时删除节点，不需要随机访问
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class XLinkList<T> : IXEnumerable<T>, IUsePool
+    public partial class XLinkList<T> : IXEnumerable<XLinkNode<T>>
     {
         private const int DEFAULT_POOL = 16;
         private IPool<XLinkNode<T>> m_NodePool;
@@ -47,35 +47,18 @@ namespace XFrame.Collections
             internal set { m_Count = value; }
         }
 
+        public bool Empty => m_Count == 0;
+
         internal IPool<XLinkNode<T>> NodePool => m_NodePool;
 
         /// <summary>
         /// 构造一个链表
-        /// 内部使用一个所给容量的对象池
-        /// </summary>
-        /// <param name="poolCapacity">节点对象池容量</param>
-        public XLinkList(int poolCapacity)
-        {
-            m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
-                .Require<XLinkNode<T>>(poolCapacity);
-            m_ItType = XItType.Forward;
-            m_First = null;
-            m_Last = null;
-            m_Count = 0;
-        }
-
-        /// <summary>
-        /// 构造一个链表
-        /// 内部使用一个默认容量的对象池
+        /// usePool 内部使用一个所给容量的对象池
         /// </summary>
         public XLinkList(bool usePool = true)
         {
             if (usePool)
-            {
-                m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>()
-                .Require<XLinkNode<T>>(DEFAULT_POOL);
-            }
-
+                m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>();
             m_ItType = XItType.Forward;
             m_First = null;
             m_Last = null;
@@ -101,6 +84,8 @@ namespace XFrame.Collections
             {
                 m_First = node;
                 m_Last = node;
+                node.Pre = null;
+                node.Next = null;
             }
             else
             {
@@ -110,6 +95,68 @@ namespace XFrame.Collections
                 m_Last = node;
             }
             m_Count++;
+            return node;
+        }
+
+        public void AddLast(XLinkNode<T> node)
+        {
+            node.m_List = this;
+            if (m_First == null)
+            {
+                m_First = node;
+                m_Last = node;
+                node.Pre = null;
+                node.Next = null;
+            }
+            else
+            {
+                m_Last.Next = node;
+                node.Pre = m_Last;
+                node.Next = null;
+                m_Last = node;
+            }
+            m_Count++;
+        }
+
+        public T RemoveFirst()
+        {
+            if (m_First == null)
+                return default;
+
+            T value = m_First.Value;
+            if (m_Count == 1)
+            {
+                m_First = null;
+                m_Last = null;
+            }
+            else
+            {
+                m_First = m_First.Next;
+                m_First.Pre = null;
+            }
+
+            m_Count--;
+            return value;
+        }
+
+        public XLinkNode<T> RemoveFirstNode()
+        {
+            if (m_First == null)
+                return default;
+
+            XLinkNode<T> node = m_First;
+            if (m_Count == 1)
+            {
+                m_First = null;
+                m_Last = null;
+            }
+            else
+            {
+                m_First = m_First.Next;
+                m_First.Pre = null;
+            }
+
+            m_Count--;
             return node;
         }
 
@@ -132,6 +179,8 @@ namespace XFrame.Collections
             {
                 m_First = node;
                 m_Last = node;
+                node.Pre = null;
+                node.Next = null;
             }
             else
             {
@@ -142,6 +191,81 @@ namespace XFrame.Collections
             }
             m_Count++;
             return node;
+        }
+
+        public void AddFirst(XLinkNode<T> node)
+        {
+            node.m_List = this;
+
+            if (m_First == null)
+            {
+                m_First = node;
+                m_Last = node;
+                node.Next = null;
+                node.Pre = null;
+            }
+            else
+            {
+                m_First.Pre = node;
+                node.Next = m_First;
+                node.Pre = null;
+                m_First = node;
+            }
+            m_Count++;
+        }
+
+        public T RemoveLast()
+        {
+            if (m_Last == null)
+                return default;
+
+            T value = m_Last.Value;
+            if (m_Count == 1)
+            {
+                m_First = null;
+                m_Last = null;
+            }
+            else
+            {
+                m_Last = m_Last.Pre;
+                m_Last.Next = null;
+            }
+
+            m_Count--;
+            return value;
+        }
+
+        public XLinkNode<T> RemoveLastNode()
+        {
+            if (m_Last == null)
+                return default;
+
+            XLinkNode<T> node = m_Last;
+            if (m_Count == 1)
+            {
+                m_First = null;
+                m_Last = null;
+            }
+            else
+            {
+                m_Last = m_Last.Pre;
+                m_Last.Next = null;
+            }
+
+            m_Count--;
+            return node;
+        }
+
+        public void Remove(T value)
+        {
+            foreach (XLinkNode<T> node in this)
+            {
+                if (node.Value.Equals(value))
+                {
+                    node.Delete();
+                    return;
+                }
+            }
         }
 
         public void Clear()
@@ -163,7 +287,7 @@ namespace XFrame.Collections
             m_ItType = type;
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<XLinkNode<T>> GetEnumerator()
         {
             switch (m_ItType)
             {
@@ -178,12 +302,7 @@ namespace XFrame.Collections
         /// </summary>
         public void Dispose()
         {
-            if (m_NodePool != null)
-            {
-                PoolModule.Inst.GetOrNew<XLinkNode<T>>()
-                .Release(m_NodePool);
-                m_NodePool = null;
-            }
+            m_NodePool?.Dispose();
         }
     }
 

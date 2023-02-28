@@ -1,11 +1,10 @@
-﻿using XFrame.Modules.Pools;
-
+﻿
 namespace XFrame.Collections
 {
     /// <summary>
     /// XCollection集合元素
     /// </summary>
-    public interface IXItem : IPoolObject
+    public interface IXItem
     {
         /// <summary>
         /// 元素Id

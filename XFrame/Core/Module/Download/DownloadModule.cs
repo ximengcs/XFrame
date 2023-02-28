@@ -22,8 +22,7 @@ namespace XFrame.Modules.Download
         {
             base.OnInit(data);
             m_Downloaders = new XLinkList<Downloader>();
-            m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>()
-                .Require<Downloader>();
+            m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>();
         }
 
         protected override void OnUpdate(float escapeTime)

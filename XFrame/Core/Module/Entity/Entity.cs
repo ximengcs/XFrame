@@ -52,7 +52,7 @@ namespace XFrame.Modules.Entities
             OnRelease();
         }
 
-        void IPoolObject.OnDestroyForever()
+        void IPoolObject.OnDelete()
         {
             OnDestroyForever();
         }

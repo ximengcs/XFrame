@@ -7,16 +7,16 @@ namespace XFrame.Modules.Pools
     internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {
         private Type m_Type;
-        private XLoopQueue<IPoolObject> m_Objects;
-
-        public int Capacity => m_Objects.Capacity;
+        private XLinkList<IPoolObject> m_Objects;
+        private XLoopQueue<XLinkNode<IPoolObject>> m_NodeCache;
 
         public Type ObjectType => m_Type;
 
-        public ObjectPool(int capacity)
+        public ObjectPool()
         {
             m_Type = typeof(T);
-            m_Objects = new XLoopQueue<IPoolObject>(capacity);
+            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(64);
+            m_Objects = new XLinkList<IPoolObject>(false);
         }
 
         public bool Require(out T obj)
@@ -51,7 +51,19 @@ namespace XFrame.Modules.Pools
             }
             else
             {
-                obj = (T)m_Objects.RemoveFirst();
+                XLinkNode<IPoolObject> node = m_Objects.RemoveFirstNode();
+                IPoolObject nodeOrigin = node;
+                obj = node.Value;
+                nodeOrigin.OnRelease();
+                if (m_NodeCache.Full)
+                {
+                    Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
+                }
+                else
+                {
+                    m_NodeCache.AddLast(node);
+                }
+                
                 obj.OnCreate();
                 return false;
             }
@@ -59,16 +71,24 @@ namespace XFrame.Modules.Pools
 
         private void InnerRelease(IPoolObject obj)
         {
-            if (m_Objects.Full)
+            obj.OnRelease();
+            if (m_NodeCache.Empty)
             {
-                obj.OnDestroyForever();
-                Log.Warning("XFrame", $"Object pool is full.release fail {typeof(T).Name}");
+                m_Objects.AddLast(obj);
             }
             else
             {
-                obj.OnRelease();
-                m_Objects.AddLast(obj);
+                XLinkNode<IPoolObject> node = m_NodeCache.RemoveFirst();
+                node.Value = obj;
+                m_Objects.AddLast(node);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (IPoolObject obj in m_Objects)
+                obj.OnDelete();
+            m_Objects.Clear();
         }
     }
 }

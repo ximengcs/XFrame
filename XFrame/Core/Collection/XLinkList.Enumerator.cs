@@ -5,13 +5,13 @@ namespace XFrame.Collections
 {
     public partial class XLinkList<T>
     {
-        private struct ForwardIt : IEnumerator<T>
+        private struct ForwardIt : IEnumerator<XLinkNode<T>>
         {
             private XLinkList<T> m_List;
             private XLinkNode<T> m_Node;
             private bool m_Start;
 
-            public T Current => m_Node.Value;
+            public XLinkNode<T> Current => m_Node;
 
             object IEnumerator.Current => m_Node.Value;
 
@@ -50,13 +50,13 @@ namespace XFrame.Collections
             }
         }
 
-        private struct BackwardIt : IEnumerator<T>
+        private struct BackwardIt : IEnumerator<XLinkNode<T>>
         {
             private XLinkList<T> m_List;
             private XLinkNode<T> m_Node;
             private bool m_Start;
 
-            public T Current => m_Node.Value;
+            public XLinkNode<T> Current => m_Node;
 
             object IEnumerator.Current => m_Node.Value;
 

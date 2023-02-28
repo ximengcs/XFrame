@@ -41,21 +41,5 @@ namespace XFrame.Modules.Threads
         {
             m_ActQueue.Enqueue(() => d(state));
         }
-
-        void IPoolObject.OnDestroyForever()
-        {
-            m_ActQueue.Clear();
-            m_ActQueue = null;
-        }
-
-        void IPoolObject.OnCreate()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
     }
 }

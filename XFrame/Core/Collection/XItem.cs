@@ -10,19 +10,9 @@ namespace XFrame.Collections
     {
         public int Id { get; private set; }
 
-        void IPoolObject.OnCreate()
+        public XItem()
         {
             Id = IdModule.Inst.Next();
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            Id = default;
-        }
-
-        void IPoolObject.OnDestroyForever()
-        {
-            Id = default;
         }
     }
 }

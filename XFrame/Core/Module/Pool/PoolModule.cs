@@ -9,14 +9,13 @@ namespace XFrame.Modules.Pools
     /// </summary>
     public class PoolModule : SingletonModule<PoolModule>
     {
-        private const int DEFAULT_SIZE = 8;
-        private Dictionary<Type, object> m_Objects;
+        private Dictionary<Type, IPool> m_PoolContainers;
 
         #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Objects = new Dictionary<Type, object>();
+            m_PoolContainers = new Dictionary<Type, IPool>();
         }
         #endregion
 
@@ -27,37 +26,25 @@ namespace XFrame.Modules.Pools
         /// <typeparam name="T">对象池持有类型</typeparam>
         /// <param name="capacity">对象池系统容量</param>
         /// <returns>获取到的对象池系统</returns>
-        public IPoolSystem<T> GetOrNew<T>(int capacity) where T : IPoolObject
+        public IPool<T> GetOrNew<T>() where T : IPoolObject
         {
-            if (capacity <= 0)
-                capacity = DEFAULT_SIZE;
-            return InnerGetOrNewPool<T>(capacity);
+            return InnerGetOrNew(typeof(T)) as IPool<T>;
         }
 
-        /// <summary>
-        /// 创建或获取一个默认容量的对象池系统
-        /// </summary>
-        /// <typeparam name="T">对象池持有类型</typeparam>
-        /// <returns>获取到的对象池系统</returns>
-        public IPoolSystem<T> GetOrNew<T>() where T : IPoolObject
+        public IPool GetOrNew(Type objType)
         {
-            return InnerGetOrNewPool<T>(DEFAULT_SIZE);
+            return InnerGetOrNew(objType);
         }
         #endregion
 
         #region Inner Implement
-        private IPoolSystem<T> InnerGetOrNewPool<T>(int capacity) where T : IPoolObject
+        internal IPool InnerGetOrNew(Type objType)
         {
-            Type type = typeof(T);
-            IPoolSystem<T> pool;
-            if (!m_Objects.TryGetValue(type, out object cachePool))
+            if (!m_PoolContainers.TryGetValue(objType, out IPool pool))
             {
-                pool = new PoolSystem<T>(capacity);
-                m_Objects.Add(type, pool);
-            }
-            else
-            {
-                pool = cachePool as IPoolSystem<T>;
+                Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
+                pool = Activator.CreateInstance(poolType) as IPool;
+                m_PoolContainers.Add(objType, pool);
             }
 
             return pool;

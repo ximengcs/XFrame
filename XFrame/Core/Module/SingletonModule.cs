@@ -35,27 +35,8 @@ namespace XFrame.Core
             Inst = default;
         }
 
-
-        void IPoolObject.OnCreate()
-        {
-            OnCreate();
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            OnRelease();
-        }
-
-        void IPoolObject.OnDestroyForever()
-        {
-            OnDestroyFrom();
-        }
-
         protected virtual void OnInit(object data) { }
         protected virtual void OnUpdate(float escapeTime) { }
         protected virtual void OnDestroy() { }
-        protected virtual void OnCreate() { }
-        protected virtual void OnRelease() { }
-        protected virtual void OnDestroyFrom() { }
     }
 }

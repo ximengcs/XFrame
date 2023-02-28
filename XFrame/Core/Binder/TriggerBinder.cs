@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Core.Binder
 {
@@ -11,7 +12,7 @@ namespace XFrame.Core.Binder
     {
         private Func<T> m_GetHandler;
         private Action<T> m_UpdateHandler;
-        private List<Func<T, bool>> m_CondUpdateHandler;
+        private XLinkList<Func<T, bool>> m_CondUpdateHandler;
 
         /// <summary>
         /// 构造数值绑定器
@@ -20,7 +21,7 @@ namespace XFrame.Core.Binder
         public TriggerBinder(Func<T> getHandler)
         {
             m_GetHandler = getHandler;
-            m_CondUpdateHandler = new List<Func<T, bool>>();
+            m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
         }
 
         /// <summary>
@@ -38,11 +39,20 @@ namespace XFrame.Core.Binder
         {
             m_UpdateHandler?.Invoke(Value);
 
-            for (int i = m_CondUpdateHandler.Count - 1; i >= 0; i--)
+            XLinkNode<Func<T, bool>> node = m_CondUpdateHandler.First;
+            while (node != null)
             {
-                Func<T, bool> fun = m_CondUpdateHandler[i];
+                Func<T, bool> fun = node.Value;
                 if (fun == null || fun(Value))
-                    m_CondUpdateHandler.RemoveAt(i);
+                {
+                    XLinkNode<Func<T, bool>> tmpNode = node.Next;
+                    node.Delete();
+                    node = tmpNode;
+                }
+                else
+                {
+                    node = node.Next;
+                }
             }
         }
 
@@ -83,7 +93,7 @@ namespace XFrame.Core.Binder
         /// <param name="handler">需要添加的委托，当委托返回true时，在通知完后会移除掉该委托</param>
         public void AddCondHandler(Func<T, bool> handler)
         {
-            m_CondUpdateHandler.Add(handler);
+            m_CondUpdateHandler.AddLast(handler);
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using XFrame.Modules.Local;
+﻿using XFrame.Modules.Local;
 
 namespace XFrame.Modules.Config
 {
