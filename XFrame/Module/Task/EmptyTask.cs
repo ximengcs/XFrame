@@ -8,14 +8,11 @@ namespace XFrame.Modules.Tasks
     /// </summary>
     public class EmptyTask : ITask
     {
-        private Type m_HandleType = typeof(EmptyTask);
         private Action m_Complete;
         private Action<float> m_Update;
         public bool IsComplete => true;
 
         public bool IsStart { get; private set; }
-
-        public Type HandleType => m_HandleType;
 
         public float Pro => 1;
 

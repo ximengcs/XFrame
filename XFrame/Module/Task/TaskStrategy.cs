@@ -5,15 +5,12 @@ namespace XFrame.Modules.Tasks
     /// <summary>
     /// 通用任务处理策略
     /// </summary>
-    public class TaskStrategy : ITaskStrategy
+    public class TaskStrategy : ITaskStrategy<ITask>
     {
         private float m_Pro;
-        private Type m_Type = typeof(ITask);
-        public Type HandleType => m_Type;
 
-        public float Handle(ITask from, ITaskHandler target)
+        public float Handle(ITask from, ITask task)
         {
-            ITask task = (ITask)target;
             if (task.IsStart)
             {
                 task.OnUpdate();
@@ -31,7 +28,7 @@ namespace XFrame.Modules.Tasks
             return m_Pro;
         }
 
-        public void Use()
+        public void OnUse()
         {
             m_Pro = 0;
         }

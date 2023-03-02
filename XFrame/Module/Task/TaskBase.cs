@@ -1,5 +1,5 @@
 ﻿using System;
-using XFrame.Modules.Diagnotics;
+using XFrame.Collections;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Tasks
@@ -7,24 +7,32 @@ namespace XFrame.Modules.Tasks
     /// <summary>
     /// 任务基类
     /// </summary>
-    public abstract class TaskBase : ITask
+    public abstract partial class TaskBase : ITask
     {
-        internal const float MAX_PRO = 1;
-        private ITaskHandler m_Current;
+        public const float MAX_PRO = 1;
+        private ExecInfo m_Current;
         private Action m_OnComplete;
         private Action<float> m_OnUpdate;
         private Queue<ITaskHandler> m_Targets;
-        private Dictionary<Type, ITaskStrategy> m_Strategys;
         private float m_PerProRate;
+        private Type HandlerTypeBase;
+
+        private XNode<StrategyInfo> m_Infos;
 
         public bool IsComplete { get; protected set; }
         public bool IsStart { get; protected set; }
         public float Pro { get; protected set; }
-        public abstract Type HandleType { get; }
 
         public ITask AddStrategy(ITaskStrategy strategy)
         {
-            m_Strategys.Add(strategy.HandleType, strategy);
+            Type type = strategy.GetType();
+            StrategyInfo info = new StrategyInfo();
+            info.Inst = strategy;
+
+            Type interfaceType = type.GetInterface(HandlerTypeBase.FullName);
+            info.HandleType = interfaceType.GetGenericArguments()[0];
+            info.HandleMethod = type.GetMethod("Handle");
+            m_Infos.Add((node) => node.Value.IsSub(info), info);
             return this;
         }
 
@@ -50,35 +58,28 @@ namespace XFrame.Modules.Tasks
         {
             if (m_Current != null)
             {
-                if (m_Strategys.TryGetValue(m_Current.HandleType, out ITaskStrategy stategy))
-                {
-                    float curPro = stategy.Handle(this, m_Current);
-                    bool finish = curPro >= MAX_PRO;
-                    curPro = Math.Min(curPro, MAX_PRO);
-                    curPro = Math.Max(curPro, 0);
-                    curPro *= m_PerProRate;
-                    Pro += curPro;
-                    Pro = Math.Min(Pro, MAX_PRO);
-                    m_OnUpdate?.Invoke(Pro);
+                float curPro = m_Current.Exec(this);
+                bool finish = curPro >= MAX_PRO;
+                curPro = Math.Min(curPro, MAX_PRO);
+                curPro = Math.Max(curPro, 0);
+                curPro *= m_PerProRate;
+                Pro += curPro;
+                Pro = Math.Min(Pro, MAX_PRO);
+                m_OnUpdate?.Invoke(Pro);
 
-                    if (finish)
-                    {
-                        m_Current = null;
-                        InnerCheckComplete();
-                    }
-                }
-                else
+                if (finish)
                 {
-                    Log.Error("XFrame", "XTask Error");
+                    m_Current = null;
+                    InnerCheckComplete();
                 }
             }
-
-            if (m_Targets.Count > 0)
+            else
             {
-                if (m_Current == null)
+                if (m_Targets.Count > 0)
                 {
-                    m_Current = m_Targets.Dequeue();
-                    InnerMarkUse();
+                    Console.WriteLine("count " + m_Targets.Count);
+                    m_Current = new ExecInfo();
+                    m_Current.Init(m_Targets.Dequeue(), m_Infos);
                 }
             }
         }
@@ -86,8 +87,9 @@ namespace XFrame.Modules.Tasks
         void ITask.OnInit()
         {
             m_OnComplete = null;
+            HandlerTypeBase = typeof(ITaskStrategy<>);
             m_Targets = new Queue<ITaskHandler>();
-            m_Strategys = new Dictionary<Type, ITaskStrategy>();
+            m_Infos = new XNode<StrategyInfo>();
             OnInit();
         }
 
@@ -106,12 +108,6 @@ namespace XFrame.Modules.Tasks
                 Pro = MAX_PRO;
                 InnerComplete();
             }
-        }
-
-        private void InnerMarkUse()
-        {
-            foreach (ITaskStrategy strategy in m_Strategys.Values)
-                strategy.Use();
         }
 
         protected virtual void InnerComplete()

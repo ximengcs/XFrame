@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Module.Rand;
 
 namespace XFrame.Modules.Tasks
 {
@@ -28,7 +29,7 @@ namespace XFrame.Modules.Tasks
         /// <returns>获取到的任务</returns>
         public T GetOrNew<T>() where T : ITask
         {
-            return GetOrNew<T>(string.Empty);
+            return GetOrNew<T>(RandModule.Inst.RandString());
         }
 
         /// <summary>

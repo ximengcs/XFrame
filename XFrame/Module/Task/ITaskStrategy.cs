@@ -8,21 +8,19 @@ namespace XFrame.Modules.Tasks
     public interface ITaskStrategy
     {
         /// <summary>
-        /// 可以处理的任务类型
-        /// </summary>
-        Type HandleType { get; }
-
-        /// <summary>
         /// 标记开始使用此策略
         /// </summary>
-        void Use();
+        void OnUse();
+    }
 
+    public interface ITaskStrategy<T> : ITaskStrategy where T : ITaskHandler
+    {
         /// <summary>
         /// 处理任务
         /// </summary>
         /// <param name="from">宿主任务</param>
-        /// <param name="target">要处理的目标</param>
+        /// <param name="handler">要处理的目标</param>
         /// <returns>任务是否处理完成</returns>
-        float Handle(ITask from, ITaskHandler target);
+        float Handle(ITask from, T handler);
     }
 }

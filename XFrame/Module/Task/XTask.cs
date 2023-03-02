@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace XFrame.Modules.Tasks
 {
     /// <summary>
@@ -7,10 +6,6 @@ namespace XFrame.Modules.Tasks
     /// </summary>
     public partial class XTask : TaskBase
     {
-        private Type m_HandleType = typeof(XTask);
-
-        public override Type HandleType => m_HandleType;
-
         protected override void OnInit()
         {
             AddStrategy(new TaskStrategy());

@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Module.Rand;
 
 namespace XFrame.Modules.StateMachine
 {
@@ -55,7 +56,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IFsm GetOrNew(params Type[] states)
         {
-            return GetOrNew(string.Empty, states);
+            return GetOrNew(RandModule.Inst.RandString(), states);
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IGenericFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
-            return GetOrNew(string.Empty, owner, states);
+            return GetOrNew(RandModule.Inst.RandString(), owner, states);
         }
 
         /// <summary>
