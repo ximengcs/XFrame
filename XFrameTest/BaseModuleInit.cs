@@ -1,5 +1,6 @@
 ﻿using XFrame.Core;
-using XFrame.Modules.Archives;
+using XFrame.Modules.ID;
+using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
 
 namespace XFrameTest
@@ -10,10 +11,7 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
-            XCore core = XCore.Create(typeof(TypeModule));
-            TypeModule.System system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
-            foreach(Type type in system)
-                Console.WriteLine(type.Name);
+            XCore core = XCore.Create(typeof(TypeModule), typeof(IdModule), typeof(PoolModule));
         }
     }
 }
