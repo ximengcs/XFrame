@@ -1,6 +1,5 @@
 ﻿using System;
 using XFrame.Collections;
-using System.Collections.Generic;
 
 namespace XFrame.Modules.Tasks
 {
