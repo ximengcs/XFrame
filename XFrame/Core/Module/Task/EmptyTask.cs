@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace XFrame.Modules.Tasks
 {
@@ -53,6 +54,13 @@ namespace XFrame.Modules.Tasks
             m_Update?.Invoke(Pro);
             m_Complete?.Invoke();
             m_Complete = null;
+        }
+
+        public Task Coroutine()
+        {
+            Task task = new Task(() => { });
+            task.Start();
+            return task;
         }
     }
 }

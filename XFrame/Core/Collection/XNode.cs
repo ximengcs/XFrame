@@ -9,9 +9,11 @@ namespace XFrame.Collections
         private List<XNode<T>> m_List;
 
         public T Value { get; set; }
+        public int Level { get; private set; }
 
         public XNode()
         {
+            Level = 0;
             m_List = new List<XNode<T>>();
         }
 
@@ -19,6 +21,7 @@ namespace XFrame.Collections
         {
             XNode<T> node = new XNode<T>();
             node.Value = value;
+            node.Level = Level + 1;
             m_List.Add(node);
             return node;
         }

@@ -12,10 +12,13 @@ namespace XFrame.Modules.Times
         /// </summary>
         public float Time { get; private set; }
 
+        public float EscapeTime { get; private set; }
+
         protected override void OnUpdate(float escapeTime)
         {
             base.OnUpdate(escapeTime);
             Time += escapeTime;
+            EscapeTime = escapeTime;
         }
     }
 }

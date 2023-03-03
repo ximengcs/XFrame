@@ -18,7 +18,8 @@ namespace XFrame.Modules.Tasks
                 m_HandType = handler.GetType();
 
                 StrategyInfo max = null;
-                Dictionary<StrategyInfo, int> level = new Dictionary<StrategyInfo, int>();
+                int level = 0;
+
                 nodes.ForEachAll((n) =>
                 {
                     StrategyInfo info = n.Value;
@@ -30,13 +31,11 @@ namespace XFrame.Modules.Tasks
                     }
                     else if (info.IsSub(m_HandType))
                     {
-                        if (level.ContainsKey(info))
-                            level[info]++;
-                        else
-                            level.Add(info, 1);
-
-                        if (max == null || level[info] > level[max])
+                        if (max == null || n.Level > level)
+                        {
                             max = info;
+                            level = n.Level;
+                        }
                     }
                     return true;
                 });

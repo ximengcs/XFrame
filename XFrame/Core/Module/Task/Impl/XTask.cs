@@ -8,7 +8,7 @@ namespace XFrame.Modules.Tasks
     {
         protected override void OnInit()
         {
-            AddStrategy(new TaskStrategy());
+
         }
     }
 }

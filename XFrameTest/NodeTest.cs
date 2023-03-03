@@ -1,48 +1,11 @@
 ﻿using XFrame.Core;
 using XFrame.Module.Rand;
 using XFrame.Modules.Tasks;
+using XFrame.Modules.Times;
 using XFrame.Modules.XType;
 
 namespace XFrameTest
 {
-    public class ActionTask : TaskBase
-    {
-        protected override void OnInit()
-        {
-            AddStrategy(new TaskStrategy());
-            AddStrategy(new Strategy());
-        }
-
-        public ActionTask Add(Action handler)
-        {
-            return (ActionTask)Add(new Handler(handler));
-        }
-
-        private class Strategy : ITaskStrategy<Handler>
-        {
-            public void OnUse()
-            {
-
-            }
-
-            public float Handle(ITask from, Handler handler)
-            {
-                handler.Act?.Invoke();
-                return MAX_PRO;
-            }
-        }
-
-        private class Handler : ITaskHandler
-        {
-            public Action Act;
-
-            public Handler(Action act)
-            {
-                Act = act;
-            }
-        }
-    }
-
     [TestClass]
     public class NodeTest
     {
@@ -51,39 +14,29 @@ namespace XFrameTest
         {
             XCore core = XCore.Create(
                 typeof(RandModule),
-                typeof(TypeModule), 
+                typeof(TypeModule),
+                typeof(TimeModule),
                 typeof(TaskModule));
 
-            ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("Test"));
-
-            ActionTask task2 = TaskModule.Inst.GetOrNew<ActionTask>();
-            task2.Add(() => Console.WriteLine("Test2"));
-
-            ActionTask task3 = TaskModule.Inst.GetOrNew<ActionTask>();
-            task3.Add(() => Console.WriteLine("Test3"))
-                 .Add(task2)
-                 .Add(task)
-                 .Start();
+            float pro = 0;
+            var task = TaskModule.Inst.GetOrNew<ProActionTask>();
+            task.Add(() =>
+            {
+                pro += 0.02f;
+                return pro;
+            }).OnUpdate((pro) =>
+            {
+                Console.WriteLine(pro);
+            }).OnComplete(() =>
+            {
+                Console.WriteLine("Complete");
+            });
+            task.Coroutine();
 
             for (int i = 0; i < 100; i++)
             {
-                Console.WriteLine(i);
                 core.Update(1);
             }
-            //XNode<int> node = new XNode<int>();
-            //node.Add(1);
-            //node.Add(2);
-            //node.Add((child) =>
-            //{
-            //    return child.Value == 2;
-            //}, 3);
-            //
-            //XNode<int> n = node.Get((node) => node.Value == 2);
-            //foreach (var child in n)
-            //{
-            //    Console.WriteLine(child.Value);
-            //}
         }
     }
 }

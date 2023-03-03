@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace XFrame.Modules.Tasks
 {
@@ -64,5 +65,11 @@ namespace XFrame.Modules.Tasks
         /// <param name="update">回调，参数为进度</param>
         /// <returns>当前任务，用于连续调用</returns>
         ITask OnUpdate(Action<float> update);
+
+        /// <summary>
+        /// 转换为一个可等待的协程
+        /// </summary>
+        /// <returns>协程任务</returns>
+        Task Coroutine();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace XFrame.Modules.Tasks
 {
@@ -17,11 +18,14 @@ namespace XFrame.Modules.Tasks
         private float m_PerProRate;
         private Type HandlerTypeBase;
 
+        private float m_Pro;
+        private float m_CurPro;
+
         private XNode<StrategyInfo> m_Infos;
 
         public bool IsComplete { get; protected set; }
         public bool IsStart { get; protected set; }
-        public float Pro { get; protected set; }
+        public float Pro => m_Pro + m_CurPro;
 
         public ITask AddStrategy(ITaskStrategy strategy)
         {
@@ -58,13 +62,13 @@ namespace XFrame.Modules.Tasks
         {
             if (m_Current != null)
             {
-                float curPro = m_Current.Exec(this);
-                bool finish = curPro >= MAX_PRO;
-                curPro = Math.Min(curPro, MAX_PRO);
-                curPro = Math.Max(curPro, 0);
-                curPro *= m_PerProRate;
-                Pro += curPro;
-                Pro = Math.Min(Pro, MAX_PRO);
+                m_CurPro = m_Current.Exec(this);
+                bool finish = m_CurPro >= MAX_PRO;
+                m_CurPro = Math.Min(m_CurPro, MAX_PRO);
+                m_CurPro = Math.Max(m_CurPro, 0);
+                m_CurPro *= m_PerProRate;
+                m_Pro += m_CurPro;
+                m_Pro = Math.Min(Pro, MAX_PRO);
                 m_OnUpdate?.Invoke(Pro);
 
                 if (finish)
@@ -77,7 +81,6 @@ namespace XFrame.Modules.Tasks
             {
                 if (m_Targets.Count > 0)
                 {
-                    Console.WriteLine("count " + m_Targets.Count);
                     m_Current = new ExecInfo();
                     m_Current.Init(m_Targets.Dequeue(), m_Infos);
                 }
@@ -90,6 +93,7 @@ namespace XFrame.Modules.Tasks
             HandlerTypeBase = typeof(ITaskStrategy<>);
             m_Targets = new Queue<ITaskHandler>();
             m_Infos = new XNode<StrategyInfo>();
+            AddStrategy(new TaskStrategy());
             OnInit();
         }
 
@@ -105,7 +109,7 @@ namespace XFrame.Modules.Tasks
         {
             if (m_Targets.Count == 0)
             {
-                Pro = MAX_PRO;
+                m_Pro = MAX_PRO;
                 InnerComplete();
             }
         }
@@ -115,6 +119,17 @@ namespace XFrame.Modules.Tasks
             IsComplete = true;
             m_OnComplete?.Invoke();
             m_OnComplete = null;
+        }
+
+        public virtual Task Coroutine()
+        {
+            Task task = new Task(() => { });
+            if (IsComplete)
+                task.Start();
+            else
+                m_OnComplete += () => task.Start();
+            Start();
+            return task;
         }
     }
 }

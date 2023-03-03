@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Diagnotics;
+﻿using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Collections
 {
@@ -6,12 +7,13 @@ namespace XFrame.Collections
     /// 循环队列
     /// </summary>
     /// <typeparam name="T">持有的数据类型</typeparam>
-    public class XLoopQueue<T>
+    public partial class XLoopQueue<T> : IXEnumerable<T>
     {
         private int m_Capacity;
         private T[] m_Objects;
         private int m_L;
         private int m_R;
+        private XItType m_ItType;
 
         /// <summary>
         /// 容量
@@ -128,6 +130,21 @@ namespace XFrame.Collections
         public T GetLast()
         {
             return m_Objects[m_R];
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            switch (m_ItType)
+            {
+                case XItType.Forward: return new ForwardIt(this);
+                case XItType.Backward: return new BackwardIt(this);
+                default: return default;
+            }
+        }
+
+        public void SetIt(XItType type)
+        {
+            m_ItType = type;
         }
     }
 }

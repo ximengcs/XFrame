@@ -11,18 +11,19 @@ namespace XFrame.Modules.Tasks
 
         public float Handle(ITask from, ITask task)
         {
-            if (task.IsStart)
+            if (!task.IsStart)
             {
                 task.OnUpdate();
-                if (task.IsComplete)
-                {
-                    m_Pro = TaskBase.MAX_PRO;
-                }
-                else
-                {
-                    m_Pro += 0.1f;
-                    m_Pro = Math.Min(m_Pro, 0.9f);
-                }
+            }
+
+            if (task.IsComplete)
+            {
+                m_Pro = TaskBase.MAX_PRO;
+            }
+            else
+            {
+                m_Pro += 0.1f;
+                m_Pro = Math.Min(m_Pro, 0.9f);
             }
 
             return m_Pro;
