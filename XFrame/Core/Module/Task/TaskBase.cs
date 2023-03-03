@@ -67,13 +67,13 @@ namespace XFrame.Modules.Tasks
                 m_CurPro = Math.Min(m_CurPro, MAX_PRO);
                 m_CurPro = Math.Max(m_CurPro, 0);
                 m_CurPro *= m_PerProRate;
-                m_Pro += m_CurPro;
-                m_Pro = Math.Min(Pro, MAX_PRO);
                 m_OnUpdate?.Invoke(Pro);
 
                 if (finish)
                 {
                     m_Current = null;
+                    m_Pro += m_CurPro;
+                    m_CurPro = 0;
                     InnerCheckComplete();
                 }
             }
@@ -110,6 +110,7 @@ namespace XFrame.Modules.Tasks
             if (m_Targets.Count == 0)
             {
                 m_Pro = MAX_PRO;
+                m_CurPro = 0;
                 InnerComplete();
             }
         }
