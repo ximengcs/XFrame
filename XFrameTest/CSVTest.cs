@@ -1,6 +1,4 @@
-﻿
-using System.Text;
-using XFrame.Collections;
+﻿using XFrame.Collections;
 
 namespace XFrameTest
 {
@@ -10,18 +8,16 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
-            string csvFile = File.ReadAllText($"C:/Users/98259/Desktop/1.csv");
-            //Console.WriteLine(csvFile);
+            string csvFile = "1,2,3\n4,5,6";
             Csv csv = new Csv(csvFile);
-            Console.WriteLine(csv.Row);
-            for (int row = 0; row < csv.Row; row++)
+            Console.Write("Row " + csv.Row);
+            foreach (var line in csv)
             {
-                for (int column = 0; column < csv.Column; column++)
+                Console.Write("\nLine Count " + line.Count + " -> ");
+                foreach (string content in line)
                 {
-                    string cont = csv.Get(row, column);
-                    Console.Write(cont + $" {cont.Length}   ");
+                    Console.Write(content + " ");
                 }
-                Console.WriteLine();
             }
         }
     }
