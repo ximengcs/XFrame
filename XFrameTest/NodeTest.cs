@@ -15,12 +15,12 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
-            XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
-            Entry.Init();
-            
-            Log.Debug(IdModule.Inst.Next());
-
-            return;
+            //XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
+            //Entry.Init();
+            //
+            //Log.Debug(IdModule.Inst.Next());
+            //
+            //return;
             XCore core = XCore.Create(
                 typeof(RandModule),
                 typeof(TypeModule),

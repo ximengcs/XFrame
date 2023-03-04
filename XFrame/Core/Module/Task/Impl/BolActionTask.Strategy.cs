@@ -6,14 +6,16 @@ namespace XFrame.Modules.Tasks
     {
         public class Strategy : ITaskStrategy<Handler>
         {
-            public void OnUse()
-            {
+            private Handler m_Handler;
 
+            public void OnUse(Handler handler)
+            {
+                m_Handler = handler;
             }
 
-            public float Handle(ITask from, Handler handler)
+            public float OnHandle(ITask from)
             {
-                Func<bool> func = handler.Act;
+                Func<bool> func = m_Handler.Act;
                 if (func != null)
                 {
                     bool finish = func.Invoke();
@@ -23,6 +25,11 @@ namespace XFrame.Modules.Tasks
                 {
                     return MAX_PRO;
                 }
+            }
+
+            public void OnFinish()
+            {
+                m_Handler = null;
             }
         }
     }

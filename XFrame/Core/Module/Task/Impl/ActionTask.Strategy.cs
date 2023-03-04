@@ -5,15 +5,22 @@ namespace XFrame.Modules.Tasks
     {
         public class Strategy : ITaskStrategy<Handler>
         {
-            public void OnUse()
-            {
+            private Handler m_Handler;
 
+            public void OnUse(Handler handler)
+            {
+                m_Handler = handler;
             }
 
-            public float Handle(ITask from, Handler handler)
+            public float OnHandle(ITask from)
             {
-                handler.Act?.Invoke();
+                m_Handler.Act?.Invoke();
                 return MAX_PRO;
+            }
+
+            public void OnFinish()
+            {
+                m_Handler = null;
             }
         }
 

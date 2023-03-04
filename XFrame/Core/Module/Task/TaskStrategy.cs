@@ -7,16 +7,17 @@ namespace XFrame.Modules.Tasks
     /// </summary>
     public class TaskStrategy : ITaskStrategy<ITask>
     {
+        private ITask m_Task;
         private float m_Pro;
 
-        public float Handle(ITask from, ITask task)
+        public float OnHandle(ITask from)
         {
-            if (!task.IsStart)
+            if (!m_Task.IsStart)
             {
-                task.OnUpdate();
+                m_Task.OnUpdate();
             }
 
-            if (task.IsComplete)
+            if (m_Task.IsComplete)
             {
                 m_Pro = TaskBase.MAX_PRO;
             }
@@ -29,9 +30,15 @@ namespace XFrame.Modules.Tasks
             return m_Pro;
         }
 
-        public void OnUse()
+        public void OnUse(ITask task)
         {
             m_Pro = 0;
+            m_Task = task;
+        }
+
+        public void OnFinish()
+        {
+            m_Task = null;
         }
     }
 }

@@ -11,27 +11,35 @@ namespace XFrame.Modules.Resource
     {
         private class Strategy : ITaskStrategy<IResHandler>
         {
+            private IResHandler m_Handler;
             private float m_Pro;
 
-            public float Handle(ITask from, IResHandler handler)
+            public float OnHandle(ITask from)
             {
-                if (handler.IsDone)
+                if (m_Handler.IsDone)
                     m_Pro = MAX_PRO;
                 else
-                    m_Pro = handler.Pro;
+                    m_Pro = m_Handler.Pro;
 
-                if (handler.IsDone || handler.Pro == MAX_PRO)
+                if (m_Handler.IsDone || m_Handler.Pro == MAX_PRO)
                 {
                     ResLoadTask task = from as ResLoadTask;
-                    task.Res = handler.Data;
+                    task.Res = m_Handler.Data;
                 }
 
                 return m_Pro;
             }
 
-            public void OnUse()
+            public void OnUse(IResHandler handler)
             {
                 m_Pro = 0;
+                m_Handler = handler;
+                m_Handler.Start();
+            }
+
+            public void OnFinish()
+            {
+                m_Handler = null;
             }
         }
 
@@ -77,27 +85,35 @@ namespace XFrame.Modules.Resource
     {
         private class Strategy : ITaskStrategy<IResHandler>
         {
+            private IResHandler m_Handler;
             private float m_Pro;
 
-            public float Handle(ITask from, IResHandler hander)
+            public float OnHandle(ITask from)
             {
-                if (hander.IsDone)
+                if (m_Handler.IsDone)
                     m_Pro = MAX_PRO;
                 else
-                    m_Pro = hander.Pro;
+                    m_Pro = m_Handler.Pro;
 
-                if (hander.IsDone || hander.Pro == MAX_PRO)
+                if (m_Handler.IsDone || m_Handler.Pro == MAX_PRO)
                 {
                     ResLoadTask<T> task = from as ResLoadTask<T>;
-                    task.Res = (T)hander.Data;
+                    task.Res = (T)m_Handler.Data;
                 }
 
                 return m_Pro;
             }
 
-            public void OnUse()
+            public void OnUse(IResHandler hander)
             {
                 m_Pro = 0;
+                m_Handler = hander;
+                m_Handler.Start();
+            }
+
+            public void OnFinish()
+            {
+                m_Handler = null;
             }
         }
 

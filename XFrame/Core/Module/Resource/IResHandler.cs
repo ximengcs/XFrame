@@ -21,5 +21,10 @@ namespace XFrame.Modules.Resource
         /// 加载进度
         /// </summary>
         float Pro { get; }
+
+        /// <summary>
+        /// 开始请求资源
+        /// </summary>
+        void Start();
     }
 }

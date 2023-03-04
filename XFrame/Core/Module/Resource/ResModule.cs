@@ -54,12 +54,18 @@ namespace XFrame.Modules.Resource
 
         public object Load(string resPath, Type type)
         {
-            return m_ResHelper.Load(resPath, type);
+            if (m_PreLoadRes.TryGetValue(resPath, out object asset))
+                return asset;
+            else
+                return m_ResHelper.Load(resPath, type);
         }
 
         public T Load<T>(string resPath)
         {
-            return m_ResHelper.Load<T>(resPath);
+            if (m_PreLoadRes.TryGetValue(resPath, out object asset))
+                return (T)asset;
+            else
+                return m_ResHelper.Load<T>(resPath);
         }
 
         public ResLoadTask LoadAsync(string resPath, Type type)
@@ -77,9 +83,22 @@ namespace XFrame.Modules.Resource
             m_ResHelper.Unload(target);
         }
 
+        public void UnloadPre(string resPath)
+        {
+            if (m_PreLoadRes.TryGetValue(resPath, out object asset))
+                Unload(asset);
+        }
+
         public void UnloadAll()
         {
             m_ResHelper.UnloadAll();
+        }
+
+        public void UnloadAllPre()
+        {
+            foreach (object asset in m_PreLoadRes.Values)
+                m_ResHelper.Unload(asset);
+            m_PreLoadRes.Clear();
         }
 
         protected IResourceHelper InnerSetHelper(Type type)
