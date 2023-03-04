@@ -9,6 +9,11 @@ namespace XFrame.Modules.Tasks
     public interface ITask : ITaskHandler
     {
         /// <summary>
+        /// 任务名
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// 任务状态
         /// </summary>
         bool IsComplete { get; }
@@ -26,7 +31,7 @@ namespace XFrame.Modules.Tasks
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        protected internal void OnInit();
+        protected internal void OnInit(string name);
 
         /// <summary>
         /// 更新生命周期
@@ -37,6 +42,11 @@ namespace XFrame.Modules.Tasks
         /// 标记任务开始执行
         /// </summary>
         void Start();
+
+        /// <summary>
+        /// 删除任务
+        /// </summary>
+        void Delete();
 
         /// <summary>
         /// 添加任务, 需要有对应处理策略

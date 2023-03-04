@@ -14,13 +14,11 @@ namespace XFrame.Modules.Tasks
     {
         private List<ITask> m_Tasks;
         private Dictionary<string, ITask> m_TaskWithName;
-        private List<string> m_WillDel;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Tasks = new List<ITask>();
-            m_WillDel = new List<string>();
             m_TaskWithName = new Dictionary<string, ITask>();
         }
 
@@ -46,9 +44,27 @@ namespace XFrame.Modules.Tasks
             {
                 task = Activator.CreateInstance<T>();
                 m_TaskWithName[name] = task;
-                task.OnInit();
+                m_Tasks.Add(task);
+                task.OnInit(name);
             }
             return (T)task;
+        }
+
+        public void Remove(string name)
+        {
+            if (m_TaskWithName.ContainsKey(name))
+            {
+                m_TaskWithName.Remove(name);
+                for (int i = 0; i < m_Tasks.Count; i++)
+                {
+                    ITask task = m_Tasks[i];
+                    if (task.Name == name)
+                    {
+                        m_Tasks.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
         }
 
         protected override void OnUpdate(float escapeTime)
@@ -62,23 +78,12 @@ namespace XFrame.Modules.Tasks
                 {
                     task.OnUpdate();
                     if (task.IsComplete)
+                    {
                         m_Tasks.RemoveAt(i);
+                        m_TaskWithName.Remove(task.Name);
+                    }
                 }
             }
-
-            m_WillDel.Clear();
-            foreach (var item in m_TaskWithName)
-            {
-                ITask task = item.Value;
-                if (task.IsStart)
-                {
-                    task.OnUpdate();
-                    if (task.IsComplete)
-                        m_WillDel.Add(item.Key);
-                }
-            }
-            foreach (string name in m_WillDel)
-                m_TaskWithName.Remove(name);
         }
     }
 }

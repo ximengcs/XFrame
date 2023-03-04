@@ -17,12 +17,14 @@ namespace XFrame.Modules.Tasks
         private Queue<ITaskHandler> m_Targets;
         private float m_PerProRate;
         private Type HandlerTypeBase;
+        private XLinkList<Task> m_CorTasks;
 
         private float m_Pro;
         private float m_CurPro;
 
         private XNode<StrategyInfo> m_Infos;
 
+        public string Name { get; private set; }
         public bool IsComplete { get; protected set; }
         public bool IsStart { get; protected set; }
         public float Pro => m_Pro + m_CurPro;
@@ -117,9 +119,11 @@ namespace XFrame.Modules.Tasks
             return result;
         }
 
-        void ITask.OnInit()
+        void ITask.OnInit(string name)
         {
+            Name = name;
             m_OnComplete = null;
+            m_CorTasks = new XLinkList<Task>();
             HandlerTypeBase = typeof(ITaskStrategy<>);
             m_Targets = new Queue<ITaskHandler>();
             m_Infos = new XNode<StrategyInfo>();
@@ -135,6 +139,12 @@ namespace XFrame.Modules.Tasks
                 return;
             IsStart = true;
             m_PerProRate = MAX_PRO / m_Targets.Count;
+        }
+
+        public void Delete()
+        {
+            foreach (XLinkNode<Task> node in m_CorTasks)
+                node.Value.Dispose();
         }
 
         private void InnerCheckComplete()
@@ -157,10 +167,18 @@ namespace XFrame.Modules.Tasks
         public virtual Task Coroutine()
         {
             Task task = new Task(() => { });
+            XLinkNode<Task> node = m_CorTasks.AddLast(task);
             if (IsComplete)
                 task.Start();
             else
-                m_OnComplete += () => task.Start();
+            {
+                m_OnComplete += () =>
+                {
+                    node.Delete();
+                    task.Start();
+                };
+            }
+
             Start();
             return task;
         }

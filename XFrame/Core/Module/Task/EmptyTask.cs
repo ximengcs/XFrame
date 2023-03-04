@@ -17,6 +17,8 @@ namespace XFrame.Modules.Tasks
 
         public float Pro => 1;
 
+        public string Name { get; private set; }
+
         public ITask Add(ITaskHandler target)
         {
             return this;
@@ -39,13 +41,14 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        void ITask.OnInit()
+        void ITask.OnInit(string name)
         {
-        } 
+            Name = name;
+        }
 
         void ITask.OnUpdate()
         {
-            
+
         }
 
         public void Start()
@@ -61,6 +64,11 @@ namespace XFrame.Modules.Tasks
             Task task = new Task(() => { });
             task.Start();
             return task;
+        }
+
+        public void Delete()
+        {
+            throw new NotImplementedException();
         }
     }
 }
