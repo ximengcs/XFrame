@@ -6,6 +6,7 @@ namespace XFrame.Modules.ID
     /// <summary>
     /// Id模块
     /// </summary>
+    [CoreModule]
     public class IdModule : SingletonModule<IdModule>
     {
         private int m_Time;

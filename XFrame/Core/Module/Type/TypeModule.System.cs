@@ -129,7 +129,7 @@ namespace XFrame.Modules.XType
             internal void AddSubClass(Type type)
             {
                 m_AllTypes.Add(type);
-                m_NameTypes[type.Name] = type;
+                m_NameTypes[type.FullName] = type;
             }
 
             IEnumerator IEnumerable.GetEnumerator()

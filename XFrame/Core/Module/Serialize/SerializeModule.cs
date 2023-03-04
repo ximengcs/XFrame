@@ -8,6 +8,7 @@ namespace XFrame.Modules.Serialize
     /// <summary>
     /// 序列化模块
     /// </summary>
+    [CoreModule]
     public class SerializeModule : SingletonModule<SerializeModule>
     {
         private IJsonSerializeHelper m_JsonHelper;

@@ -7,6 +7,7 @@ namespace XFrame.Modules.Pools
     /// <summary>
     /// 对象池模块
     /// </summary>
+    [CoreModule]
     public class PoolModule : SingletonModule<PoolModule>
     {
         private Dictionary<Type, IPool> m_PoolContainers;

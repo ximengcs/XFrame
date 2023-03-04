@@ -101,6 +101,8 @@ namespace XFrame.Modules.Tasks
 
         public void Start()
         {
+            if (IsStart)
+                return;
             IsStart = true;
             m_PerProRate = MAX_PRO / m_Targets.Count;
         }

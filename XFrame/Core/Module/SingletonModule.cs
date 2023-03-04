@@ -11,7 +11,7 @@ namespace XFrame.Core
         /// <summary>
         /// 模块Id
         /// </summary>
-        public int Id => default;
+        public virtual int Id => default;
 
         /// <summary>
         /// 单例实例
@@ -22,6 +22,11 @@ namespace XFrame.Core
         {
             Inst = (T)this;
             OnInit(data);
+        }
+
+        void IModule.OnStart()
+        {
+            OnStart();
         }
 
         void IModule.OnUpdate(float escapeTime)
@@ -36,6 +41,7 @@ namespace XFrame.Core
         }
 
         protected virtual void OnInit(object data) { }
+        protected virtual void OnStart() { }
         protected virtual void OnUpdate(float escapeTime) { }
         protected virtual void OnDestroy() { }
     }

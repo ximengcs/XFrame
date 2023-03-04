@@ -5,6 +5,11 @@ namespace XFrame.Modules.Config
     public static class XConfig
     {
         /// <summary>
+        /// 入口
+        /// </summary>
+        public static string Entrance;
+
+        /// <summary>
         /// 默认语言
         /// </summary>
         public static Language Lang;

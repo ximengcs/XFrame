@@ -1,19 +1,6 @@
-﻿using XFrame.Collections;
-using XFrame.Modules.ID;
-using XFrame.Modules.Datas;
-using XFrame.Modules.Local;
-using XFrame.Modules.Pools;
-using XFrame.Modules.Tasks;
-using XFrame.Modules.Times;
+﻿using System;
 using XFrame.Modules.XType;
-using XFrame.Modules.Archives;
-using XFrame.Modules.Download;
-using XFrame.Modules.Entities;
-using XFrame.Modules.Resource;
 using XFrame.Modules.Procedure;
-using XFrame.Modules.Serialize;
-using XFrame.Modules.Diagnotics;
-using XFrame.Modules.StateMachine;
 
 namespace XFrame.Core
 {
@@ -30,23 +17,8 @@ namespace XFrame.Core
         public static void Init()
         {
             m_Core = XCore.Create();
-
             m_Core.Init();
-            m_Core.Register<IdModule>();
-            m_Core.Register<TypeModule>();
-            m_Core.Register<LogModule>();
-            m_Core.Register<TimeModule>();
-            m_Core.Register<PoolModule>();
-            m_Core.Register<FsmModule>();
-            m_Core.Register<TaskModule>();
-            m_Core.Register<SerializeModule>();
-            m_Core.Register<ResModule>();
-            m_Core.Register<ArchiveModule>();
-            m_Core.Register<DataModule>();
-            m_Core.Register<DownloadModule>();
-            m_Core.Register<LocalizeModule>();
-            m_Core.Register<EntityModule>();
-            InnerInitBase();
+            InnerInitCore();
         }
 
         /// <summary>
@@ -54,8 +26,7 @@ namespace XFrame.Core
         /// </summary>
         public static void Start()
         {
-            m_Core.Register<ProcedureModule>();
-            InnerInitCore();
+            m_Core.Start();
         }
 
         /// <summary>
@@ -140,14 +111,29 @@ namespace XFrame.Core
         #endregion
 
         #region Inner Implement
-        private static void InnerInitBase()
-        {
-
-        }
-
         private static void InnerInitCore()
         {
+            m_Core.Register<TypeModule>();
+            TypeModule.System typeSys = TypeModule.Inst.GetOrNewWithAttr<CoreModuleAttribute>();
+            foreach (Type type in typeSys)
+                InnerAddCoreModule(type);
+            m_Core.Register<ProcedureModule>();
+        }
 
+        private static void InnerAddCoreModule(Type moduleType)
+        {
+            Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
+            if (requires != null && requires.Length > 0)
+            {
+                for (int i = 0; i < requires.Length; i++)
+                {
+                    RequireModuleAttribute attr = (RequireModuleAttribute)requires[i];
+                    InnerAddCoreModule(attr.ModuleType);
+                }
+            }
+
+            if (m_Core.GetModule(moduleType) == null)
+                m_Core.Register(moduleType);
         }
         #endregion
     }

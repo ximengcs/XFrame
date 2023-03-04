@@ -23,6 +23,11 @@ namespace XFrame.Modules.Threads
             SetSynchronizationContext(this);
         }
 
+        void IModule.OnStart()
+        {
+
+        }
+
         void IModule.OnUpdate(float escapeTime)
         {
             if (m_ActQueue.Count <= 0)

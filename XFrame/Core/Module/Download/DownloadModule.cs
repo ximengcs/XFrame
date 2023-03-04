@@ -8,6 +8,8 @@ namespace XFrame.Modules.Download
     /// <summary>
     /// 下载器模块
     /// </summary>
+    [CoreModule]
+    [RequireModule(typeof(PoolModule))]
     public partial class DownloadModule : SingletonModule<DownloadModule>
     {
         #region Inner Fileds

@@ -4,6 +4,12 @@ namespace XFrame.Utility
 {
     public class TypeUtility
     {
+        public static string GetSimpleName(string fullName)
+        {
+            string[] names = fullName.Split('.');
+            return names[names.Length - 1];
+        }
+
         public static bool HasAttribute<T>(object inst) where T : Attribute
         {
             return HasAttribute<T>(inst.GetType());

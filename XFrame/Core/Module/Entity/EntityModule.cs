@@ -13,6 +13,7 @@ namespace XFrame.Modules.Entities
     /// 实体模块
     /// 只有根实体才会接受实体模块的更新生命周期
     /// </summary>
+    [CoreModule]
     public class EntityModule : SingletonModule<EntityModule>
     {
         #region Inner Field

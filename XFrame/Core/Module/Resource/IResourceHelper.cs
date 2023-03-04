@@ -49,7 +49,7 @@ namespace XFrame.Modules.Resource
         /// 卸载资源
         /// </summary>
         /// <param name="target">卸载目标</param>
-        void Unload(string target);
+        void Unload(object target);
 
         /// <summary>
         /// 卸载所有资源

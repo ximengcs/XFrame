@@ -9,6 +9,7 @@ namespace XFrame.Modules.Local
     /// <summary>
     /// 本地化模块
     /// </summary>
+    [CoreModule]
     public class LocalizeModule : SingletonModule<LocalizeModule>
     {
         private const int REQUIRE = 2;

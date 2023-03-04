@@ -26,6 +26,12 @@ namespace XFrame.Core
             s_Helpers = new Dictionary<Type, List<IModuleHelper>>();
         }
 
+        public void Start()
+        {
+            foreach (IModule manager in s_Modules)
+                manager.OnStart();
+        }
+
         /// <summary>
         /// 更新核心
         /// </summary>
@@ -56,6 +62,16 @@ namespace XFrame.Core
         public T Register<T>() where T : IModule
         {
             return (T)InnerAddModule(typeof(T), default);
+        }
+
+        /// <summary>
+        /// 注册模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <returns>模块实例</returns>
+        public IModule Register(Type moduleType)
+        {
+            return InnerAddModule(moduleType, default);
         }
 
         /// <summary>
@@ -100,6 +116,16 @@ namespace XFrame.Core
         public T GetModule<T>() where T : IModule
         {
             return (T)InnerGetModule(typeof(T));
+        }
+
+        /// <summary>
+        /// 获取模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <returns>模块实例</returns>
+        public IModule GetModule(Type moduleType)
+        {
+            return s_Modules.Get(moduleType);
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ namespace XFrame.Modules.Archives
     /// <summary>
     /// 存档模块
     /// </summary>
+    [CoreModule]
     public class ArchiveModule : SingletonModule<ArchiveModule>
     {
         #region Inner Field

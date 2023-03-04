@@ -9,6 +9,7 @@ namespace XFrame.Modules.Diagnotics
     /// <summary>
     /// Log模块
     /// </summary>
+    [CoreModule]
     public class LogModule : SingletonModule<LogModule>
     {
         private List<ILogger> m_Loggers;

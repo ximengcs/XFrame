@@ -8,6 +8,8 @@ namespace XFrame.Modules.StateMachine
     /// <summary>
     /// 有限状态机模块
     /// </summary>
+    [CoreModule]
+    [RequireModule(typeof(RandModule))]
     public class FsmModule : SingletonModule<FsmModule>
     {
         #region Inner Field

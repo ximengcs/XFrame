@@ -14,6 +14,11 @@ namespace XFrame.Core
         protected internal void OnInit(object data);
 
         /// <summary>
+        /// 开始运行生命周期
+        /// </summary>
+        protected internal void OnStart();
+
+        /// <summary>
         /// 更新生命周期
         /// </summary>
         /// <param name="escapeTime">逃逸时间</param>

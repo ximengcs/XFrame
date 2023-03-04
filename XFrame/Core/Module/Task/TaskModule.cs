@@ -8,6 +8,8 @@ namespace XFrame.Modules.Tasks
     /// <summary>
     /// 任务模块
     /// </summary>
+    [CoreModule]
+    [RequireModule(typeof(RandModule))]
     public class TaskModule : SingletonModule<TaskModule>
     {
         private List<ITask> m_Tasks;

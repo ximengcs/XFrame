@@ -3,6 +3,8 @@ using XFrame.Core;
 using XFrame.Modules.XType;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.StateMachine;
+using XFrame.Modules.Config;
+using XFrame.Utility;
 
 namespace XFrame.Modules.Procedure
 {
@@ -11,20 +13,27 @@ namespace XFrame.Modules.Procedure
     /// </summary>
     public class ProcedureModule : SingletonModule<ProcedureModule>
     {
-        private static string ENTRANCE = "MainProcedure";
         private TypeModule.System m_Procedures;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Procedures = TypeModule.Inst.GetOrNew<ProcedureBase>();
-            if (m_Procedures.TryGetByName(ENTRANCE, out Type entrance))
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+            string entrance = XConfig.Entrance;
+            if (!string.IsNullOrEmpty(entrance) && m_Procedures.TryGetByName(entrance, out Type type))
             {
-                Log.Debug("XFrame", "Enter Main Procedure");
-                FsmModule.Inst.GetOrNew(m_Procedures.ToArray()).Start(entrance);
+                Log.Debug("XFrame", $"Enter {TypeUtility.GetSimpleName(entrance)} Procedure");
+                FsmModule.Inst.GetOrNew(m_Procedures.ToArray()).Start(type);
             }
             else
-                Log.Error("XFrame", $"Main Procedure do not define");
+            {
+                Log.Error("XFrame", $"{TypeUtility.GetSimpleName(entrance)} Procedure do not define");
+            }
         }
     }
 }
