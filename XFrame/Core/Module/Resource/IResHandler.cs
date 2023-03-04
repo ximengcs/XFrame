@@ -26,5 +26,10 @@ namespace XFrame.Modules.Resource
         /// 开始请求资源
         /// </summary>
         void Start();
+
+        /// <summary>
+        /// 释放请求
+        /// </summary>
+        void Dispose();
     }
 }

@@ -39,6 +39,7 @@ namespace XFrame.Modules.Resource
 
             public void OnFinish()
             {
+                m_Handler.Dispose();
                 m_Handler = null;
             }
         }
@@ -113,6 +114,7 @@ namespace XFrame.Modules.Resource
 
             public void OnFinish()
             {
+                m_Handler.Dispose();
                 m_Handler = null;
             }
         }
