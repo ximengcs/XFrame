@@ -13,7 +13,7 @@ namespace XFrame.Modules.Procedure
     /// </summary>
     public class ProcedureModule : SingletonModule<ProcedureModule>
     {
-        private TypeModule.System m_Procedures;
+        private TypeSystem m_Procedures;
 
         protected override void OnInit(object data)
         {

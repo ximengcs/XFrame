@@ -3,7 +3,7 @@
 namespace XFrame.Core
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    internal class CoreModuleAttribute : Attribute
+    public class XModuleAttribute : Attribute
     {
     }
 }

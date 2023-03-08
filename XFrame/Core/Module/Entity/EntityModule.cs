@@ -56,18 +56,16 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体基类或实体类</typeparam>
         public void RegisterEntity<T>() where T : class, IEntity
         {
-            TypeModule.System module = TypeModule.Inst
+            TypeSystem module = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub<T>();
-            List<Type> types = new List<Type>(module);
-            if (TypeUtility.HasAttribute<EntityPropAttribute>(module.Main))
-                types.Add(module.Main);
 
-            foreach (Type type in types)
-            {
-                EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(type);
+            EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(module.Main);
+            if (atr != null)
+                module.AddKey(atr.Type, module.Main);
+
+            foreach (Type type in module)
                 module.AddKey(atr.Type, type);
-            }
         }
 
         /// <summary>

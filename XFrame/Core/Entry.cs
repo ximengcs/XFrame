@@ -114,7 +114,10 @@ namespace XFrame.Core
         private static void InnerInitCore()
         {
             m_Core.Register<TypeModule>();
-            TypeModule.System typeSys = TypeModule.Inst.GetOrNewWithAttr<CoreModuleAttribute>();
+            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<CoreModuleAttribute>();
+            foreach (Type type in typeSys)
+                InnerAddCoreModule(type);
+            typeSys = TypeModule.Inst.GetOrNewWithAttr<XModuleAttribute>();
             foreach (Type type in typeSys)
                 InnerAddCoreModule(type);
             m_Core.Register<ProcedureModule>();

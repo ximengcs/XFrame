@@ -34,7 +34,7 @@ namespace XFrame.Modules.Archives
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
 
-            TypeModule.System system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
+            TypeSystem system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
             {
                 ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);

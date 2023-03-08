@@ -13,12 +13,12 @@ namespace XFrame.Modules.XType
     {
         private Assembly[] m_Assemblys;
         private Type[] m_Types;
-        private Dictionary<Type, System> m_ClassRegister;
+        private Dictionary<Type, TypeSystem> m_ClassRegister;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_ClassRegister = new Dictionary<Type, System>();
+            m_ClassRegister = new Dictionary<Type, TypeSystem>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
 
             List<Type> types = new List<Type>(128);
@@ -50,14 +50,14 @@ namespace XFrame.Modules.XType
         /// </summary>
         /// <typeparam name="T">Attribute属性类</typeparam>
         /// <returns>获取到的类型系统</returns>
-        public System GetOrNewWithAttr<T>() where T : Attribute
+        public TypeSystem GetOrNewWithAttr<T>() where T : Attribute
         {
             Type pType = typeof(T);
-            System module;
+            TypeSystem module;
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
 
-            module = new System(pType);
+            module = new TypeSystem(pType);
             m_ClassRegister.Add(pType, module);
             foreach (Type subType in m_Types)
             {
@@ -73,14 +73,14 @@ namespace XFrame.Modules.XType
         /// </summary>
         /// <typeparam name="T">基类</typeparam>
         /// <returns>获取到的类型系统</returns>
-        public System GetOrNew<T>() where T : class
+        public TypeSystem GetOrNew<T>() where T : class
         {
             Type pType = typeof(T);
-            System module;
+            TypeSystem module;
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
 
-            module = new System(pType);
+            module = new TypeSystem(pType);
             m_ClassRegister.Add(pType, module);
             foreach (Type type in m_Types)
             {
