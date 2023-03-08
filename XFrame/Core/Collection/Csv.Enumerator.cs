@@ -5,69 +5,32 @@ namespace XFrame.Collections
 {
     public partial class Csv
     {
-        private struct ForwardIt : IEnumerator<Line>
+        private struct Enumerator : IEnumerator<Line>
         {
-            private Line[] m_Lines;
-            private int m_Index;
+            private IEnumerator<XLinkNode<Line>> m_Lines;
 
-            public Line Current => m_Lines[m_Index];
+            public Line Current => m_Lines.Current.Value;
 
             object IEnumerator.Current => Current;
 
-            public ForwardIt(Line[] line)
+            public Enumerator(XLinkList<Line> line)
             {
-                m_Lines = line;
-                m_Index = -1;
+                m_Lines = line.GetEnumerator();
             }
 
             public bool MoveNext()
             {
-                m_Index++;
-                return m_Index < m_Lines.Length;
+                return m_Lines.MoveNext();
             }
 
             public void Reset()
             {
-                m_Index = -1;
+                m_Lines.Reset();
             }
 
             public void Dispose()
             {
-                m_Lines = null;
-                m_Index = 0;
-            }
-        }
-
-        private struct BackwardIt : IEnumerator<Line>
-        {
-            private Line[] m_Lines;
-            private int m_Index;
-
-            public Line Current => m_Lines[m_Index];
-
-            object IEnumerator.Current => Current;
-
-            public BackwardIt(Line[] line)
-            {
-                m_Lines = line;
-                m_Index = m_Lines.Length;
-            }
-
-            public bool MoveNext()
-            {
-                m_Index--;
-                return m_Index >= 0;
-            }
-
-            public void Reset()
-            {
-                m_Index = m_Lines.Length;
-            }
-
-            public void Dispose()
-            {
-                m_Lines = null;
-                m_Index = 0;
+                m_Lines.Dispose();
             }
         }
     }
