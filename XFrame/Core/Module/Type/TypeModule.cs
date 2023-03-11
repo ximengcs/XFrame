@@ -99,6 +99,11 @@ namespace XFrame.Modules.XType
             }
             return module;
         }
+
+        public Type[] GetAllType()
+        {
+            return m_Types;
+        }
         #endregion
     }
 }
