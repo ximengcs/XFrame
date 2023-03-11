@@ -2,14 +2,14 @@
 using XFrame.Core;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
+using XFrame.Modules.XType; 
 
 namespace XFrame.Modules.Diagnotics
 {
     /// <summary>
     /// Log模块
     /// </summary>
-    [CoreModule]
+    [BaseModule]
     public class LogModule : SingletonModule<LogModule>
     {
         private List<ILogger> m_Loggers;

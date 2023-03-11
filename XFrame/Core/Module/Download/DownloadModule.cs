@@ -2,14 +2,18 @@
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Config;
+using XFrame.Modules.XType;
+using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Download
 {
     /// <summary>
     /// 下载器模块
     /// </summary>
-    [CoreModule]
+    [BaseModule]
     [RequireModule(typeof(PoolModule))]
+    [RequireModule(typeof(IdModule))]
     public partial class DownloadModule : SingletonModule<DownloadModule>
     {
         #region Inner Fileds
@@ -25,6 +29,12 @@ namespace XFrame.Modules.Download
             base.OnInit(data);
             m_Downloaders = new XLinkList<Downloader>();
             m_DownloaderPool = PoolModule.Inst.GetOrNew<Downloader>();
+
+            if (!string.IsNullOrEmpty(XConfig.DefaultDownloadHelper))
+            {
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultDownloadHelper);
+                InnerSetHelperType(type);
+            }
         }
 
         protected override void OnUpdate(float escapeTime)
@@ -35,9 +45,10 @@ namespace XFrame.Modules.Download
             while (node != null)
             {
                 Downloader downloader = node.Value;
+                XLinkNode<Downloader> curNode = node;
                 node = node.Next;
                 if (downloader.IsComplete)
-                    node.Delete();
+                    curNode.Delete();
                 else
                     downloader.Update();
             }
@@ -51,7 +62,7 @@ namespace XFrame.Modules.Download
         /// <typeparam name="T">辅助器类型</typeparam>
         public void SetHelper<T>() where T : IDownloadHelper
         {
-            m_Helper = typeof(T);
+            InnerSetHelperType(typeof(T));
         }
 
         /// <summary>
@@ -78,6 +89,11 @@ namespace XFrame.Modules.Download
         #endregion
 
         #region Inner Implement
+        private void InnerSetHelperType(Type type)
+        {
+            m_Helper = type;
+        }
+
         private void InnerAddTask(string url, DownLoadType type, Action<string> txtHandler, Action<byte[]> dataHandler, Action errorCallback)
         {
             DownloadInfo info = new DownloadInfo();

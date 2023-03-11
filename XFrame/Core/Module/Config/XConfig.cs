@@ -43,5 +43,10 @@ namespace XFrame.Modules.Config
         /// 默认Json序列化处理器
         /// </summary>
         public static string DefaultJsonSerializer;
+
+        /// <summary>
+        /// 默认下载辅助器
+        /// </summary>
+        public static string DefaultDownloadHelper;
     }
 }
