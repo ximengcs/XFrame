@@ -11,13 +11,18 @@ namespace XFrame.Modules.XType
     /// </summary>
     public partial class TypeModule : SingletonModule<TypeModule>
     {
-        private Assembly[] m_Assemblys;
         private Type[] m_Types;
+        private Assembly[] m_Assemblys;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
+            InnerInit();
+        }
+
+        private void InnerInit()
+        {
             m_ClassRegister = new Dictionary<Type, TypeSystem>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -28,6 +33,11 @@ namespace XFrame.Modules.XType
         }
 
         #region Interface
+        public void UpdateType()
+        {
+            InnerInit();
+        }
+
         /// <summary>
         /// 获取类型
         /// </summary>

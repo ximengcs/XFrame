@@ -11,7 +11,8 @@ namespace XFrame.Modules.Resource
     /// <summary>
     /// 资源模块
     /// </summary>
-    [CoreModule]
+    [BaseModule]
+    [RequireModule(typeof(TaskModule))]
     public class ResModule : SingletonModule<ResModule>
     {
         private IResourceHelper m_ResHelper;

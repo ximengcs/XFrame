@@ -82,6 +82,10 @@ namespace XFrame.Modules.Tasks
                     m_Current = InnerFindStrategy(handler);
                     m_Current.Use(handler);
                 }
+                else
+                {
+                    InnerCheckComplete();
+                }
             }
         }
 

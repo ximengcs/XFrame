@@ -6,7 +6,9 @@ namespace XFrame.Core
     {
         public static XCore Create()
         {
-            return new XCore();
+            XCore core = new XCore();
+            core.Init();
+            return core;
         }
 
         public static XCore Create(params Type[] modules)

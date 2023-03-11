@@ -3,7 +3,7 @@ using XFrame.Core;
 
 namespace XFrame.Module.Rand
 {
-    [CoreModule]
+    [BaseModule]
     public class RandModule : SingletonModule<RandModule>
     {
         private Random m_Random;

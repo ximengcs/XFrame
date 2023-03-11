@@ -9,9 +9,31 @@ using XFrame.Modules.XType;
 
 namespace XFrameTest
 {
+
+    interface I1
+    {
+
+    }
+
+    interface I2 : I1
+    {
+
+    }
+
+    class C1 : I2
+    {
+
+    }
+
     [TestClass]
     public class NodeTest
     {
+        [TestMethod]
+        public void Test2()
+        {
+            Type type = typeof(C1);
+        }
+
         [TestMethod]
         public void Test1()
         {

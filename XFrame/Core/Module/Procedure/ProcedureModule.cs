@@ -11,6 +11,7 @@ namespace XFrame.Modules.Procedure
     /// <summary>
     /// 流程模块
     /// </summary>
+    [XModule]
     public class ProcedureModule : SingletonModule<ProcedureModule>
     {
         private TypeSystem m_Procedures;

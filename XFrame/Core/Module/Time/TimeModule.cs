@@ -5,7 +5,7 @@ namespace XFrame.Modules.Times
     /// <summary>
     /// 时间模块
     /// </summary>
-    [CoreModule]
+    [BaseModule]
     public class TimeModule : SingletonModule<TimeModule>
     {
         /// <summary>

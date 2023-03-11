@@ -6,6 +6,8 @@ namespace XFrame.Utility
     {
         public static string GetSimpleName(string fullName)
         {
+            if (string.IsNullOrEmpty(fullName))
+                return fullName;
             string[] names = fullName.Split('.');
             return names[names.Length - 1];
         }

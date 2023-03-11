@@ -196,7 +196,6 @@ namespace XFrame.Modules.Archives
 
         public void Save()
         {
-            Console.WriteLine(m_Root.ToString());
             File.WriteAllText(m_Path, m_Root.ToString(4));
         }
         #endregion

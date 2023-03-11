@@ -1,15 +1,19 @@
 ﻿using System;
 using XFrame.Core;
-using System.Collections.Generic;
 using XFrame.Module.Rand;
+using XFrame.Modules.Pools;
+using System.Collections.Generic;
+using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
 {
     /// <summary>
     /// 任务模块
     /// </summary>
-    [CoreModule]
+    [BaseModule]
     [RequireModule(typeof(RandModule))]
+    [RequireModule(typeof(PoolModule))]
+    [RequireModule(typeof(TimeModule))]
     public class TaskModule : SingletonModule<TaskModule>
     {
         private List<ITask> m_Tasks;

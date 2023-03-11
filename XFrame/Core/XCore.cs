@@ -10,6 +10,7 @@ namespace XFrame.Core
     public partial class XCore
     {
         #region Inner Filed
+        private bool m_IsStart;
         private XCollection<IModule> s_Modules;
         private Dictionary<Type, IModuleHelper> s_MainHelper;
         private Dictionary<Type, List<IModuleHelper>> s_Helpers;
@@ -21,6 +22,7 @@ namespace XFrame.Core
         /// </summary>
         public void Init()
         {
+            m_IsStart = false;
             s_Modules = new XCollection<IModule>();
             s_MainHelper = new Dictionary<Type, IModuleHelper>();
             s_Helpers = new Dictionary<Type, List<IModuleHelper>>();
@@ -28,6 +30,9 @@ namespace XFrame.Core
 
         public void Start()
         {
+            if (m_IsStart)
+                return;
+            m_IsStart = true;
             foreach (IModule manager in s_Modules)
                 manager.OnStart();
         }
@@ -126,6 +131,11 @@ namespace XFrame.Core
         public IModule GetModule(Type moduleType)
         {
             return s_Modules.Get(moduleType);
+        }
+
+        public bool HasModule(Type moduleType)
+        {
+            return GetModule(moduleType) != null;
         }
 
         /// <summary>

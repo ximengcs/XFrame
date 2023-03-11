@@ -25,7 +25,6 @@ namespace XFrame.Modules.Entities
         {
             base.OnInit(data);
             m_Entities = new XCollection<IEntity>();
-            TypeModule.Inst.GetOrNewWithAttr<EntityPropAttribute>();
         }
 
         protected override void OnUpdate(float escapeTime)
