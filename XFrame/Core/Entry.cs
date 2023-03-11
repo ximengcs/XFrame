@@ -63,6 +63,13 @@ namespace XFrame.Core
             }
         }
 
+        private static void InnerTypeChangeHandle()
+        {
+            InnerInit<BaseModuleAttribute>(m_Base);
+            InnerInit<CoreModuleAttribute>(m_Core);
+            InnerInit<XModuleAttribute>(m_Custom);
+        }
+
         public static void AddHandler<T>() where T : IEntryHandler
         {
             Type type = typeof(T);
@@ -100,6 +107,7 @@ namespace XFrame.Core
                                   .OnComplete(() =>
                                   {
                                       m_Runing = true;
+                                      TypeModule.Inst.OnTypeChange(InnerTypeChangeHandle);
                                   }).Start();
                        }).Start();
             }
@@ -108,6 +116,7 @@ namespace XFrame.Core
                 m_Core.Start();
                 m_Custom.Start();
                 m_Runing = true;
+                TypeModule.Inst.OnTypeChange(InnerTypeChangeHandle);
             }
         }
 
@@ -195,6 +204,10 @@ namespace XFrame.Core
 
         private static void InnerAddModule(Type moduleType, XCore target)
         {
+            IModule module = InnerGetModule(moduleType);
+            if (module != null)
+                return;
+
             Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
             if (requires != null && requires.Length > 0)
             {
@@ -205,8 +218,7 @@ namespace XFrame.Core
                 }
             }
 
-            if (InnerGetModule(moduleType) == null)
-                target.Register(moduleType);
+            target.Register(moduleType);
         }
 
         private static IModule InnerGetModule(Type moduleType)

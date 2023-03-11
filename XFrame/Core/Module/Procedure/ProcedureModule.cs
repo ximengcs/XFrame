@@ -1,10 +1,10 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Utility;
 using XFrame.Modules.XType;
+using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.StateMachine;
-using XFrame.Modules.Config;
-using XFrame.Utility;
 
 namespace XFrame.Modules.Procedure
 {

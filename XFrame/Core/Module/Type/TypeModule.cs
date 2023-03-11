@@ -11,6 +11,7 @@ namespace XFrame.Modules.XType
     /// </summary>
     public partial class TypeModule : SingletonModule<TypeModule>
     {
+        private Action m_OnTypeChange;
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
@@ -19,23 +20,46 @@ namespace XFrame.Modules.XType
         {
             base.OnInit(data);
             InnerInit();
+            AppDomain.CurrentDomain.AssemblyLoad += InnerAssemblyUpdateHandle;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            m_OnTypeChange = null;
+            AppDomain.CurrentDomain.AssemblyLoad -= InnerAssemblyUpdateHandle;
+        }
+
+        private void InnerAssemblyUpdateHandle(object sender, AssemblyLoadEventArgs args)
+        {
+            InnerInit();
+            m_OnTypeChange?.Invoke();
         }
 
         private void InnerInit()
         {
-            m_ClassRegister = new Dictionary<Type, TypeSystem>();
-            m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
-
             List<Type> types = new List<Type>(128);
+            m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in m_Assemblys)
                 types.AddRange(assembly.GetTypes());
+
+            if (m_Types != null && m_Types.Length == types.Count)
+                return;
+
             m_Types = types.ToArray();
+            if (m_ClassRegister != null)
+                m_ClassRegister.Clear();
+            else
+                m_ClassRegister = new Dictionary<Type, TypeSystem>();
         }
 
         #region Interface
-        public void UpdateType()
+        /// <summary>
+        /// 类型改变事件
+        /// </summary>
+        public void OnTypeChange(Action handler)
         {
-            InnerInit();
+            m_OnTypeChange += handler;
         }
 
         /// <summary>

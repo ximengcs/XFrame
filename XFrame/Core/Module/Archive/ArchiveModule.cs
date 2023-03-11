@@ -34,14 +34,30 @@ namespace XFrame.Modules.Archives
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
 
+            InnerInit();
+            TypeModule.Inst.OnTypeChange(InnerInit);
+        }
+
+        private void InnerInit()
+        {
             TypeSystem system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
+                InnerAddType(type);
+            InnerRefreshFiles();
+        }
+
+        private void InnerAddType(Type type)
+        {
+            ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
+            if (attri != null)
             {
-                ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
-                if (attri != null)
+                if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
                     m_ArchiveTypes.Add(attri.Suffix, type);
             }
+        }
 
+        private void InnerRefreshFiles()
+        {
             m_RootPath = XConfig.ArchivePath;
             if (!string.IsNullOrEmpty(m_RootPath))
             {
