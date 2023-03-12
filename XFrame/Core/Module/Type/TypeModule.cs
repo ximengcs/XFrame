@@ -20,17 +20,15 @@ namespace XFrame.Modules.XType
         {
             base.OnInit(data);
             InnerInit();
-            AppDomain.CurrentDomain.AssemblyLoad += InnerAssemblyUpdateHandle;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             m_OnTypeChange = null;
-            AppDomain.CurrentDomain.AssemblyLoad -= InnerAssemblyUpdateHandle;
         }
 
-        private void InnerAssemblyUpdateHandle(object sender, AssemblyLoadEventArgs args)
+        private void InnerAssemblyUpdateHandle()
         {
             InnerInit();
             m_OnTypeChange?.Invoke();
@@ -54,6 +52,12 @@ namespace XFrame.Modules.XType
         }
 
         #region Interface
+        public void LoadAssembly(byte[] data)
+        {
+            Assembly.Load(data);
+            InnerAssemblyUpdateHandle();
+        }
+
         /// <summary>
         /// 类型改变事件
         /// </summary>
