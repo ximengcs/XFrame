@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Collections;
 
 namespace XFrame.Core.Binder

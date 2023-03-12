@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
 
@@ -13,7 +12,6 @@ namespace XFrame.Collections
     /// <typeparam name="T"></typeparam>
     public partial class XLinkList<T> : IXEnumerable<XLinkNode<T>>
     {
-        private const int DEFAULT_POOL = 16;
         private IPool<XLinkNode<T>> m_NodePool;
         private XLinkNode<T> m_First;
         private XLinkNode<T> m_Last;

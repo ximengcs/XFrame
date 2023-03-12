@@ -39,6 +39,7 @@ namespace XFrame.Modules.Tasks
         public ITask Add(ITaskHandler data)
         {
             m_Targets.Enqueue(data);
+            m_PerProRate = MAX_PRO / m_Targets.Count;
             return this;
         }
 
@@ -142,7 +143,6 @@ namespace XFrame.Modules.Tasks
             if (IsStart)
                 return;
             IsStart = true;
-            m_PerProRate = MAX_PRO / m_Targets.Count;
         }
 
         public void Delete()

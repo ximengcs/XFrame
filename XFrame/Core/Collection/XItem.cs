@@ -1,5 +1,4 @@
 ﻿using XFrame.Modules.ID;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Collections
 {

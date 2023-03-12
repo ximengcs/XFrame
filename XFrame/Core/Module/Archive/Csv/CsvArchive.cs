@@ -1,6 +1,4 @@
 ﻿
-using XFrame.Collections;
-
 namespace XFrame.Modules.Archives
 {
     [Archive("csv")]
