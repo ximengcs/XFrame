@@ -8,9 +8,9 @@ namespace XFrame.Modules.Tasks
         private class StrategyInfo
         {
             private ITaskStrategy m_Inst;
-            private MethodInfo m_HandleMethod;
-            private MethodInfo m_UseMethod;
-            private MethodInfo m_FinishMethod;
+            private Func<ITask, float> m_HandleMethod;
+            private Delegate m_UseMethod;
+            private Action m_FinishMethod;
 
             public Type HandleType;
 
@@ -21,11 +21,19 @@ namespace XFrame.Modules.Tasks
                 Type interfaceType = type.GetInterface(baseType.FullName);
                 HandleType = interfaceType.GetGenericArguments()[0];
 
-                m_HandleMethod = type.GetMethod("OnHandle");
-                m_UseMethod = type.GetMethod("OnUse");
-                m_FinishMethod = type.GetMethod("OnFinish");
-            }
+                MethodInfo handleMethod = type.GetMethod("OnHandle");
+                MethodInfo useMethod = type.GetMethod("OnUse");
+                MethodInfo finishMethod = type.GetMethod("OnFinish");
 
+                m_HandleMethod = (Func<ITask, float>)handleMethod.CreateDelegate(typeof(Func<ITask, float>), m_Inst);
+
+                Type usePramType = typeof(Action<>);
+                usePramType = usePramType.MakeGenericType(HandleType);
+                m_UseMethod = useMethod.CreateDelegate(usePramType, m_Inst);
+
+                m_FinishMethod = (Action)finishMethod.CreateDelegate(typeof(Action), m_Inst);
+            }
+                
             public bool IsSub(StrategyInfo info)
             {
                 return HandleType.IsAssignableFrom(info.HandleType);
@@ -38,17 +46,17 @@ namespace XFrame.Modules.Tasks
 
             public void Use(object handler)
             {
-                m_UseMethod.Invoke(m_Inst, new object[] { handler });
+                m_UseMethod?.DynamicInvoke(handler);
             }
 
             public float Handle(ITask from)
             {
-                return (float)m_HandleMethod.Invoke(m_Inst, new object[] { from });
+                return m_HandleMethod(from);
             }
 
             public void Finish()
             {
-                m_FinishMethod.Invoke(m_Inst, null);
+                m_FinishMethod();
             }
         }
     }

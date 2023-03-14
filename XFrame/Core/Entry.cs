@@ -63,13 +63,6 @@ namespace XFrame.Core
             }
         }
 
-        private static void InnerTypeChangeHandle()
-        {
-            InnerInit<BaseModuleAttribute>(m_Base);
-            InnerInit<CoreModuleAttribute>(m_Core);
-            InnerInit<XModuleAttribute>(m_Custom);
-        }
-
         public static void AddHandler<T>() where T : IEntryHandler
         {
             Type type = typeof(T);
@@ -107,7 +100,6 @@ namespace XFrame.Core
                                   .OnComplete(() =>
                                   {
                                       m_Runing = true;
-                                      TypeModule.Inst.OnTypeChange(InnerTypeChangeHandle);
                                   }).Start();
                        }).Start();
             }
@@ -116,7 +108,6 @@ namespace XFrame.Core
                 m_Core.Start();
                 m_Custom.Start();
                 m_Runing = true;
-                TypeModule.Inst.OnTypeChange(InnerTypeChangeHandle);
             }
         }
 

@@ -35,7 +35,6 @@ namespace XFrame.Modules.Archives
             m_ArchiveTypes = new Dictionary<string, Type>();
 
             InnerInit();
-            TypeModule.Inst.OnTypeChange(InnerInit);
         }
 
         private void InnerInit()
