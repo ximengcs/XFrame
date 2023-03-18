@@ -37,6 +37,18 @@ namespace XFrame.Modules.Tasks
         }
 
         /// <summary>
+        /// 获取一个任务
+        /// </summary>
+        /// <typeparam name="T">任务类型</typeparam>
+        /// <returns>任务实例</returns>
+        public T Get<T>(string name) where T : ITask
+        {
+            if (m_TaskWithName.TryGetValue(name, out ITask task))
+                return (T)task;
+            return default;
+        }
+
+        /// <summary>
         /// 获取(不存在时创建)一个任务
         /// </summary>
         /// <typeparam name="T">任务类型</typeparam>
@@ -79,13 +91,12 @@ namespace XFrame.Modules.Tasks
             {
                 ITask task = m_Tasks[i];
                 if (task.IsStart)
-                {
                     task.OnUpdate();
-                    if (task.IsComplete)
-                    {
-                        m_Tasks.RemoveAt(i);
-                        m_TaskWithName.Remove(task.Name);
-                    }
+
+                if (task.IsComplete)
+                {
+                    m_Tasks.RemoveAt(i);
+                    m_TaskWithName.Remove(task.Name);
                 }
             }
         }
