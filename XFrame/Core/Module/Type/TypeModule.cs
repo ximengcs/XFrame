@@ -92,7 +92,11 @@ namespace XFrame.Modules.XType
         /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNewWithAttr<T>() where T : Attribute
         {
-            Type pType = typeof(T);
+            return GetOrNewWithAttr(typeof(T));
+        }
+
+        public TypeSystem GetOrNewWithAttr(Type pType)
+        {
             TypeSystem module;
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
@@ -101,7 +105,7 @@ namespace XFrame.Modules.XType
             m_ClassRegister.Add(pType, module);
             foreach (Type subType in m_Types)
             {
-                if (TypeUtility.HasAttribute<T>(subType))
+                if (TypeUtility.HasAttribute(subType, pType))
                     module.AddSubClass(subType);
             }
             return module;
@@ -115,7 +119,11 @@ namespace XFrame.Modules.XType
         /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNew<T>() where T : class
         {
-            Type pType = typeof(T);
+            return GetOrNew(typeof(T));
+        }
+
+        public TypeSystem GetOrNew(Type pType)
+        {
             TypeSystem module;
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;

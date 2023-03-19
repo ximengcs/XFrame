@@ -16,6 +16,12 @@ namespace XFrame.Modules.StateMachine
         public string Name => m_Name;
         public FsmState Current => m_Current;
 
+        internal void InnerAddState(FsmState state)
+        {
+            m_States[state.GetType()] = state;
+            state.OnInit(this);
+        }
+
         public TState GetState<TState>() where TState : FsmState
         {
             if (m_States.TryGetValue(typeof(TState), out FsmState state))

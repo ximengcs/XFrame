@@ -12,14 +12,24 @@ namespace XFrame.Utility
             return names[names.Length - 1];
         }
 
+        public static bool HasAttribute(object inst, Type type)
+        {
+            return HasAttribute(inst.GetType(), type);
+        }
+
+        public static bool HasAttribute(Type instType, Type type)
+        {
+            return Attribute.GetCustomAttribute(instType, type, true) != null;
+        }
+
         public static bool HasAttribute<T>(object inst) where T : Attribute
         {
-            return HasAttribute<T>(inst.GetType());
+            return HasAttribute(inst.GetType(), typeof(T));
         }
 
         public static bool HasAttribute<T>(Type type) where T : Attribute
         {
-            return Attribute.GetCustomAttribute(type, typeof(T), true) != null;
+            return HasAttribute(type, typeof(T));
         }
 
         public static T GetAttribute<T>(object inst) where T : Attribute

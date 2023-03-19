@@ -11,9 +11,9 @@ namespace XFrame.Core
         private static bool m_DoStart;
         private static bool m_Runing;
 
-        private static XCore m_Base;
-        private static XCore m_Core;
-        private static XCore m_Custom;
+        public static XCore m_Base;
+        public static XCore m_Core;
+        public static XCore m_Custom;
 
         private static Dictionary<Type, IEntryHandler> m_Handlers;
         #endregion
@@ -139,6 +139,16 @@ namespace XFrame.Core
             m_Core = null;
         }
 
+        public static void AddModules<T>() where T : Attribute
+        {
+            InnerInit<T>(m_Custom);
+        }
+
+        public static T AddModule<T>() where T : IModule
+        {
+            return (T)InnerAddModule(typeof(T), m_Custom);
+        }
+
         /// <summary>
         /// 获取模块
         /// </summary>
@@ -193,11 +203,11 @@ namespace XFrame.Core
                 InnerAddModule(type, target);
         }
 
-        private static void InnerAddModule(Type moduleType, XCore target)
+        private static IModule InnerAddModule(Type moduleType, XCore target)
         {
             IModule module = InnerGetModule(moduleType);
             if (module != null)
-                return;
+                return module;
 
             Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
             if (requires != null && requires.Length > 0)
@@ -209,7 +219,7 @@ namespace XFrame.Core
                 }
             }
 
-            target.Register(moduleType);
+            return target.Register(moduleType);
         }
 
         private static IModule InnerGetModule(Type moduleType)
