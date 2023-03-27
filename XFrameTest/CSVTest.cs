@@ -12,6 +12,7 @@ namespace XFrameTest
             Entry.Init();
             Entry.Start();
 
+            ///
             Csv<string> csv = new Csv<string>();
             Csv<string>.Line line1 = csv.Add();
             line1[0] = "0"; line1[2] = "2"; line1[3] = "3";
@@ -19,6 +20,10 @@ namespace XFrameTest
             Csv<string>.Line line2 = csv.Add();
             line2[0] = "20"; line2[2] = "22"; line2[3] = "23";
             Console.WriteLine(csv);
+            ///
+
+            Csv<string> csv3 = new Csv<string>(csv.ToString(), ParserModule.Inst.STRING);
+            Console.WriteLine(csv3.ToString());
 
             Entry.ShutDown();
         }
