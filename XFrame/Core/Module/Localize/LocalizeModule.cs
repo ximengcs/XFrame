@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using XFrame.Core;
+using XFrame.Collections;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Local
 {
@@ -12,11 +13,10 @@ namespace XFrame.Modules.Local
     [CoreModule]
     public class LocalizeModule : SingletonModule<LocalizeModule>
     {
-        private const int REQUIRE = 2;
-        private const string CSV_PATTERN = "(?:^|,)(?=[^\"]|(\")?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)";
-
+        private int m_Index;
+        private Csv<string> m_Data;
         private Language m_Language;
-        private Dictionary<int, string> m_Content;
+        private Dictionary<Language, int> m_LanguageIndex;
 
         protected override void OnInit(object data)
         {
@@ -33,6 +33,19 @@ namespace XFrame.Modules.Local
         }
 
         #region Interface
+        public Language Lang
+        {
+            get { return m_Language; }
+            set
+            {
+                if (m_Language != value)
+                {
+                    m_Language = value;
+                    InnerRefreshLang();
+                }
+            }
+        }
+
         /// <summary>
         /// 获取本地化值
         /// </summary>
@@ -41,10 +54,9 @@ namespace XFrame.Modules.Local
         /// <returns>值</returns>
         public string GetValue(int key, params object[] values)
         {
-            if (m_Content.ContainsKey(key))
-                return string.Format(m_Content[key], values);
-            else
-                return string.Empty;
+            Csv<string>.Line line = m_Data.Get(key);
+            string content = line[m_Index];
+            return string.Format(content, values);
         }
 
         /// <summary>
@@ -55,55 +67,32 @@ namespace XFrame.Modules.Local
         /// <returns>值</returns>
         public string GetValueParam(int key, params int[] args)
         {
-            if (m_Content.ContainsKey(key))
-            {
-                string result = m_Content[key];
-                foreach (int id in args)
-                    result = string.Format(result, GetValue(id));
-                return result;
-            }
-            else
-                return default;
+            Csv<string>.Line line = m_Data.Get(key);
+            string content = line[m_Index];
+            foreach (int id in args)
+                content = string.Format(content, GetValue(id));
+            return content;
         }
         #endregion
 
-        private void InnerInit(string csv, Language language)
+        private void InnerInit(string csvText, Language language)
         {
-            m_Language = language;
-            m_Content = new Dictionary<int, string>();
-            InnerAnalyze(csv);
+            m_LanguageIndex = new Dictionary<Language, int>();
+            m_Data = new Csv<string>(csvText, ParserModule.Inst.STRING);
+            Csv<string>.Line line = m_Data.Get(0);
+            EnumParser<Language> parser = new EnumParser<Language>();
+            for (int i = 0; i < line.Count; i++)
+            {
+                Language lang = parser.Parse(line[i]);
+                m_LanguageIndex[lang] = i;
+            }
+            Lang = language;
         }
 
-        private void InnerAnalyze(string csv)
+        private void InnerRefreshLang()
         {
-            string[] lines = csv.Split('\n');
-            MatchCollection languages = Regex.Matches(lines[0], CSV_PATTERN);
-            int langIndex = 1;
-            for (int i = langIndex; i < languages.Count; i++)
-            {
-                string value = languages[i].Groups[REQUIRE].Value;
-                if (value.StartsWith(m_Language.ToString()))
-                {
-                    langIndex = i;
-                    break;
-                }
-            }
-
-            if (langIndex > 0)
-            {
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    if (lines[i].Length < 2)
-                        continue;
-                    MatchCollection matchs = Regex.Matches(lines[i], CSV_PATTERN);
-                    if (matchs.Count < 2)
-                        continue;
-
-                    string numStr = matchs[0].Groups[REQUIRE].Value;
-                    string lanStr = matchs[langIndex].Groups[REQUIRE].Value;
-                    m_Content.Add(IntParser.Parse(numStr), lanStr);
-                }
-            }
+            if (!m_LanguageIndex.TryGetValue(m_Language, out m_Index))
+                Log.Debug("XFrame", "language map error.");
         }
     }
 }

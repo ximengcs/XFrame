@@ -1,8 +1,10 @@
 ﻿
 namespace XFrame.Core
 {
-    public interface IParser
+    public interface IParser<T>
     {
-        void Init(string pattern);
+        T Value { get; }
+
+        T Parse(string pattern);
     }
 }

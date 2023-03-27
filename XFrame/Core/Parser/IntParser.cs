@@ -1,32 +1,18 @@
-﻿
+﻿using XFrame.Modules.Diagnotics;
+
 namespace XFrame.Core
 {
-    public class IntParser : IParser
+    public class IntParser : IParser<int>
     {
-        private int m_Value;
+        public int Value { get; private set; }
 
-        public int Value
-        {
-            get { return m_Value; }
-            set { m_Value = value; }
-        }
-
-        public void Init(string pattern)
-        {
-            m_Value = Parse(pattern);
-        }
-
-        public static int Parse(string pattern)
+        public int Parse(string pattern)
         {
             if (int.TryParse(pattern, out int result))
-                return result;
+                Value = result;
             else
-                return default;
-        }
-
-        public static implicit operator int(IntParser parser)
-        {
-            return parser.Value;
+                Log.Error("Parse", "parse error");
+            return Value;
         }
     }
 }
