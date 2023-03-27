@@ -8,8 +8,11 @@ namespace XFrame.Collections
     /// <typeparam name="T">存储数据类型</typeparam>
     public class XLinkNode<T> : IPoolObject
     {
+        #region Inner Fields
         internal XLinkList<T> m_List;
+        #endregion
 
+        #region Interface
         /// <summary>
         /// 前一个节点，如果当前是头节点，则为null
         /// </summary>
@@ -46,7 +49,11 @@ namespace XFrame.Collections
             m_List = default;
         }
 
-
+        /// <summary>
+        /// 在此节点之前添加一个元素
+        /// </summary>
+        /// <param name="value">待添加的元素</param>
+        /// <returns>元素节点</returns>
         public XLinkNode<T> AddBefore(T value)
         {
             XLinkNode<T> node = new XLinkNode<T>();
@@ -65,6 +72,11 @@ namespace XFrame.Collections
             return node;
         }
 
+        /// <summary>
+        /// 在此节点之后添加一个元素
+        /// </summary>
+        /// <param name="value">元素</param>
+        /// <returns>元素节点</returns>
         public XLinkNode<T> AddAfter(T value)
         {
             XLinkNode<T> node = new XLinkNode<T>();
@@ -82,6 +94,7 @@ namespace XFrame.Collections
             m_List.Count++;
             return node;
         }
+        #endregion
 
         #region Pool Life Fun
         void IPoolObject.OnCreate()

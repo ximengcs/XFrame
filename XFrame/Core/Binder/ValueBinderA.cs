@@ -9,11 +9,14 @@ namespace XFrame.Core.Binder
     /// <typeparam name="T">持有数值类型</typeparam>
     public class ValueBinder<T> : IDisposable
     {
+        #region Inner Fields
         private Func<T> m_GetHandler;
         private Action<T> m_SetHandler;
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// 构造数值绑定器
         /// </summary>
@@ -25,7 +28,9 @@ namespace XFrame.Core.Binder
             m_SetHandler = setHandler;
             m_CondUpdateHandler = new List<Func<T, bool>>();
         }
+        #endregion
 
+        #region Interface
         /// <summary>
         /// 持有的数值
         /// </summary>
@@ -108,5 +113,6 @@ namespace XFrame.Core.Binder
         {
             return binder.Value;
         }
+        #endregion
     }
 }

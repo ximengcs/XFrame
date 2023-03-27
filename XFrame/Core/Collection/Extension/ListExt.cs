@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 namespace XFrame.Collections
 {
+    /// <summary>
+    /// 列表扩展类
+    /// </summary>
     public class ListExt
     {
+        /// <summary>
+        /// 前向迭代器
+        /// </summary>
+        /// <typeparam name="T">持有数据类型</typeparam>
         public struct ForwardIt<T> : IEnumerator<T>
         {
             private List<T> m_List;
@@ -38,6 +45,10 @@ namespace XFrame.Collections
             }
         }
 
+        /// <summary>
+        /// 后向迭代器
+        /// </summary>
+        /// <typeparam name="T">数据持有类型</typeparam>
         public struct BackwardIt<T> : IEnumerator<T>
         {
             private List<T> m_List;

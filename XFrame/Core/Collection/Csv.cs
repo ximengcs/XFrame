@@ -7,21 +7,31 @@ using System.Text.RegularExpressions;
 
 namespace XFrame.Collections
 {
+    /// <summary>
+    /// CSV
+    /// </summary>
+    /// <typeparam name="T">数据类型</typeparam>
     public partial class Csv<T> : IXEnumerable<Csv<T>.Line>
     {
+        #region Inner Fields
         private int m_Row;
         private int m_Column;
 
         private XLinkList<Line> m_Lines;
         private Dictionary<int, XLinkNode<Line>> m_LinesWithIndex;
+        #endregion
 
+        #region Const Fields
         private const int DEFAULT_COLUMN = 8;
         private const int REQUIRE = 2;
         private const string CSV_PATTERN = "(?:^|,)(?=[^\"]|(\")?)\"?((?(1)[^\"]*|[^,\"]*))\"?(?=,|$)";
+        #endregion
 
-        public int Row => m_Row;
-        public int Column => m_Column;
-
+        #region Constructor
+        /// <summary>
+        /// 构造一个 <paramref name="column"/> 列的Csv
+        /// </summary>
+        /// <param name="column"></param>
         public Csv(int column = DEFAULT_COLUMN)
         {
             m_Column = column;
@@ -29,13 +39,34 @@ namespace XFrame.Collections
             m_LinesWithIndex = new Dictionary<int, XLinkNode<Line>>();
         }
 
+        /// <summary>
+        /// 通过 <paramref name="content"/> 构造Csv
+        /// </summary>
+        /// <param name="content">Csv文本内容</param>
+        /// <param name="parser">解析器</param>
         public Csv(string content, IParser<T> parser)
         {
             m_Lines = new XLinkList<Line>();
             m_LinesWithIndex = new Dictionary<int, XLinkNode<Line>>();
             InnerInit(content, parser);
         }
+        #endregion
 
+        #region Interface
+        /// <summary>
+        /// 行
+        /// </summary>
+        public int Row => m_Row;
+
+        /// <summary>
+        /// 列
+        /// </summary>
+        public int Column => m_Column;
+
+        /// <summary>
+        /// 在尾部添加一行
+        /// </summary>
+        /// <returns>行数据</returns>
         public Line Add()
         {
             m_Row++;
@@ -45,11 +76,22 @@ namespace XFrame.Collections
             return line;
         }
 
+        /// <summary>
+        /// 在第 <paramref name="row"/> 行之前插入一行
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <returns>行数据</returns>
         public Line Insert(int row)
         {
             return Insert(row, new Line(m_Column));
         }
 
+        /// <summary>
+        /// 在第 <paramref name="row"/> 行之前插入 <paramref name="line"/> 数据行
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="line">行数据</param>
+        /// <returns>行数据</returns>
         public Line Insert(int row, Line line)
         {
             if (line.Count != m_Column)
@@ -73,6 +115,10 @@ namespace XFrame.Collections
             return line;
         }
 
+        /// <summary>
+        /// 删除第 <paramref name="row"/> 行数据
+        /// </summary>
+        /// <param name="row">行</param>
         public void Delete(int row)
         {
             if (m_LinesWithIndex.TryGetValue(row, out XLinkNode<Line> node))
@@ -82,6 +128,11 @@ namespace XFrame.Collections
             }
         }
 
+        /// <summary>
+        /// 获取第 <paramref name="row"/> 行数据
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <returns>行数据</returns>
         public Line Get(int row)
         {
             if (row < 0)
@@ -89,6 +140,12 @@ namespace XFrame.Collections
             return m_LinesWithIndex[row].Value;
         }
 
+        /// <summary>
+        /// 获取第 <paramref name="row"/> 行第 <paramref name="column"/> 列的数据
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="column">列</param>
+        /// <returns>数据</returns>
         public T Get(int row, int column)
         {
             if (row < 0 || row >= m_Row)
@@ -98,7 +155,22 @@ namespace XFrame.Collections
                 Log.Debug("CSV", $"get csv data error.column out of bounds. cur {column} max {rowContent.Count}");
             return rowContent[column];
         }
+        #endregion
 
+
+        #region IXEnumerable Interface
+        public IEnumerator<Line> GetEnumerator()
+        {
+            return new Enumerator(m_Lines);
+        }
+
+        public void SetIt(XItType type)
+        {
+            m_Lines.SetIt(type);
+        }
+        #endregion
+
+        #region Inner Implement
         private void InnerRefreshMap()
         {
             int column = 1;
@@ -143,16 +215,7 @@ namespace XFrame.Collections
                 m_LinesWithIndex.Add(i + 1, node);
             }
         }
-
-        public IEnumerator<Line> GetEnumerator()
-        {
-            return new Enumerator(m_Lines);
-        }
-
-        public void SetIt(XItType type)
-        {
-            m_Lines.SetIt(type);
-        }
+        #endregion
 
         public override string ToString()
         {

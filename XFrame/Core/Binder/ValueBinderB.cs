@@ -10,11 +10,14 @@ namespace XFrame.Core.Binder
     /// <typeparam name="VT">监听绑定器类型</typeparam>
     public class ValueBinder<T, VT> : IDisposable
     {
+        #region Inner Fields
         private ValueBinder<VT> m_ChangeBinder;
         private Func<T> m_GetHandler;
         private Action<T> m_UpdateHandler;
         private List<Func<T, bool>> m_CondUpdateHandler;
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// 构造数值绑定器
         /// </summary>
@@ -27,7 +30,9 @@ namespace XFrame.Core.Binder
             m_ChangeBinder = changeBinder;
             m_ChangeBinder.AddHandler(InnerHandleChange);
         }
+        #endregion
 
+        #region Interface
         /// <summary>
         /// 持有的数值
         /// </summary>
@@ -110,5 +115,6 @@ namespace XFrame.Core.Binder
         {
             return binder.Value;
         }
+        #endregion
     }
 }

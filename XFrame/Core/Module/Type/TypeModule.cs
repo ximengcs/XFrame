@@ -3,8 +3,6 @@ using XFrame.Core;
 using XFrame.Utility;
 using System.Reflection;
 using System.Collections.Generic;
-using XFrame.Modules.Diagnotics;
-using System.Diagnostics;
 
 namespace XFrame.Modules.XType
 {

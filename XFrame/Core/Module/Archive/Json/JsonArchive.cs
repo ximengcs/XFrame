@@ -10,8 +10,10 @@ namespace XFrame.Modules.Archives
     [Archive("json")]
     public class JsonArchive : IArchive
     {
+        #region Inner Fields
         private string m_Path;
         private JSONNode m_Root;
+        #endregion
 
         #region Value Interface
         /// <summary>

@@ -82,8 +82,6 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
-
-
         /// <summary>
         /// 获取或创建一个存档实例
         /// </summary>

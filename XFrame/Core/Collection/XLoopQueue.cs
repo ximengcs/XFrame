@@ -9,12 +9,29 @@ namespace XFrame.Collections
     /// <typeparam name="T">持有的数据类型</typeparam>
     public partial class XLoopQueue<T> : IXEnumerable<T>
     {
+        #region Inner Fields
         private int m_Capacity;
         private T[] m_Objects;
         private int m_L;
         private int m_R;
         private XItType m_ItType;
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// 循环队列
+        /// </summary>
+        /// <param name="capacity">队列容量</param>
+        public XLoopQueue(int capacity)
+        {
+            m_L = 0;
+            m_R = 0;
+            m_Capacity = capacity;
+            m_Objects = new T[m_Capacity];
+        }
+        #endregion
+
+        #region Interface
         /// <summary>
         /// 容量
         /// </summary>
@@ -29,18 +46,6 @@ namespace XFrame.Collections
         /// 队列是否满
         /// </summary>
         public bool Full => (m_R + 1) % m_Capacity == m_L;
-
-        /// <summary>
-        /// 循环队列
-        /// </summary>
-        /// <param name="capacity">队列容量</param>
-        public XLoopQueue(int capacity)
-        {
-            m_L = 0;
-            m_R = 0;
-            m_Capacity = capacity;
-            m_Objects = new T[m_Capacity];
-        }
 
         /// <summary>
         /// 从队列前端添加一个元素
@@ -131,7 +136,9 @@ namespace XFrame.Collections
         {
             return m_Objects[m_R];
         }
+        #endregion
 
+        #region IXEnumerable Interface
         public IEnumerator<T> GetEnumerator()
         {
             switch (m_ItType)
@@ -146,5 +153,6 @@ namespace XFrame.Collections
         {
             m_ItType = type;
         }
+        #endregion
     }
 }
