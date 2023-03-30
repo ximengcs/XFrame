@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using XFrame.Collections;
+using XFrame.Core;
 
 namespace XFrame.Modules.Archives
 {
@@ -19,6 +20,16 @@ namespace XFrame.Modules.Archives
         void IArchive.OnInit(string path)
         {
             m_Path = path;
+
+            if (File.Exists(m_Path))
+            {
+                string text = File.ReadAllText(m_Path);
+                m_Csv = new Csv<string>(text, ParserModule.Inst.STRING);
+            }
+            else
+            {
+                m_Csv = new Csv<string>();
+            }
         }
 
         public void Delete()
