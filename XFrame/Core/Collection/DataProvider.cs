@@ -3,17 +3,28 @@ using System.Collections.Generic;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 简单数据提供者
+    /// </summary>
     public class DataProvider : IDataProvider
     {
+        #region Inner Fileds
         private Dictionary<Type, object> m_MainDatas;
         private Dictionary<Type, Dictionary<string, object>> m_Datas;
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// 构造器
+        /// </summary>
         public DataProvider()
         {
             m_MainDatas = new Dictionary<Type, object>();
             m_Datas = new Dictionary<Type, Dictionary<string, object>>();
         }
+        #endregion
 
+        #region IDataProvider Interface
         public T GetData<T>() where T : class
         {
             if (m_MainDatas.TryGetValue(typeof(T), out object value))
@@ -58,5 +69,6 @@ namespace XFrame.Core
             m_MainDatas = null;
             m_Datas = null;
         }
+        #endregion
     }
 }

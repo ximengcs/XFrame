@@ -2,6 +2,9 @@
 
 namespace XFrame.Modules.Config
 {
+    /// <summary>
+    /// 模块配置
+    /// </summary>
     public static class XConfig
     {
         /// <summary>

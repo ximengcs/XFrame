@@ -9,18 +9,18 @@ namespace XFrame.Collections
     /// <typeparam name="T">持有的数据类型</typeparam>
     public partial class XCollection<T> : IXEnumerable<T> where T : IXItem
     {
+        #region Const Fields
         private const int DEFAULT_CAPACITY = 16;
+        #endregion
 
+        #region Inner Fields
         private Dictionary<Type, Dictionary<int, T>> m_WithTypes;
         private Dictionary<Type, T> m_Mains;
         private XLinkList<T> m_Elements;
         private Dictionary<Type, XLinkNode<T>> m_NodeMap;
+        #endregion
 
-        /// <summary>
-        /// 元素数量
-        /// </summary>
-        public int Count => m_Elements.Count;
-
+        #region Constructor
         /// <summary>
         /// 构造集合
         /// </summary>
@@ -31,6 +31,13 @@ namespace XFrame.Collections
             m_Elements = new XLinkList<T>(false);
             m_NodeMap = new Dictionary<Type, XLinkNode<T>>(startCapacity);
         }
+        #endregion
+
+        #region Interface
+        /// <summary>
+        /// 元素数量
+        /// </summary>
+        public int Count => m_Elements.Count;
 
         /// <summary>
         /// 添加一个元素 时间复杂度O(1)
@@ -119,6 +126,11 @@ namespace XFrame.Collections
                 return default;
         }
 
+        /// <summary>
+        /// 获取给定类型的第一个添加到集合中的元素
+        /// </summary>
+        /// <param name="elementType">类型</param>
+        /// <returns>获取到的元素</returns>
         public T Get(Type elementType)
         {
             if (m_Mains.TryGetValue(elementType, out T entity))
@@ -148,19 +160,18 @@ namespace XFrame.Collections
                     return entity;
             return default;
         }
+        #endregion
 
+        #region IXEnumerable Interface
         public void SetIt(XItType type)
         {
             m_Elements.SetIt(type);
         }
 
-        /// <summary>
-        /// 获取迭代器
-        /// </summary>
-        /// <returns>正向迭代器</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new Enumerator(m_Elements);
         }
+        #endregion
     }
 }

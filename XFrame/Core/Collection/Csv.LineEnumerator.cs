@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace XFrame.Collections
 {
-    public partial class Csv
+    public partial class Csv<T>
     {
-        private struct LineForwardIt : IEnumerator<string>
+        private struct LineForwardIt : IEnumerator<T>
         {
-            private string[] m_Lines;
+            private T[] m_Lines;
             private int m_Index;
 
-            public string Current => m_Lines[m_Index];
+            public T Current => m_Lines[m_Index];
 
             object IEnumerator.Current => Current;
 
-            public LineForwardIt(string[] line)
+            public LineForwardIt(T[] line)
             {
                 m_Lines = line;
                 m_Index = -1;

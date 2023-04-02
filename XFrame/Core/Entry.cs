@@ -18,7 +18,7 @@ namespace XFrame.Core
         private static Dictionary<Type, IEntryHandler> m_Handlers;
         #endregion
 
-        #region Life Fun
+        #region Interface
         /// <summary>
         /// 初始化核心模块
         /// </summary>
@@ -63,6 +63,10 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 添加处理器
+        /// </summary>
+        /// <typeparam name="T">处理器类型</typeparam>
         public static void AddHandler<T>() where T : IEntryHandler
         {
             Type type = typeof(T);
@@ -139,11 +143,20 @@ namespace XFrame.Core
             m_Core = null;
         }
 
+        /// <summary>
+        /// 添加用户定制模块组
+        /// </summary>
+        /// <typeparam name="T">模块组特性类型</typeparam>
         public static void AddModules<T>() where T : Attribute
         {
             InnerInit<T>(m_Custom);
         }
 
+        /// <summary>
+        /// 添加用户定制模块
+        /// </summary>
+        /// <typeparam name="T">模块类型</typeparam>
+        /// <returns>模块</returns>
         public static T AddModule<T>() where T : IModule
         {
             return (T)InnerAddModule(typeof(T), m_Custom);

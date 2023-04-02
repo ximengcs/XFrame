@@ -4,6 +4,9 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Utility
 {
+    /// <summary>
+    /// 路径常用方法
+    /// </summary>
     public class PathUtility
     {
         public static int CheckFileName(string fullPath, out string thisName, out string suplusName)

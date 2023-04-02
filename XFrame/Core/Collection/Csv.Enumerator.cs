@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Collections
 {
-    public partial class Csv
+    public partial class Csv<T>
     {
         private struct Enumerator : IEnumerator<Line>
         {

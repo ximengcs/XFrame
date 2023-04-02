@@ -1,47 +1,45 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Core
 {
-    public class ArrayParser<T> : IEnumerable<T> where T : IParser
+    public class ArrayParser<T, VT> : IParser<XLinkList<T>> where T : IParser<VT>
     {
         private const char SPLIT = ',';
-        private T[] m_Patterns;
+        private char m_Split;
 
-        public ArrayParser(string patterns)
+        public XLinkList<T> Value { get; private set; }
+
+        public char SplitChar
         {
-            string[] pArray = patterns.Split(SPLIT);
-            m_Patterns = new T[pArray.Length];
+            get { return m_Split != 0 ? m_Split : SPLIT; }
+            set { m_Split = value; }
+        }
+
+        public XLinkList<T> Parse(string pattern)
+        {
+            string[] pArray = pattern.Split(SplitChar);
+            Value = new XLinkList<T>();
+            Type type = typeof(T);
             for (int i = 0; i < pArray.Length; i++)
             {
-                T parser = Activator.CreateInstance<T>();
-                parser.Init(pArray[i]);
-                m_Patterns[i] = parser;
+                T parser = (T)Activator.CreateInstance(type);
+                parser.Parse(pArray[i]);
+                Value.AddLast(parser);
             }
+
+            return Value;
         }
 
-        public T this[int index] { get { return m_Patterns[index]; } }
-
-        public int Count { get { return m_Patterns.Length; } }
-
-        public bool Empty { get { return m_Patterns.Length == 0; } }
-
-        public T Main { get { return m_Patterns[0]; } }
-
-        public T Get(int index)
+        public bool Has(VT value)
         {
-            return m_Patterns[index];
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return (IEnumerator<T>)m_Patterns.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return m_Patterns.GetEnumerator();
+            foreach (XLinkNode<T> node in Value)
+            {
+                VT other = node.Value.Value;
+                if (other != null && other.Equals(value))
+                    return true;
+            }
+            return false;
         }
     }
 }

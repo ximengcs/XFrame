@@ -12,43 +12,17 @@ namespace XFrame.Collections
     /// <typeparam name="T"></typeparam>
     public partial class XLinkList<T> : IXEnumerable<XLinkNode<T>>
     {
+        #region Inner Fields
         private IPool<XLinkNode<T>> m_NodePool;
         private XLinkNode<T> m_First;
         private XLinkNode<T> m_Last;
         private int m_Count;
         private XItType m_ItType;
 
-        /// <summary>
-        /// 链表第一个节点
-        /// </summary>
-        public XLinkNode<T> First
-        {
-            get { return m_First; }
-            internal set { m_First = value; }
-        }
-
-        /// <summary>
-        /// 链表最后一个节点
-        /// </summary>
-        public XLinkNode<T> Last
-        {
-            get { return m_Last; }
-            internal set { m_First = value; }
-        }
-
-        /// <summary>
-        /// 链表节点数量
-        /// </summary>
-        public int Count
-        {
-            get { return m_Count; }
-            internal set { m_Count = value; }
-        }
-
-        public bool Empty => m_Count == 0;
-
         internal IPool<XLinkNode<T>> NodePool => m_NodePool;
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// 构造一个链表
         /// usePool 内部使用一个所给容量的对象池
@@ -95,7 +69,45 @@ namespace XFrame.Collections
             m_Count++;
             return node;
         }
+        #endregion
 
+        #region Interface
+        /// <summary>
+        /// 链表第一个节点
+        /// </summary>
+        public XLinkNode<T> First
+        {
+            get { return m_First; }
+            internal set { m_First = value; }
+        }
+
+        /// <summary>
+        /// 链表最后一个节点
+        /// </summary>
+        public XLinkNode<T> Last
+        {
+            get { return m_Last; }
+            internal set { m_First = value; }
+        }
+
+        /// <summary>
+        /// 链表节点数量
+        /// </summary>
+        public int Count
+        {
+            get { return m_Count; }
+            internal set { m_Count = value; }
+        }
+
+        /// <summary>
+        /// 是否空
+        /// </summary>
+        public bool Empty => m_Count == 0;
+
+        /// <summary>
+        /// 尾部插入一个节点
+        /// </summary>
+        /// <param name="node">节点</param>
         public void AddLast(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -116,6 +128,10 @@ namespace XFrame.Collections
             m_Count++;
         }
 
+        /// <summary>
+        /// 移除第一个节点
+        /// </summary>
+        /// <returns>移除掉的数据</returns>
         public T RemoveFirst()
         {
             if (m_First == null)
@@ -137,6 +153,10 @@ namespace XFrame.Collections
             return value;
         }
 
+        /// <summary>
+        /// 移除第一个节点
+        /// </summary>
+        /// <returns>移除的节点</returns>
         public XLinkNode<T> RemoveFirstNode()
         {
             if (m_First == null)
@@ -191,6 +211,10 @@ namespace XFrame.Collections
             return node;
         }
 
+        /// <summary>
+        /// 在一个节点之前插入一个节点
+        /// </summary>
+        /// <param name="node"></param>
         public void AddFirst(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -212,6 +236,10 @@ namespace XFrame.Collections
             m_Count++;
         }
 
+        /// <summary>
+        /// 移除最后一个元素
+        /// </summary>
+        /// <returns>移除的元素</returns>
         public T RemoveLast()
         {
             if (m_Last == null)
@@ -233,6 +261,10 @@ namespace XFrame.Collections
             return value;
         }
 
+        /// <summary>
+        /// 移除最后一个节点
+        /// </summary>
+        /// <returns>移除的节点</returns>
         public XLinkNode<T> RemoveLastNode()
         {
             if (m_Last == null)
@@ -254,6 +286,10 @@ namespace XFrame.Collections
             return node;
         }
 
+        /// <summary>
+        /// 移除一个元素
+        /// </summary>
+        /// <param name="value">待移除的元素</param>
         public void Remove(T value)
         {
             foreach (XLinkNode<T> node in this)
@@ -266,6 +302,9 @@ namespace XFrame.Collections
             }
         }
 
+        /// <summary>
+        /// 清除链表
+        /// </summary>
         public void Clear()
         {
             if (m_NodePool != null)
@@ -280,6 +319,16 @@ namespace XFrame.Collections
             m_Count = 0;
         }
 
+        /// <summary>
+        /// 释放Node池
+        /// </summary>
+        public void Dispose()
+        {
+            m_NodePool?.Dispose();
+        }
+        #endregion
+
+        #region IXEnumerable Interface
         public void SetIt(XItType type)
         {
             m_ItType = type;
@@ -294,14 +343,7 @@ namespace XFrame.Collections
                 default: return default;
             }
         }
-
-        /// <summary>
-        /// 释放Node池
-        /// </summary>
-        public void Dispose()
-        {
-            m_NodePool?.Dispose();
-        }
+        #endregion
     }
 
 }
