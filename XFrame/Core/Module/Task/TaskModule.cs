@@ -4,6 +4,7 @@ using XFrame.Module.Rand;
 using XFrame.Modules.Pools;
 using System.Collections.Generic;
 using XFrame.Modules.Times;
+using System.Diagnostics;
 
 namespace XFrame.Modules.Tasks
 {
@@ -18,10 +19,14 @@ namespace XFrame.Modules.Tasks
     {
         private List<ITask> m_Tasks;
         private Dictionary<string, ITask> m_TaskWithName;
+        private const long DEFAULT_TIMEOUT = 10;
+
+        public long TaskTimeout { get; set; }
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
+            TaskTimeout = DEFAULT_TIMEOUT;
             m_Tasks = new List<ITask>();
             m_TaskWithName = new Dictionary<string, ITask>();
         }
@@ -87,8 +92,11 @@ namespace XFrame.Modules.Tasks
         {
             base.OnUpdate(escapeTime);
 
+            long timeout = 0;
+            Stopwatch sw = new Stopwatch();
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
             {
+                sw.Restart();
                 ITask task = m_Tasks[i];
                 if (task.IsStart)
                     task.OnUpdate();
@@ -98,6 +106,10 @@ namespace XFrame.Modules.Tasks
                     m_Tasks.RemoveAt(i);
                     m_TaskWithName.Remove(task.Name);
                 }
+                sw.Stop();
+                timeout += sw.ElapsedMilliseconds;
+                if (timeout >= TaskTimeout)
+                    break;
             }
         }
     }

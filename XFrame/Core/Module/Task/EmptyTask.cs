@@ -68,7 +68,7 @@ namespace XFrame.Modules.Tasks
 
         public void Delete()
         {
-            throw new NotImplementedException();
+
         }
     }
 }
