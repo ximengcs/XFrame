@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using XFrame.Core;
 
 namespace XFrame.Modules.Tasks
 {
@@ -7,7 +8,7 @@ namespace XFrame.Modules.Tasks
     /// 空任务
     /// 这个任务总是处于完成状态
     /// </summary>
-    public class EmptyTask : ITask
+    public class EmptyTask : Singleton<EmptyTask>, ITask
     {
         private Action m_Complete;
         private Action<float> m_Update;
@@ -61,9 +62,7 @@ namespace XFrame.Modules.Tasks
 
         public Task Coroutine()
         {
-            Task task = new Task(() => { });
-            task.Start();
-            return task;
+            return Task.CompletedTask;
         }
 
         public void Delete()

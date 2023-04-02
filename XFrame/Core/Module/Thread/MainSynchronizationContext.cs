@@ -1,8 +1,8 @@
 ﻿using System;
 using XFrame.Core;
 using System.Threading;
+using System.Diagnostics;
 using System.Collections.Generic;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Threads
 {
@@ -13,6 +13,12 @@ namespace XFrame.Modules.Threads
     {
         private int m_MainThread;
         private Queue<Action> m_ActQueue;
+        private const long DEFAULT_TIMEOUT = 10;
+
+        /// <summary>
+        /// 最大超时(毫秒)
+        /// </summary>
+        public long ExecTimeout { get; set; }
 
         public int Id => default;
 
@@ -20,6 +26,7 @@ namespace XFrame.Modules.Threads
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
             m_ActQueue = new Queue<Action>();
+            ExecTimeout = DEFAULT_TIMEOUT;
             SetSynchronizationContext(this);
         }
 
@@ -34,7 +41,19 @@ namespace XFrame.Modules.Threads
                 return;
 
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
-                m_ActQueue.Dequeue()();
+            {
+                long timeout = 0;
+                Stopwatch sw = new Stopwatch();
+                while (m_ActQueue.Count > 0)
+                {
+                    sw.Restart();
+                    m_ActQueue.Dequeue()();
+                    sw.Stop();
+                    timeout += sw.ElapsedMilliseconds;
+                    if (timeout >= ExecTimeout)
+                        break;
+                }
+            }
         }
 
         void IModule.OnDestroy()
