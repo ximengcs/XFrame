@@ -1,4 +1,7 @@
-﻿using XFrame.Core;
+﻿using System;
+using XFrame.Core;
+using XFrame.Modules.XType;
+using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
@@ -7,32 +10,49 @@ namespace XFrame.Modules.Datas
     /// <summary>
     /// 数据模块
     /// </summary>
+    [XModule]
     public class DataModule : SingletonModule<DataModule>
     {
         #region Life Fun
-        private DataTableHelper m_Helper;
+        private IDataHelper m_Helper;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Helper = new DataTableHelper();
+
+            if (!string.IsNullOrEmpty(XConfig.DefaultDataTableHelper))
+            {
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultDataTableHelper);
+                if (type != null)
+                    m_Helper = (IDataHelper)Activator.CreateInstance(type);
+            }
+
+            if (m_Helper == null)
+                m_Helper = new DefaultDataHelper();
+            m_Helper.OnInit();
         }
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 添加数据表
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <param name="json">需要被序列化的数据</param>
+        /// <returns>数据表接口实例</returns>
         public IDataTable<T> Add<T>(string json) where T : IDataRaw
         {
-            return m_Helper.AddTable<T, DataTable<T>>(json);
+            return (IDataTable<T>)m_Helper.Add(json, typeof(T));
         }
 
-        public IDataTable<T> AddConfig<T>(string json) where T : IDataRaw
-        {
-            return m_Helper.AddConfigTable<T, ConfigTable<T>>(json);
-        }
-
+        /// <summary>
+        /// 获取数据表(第一个添加的数据表)
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <returns>数据表接口实例</returns>
         public IDataTable<T> Get<T>() where T : IDataRaw
         {
-            if (m_Helper.TryGetList<T>(out List<IDataTable> datas))
+            if (m_Helper.TryGet(typeof(T), out List<IDataTable> datas))
             {
                 return (IDataTable<T>)datas[default];
             }
@@ -43,11 +63,17 @@ namespace XFrame.Modules.Datas
             }
         }
 
-        public IDataTable<T> Get<T>(int tableId) where T : IDataRaw
+        /// <summary>
+        /// 获取数据表
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <param name="tableIndex">数据表位置(当有多个同类型的数据表时，用此位置可区分)</param>
+        /// <returns>数据表接口实例</returns>
+        public IDataTable<T> Get<T>(int tableIndex) where T : IDataRaw
         {
-            if (m_Helper.TryGetList<T>(out List<IDataTable> datas))
+            if (m_Helper.TryGet(typeof(T), out List<IDataTable> datas))
             {
-                return (IDataTable<T>)datas[tableId - 1];
+                return (IDataTable<T>)datas[tableIndex];
             }
             else
             {
@@ -56,32 +82,56 @@ namespace XFrame.Modules.Datas
             }
         }
 
+        /// <summary>
+        /// 获取数据表默认项数据(第一个添加的数据表)
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <returns>数据</returns>
         public T GetOne<T>() where T : IDataRaw
         {
-            return GetOne<T>(1);
+            return GetOne<T>(default);
         }
 
-        public T GetOne<T>(int tableId) where T : IDataRaw
+        /// <summary>
+        /// 获取数据表默认项数据
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <param name="tableIndex">数据表位置(当有多个同类型的数据表时，用此位置可区分)</param>
+        /// <returns>数据</returns>
+        public T GetOne<T>(int tableIndex) where T : IDataRaw
         {
-            IDataTable<T> datas = Get<T>(tableId);
-            return datas.Get();
+            IDataTable<T> table = Get<T>(tableIndex);
+            return table.Get();
         }
 
-        public T GetItem<T>(int tableId) where T : IDataRaw
+        /// <summary>
+        /// 获取数据表数据项
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <param name="itemId">数据项Id</param>
+        /// <returns>数据</returns>
+        public T GetItem<T>(int itemId) where T : IDataRaw
         {
             IDataTable<T> table = Get<T>();
             if (table != null)
-                return table.Get(tableId);
+                return table.Get(itemId);
             else
             {
-                Log.Error("XFrame", $"DataManager GetItem Error {typeof(DataTable<T>).Name} {tableId}");
+                Log.Error("XFrame", $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
                 return default;
             }
         }
 
-        public T GetItem<T>(int tableId, int itemId) where T : IDataRaw
+        /// <summary>
+        /// 获取数据表数据项
+        /// </summary>
+        /// <typeparam name="T">数据表持有数据类型</typeparam>
+        /// <param name="tableIndex">数据表位置(当有多个同类型的数据表时，用此位置可区分)</param>
+        /// <param name="itemId">数据项Id</param>
+        /// <returns>数据</returns>
+        public T GetItem<T>(int tableIndex, int itemId) where T : IDataRaw
         {
-            IDataTable<T> table = Get<T>(tableId);
+            IDataTable<T> table = Get<T>(tableIndex);
             if (table != null)
                 return table.Get(itemId);
             else

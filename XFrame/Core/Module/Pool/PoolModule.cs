@@ -22,16 +22,20 @@ namespace XFrame.Modules.Pools
 
         #region Interface
         /// <summary>
-        /// 创建或获取一个给定容量的对象池系统
+        /// 创建或获取一个对象池
         /// </summary>
         /// <typeparam name="T">对象池持有类型</typeparam>
-        /// <param name="capacity">对象池系统容量</param>
-        /// <returns>获取到的对象池系统</returns>
+        /// <returns>对象池</returns>
         public IPool<T> GetOrNew<T>() where T : IPoolObject
         {
             return InnerGetOrNew(typeof(T)) as IPool<T>;
         }
 
+        /// <summary>
+        /// 创建或获取一个对象池
+        /// </summary>
+        /// <param name="objType">对象池持有数据类型</param>
+        /// <returns>对象池</returns>
         public IPool GetOrNew(Type objType)
         {
             return InnerGetOrNew(objType);

@@ -10,13 +10,16 @@ namespace XFrame.Modules.XType
     /// </summary>
     public class TypeSystem : IXEnumerable<Type>
     {
+        #region Inner Fields
         private XItType m_ItType;
         private Type m_MainType;
         private List<Type> m_AllTypes;
         private Dictionary<Type, TypeSystem> m_Classifyes;
         private Dictionary<int, Type> m_KeyTypes;
         private Dictionary<string, Type> m_NameTypes;
+        #endregion
 
+        #region Inner Imeplement
         internal TypeSystem(Type mainType)
         {
             m_MainType = mainType;
@@ -25,6 +28,13 @@ namespace XFrame.Modules.XType
             m_KeyTypes = new Dictionary<int, Type>();
             m_NameTypes = new Dictionary<string, Type>();
         }
+
+        internal void AddSubClass(Type type)
+        {
+            m_AllTypes.Add(type);
+            m_NameTypes[type.FullName] = type;
+        }
+        #endregion
 
         #region Interface
         /// <summary>
@@ -130,11 +140,5 @@ namespace XFrame.Modules.XType
             return m_AllTypes.ToArray();
         }
         #endregion
-
-        internal void AddSubClass(Type type)
-        {
-            m_AllTypes.Add(type);
-            m_NameTypes[type.FullName] = type;
-        }
     }
 }

@@ -41,7 +41,6 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 获取一个对象
         /// </summary>
-        /// <typeparam name="T">对象类型</typeparam>
         /// <param name="obj">请求的对象</param>
         /// <returns>是否是新创建的对象，返回false表示从对象池中创建</returns>
         bool Require(out T obj);

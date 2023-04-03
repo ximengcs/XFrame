@@ -51,5 +51,15 @@ namespace XFrame.Modules.Config
         /// 默认下载辅助器
         /// </summary>
         public static string DefaultDownloadHelper;
+
+        /// <summary>
+        /// 默认数据表辅助器
+        /// </summary>
+        public static string DefaultDataTableHelper;
+
+        /// <summary>
+        /// 默认加密辅助器
+        /// </summary>
+        public static string DefaultCryptor;
     }
 }

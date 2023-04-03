@@ -11,15 +11,20 @@ namespace XFrame.Modules.Threads
     /// </summary>
     public class MainSynchronizationContext : SynchronizationContext, IModule
     {
+        #region Inner Fields
         private int m_MainThread;
         private Queue<Action> m_ActQueue;
         private const long DEFAULT_TIMEOUT = 10;
+        #endregion
 
+        #region Interface
         /// <summary>
         /// 最大超时(毫秒)
         /// </summary>
         public long ExecTimeout { get; set; }
+        #endregion
 
+        #region IModule Life Fun
         public int Id => default;
 
         void IModule.OnInit(object data)
@@ -60,10 +65,13 @@ namespace XFrame.Modules.Threads
         {
 
         }
+        #endregion
 
+        #region System Life Fun
         public override void Post(SendOrPostCallback d, object state)
         {
             m_ActQueue.Enqueue(() => d(state));
         }
+        #endregion
     }
 }

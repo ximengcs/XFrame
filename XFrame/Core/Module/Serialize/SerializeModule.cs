@@ -27,6 +27,17 @@ namespace XFrame.Modules.Serialize
         /// <summary>
         /// 反序列化
         /// </summary>
+        /// <param name="json">json本文</param>
+        /// <param name="type">目标类型</param>
+        /// <returns>序列化到的对象</returns>
+        public object DeserializeJsonToObject(string json, Type type)
+        {
+            return m_JsonHelper.Deserialize(json, type);
+        }
+
+        /// <summary>
+        /// 反序列化
+        /// </summary>
         /// <typeparam name="T">目标类型</typeparam>
         /// <param name="json">json本文</param>
         /// <returns>序列化到的对象</returns>
@@ -44,6 +55,7 @@ namespace XFrame.Modules.Serialize
         {
             return m_JsonHelper.Serialize(obj);
         }
+
         #endregion
 
         private void InnerInit(Type type)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using XFrame.Collections;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Datas
 {
@@ -7,13 +8,18 @@ namespace XFrame.Modules.Datas
     /// </summary>
     public interface IDataTable
     {
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        /// <param name="data">数据</param>
+        internal void OnInit(object data);
     }
 
     /// <summary>
     /// 数据表
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IDataTable<T> : IDataTable, IEnumerable<T> where T : IDataRaw
+    public interface IDataTable<T> : IDataTable, IXEnumerable<T> where T : IDataRaw
     {
         /// <summary>
         /// 数据个数
@@ -38,7 +44,8 @@ namespace XFrame.Modules.Datas
         /// </summary>
         /// <param name="name">数据项名</param>
         /// <param name="value">符合的值</param>
-        /// <returns>数据列表</returns>
-        List<T> Select(string name, int value);
+        /// <param name="target">结果存放列表</param>
+        /// <returns>检索到的数据项</returns>
+        int Select(string name, object value, List<T> target);
     }
 }

@@ -11,17 +11,17 @@ namespace XFrameTest
 
         public void Error(params object[] content)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(content[0]);
         }
 
         public void Fatal(params object[] content)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(content[0]);
         }
 
         public void Warning(params object[] content)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(content[0]);
         }
     }
 }

@@ -11,11 +11,14 @@ namespace XFrame.Modules.XType
     /// </summary>
     public partial class TypeModule : SingletonModule<TypeModule>
     {
+        #region Inner Fields
         private Action m_OnTypeChange;
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
+        #endregion
 
+        #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -27,7 +30,9 @@ namespace XFrame.Modules.XType
             base.OnDestroy();
             m_OnTypeChange = null;
         }
+        #endregion
 
+        #region Inner Imeplement
         private void InnerAssemblyUpdateHandle()
         {
             InnerInit();
@@ -50,8 +55,13 @@ namespace XFrame.Modules.XType
             else
                 m_ClassRegister = new Dictionary<Type, TypeSystem>();
         }
+        #endregion
 
         #region Interface
+        /// <summary>
+        /// 加载程序集
+        /// </summary>
+        /// <param name="data"></param>
         public void LoadAssembly(byte[] data)
         {
             Assembly.Load(data);
@@ -59,7 +69,7 @@ namespace XFrame.Modules.XType
         }
 
         /// <summary>
-        /// 类型改变事件
+        /// 程序集改变事件
         /// </summary>
         public void OnTypeChange(Action handler)
         {
@@ -93,6 +103,12 @@ namespace XFrame.Modules.XType
             return GetOrNewWithAttr(typeof(T));
         }
 
+        /// <summary>
+        /// 获取(不存在时创建)一个类型系统
+        /// 类型都具有所给定的属性类
+        /// </summary>
+        /// <param name="pType">Attribute属性类</param>
+        /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNewWithAttr(Type pType)
         {
             TypeSystem module;
@@ -120,6 +136,12 @@ namespace XFrame.Modules.XType
             return GetOrNew(typeof(T));
         }
 
+        /// <summary>
+        /// 获取(不存在时创建)一个类型系统
+        /// 类型都是所给定的类型或子类
+        /// </summary>
+        /// <param name="pType">基类</param>
+        /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNew(Type pType)
         {
             TypeSystem module;
@@ -136,6 +158,10 @@ namespace XFrame.Modules.XType
             return module;
         }
 
+        /// <summary>
+        /// 获取所有类型
+        /// </summary>
+        /// <returns>类型列表</returns>
         public Type[] GetAllType()
         {
             return m_Types;

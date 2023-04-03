@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace XFrame.Modules.Serialize
 {
     /// <summary>
@@ -6,6 +7,14 @@ namespace XFrame.Modules.Serialize
     /// </summary>
     public interface IJsonSerializeHelper
     {
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="json">json文本</param>
+        /// <param name="dataType">目标类型</param>
+        /// <returns>反序列化到的对象</returns>
+        object Deserialize(string json, Type dataType);
+
         /// <summary>
         /// 反序列化
         /// </summary>

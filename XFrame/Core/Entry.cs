@@ -10,12 +10,21 @@ namespace XFrame.Core
         private static bool m_Inited;
         private static bool m_DoStart;
         private static bool m_Runing;
+        private static Action m_OnRun;
 
-        public static XCore m_Base;
-        public static XCore m_Core;
-        public static XCore m_Custom;
+        private static XCore m_Base;
+        private static XCore m_Core;
+        private static XCore m_Custom;
 
         private static Dictionary<Type, IEntryHandler> m_Handlers;
+        #endregion
+
+        #region Event
+        public static event Action OnRun
+        {
+            add { m_OnRun += value; }
+            remove { m_OnRun += value; }
+        }
         #endregion
 
         #region Interface
@@ -64,22 +73,6 @@ namespace XFrame.Core
         }
 
         /// <summary>
-        /// 添加处理器
-        /// </summary>
-        /// <typeparam name="T">处理器类型</typeparam>
-        public static void AddHandler<T>() where T : IEntryHandler
-        {
-            Type type = typeof(T);
-            Type[] handTypes = type.GetInterfaces();
-            foreach (Type handType in handTypes)
-            {
-                if (handType == typeof(IEntryHandler))
-                    continue;
-                m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
-            }
-        }
-
-        /// <summary>
         /// 启动
         /// </summary>
         public static void Start()
@@ -104,6 +97,7 @@ namespace XFrame.Core
                                   .OnComplete(() =>
                                   {
                                       m_Runing = true;
+                                      m_OnRun?.Invoke();
                                   }).Start();
                        }).Start();
             }
@@ -112,6 +106,7 @@ namespace XFrame.Core
                 m_Core.Start();
                 m_Custom.Start();
                 m_Runing = true;
+                m_OnRun?.Invoke();
             }
         }
 
@@ -141,6 +136,23 @@ namespace XFrame.Core
             m_Custom = null;
             m_Core = null;
             m_Core = null;
+            m_OnRun = null;
+        }
+
+        /// <summary>
+        /// 添加处理器
+        /// </summary>
+        /// <typeparam name="T">处理器类型</typeparam>
+        public static void AddHandler<T>() where T : IEntryHandler
+        {
+            Type type = typeof(T);
+            Type[] handTypes = type.GetInterfaces();
+            foreach (Type handType in handTypes)
+            {
+                if (handType == typeof(IEntryHandler))
+                    continue;
+                m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
+            }
         }
 
         /// <summary>

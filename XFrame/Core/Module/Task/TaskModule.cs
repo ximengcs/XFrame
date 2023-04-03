@@ -1,10 +1,10 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Module.Rand;
-using XFrame.Modules.Pools;
-using System.Collections.Generic;
-using XFrame.Modules.Times;
 using System.Diagnostics;
+using XFrame.Modules.Pools;
+using XFrame.Modules.Times;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Tasks
 {
@@ -17,12 +17,16 @@ namespace XFrame.Modules.Tasks
     [RequireModule(typeof(TimeModule))]
     public class TaskModule : SingletonModule<TaskModule>
     {
+        #region Const Fields
+        private const long DEFAULT_TIMEOUT = 10;
+        #endregion
+
+        #region Inner Fields
         private List<ITask> m_Tasks;
         private Dictionary<string, ITask> m_TaskWithName;
-        private const long DEFAULT_TIMEOUT = 10;
+        #endregion
 
-        public long TaskTimeout { get; set; }
-
+        #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -30,6 +34,38 @@ namespace XFrame.Modules.Tasks
             m_Tasks = new List<ITask>();
             m_TaskWithName = new Dictionary<string, ITask>();
         }
+
+        protected override void OnUpdate(float escapeTime)
+        {
+            base.OnUpdate(escapeTime);
+
+            long timeout = 0;
+            Stopwatch sw = new Stopwatch();
+            for (int i = m_Tasks.Count - 1; i >= 0; i--)
+            {
+                sw.Restart();
+                ITask task = m_Tasks[i];
+                if (task.IsStart)
+                    task.OnUpdate();
+
+                if (task.IsComplete)
+                {
+                    m_Tasks.RemoveAt(i);
+                    m_TaskWithName.Remove(task.Name);
+                }
+                sw.Stop();
+                timeout += sw.ElapsedMilliseconds;
+                if (timeout >= TaskTimeout)
+                    break;
+            }
+        }
+        #endregion
+
+        #region Interface
+        /// <summary>
+        /// 任务模块最大超时
+        /// </summary>
+        public long TaskTimeout { get; set; }
 
         /// <summary>
         /// 获取(不存在时创建)一个任务
@@ -71,6 +107,10 @@ namespace XFrame.Modules.Tasks
             return (T)task;
         }
 
+        /// <summary>
+        /// 移除一个任务
+        /// </summary>
+        /// <param name="name">任务名</param>
         public void Remove(string name)
         {
             if (m_TaskWithName.ContainsKey(name))
@@ -87,30 +127,6 @@ namespace XFrame.Modules.Tasks
                 }
             }
         }
-
-        protected override void OnUpdate(float escapeTime)
-        {
-            base.OnUpdate(escapeTime);
-
-            long timeout = 0;
-            Stopwatch sw = new Stopwatch();
-            for (int i = m_Tasks.Count - 1; i >= 0; i--)
-            {
-                sw.Restart();
-                ITask task = m_Tasks[i];
-                if (task.IsStart)
-                    task.OnUpdate();
-
-                if (task.IsComplete)
-                {
-                    m_Tasks.RemoveAt(i);
-                    m_TaskWithName.Remove(task.Name);
-                }
-                sw.Stop();
-                timeout += sw.ElapsedMilliseconds;
-                if (timeout >= TaskTimeout)
-                    break;
-            }
-        }
+        #endregion
     }
 }

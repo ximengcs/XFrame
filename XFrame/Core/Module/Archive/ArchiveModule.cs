@@ -5,6 +5,7 @@ using XFrame.Utility;
 using XFrame.Modules.XType;
 using XFrame.Modules.Times;
 using XFrame.Modules.Config;
+using XFrame.Modules.Crypto;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Archives
@@ -13,6 +14,7 @@ namespace XFrame.Modules.Archives
     /// 存档模块
     /// </summary>
     [CoreModule]
+    [RequireModule(typeof(CryptoModule))]
     public class ArchiveModule : SingletonModule<ArchiveModule>
     {
         #region Inner Field

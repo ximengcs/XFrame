@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Reflection;
-using System.Collections;
+using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
@@ -10,15 +11,16 @@ namespace XFrame.Modules.Datas
     {
         private Type m_Type;
         private List<T> m_List;
+        private XItType m_ItType;
         private Dictionary<int, T> m_Datas;
         private Dictionary<string, FieldInfo> m_Fields;
         private const string UNIQUE_KEY = "Id";
         private int m_MinId = -1;
 
-        public DataTable(List<T> data)
+        void IDataTable.OnInit(object data)
         {
             m_Type = typeof(T);
-            m_List = data;
+            m_List = (List<T>)data;
             m_Fields = new Dictionary<string, FieldInfo>();
             m_Datas = new Dictionary<int, T>();
 
@@ -26,7 +28,7 @@ namespace XFrame.Modules.Datas
             if (info != null)
             {
                 m_Fields.Add(UNIQUE_KEY, info);
-                foreach (T item in data)
+                foreach (T item in m_List)
                 {
                     int id = (int)info.GetValue(item);
                     if (id == 0)
@@ -65,7 +67,7 @@ namespace XFrame.Modules.Datas
             }
         }
 
-        public List<T> Select(string name, int value)
+        public int Select(string name, object value, List<T> target)
         {
             FieldInfo field;
             if (!m_Fields.TryGetValue(name, out field))
@@ -74,25 +76,37 @@ namespace XFrame.Modules.Datas
                 m_Fields.Add(name, field);
             }
 
-            List<T> result = new List<T>();
             foreach (T item in m_Datas.Values)
             {
                 object v = field.GetValue(item);
-                if (v != null && (int)v == value)
-                    result.Add(item);
+                if (v != null && v.Equals(value))
+                    target.Add(item);
             }
 
-            return result;
+            return target.Count;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return m_List.GetEnumerator();
+            switch (m_ItType)
+            {
+                case XItType.Forward: return new ListExt.ForwardIt<T>(m_List);
+                case XItType.Backward: return new ListExt.BackwardIt<T>(m_List);
+                default: return default;
+            }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void SetIt(XItType type)
         {
-            return GetEnumerator();
+            m_ItType = type;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (T item in m_Datas.Values)
+                sb.AppendLine(item.ToString());
+            return sb.ToString();
         }
     }
 }

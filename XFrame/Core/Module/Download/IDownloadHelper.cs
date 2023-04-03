@@ -18,6 +18,9 @@ namespace XFrame.Modules.Download
         /// </summary>
         DownloadResult Result { get; }
 
+        /// <summary>
+        /// 下载任务url
+        /// </summary>
         string Url { get; set; }
 
         /// <summary>
@@ -26,6 +29,9 @@ namespace XFrame.Modules.Download
         /// <param name="url"></param>
         protected internal void Request();
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
         protected internal void OnInit();
 
         /// <summary>

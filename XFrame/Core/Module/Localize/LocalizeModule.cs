@@ -2,8 +2,8 @@
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Config;
-using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Local
 {
@@ -13,11 +13,14 @@ namespace XFrame.Modules.Local
     [CoreModule]
     public class LocalizeModule : SingletonModule<LocalizeModule>
     {
+        #region Inner Fileds
         private int m_Index;
         private Csv<string> m_Data;
         private Language m_Language;
         private Dictionary<Language, int> m_LanguageIndex;
+        #endregion
 
+        #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -31,8 +34,12 @@ namespace XFrame.Modules.Local
                 }
             }
         }
+        #endregion
 
         #region Interface
+        /// <summary>
+        /// 当前语言
+        /// </summary>
         public Language Lang
         {
             get { return m_Language; }
@@ -75,6 +82,7 @@ namespace XFrame.Modules.Local
         }
         #endregion
 
+        #region Inner Imeplement
         private void InnerInit(string csvText, Language language)
         {
             m_LanguageIndex = new Dictionary<Language, int>();
@@ -94,5 +102,6 @@ namespace XFrame.Modules.Local
             if (!m_LanguageIndex.TryGetValue(m_Language, out m_Index))
                 Log.Debug("XFrame", "language map error.");
         }
+        #endregion
     }
 }

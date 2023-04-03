@@ -3,14 +3,29 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Download
 {
+    /// <summary>
+    /// 下载任务
+    /// </summary>
     public class DownTask : TaskBase
     {
+        /// <summary>
+        /// 是否成功
+        /// </summary>
         public bool Success { get; private set; }
 
+        /// <summary>
+        /// 文本数据
+        /// </summary>
         public string Text { get; private set; }
 
+        /// <summary>
+        /// 字节数据
+        /// </summary>
         public byte[] Data { get; private set; }
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
         protected override void OnInit()
         {
             AddStrategy(new Strategy());

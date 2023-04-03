@@ -14,9 +14,12 @@ namespace XFrame.Modules.Procedure
     [XModule]
     public class ProcedureModule : SingletonModule<ProcedureModule>
     {
+        #region Inner Fields
         private TypeSystem m_Procedures;
         private Fsm m_Fsm;
+        #endregion
 
+        #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -38,7 +41,13 @@ namespace XFrame.Modules.Procedure
                 Log.Error("XFrame", $"{TypeUtility.GetSimpleName(entrance)} Procedure do not define");
             }
         }
+        #endregion
 
+        #region Interface
+        /// <summary>
+        /// 重定向启动流程
+        /// </summary>
+        /// <param name="name">流程类全名称</param>
         public void Redirect(string name)
         {
             InnerRefreshHandler();
@@ -53,22 +62,36 @@ namespace XFrame.Modules.Procedure
             }
         }
 
+        /// <summary>
+        /// 重定向启动流程
+        /// </summary>
+        /// <param name="type">流程类</param>
         public void Redirect(Type type)
         {
             if (m_Fsm != null && m_Fsm.HasState(type))
                 m_Fsm.ChangeState(type);
         }
 
+        /// <summary>
+        /// 添加流程类
+        /// </summary>
+        /// <param name="type">流程类</param>
         public void Add(Type type)
         {
             InnerAdd(type);
         }
 
+        /// <summary>
+        /// 添加流程类
+        /// </summary>
+        /// <typeparam name="T">流程类</typeparam>
         public void Add<T>() where T : ProcedureBase
         {
             InnerAdd(typeof(T));
         }
+        #endregion
 
+        #region Inner Imeplement
         private void InnerAdd(Type type)
         {
             if (!m_Fsm.HasState(type))
@@ -86,5 +109,6 @@ namespace XFrame.Modules.Procedure
         {
             m_Procedures = TypeModule.Inst.GetOrNew<ProcedureBase>();
         }
+        #endregion
     }
 }

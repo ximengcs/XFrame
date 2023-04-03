@@ -1,18 +1,17 @@
-﻿using System.Collections;
+﻿using XFrame.Collections;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Datas
 {
     internal class ConfigTable<T> : IDataTable<T> where T : IDataRaw
     {
-        private List<T> m_UnUse;
         private T m_Data;
+
         public int Count => 1;
 
-        public ConfigTable(T data)
+        void IDataTable.OnInit(object data)
         {
-            m_Data = data;
-            m_UnUse = new List<T>(1) { data };
+            m_Data = (T)data;
         }
 
         public T Get(int id)
@@ -22,22 +21,28 @@ namespace XFrame.Modules.Datas
 
         public T Get()
         {
-            return Get(0);
+            return m_Data;
+        }
+
+        public int Select(string name, object value, List<T> target)
+        {
+            target.Add(m_Data);
+            return Count;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return m_UnUse.GetEnumerator();
+            return new SingleValueEnumerator<T>(m_Data);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void SetIt(XItType type)
         {
-            return m_UnUse.GetEnumerator();
+
         }
 
-        public List<T> Select(string name, int value)
+        public override string ToString()
         {
-            return m_UnUse;
+            return m_Data.ToString();
         }
     }
 }
