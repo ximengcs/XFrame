@@ -180,6 +180,8 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
+        bool IArchive.Encrypt { get; set; }
+
         public void Delete()
         {
             if (File.Exists(m_Path))

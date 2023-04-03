@@ -13,6 +13,11 @@ namespace XFrame.Modules.Archives
         protected internal void OnInit(string path);
 
         /// <summary>
+        /// 是否加密
+        /// </summary>
+        bool Encrypt { get; set; }
+
+        /// <summary>
         /// 保存存档
         /// </summary>
         void Save();

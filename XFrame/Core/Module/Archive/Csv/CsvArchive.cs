@@ -17,6 +17,8 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
+        bool IArchive.Encrypt { get; set; }
+
         void IArchive.OnInit(string path)
         {
             m_Path = path;
