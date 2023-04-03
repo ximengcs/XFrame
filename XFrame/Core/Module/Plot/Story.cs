@@ -1,33 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Plots
 {
     public partial class Story : IStory
     {
+        private int m_Index;
         private PlotDataBinder m_Data;
-        private List<Type> m_SectionOrg;
         private SectionInfo m_Current;
-        private int m_CurIndex;
+        private Queue<Type> m_SectionTypes;
 
-        public string Name { get; }
-        public bool IsFinish { get => m_Data.Finish; }
+        public string Name { get; private set; }
 
-        public Story(string name, string openCond)
-        {
-            Name = name;
-            m_SectionOrg = new List<Type>();
-        }
+        public bool IsFinish => m_Data.Finish;
 
         public Story AddSection(Type type)
         {
-            m_SectionOrg.Add(type);
+            m_SectionTypes.Enqueue(type);
             return this;
         }
 
-        public void OnInit(PlotDataBinder data)
+        public void OnInit(string name, PlotDataBinder data)
         {
+            Name = name;
             m_Data = data;
+            m_SectionTypes = new Queue<Type>();
         }
 
         public void OnStart()
@@ -63,7 +60,11 @@ namespace XFrame.Modules
 
                 case SectionState.Finish:
                     if (m_Current.Section.OnFinish())
-                        m_Data.Steps[m_CurIndex - 1] = true;
+                    {
+                        m_Data.SetSectionFinish(m_Index, true);
+                        m_Current = null;
+                        m_Index++;
+                    }
                     InnerCreateNext();
                     break;
             }
@@ -71,23 +72,22 @@ namespace XFrame.Modules
 
         private void InnerCreateNext()
         {
-            if (m_CurIndex < m_SectionOrg.Count)
+            if (m_SectionTypes.Count > 0)
             {
-                m_Data.EnsureStepData(m_CurIndex);
-                if (!m_Data.Steps[m_CurIndex])
+                Type type = m_SectionTypes.Dequeue();
+                if (m_Data.CheckSectionFinish(m_Index))
                 {
-                    m_Current = new SectionInfo((ISection)Activator.CreateInstance(m_SectionOrg[m_CurIndex]), SectionState.WaitInit);
-                    m_CurIndex++;
+                    m_Index++;
+                    InnerCreateNext();
                 }
                 else
                 {
-                    m_CurIndex++;
-                    InnerCreateNext();
+                    ISection section = (ISection)Activator.CreateInstance(type);
+                    m_Current = new SectionInfo(section, SectionState.WaitInit);
                 }
             }
             else
             {
-                m_Current = null;
                 m_Data.Finish.Value = true;
             }
         }

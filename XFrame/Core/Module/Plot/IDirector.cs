@@ -1,9 +1,13 @@
-﻿namespace XFrame.Modules
+﻿namespace XFrame.Modules.Plots
 {
     public interface IDirector
     {
         void Add(IStory story);
-        void OnUpdate();
-        void OnDestory();
+        void Remove(IStory story);
+        void Remove(string storyName);
+
+        internal void OnInit();
+        internal void OnUpdate();
+        internal void OnDestory();
     }
 }

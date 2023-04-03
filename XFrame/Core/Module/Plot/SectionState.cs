@@ -1,11 +1,11 @@
 ﻿
 namespace XFrame.Modules.Plots
 {
-    public enum StoryState
+    public enum SectionState
     {
+        WaitInit,
         WaitStart,
-        WaitRunning,
         Running,
-        Complete
+        Finish
     }
 }

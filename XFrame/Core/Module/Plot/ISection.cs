@@ -1,6 +1,6 @@
 ﻿using XFrame.Core;
 
-namespace XFrame.Modules
+namespace XFrame.Modules.Plots
 {
     public interface ISection
     {
