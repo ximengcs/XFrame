@@ -32,6 +32,10 @@ namespace XFrame.Modules.Event
                 evtSys.OnUpdate();
         }
 
+        /// <summary>
+        /// 创建一个事件系统
+        /// </summary>
+        /// <returns>事件系统</returns>
         public IEventSystem NewSys()
         {
             IEventSystem evtSys = new XEventSystem();
@@ -39,6 +43,10 @@ namespace XFrame.Modules.Event
             return evtSys;
         }
 
+        /// <summary>
+        /// 移除一个事件系统 
+        /// </summary>
+        /// <param name="evtSys">事件系统</param>
         public void Remove(IEventSystem evtSys)
         {
             m_List.Remove(evtSys);

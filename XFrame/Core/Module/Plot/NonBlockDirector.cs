@@ -3,6 +3,9 @@ using XFrame.Modules.Archives;
 
 namespace XFrame.Modules.Plots
 {
+    /// <summary>
+    /// 故事导演类(非阻塞式)
+    /// </summary>
     [Director]
     public class NonBlockDirector : IDirector
     {
@@ -48,18 +51,18 @@ namespace XFrame.Modules.Plots
             m_Stories.Clear();
         }
 
-        public void Add(IStory story)
+        public void Play(IStory story)
         {
             JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
-            PlotDataBinder binder = new PlotDataBinder(archive);
+            PlotDataProvider binder = new PlotDataProvider(archive);
             m_Stories.AddLast(new StoryInfo(story, binder));
             story.OnInit(binder);
         }
 
-        public void Add(IStory[] stories)
+        public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
-                Add(story);
+                Play(story);
         }
 
         public void Remove(IStory story)

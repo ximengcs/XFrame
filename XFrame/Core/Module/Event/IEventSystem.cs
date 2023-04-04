@@ -1,15 +1,51 @@
 ﻿
 namespace XFrame.Modules.Event
 {
+    /// <summary>
+    /// 事件系统
+    /// </summary>
     public interface IEventSystem
     {
+        /// <summary>
+        /// 触发事件
+        /// </summary>
+        /// <param name="e">事件</param>
         void Trigger(XEvent e);
+
+        /// <summary>
+        /// 立即触发事件
+        /// </summary>
+        /// <param name="e">事件</param>
         void TriggerNow(XEvent e);
+
+        /// <summary>
+        /// 监听事件
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
+        /// <param name="handler">事件处理委托</param>
         void Listen(int eventId, XEventHandler handler);
+
+        /// <summary>
+        /// 移除事件监听
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
+        /// <param name="handler">需要移除的委托</param>
         void Unlisten(int eventId, XEventHandler handler);
+
+        /// <summary>
+        /// 移除事件的所有监听
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
         void Unlisten(int eventId);
+
+        /// <summary>
+        /// 移除所有监听
+        /// </summary>
         void Unlisten();
 
+        /// <summary>
+        /// 更新生命周期
+        /// </summary>
         internal void OnUpdate();
     }
 }

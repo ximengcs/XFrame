@@ -8,7 +8,7 @@ namespace XFrame.Modules.Plots
     internal partial class Story : IStory
     {
         private int m_Index;
-        private PlotDataBinder m_Data;
+        private PlotDataProvider m_Data;
         private SectionInfo m_Current;
         private Queue<Type> m_SectionTypes;
 
@@ -30,7 +30,7 @@ namespace XFrame.Modules.Plots
             m_SectionTypes = new Queue<Type>();
         }
 
-        void IStory.OnInit(PlotDataBinder data)
+        void IStory.OnInit(PlotDataProvider data)
         {
             m_Data = data;
         }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Plots
 {
+    /// <summary>
+    /// 故事导演类(阻塞式)
+    /// </summary>
     [Director(true)]
     public partial class BlockDirector : IDirector
     {
@@ -51,18 +54,18 @@ namespace XFrame.Modules.Plots
 
         }
 
-        public void Add(IStory story)
+        public void Play(IStory story)
         {
             JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
-            PlotDataBinder binder = new PlotDataBinder(archive);
+            PlotDataProvider binder = new PlotDataProvider(archive);
             m_StoryQueue.Enqueue(new StoryInfo(story, binder));
             story.OnInit(binder);
         }
 
-        public void Add(IStory[] stories)
+        public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
-                Add(story);
+                Play(story);
         }
 
         public void Remove(IStory story)

@@ -8,7 +8,7 @@ namespace XFrame.Modules.Plots
         string Name { get; }
         bool IsFinish { get; }
         IStory AddSection(Type type);
-        internal void OnInit(PlotDataBinder data);
+        internal void OnInit(PlotDataProvider data);
         internal void OnStart();
         internal void OnUpdate();
         internal void OnDestroy();

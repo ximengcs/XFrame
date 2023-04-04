@@ -6,7 +6,10 @@ using XFrame.Modules.Serialize;
 
 namespace XFrame.Modules.Plots
 {
-    internal class PlotDataBinder : IDataProvider
+    /// <summary>
+    /// 故事数据提供器
+    /// </summary>
+    internal class PlotDataProvider : IDataProvider
     {
         private JsonArchive m_Persist;
         private JSONObject m_SectionData;
@@ -14,7 +17,7 @@ namespace XFrame.Modules.Plots
 
         public ValueBinder<bool> Finish { get; set; }
 
-        public PlotDataBinder(JsonArchive data)
+        public PlotDataProvider(JsonArchive data)
         {
             m_Persist = data;
             m_Sections = m_Persist.GetOrNewObject(nameof(m_Persist));

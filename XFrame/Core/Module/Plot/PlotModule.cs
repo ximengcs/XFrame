@@ -8,20 +8,36 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Plots
 {
+    /// <summary>
+    /// 故事模块
+    /// </summary>
     [XModule]
     public class PlotModule : SingletonModule<PlotModule>
     {
+        #region Inner Fields
         private IPlotHelper m_Helper;
         private IDirector m_DefaultDirector;
         private Dictionary<Type, IDirector> m_Directors;
+        #endregion
 
+        #region Interface
+        /// <summary>
+        /// 故事处理辅助类
+        /// </summary>
         public IPlotHelper Helper => m_Helper;
 
+        /// <summary>
+        /// 请求一个新故事
+        /// </summary>
+        /// <param name="name">故事名</param>
+        /// <returns>故事</returns>
         public IStory NewStory(string name = null)
         {
             return new Story(name);
         }
+        #endregion
 
+        #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -66,14 +82,17 @@ namespace XFrame.Modules.Plots
                 director.OnDestory();
             m_Helper.OnNewStory.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
+        #endregion
 
+        #region Inner Implement
         private void InnerNewStoryHandle(XEvent e)
         {
             NewStoryEvent evt = (NewStoryEvent)e;
             IDirector director;
             if (evt.TargetDirector == null || !m_Directors.TryGetValue(evt.TargetDirector, out director))
                 director = m_DefaultDirector;
-            director.Add(evt.Stories);
+            director.Play(evt.Stories);
         }
+        #endregion
     }
 }
