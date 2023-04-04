@@ -76,9 +76,11 @@ namespace XFrame.Modules.Local
         {
             Csv<string>.Line line = m_Data.Get(key);
             string content = line[m_Index];
-            foreach (int id in args)
-                content = string.Format(content, GetValue(id));
-            return content;
+            string[] param = new string[args.Length];
+            for (int i = 0; i < args.Length; i++)
+                param[i] = GetValue(args[i]);
+
+            return string.Format(content, param);
         }
         #endregion
 
@@ -87,10 +89,12 @@ namespace XFrame.Modules.Local
         {
             m_LanguageIndex = new Dictionary<Language, int>();
             m_Data = new Csv<string>(csvText, ParserModule.Inst.STRING);
-            Csv<string>.Line line = m_Data.Get(0);
+            Csv<string>.Line line = m_Data.Get(1);
             EnumParser<Language> parser = new EnumParser<Language>();
             for (int i = 0; i < line.Count; i++)
             {
+                if (string.IsNullOrEmpty(line[i]))
+                    continue;
                 Language lang = parser.Parse(line[i]);
                 m_LanguageIndex[lang] = i;
             }

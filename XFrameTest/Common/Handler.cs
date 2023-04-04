@@ -26,6 +26,7 @@ namespace XFrameTest
             XConfig.DefaultJsonSerializer = typeof(TestJsonSerializer).FullName;
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "C:\\Users\\XM\\Desktop\\Test";
+            XConfig.LocalizeFile = Path.Combine(XConfig.ArchivePath, "lang.csv");
         }
     }
 
