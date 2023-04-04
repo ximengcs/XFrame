@@ -2,10 +2,11 @@
 using XFrame.SimpleJSON;
 using XFrame.Core.Binder;
 using XFrame.Modules.Archives;
+using XFrame.Modules.Serialize;
 
 namespace XFrame.Modules.Plots
 {
-    public class PlotDataBinder : IDataProvider
+    internal class PlotDataBinder : IDataProvider
     {
         private JsonArchive m_Persist;
         private JSONObject m_SectionData;
@@ -52,18 +53,24 @@ namespace XFrame.Modules.Plots
         {
             string key = $"{name}_{typeof(T).Name}";
             if (m_Sections.HasKey(key))
-                return (T)(object)m_Sections[key].AsObject;
+            {
+                string content = m_Sections[key];
+                return SerializeModule.Inst.DeserializeJsonToObject<T>(content);
+            }
+
             return default;
         }
 
         public void SetData<T>(T value) where T : class
         {
-            SetData<T>("main_value", value);
+            SetData("main_value", value);
         }
 
         public void SetData<T>(string name, T value) where T : class
         {
             string key = $"{name}_{typeof(T).Name}";
+            string content = SerializeModule.Inst.SerializeObjectToJson(value);
+            m_Sections[key] = content;
         }
     }
 }

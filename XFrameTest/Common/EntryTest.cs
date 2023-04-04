@@ -9,7 +9,7 @@ namespace XFrameTest
             Entry.Init();
             Entry.OnRun += runCallback;
             Entry.Start();
-            for (int i = 0; i < 999; i++)
+            for (int i = 0; i < 9999; i++)
                 Entry.Update(0.16f);
             Entry.ShutDown();
         }

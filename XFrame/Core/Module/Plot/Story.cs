@@ -1,9 +1,11 @@
 ﻿using System;
+using XFrame.Module.Rand;
 using System.Collections.Generic;
+using XFrame.Modules.Archives;
 
 namespace XFrame.Modules.Plots
 {
-    public partial class Story : IStory
+    internal partial class Story : IStory
     {
         private int m_Index;
         private PlotDataBinder m_Data;
@@ -14,25 +16,31 @@ namespace XFrame.Modules.Plots
 
         public bool IsFinish => m_Data.Finish;
 
-        public Story AddSection(Type type)
+        IStory IStory.AddSection(Type type)
         {
             m_SectionTypes.Enqueue(type);
             return this;
         }
 
-        public void OnInit(string name, PlotDataBinder data)
+        public Story(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                name = $"story_{RandModule.Inst.RandPath()}";
             Name = name;
-            m_Data = data;
             m_SectionTypes = new Queue<Type>();
         }
 
-        public void OnStart()
+        void IStory.OnInit(PlotDataBinder data)
+        {
+            m_Data = data;
+        }
+
+        void IStory.OnStart()
         {
             InnerCreateNext();
         }
 
-        public void OnUpdate()
+        void IStory.OnUpdate()
         {
             if (IsFinish)
                 return;
@@ -64,8 +72,8 @@ namespace XFrame.Modules.Plots
                         m_Data.SetSectionFinish(m_Index, true);
                         m_Current = null;
                         m_Index++;
+                        InnerCreateNext();
                     }
-                    InnerCreateNext();
                     break;
             }
         }
@@ -90,6 +98,12 @@ namespace XFrame.Modules.Plots
             {
                 m_Data.Finish.Value = true;
             }
+        }
+
+        void IStory.OnDestroy()
+        {
+            m_Data.Dispose();
+            ArchiveModule.Inst.Delete(Name);
         }
     }
 }

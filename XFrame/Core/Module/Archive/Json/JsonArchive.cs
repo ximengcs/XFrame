@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using XFrame.SimpleJSON;
 using XFrame.Modules.Serialize;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Archives
 {
@@ -184,6 +185,7 @@ namespace XFrame.Modules.Archives
 
         public void Delete()
         {
+            Log.Debug("Delete " + m_Path);
             if (File.Exists(m_Path))
                 File.Delete(m_Path);
         }
@@ -199,6 +201,7 @@ namespace XFrame.Modules.Archives
 
         public void Save()
         {
+            Log.Debug("Save " + m_Path);
             File.WriteAllText(m_Path, m_Root.ToString(4));
         }
         #endregion

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using XFrame.Core;
 
 namespace XFrame.Module.Rand
@@ -10,6 +12,7 @@ namespace XFrame.Module.Rand
     public class RandModule : SingletonModule<RandModule>
     {
         #region Inner Fields
+        private HashSet<char> m_InValidChars;
         private Random m_Random;
         #endregion
 
@@ -18,6 +21,15 @@ namespace XFrame.Module.Rand
         {
             base.OnInit(data);
             m_Random = new Random(DateTime.Now.Millisecond);
+            m_InValidChars = new HashSet<char>();
+
+            char[] fChs = Path.GetInvalidFileNameChars();
+            char[] pChs = Path.GetInvalidPathChars();
+            m_InValidChars = new HashSet<char>(fChs.Length + pChs.Length);
+            foreach (char ch in fChs)
+                m_InValidChars.Add(ch);
+            foreach (char ch in pChs)
+                m_InValidChars.Add(ch);
         }
         #endregion
 
@@ -32,6 +44,21 @@ namespace XFrame.Module.Rand
             char[] chars = new char[num];
             for (int i = 0; i < num; i++)
                 chars[i] = (char)m_Random.Next(1, 128);
+            return string.Concat(chars);
+        }
+
+        public string RandPath(int num = 8)
+        {
+            char[] chars = new char[num];
+            for (int i = 0; i < num; i++)
+            {
+                char ch;
+                do
+                {
+                    ch = (char)m_Random.Next(1, 128);
+                } while (m_InValidChars.Contains(ch));
+                chars[i] = ch;
+            }
             return string.Concat(chars);
         }
         #endregion

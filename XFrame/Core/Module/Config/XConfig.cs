@@ -61,5 +61,10 @@ namespace XFrame.Modules.Config
         /// 默认加密辅助器
         /// </summary>
         public static string DefaultCryptor;
+
+        /// <summary>
+        /// 默认Plot辅助器
+        /// </summary>
+        public static string DefaultPlotHelper;
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 namespace XFrame.Modules.Plots
 {
-    public partial class Story
+    internal partial class Story
     {
         private class SectionInfo
         {

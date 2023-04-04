@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Plots
 {
+    [Director(true)]
     public partial class BlockDirector : IDirector
     {
         private StoryInfo m_Current;
@@ -21,25 +22,12 @@ namespace XFrame.Modules.Plots
             if (m_Current == null)
                 return;
 
-            InnerUpdateStory();
-        }
-
-        void IDirector.OnDestory()
-        {
-
-        }
-
-        public void Add(IStory story)
-        {
-            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
-            PlotDataBinder binder = new PlotDataBinder(archive);
-            m_StoryQueue.Enqueue(new StoryInfo(story, binder));
-        }
-
-        private bool InnerUpdateStory()
-        {
             switch (m_Current.State)
             {
+                case StoryState.WaitStart:
+                    m_Current.State = StoryState.WaitRunning;
+                    break;
+
                 case StoryState.WaitRunning:
                     m_Current.Story.OnStart();
                     m_Current.State = StoryState.Running;
@@ -52,10 +40,39 @@ namespace XFrame.Modules.Plots
                     break;
 
                 case StoryState.Complete:
-                    return true;
+                    m_Current.Story.OnDestroy();
+                    m_Current = null;
+                    break;
             }
+        }
 
-            return false;
+        void IDirector.OnDestory()
+        {
+
+        }
+
+        public void Add(IStory story)
+        {
+            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
+            PlotDataBinder binder = new PlotDataBinder(archive);
+            m_StoryQueue.Enqueue(new StoryInfo(story, binder));
+            story.OnInit(binder);
+        }
+
+        public void Add(IStory[] stories)
+        {
+            foreach (IStory story in stories)
+                Add(story);
+        }
+
+        public void Remove(IStory story)
+        {
+
+        }
+
+        public void Remove(string storyName)
+        {
+
         }
     }
 }

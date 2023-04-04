@@ -6,22 +6,22 @@ namespace XFrameTest
     {
         public void Debug(params object[] content)
         {
-            Console.WriteLine(content[0]);
+            Console.WriteLine(string.Concat(content));
         }
 
         public void Error(params object[] content)
         {
-            Console.WriteLine(content[0]);
+            Console.WriteLine(string.Concat(content));
         }
 
         public void Fatal(params object[] content)
         {
-            Console.WriteLine(content[0]);
+            Console.WriteLine(string.Concat(content));
         }
 
         public void Warning(params object[] content)
         {
-            Console.WriteLine(content[0]);
+            Console.WriteLine(string.Concat(content));
         }
     }
 }

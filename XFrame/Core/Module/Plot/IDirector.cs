@@ -2,6 +2,7 @@
 {
     public interface IDirector
     {
+        void Add(IStory[] stories);
         void Add(IStory story);
         void Remove(IStory story);
         void Remove(string storyName);

@@ -19,10 +19,5 @@ namespace XFrameTest
         {
             return JsonConvert.SerializeObject(obj);
         }
-
-        public string Serialize(object obj, Type type)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
     }
 }
