@@ -1,5 +1,4 @@
-﻿using System;
-using XFrame.Modules.Diagnotics;
+﻿using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
