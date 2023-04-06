@@ -5,10 +5,55 @@ namespace XFrame.Core
     {
         public string Value { get; private set; }
 
+        object IParser.Value => Value;
+
         public string Parse(string pattern)
         {
             Value = pattern;
             return Value;
+        }
+
+        object IParser.Parse(string pattern)
+        {
+            return Parse(pattern);
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            IParser parser = obj as IParser;
+            return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        public static bool operator ==(StringParser src, object tar)
+        {
+            return src.Equals(tar);
+        }
+
+        public static bool operator !=(StringParser src, object tar)
+        {
+            return !src.Equals(tar);
+        }
+
+        public static implicit operator string(StringParser parser)
+        {
+            return parser.Value;
+        }
+
+        public static implicit operator StringParser(string value)
+        {
+            StringParser parser = new StringParser();
+            parser.Value = value;
+            return parser;
         }
     }
 }

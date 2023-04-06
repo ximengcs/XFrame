@@ -1,25 +1,32 @@
 ﻿using System;
+using System.Text;
 using XFrame.Collections;
 
 namespace XFrame.Core
 {
-    public class ArrayParser<T, VT> : IParser<XLinkList<T>> where T : IParser<VT>
+    public class ArrayParser<T> : IParser<XLinkList<T>> where T : IParser
     {
         private const char SPLIT = ',';
         private char m_Split;
 
         public XLinkList<T> Value { get; private set; }
 
-        public char SplitChar
+        object IParser.Value => Value;
+
+        public ArrayParser()
         {
-            get { return m_Split != 0 ? m_Split : SPLIT; }
-            set { m_Split = value; }
+            m_Split = SPLIT;
+        }
+
+        public ArrayParser(char splitchar)
+        {
+            m_Split = splitchar;
         }
 
         public XLinkList<T> Parse(string pattern)
         {
-            string[] pArray = pattern.Split(SplitChar);
-            Value = new XLinkList<T>();
+            string[] pArray = pattern.Split(m_Split);
+            Value = new XLinkList<T>(false);
             Type type = typeof(T);
             for (int i = 0; i < pArray.Length; i++)
             {
@@ -31,15 +38,58 @@ namespace XFrame.Core
             return Value;
         }
 
-        public bool Has(VT value)
+        public bool Has(object value)
         {
             foreach (XLinkNode<T> node in Value)
             {
-                VT other = node.Value.Value;
+                object other = node.Value;
                 if (other != null && other.Equals(value))
                     return true;
             }
             return false;
+        }
+
+        public bool Has(object value, Func<object, object, bool> action)
+        {
+            foreach (XLinkNode<T> node in Value)
+            {
+                object other = node.Value.Value;
+                if (other != null && action(value, other))
+                    return true;
+            }
+            return false;
+        }
+
+        object IParser.Parse(string pattern)
+        {
+            return Parse(pattern);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (XLinkNode<T> v in Value)
+            {
+                sb.Append(v.Value);
+                if (v.Next != null)
+                    sb.Append(SPLIT);
+            }
+            return sb.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            foreach (XLinkNode<T> v in Value)
+            {
+                if (!v.Equals(obj))
+                    return false;
+            }
+            return true;
         }
     }
 }
