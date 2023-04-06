@@ -11,6 +11,9 @@ namespace XFrame.Modules.Crypto
     /// </summary>
     public class CryptoModule : SingletonModule<CryptoModule>
     {
+        private const string DEFAULT_KEY = "x1df2eop";
+        private const string DEFAULT_IV = "3sfd2ds4";
+
         #region Life Fun
         private Type m_Type;
 
@@ -36,6 +39,17 @@ namespace XFrame.Modules.Crypto
         {
             ICryptor cryptor = (ICryptor)Activator.CreateInstance(m_Type);
             cryptor.OnInit(keyStr, ivStr);
+            return cryptor;
+        }
+
+        /// <summary>
+        /// 使用默认密钥创建加密器
+        /// </summary>
+        /// <returns>加密器</returns>
+        public ICryptor New()
+        {
+            ICryptor cryptor = (ICryptor)Activator.CreateInstance(m_Type);
+            cryptor.OnInit(DEFAULT_KEY, DEFAULT_IV);
             return cryptor;
         }
         #endregion

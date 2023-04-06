@@ -1,6 +1,6 @@
 ﻿using System.IO;
-using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Archives
 {
@@ -17,20 +17,23 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        bool IArchive.Encrypt { get; set; }
-
-        void IArchive.OnInit(string path)
+        void IArchive.OnInit(string path, object param)
         {
             m_Path = path;
-
+            int column = 0;
+            if (param != null)
+                column = (int)param;
             if (File.Exists(m_Path))
             {
-                string text = File.ReadAllText(m_Path);
+                string text = ArchiveUtility.ReadText(m_Path);
                 m_Csv = new Csv<string>(text, ParserModule.Inst.STRING);
             }
             else
             {
-                m_Csv = new Csv<string>();
+                if (column > 0)
+                    m_Csv = new Csv<string>(column);
+                else
+                    m_Csv = new Csv<string>();
             }
         }
 
@@ -42,7 +45,7 @@ namespace XFrame.Modules.Archives
 
         public void Save()
         {
-            File.WriteAllText(m_Path, m_Csv.ToString());
+            ArchiveUtility.WriteText(m_Path, m_Csv.ToString());
         }
         #endregion
     }

@@ -136,7 +136,7 @@ namespace XFrame.Modules.Datas
                 return table.Get(itemId);
             else
             {
-                Log.Debug($"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
+                Log.Debug("XFrame", $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
                 return default;
             }
         }

@@ -10,12 +10,8 @@ namespace XFrame.Modules.Archives
         /// 初始化生命周期
         /// </summary>
         /// <param name="path">存储路径</param>
-        protected internal void OnInit(string path);
-
-        /// <summary>
-        /// 是否加密
-        /// </summary>
-        bool Encrypt { get; set; }
+        /// <param name="data">用户参数</param>
+        protected internal void OnInit(string path, object data);
 
         /// <summary>
         /// 保存存档

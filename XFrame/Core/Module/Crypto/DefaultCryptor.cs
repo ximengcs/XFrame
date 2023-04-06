@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Security.Cryptography;
-using System;
 
 namespace XFrame.Modules.Crypto
 {
@@ -50,14 +50,16 @@ namespace XFrame.Modules.Crypto
             DESCryptoServiceProvider provider = new DESCryptoServiceProvider();
             m_Provider = provider;
             m_CryptorTf = provider.CreateDecryptor(key, iv);
-            m_Stream = new MemoryStream(buffer);
-            m_CryptStream = new CryptoStream(m_Stream, m_CryptorTf, CryptoStreamMode.Read);
-            m_Reader = new StreamReader(m_CryptStream);
+            m_Stream = new MemoryStream();
+            m_CryptStream = new CryptoStream(m_Stream, m_CryptorTf, CryptoStreamMode.Write);
+            m_CryptStream.Write(buffer, 0, buffer.Length);
         }
 
-        public void EndDecrypty()
+        public byte[] EndDecrypty()
         {
-            
+            m_CryptStream.FlushFinalBlock();
+            m_Reader = new StreamReader(m_Stream);
+            return m_Stream.ToArray();
         }
 
         public void Dispose()

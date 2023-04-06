@@ -90,9 +90,9 @@ namespace XFrame.Modules.Archives
         /// <typeparam name="T">存档类型</typeparam>
         /// <param name="name">存档名</param>
         /// <returns>存档实例</returns>
-        public T GetOrNew<T>(string name) where T : IArchive
+        public T GetOrNew<T>(string name, object param = null) where T : IArchive
         {
-            return (T)InnerGetOrNew(name, typeof(T));
+            return (T)InnerGetOrNew(name, typeof(T), param);
         }
 
         /// <summary>
@@ -137,11 +137,11 @@ namespace XFrame.Modules.Archives
                 string suffix = Path.GetExtension(file).ToLower();
                 string fileName = Path.GetFileNameWithoutExtension(file);
                 if (m_ArchiveTypes.TryGetValue(suffix, out Type archiveType))
-                    InnerGetOrNew(fileName, archiveType);
+                    InnerGetOrNew(fileName, archiveType, null);
             }
         }
 
-        private IArchive InnerGetOrNew(string name, Type archiveType)
+        private IArchive InnerGetOrNew(string name, Type archiveType, object param)
         {
             if (m_Archives.TryGetValue(name, out IArchive archieve))
             {
@@ -150,7 +150,7 @@ namespace XFrame.Modules.Archives
             else
             {
                 IArchive source = (IArchive)Activator.CreateInstance(archiveType);
-                source.OnInit(InnerGetPath(archiveType, name));
+                source.OnInit(InnerGetPath(archiveType, name), param);
                 m_Archives.Add(name, source);
                 return source;
             }

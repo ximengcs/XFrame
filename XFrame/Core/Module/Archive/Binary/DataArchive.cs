@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Archives
 {
@@ -17,16 +18,15 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        bool IArchive.Encrypt { get; set; }
-
-        void IArchive.OnInit(string path)
+        void IArchive.OnInit(string path, object param)
         {
             m_Path = path;
             m_Builder = new BytesBuilder(FILE_CODE);
 
             if (File.Exists(m_Path))
             {
-                m_Root = m_Builder.From(File.ReadAllBytes(m_Path));
+                byte[] buffer = ArchiveUtility.ReadBytes(m_Path);
+                m_Root = m_Builder.From(buffer);
             }
             else
             {
@@ -39,7 +39,7 @@ namespace XFrame.Modules.Archives
             string dir = Path.GetDirectoryName(m_Path);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            File.WriteAllBytes(m_Path, ToBytes());
+            ArchiveUtility.WriteBytes(m_Path, ToBytes());
         }
 
         public void Delete()

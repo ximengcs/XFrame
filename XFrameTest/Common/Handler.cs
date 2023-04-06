@@ -23,6 +23,7 @@ namespace XFrameTest
 
         public void EnterHandle()
         {
+            XConfig.ArchiveEncrypt = true;
             XConfig.DefaultJsonSerializer = typeof(TestJsonSerializer).FullName;
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "C:\\Users\\XM\\Desktop\\Test";

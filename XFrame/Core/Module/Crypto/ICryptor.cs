@@ -15,9 +15,7 @@ namespace XFrame.Modules.Crypto
         /// <param name="ivStr">密钥</param>
         internal void OnInit(string keyStr, string ivStr);
 
-        /// <summary>
-        /// 加密数据写入流
-        /// </summary>
+        
         StreamWriter Writer { get; }
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace XFrame.Modules.Crypto
         /// </summary>
         /// <returns>加密好的数据</returns>
         byte[] EndEncrypt();
-        
+
         /// <summary>
         /// 标记开始解密
         /// </summary>
@@ -45,6 +43,6 @@ namespace XFrame.Modules.Crypto
         /// <summary>
         /// 标记解密结束
         /// </summary>
-        void EndDecrypty();
+        byte[] EndDecrypty();
     }
 }

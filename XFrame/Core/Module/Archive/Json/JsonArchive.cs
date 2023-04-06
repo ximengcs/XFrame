@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using XFrame.SimpleJSON;
 using XFrame.Modules.Serialize;
-using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Config;
+using XFrame.Modules.Crypto;
 
 namespace XFrame.Modules.Archives
 {
@@ -181,28 +182,27 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        bool IArchive.Encrypt { get; set; }
 
         public void Delete()
         {
-            Log.Debug("Delete " + m_Path);
             if (File.Exists(m_Path))
                 File.Delete(m_Path);
         }
 
-        void IArchive.OnInit(string path)
+        void IArchive.OnInit(string path, object param)
         {
             m_Path = path;
             if (File.Exists(m_Path))
-                m_Root = JSONNode.Parse(File.ReadAllText(m_Path));
+            {
+                m_Root = JSONNode.Parse(ArchiveUtility.ReadText(m_Path));
+            }
             if (m_Root == null)
                 m_Root = new JSONObject();
         }
 
         public void Save()
         {
-            Log.Debug("Save " + m_Path);
-            File.WriteAllText(m_Path, m_Root.ToString(4));
+            ArchiveUtility.WriteText(m_Path, m_Root.ToString(4));
         }
         #endregion
     }
