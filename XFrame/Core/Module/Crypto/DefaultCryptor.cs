@@ -58,8 +58,10 @@ namespace XFrame.Modules.Crypto
         public byte[] EndDecrypty()
         {
             m_CryptStream.FlushFinalBlock();
+            byte[] result = m_Stream.ToArray();
+            m_Stream.Seek(0, SeekOrigin.Begin);
             m_Reader = new StreamReader(m_Stream);
-            return m_Stream.ToArray();
+            return result;
         }
 
         public void Dispose()

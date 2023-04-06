@@ -8,7 +8,7 @@ namespace XFrame.Modules.Plots
 
         public DefaultPlotHelper()
         {
-            OnNewStory = new XEventSystem();
+            OnNewStory = EventModule.Inst.NewSys();
         }
     }
 }

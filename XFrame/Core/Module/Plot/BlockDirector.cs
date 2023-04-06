@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Archives;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Plots
 {
@@ -24,7 +25,6 @@ namespace XFrame.Modules.Plots
                 m_Current = m_StoryQueue.Dequeue();
             if (m_Current == null)
                 return;
-
             switch (m_Current.State)
             {
                 case StoryState.WaitStart:

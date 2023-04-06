@@ -12,6 +12,7 @@ namespace XFrame.Modules.Plots
     /// 故事模块
     /// </summary>
     [XModule]
+    [RequireModule(typeof(EventModule))]
     public class PlotModule : SingletonModule<PlotModule>
     {
         #region Inner Fields
