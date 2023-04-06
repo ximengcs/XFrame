@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using XFrame.Utility;
-using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Archives
 {

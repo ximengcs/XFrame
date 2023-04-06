@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using XFrame.SimpleJSON;
 using XFrame.Modules.Serialize;
-using XFrame.Modules.Config;
-using XFrame.Modules.Crypto;
 
 namespace XFrame.Modules.Archives
 {
