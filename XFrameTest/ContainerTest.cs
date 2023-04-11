@@ -145,7 +145,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 EntityA a = new EntityA();
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(0.0f, a.Destroy).Start();
+                TaskModule.Inst.GetOrNew<DelayTask>().Add(1.0f, a.Destroy).Start();
             });
         }
     }
