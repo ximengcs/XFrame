@@ -7,10 +7,25 @@ namespace XFrame.Modules.Containers
     {
         private Container m_Container;
         private IDataProvider m_Data;
+        private bool m_Active;
 
         protected object m_Owner;
 
-        public bool Active { get; set; }
+        public bool Active
+        {
+            get { return m_Active; }
+            set
+            {
+                if (m_Active != value)
+                {
+                    m_Active = value;
+                    if (m_Active)
+                        OnActive();
+                    else
+                        OnInactive();
+                }
+            }
+        }
 
         public IDataProvider ShareData => m_Container;
 
@@ -20,6 +35,7 @@ namespace XFrame.Modules.Containers
         {
             Id = id;
             Active = false;
+            OnInactive();
             m_Container = (Container)container;
             m_Owner = owner;
             m_Data = new DataProvider();
@@ -48,6 +64,8 @@ namespace XFrame.Modules.Containers
         protected virtual void OnAwake() { }
         protected virtual void OnUpdate() { }
         protected virtual void OnDestroy() { }
+        protected virtual void OnActive() { }
+        protected virtual void OnInactive() { }
 
         public T Get<T>(int id = 0) where T : ICom
         {

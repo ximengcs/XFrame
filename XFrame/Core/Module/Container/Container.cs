@@ -110,7 +110,7 @@ namespace XFrame.Modules.Containers
 
         public void Dispatch(Action<ICom> handle)
         {
-            if (handle != null)
+            if (handle == null)
                 return;
 
             m_Coms.SetIt(XItType.Forward);
