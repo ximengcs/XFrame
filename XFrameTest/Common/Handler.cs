@@ -26,7 +26,7 @@ namespace XFrameTest
             XConfig.ArchiveEncrypt = true;
             XConfig.DefaultJsonSerializer = typeof(TestJsonSerializer).FullName;
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
-            XConfig.ArchivePath = "C:\\Users\\XM\\Desktop\\Test";
+            XConfig.ArchivePath = "D:\\TestXFrame";
             XConfig.LocalizeFile = Path.Combine(XConfig.ArchivePath, "lang.csv");
         }
     }

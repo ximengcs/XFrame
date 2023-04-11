@@ -17,7 +17,7 @@ namespace XFrame.Collections
         private Dictionary<Type, Dictionary<int, T>> m_WithTypes;
         private Dictionary<Type, T> m_Mains;
         private XLinkList<T> m_Elements;
-        private Dictionary<Type, XLinkNode<T>> m_NodeMap;
+        private Dictionary<int, XLinkNode<T>> m_NodeMap;
         #endregion
 
         #region Constructor
@@ -29,7 +29,7 @@ namespace XFrame.Collections
             m_WithTypes = new Dictionary<Type, Dictionary<int, T>>(startCapacity);
             m_Mains = new Dictionary<Type, T>(startCapacity);
             m_Elements = new XLinkList<T>(false);
-            m_NodeMap = new Dictionary<Type, XLinkNode<T>>(startCapacity);
+            m_NodeMap = new Dictionary<int, XLinkNode<T>>(startCapacity);
         }
         #endregion
 
@@ -54,7 +54,7 @@ namespace XFrame.Collections
             }
 
             XLinkNode<T> node = m_Elements.AddLast(entity);
-            m_NodeMap.Add(type, node);
+            m_NodeMap.Add(node.GetHashCode(), node);
 
             entities.Add(entity.Id, entity);
             if (!m_Mains.ContainsKey(type))
@@ -78,9 +78,14 @@ namespace XFrame.Collections
                     success = true;
             }
 
-            if (m_NodeMap.TryGetValue(type, out XLinkNode<T> node))
+            int hash = item.GetHashCode();
+            if (m_NodeMap.TryGetValue(hash, out XLinkNode<T> node))
+            {
                 node.Delete();
+                m_NodeMap.Remove(hash);
+            }
 
+            m_Elements.Remove(item);
             return success;
         }
 

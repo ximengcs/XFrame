@@ -47,12 +47,12 @@ namespace XFrame.Modules.Plots
 
         }
 
-        public T GetData<T>() where T : class
+        public T GetData<T>()
         {
             return GetData<T>("main_value");
         }
 
-        public T GetData<T>(string name) where T : class
+        public T GetData<T>(string name)
         {
             string key = $"{name}_{typeof(T).Name}";
             if (m_Sections.HasKey(key))
@@ -64,12 +64,12 @@ namespace XFrame.Modules.Plots
             return default;
         }
 
-        public void SetData<T>(T value) where T : class
+        public void SetData<T>(T value)
         {
             SetData("main_value", value);
         }
 
-        public void SetData<T>(string name, T value) where T : class
+        public void SetData<T>(string name, T value)
         {
             string key = $"{name}_{typeof(T).Name}";
             string content = SerializeModule.Inst.SerializeObjectToJson(value);

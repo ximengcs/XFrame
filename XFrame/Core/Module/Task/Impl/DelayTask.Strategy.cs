@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Times;
+﻿using System;
+using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
 {
@@ -18,6 +19,7 @@ namespace XFrame.Modules.Tasks
             public float OnHandle(ITask from)
             {
                 m_Time += TimeModule.Inst.EscapeTime;
+
                 if (m_Handler.Time <= m_Time)
                 {
                     m_Handler.Act?.Invoke();

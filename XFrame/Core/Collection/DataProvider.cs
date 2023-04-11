@@ -25,31 +25,31 @@ namespace XFrame.Core
         #endregion
 
         #region IDataProvider Interface
-        public T GetData<T>() where T : class
+        public T GetData<T>()
         {
             if (m_MainDatas.TryGetValue(typeof(T), out object value))
-                return value as T;
+                return (T)value;
             else
                 return default;
         }
 
-        public T GetData<T>(string name) where T : class
+        public T GetData<T>(string name)
         {
             if (m_Datas.TryGetValue(typeof(T), out Dictionary<string, object> values))
             {
                 if (values.TryGetValue(name, out object value))
-                    return value as T;
+                    return (T)value;
             }
 
             return default;
         }
 
-        public void SetData<T>(T value) where T : class
+        public void SetData<T>(T value)
         {
             m_MainDatas[typeof(T)] = value;
         }
 
-        public void SetData<T>(string name, T value) where T : class
+        public void SetData<T>(string name, T value)
         {
             Type type = typeof(T);
             Dictionary<string, object> values;
