@@ -1,5 +1,7 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Collections;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
 {
@@ -160,6 +162,16 @@ namespace XFrame.Modules.Containers
         public void Dispose()
         {
             m_Data.Dispose();
+        }
+
+        public IEnumerator<ICom> GetEnumerator()
+        {
+            return m_Container.GetEnumerator();
+        }
+
+        public void SetIt(XItType type)
+        {
+            m_Container.SetIt(type);
         }
     }
 }

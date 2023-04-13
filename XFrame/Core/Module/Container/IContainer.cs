@@ -1,12 +1,13 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Containers
 {
     /// <summary>
     /// 容器
     /// </summary>
-    public interface IContainer : IDataProvider
+    public interface IContainer : IDataProvider, IXEnumerable<ICom>
     {
         /// <summary>
         /// 获取一个组件(Id为默认Id)
