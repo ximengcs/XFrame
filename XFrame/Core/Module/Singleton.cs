@@ -10,7 +10,7 @@
             {
                 if (m_Inst == null)
                     m_Inst = new T();
-                return m_Inst;
+                return m_Inst; 
             }
         }
     }

@@ -31,7 +31,7 @@ namespace XFrame.Modules.Containers
         public void Remove(IContainer container)
         {
             Container cont = (Container)container;
-            if (cont != null)
+            if (m_Containers.Contains(cont))
             {
                 cont.OnDestroy();
                 m_Containers.Remove(cont);
