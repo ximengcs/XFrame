@@ -157,7 +157,6 @@ namespace XFrame.Collections
         }
         #endregion
 
-
         #region IXEnumerable Interface
         public IEnumerator<Line> GetEnumerator()
         {
