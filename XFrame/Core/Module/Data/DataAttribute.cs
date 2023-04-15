@@ -10,27 +10,11 @@ namespace XFrame.Modules.Datas
         /// <summary>
         /// 数据表类型
         /// </summary>
-        public DataType Type { get; }
+        public int TableType { get; }
 
-        public DataAttribute(DataType type)
+        public DataAttribute(int tableType)
         {
-            Type = type;
+            TableType = tableType;
         }
-    }
-
-    /// <summary>
-    /// 数据表类型
-    /// </summary>
-    public enum DataType
-    {
-        /// <summary>
-        /// 列表
-        /// </summary>
-        List,
-
-        /// <summary>
-        /// 对象
-        /// </summary>
-        Object
     }
 }

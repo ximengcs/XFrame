@@ -20,15 +20,29 @@ namespace XFrame.Modules.Datas
             }
         }
 
-        private Dictionary<DataType, TypeInfo> m_TableTypes;
+        private Dictionary<int, TypeInfo> m_TableTypes;
         private Dictionary<Type, List<IDataTable>> m_Tables;
 
         void IDataHelper.OnInit()
         {
-            m_TableTypes = new Dictionary<DataType, TypeInfo>();
+            m_TableTypes = new Dictionary<int, TypeInfo>();
             m_Tables = new Dictionary<Type, List<IDataTable>>();
-            m_TableTypes.Add(DataType.List, new TypeInfo(typeof(DataTable<>), typeof(List<>)));
-            m_TableTypes.Add(DataType.Object, new TypeInfo(typeof(ConfigTable<>)));
+        }
+
+        void IDataHelper.AddTableType(Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                Log.Debug("XFrame", "Data table type error");
+                return;
+            }
+
+            TableAttribute attr = TypeUtility.GetAttribute<TableAttribute>(type);
+            if (attr != null)
+            {
+                Type jsonType = attr != null ? attr.JsonType : null;
+                m_TableTypes.Add(attr.TableType, new TypeInfo(type, jsonType));
+            }
         }
 
         public IDataTable Add(string json, Type dataType)
@@ -64,8 +78,8 @@ namespace XFrame.Modules.Datas
             jsonType = null;
 
             DataAttribute attr = TypeUtility.GetAttribute<DataAttribute>(dataType);
-            DataType dType = attr != null ? attr.Type : DataType.List;
-            if (m_TableTypes.TryGetValue(dType, out TypeInfo info))
+            int tableType = attr != null ? attr.TableType : TableType.List;
+            if (m_TableTypes.TryGetValue(tableType, out TypeInfo info))
             {
                 tbType = info.TableType;
                 jsonType = info.JsonType;

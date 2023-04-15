@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Datas
 {
+    [Table(TableType.Object)]
     internal class ConfigTable<T> : IDataTable<T> where T : IDataRaw
     {
         private T m_Data;

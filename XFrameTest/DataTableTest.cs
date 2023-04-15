@@ -16,7 +16,7 @@ namespace XFrameTest
             }
         }
 
-        [Data(DataType.Object)]
+        [Data(TableType.Object)]
         class Data2 : IDataRaw
         {
             public string Name;

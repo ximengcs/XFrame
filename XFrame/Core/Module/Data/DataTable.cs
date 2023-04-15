@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Datas
 {
+    [Table(TableType.List, typeof(List<>))]
     internal class DataTable<T> : IDataTable<T> where T : IDataRaw
     {
         private Type m_Type;

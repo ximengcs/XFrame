@@ -28,12 +28,27 @@ namespace XFrame.Modules.Datas
             }
 
             if (m_Helper == null)
+            {
                 m_Helper = new DefaultDataHelper();
-            m_Helper.OnInit();
+                m_Helper.OnInit();
+            }
+
+            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<TableAttribute>();
+            foreach (Type type in typeSys)
+                Register(type);
         }
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 注册数据表类型
+        /// </summary>
+        /// <param name="tableType">数据表类型</param>
+        public void Register(Type tableType)
+        {
+            m_Helper.AddTableType(tableType);
+        }
+
         /// <summary>
         /// 添加数据表
         /// </summary>

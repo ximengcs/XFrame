@@ -14,6 +14,12 @@ namespace XFrame.Modules.Datas
         internal void OnInit();
 
         /// <summary>
+        /// 添加可处理的数据表类型
+        /// </summary>
+        /// <param name="type">可以被处理的数据表类型</param>
+        internal void AddTableType(Type type);
+
+        /// <summary>
         /// 添加数据表
         /// </summary>
         /// <param name="json">需要被序列化的数据</param>
