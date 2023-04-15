@@ -3,6 +3,14 @@ using System.Reflection;
 
 namespace XFrame.Core
 {
+    public class Pair
+    {
+        public static Pair<K, V> Create<K, V>(K key, V value)
+        {
+            return new Pair<K, V>(key, value);
+        }
+    }
+
     public partial struct Pair<K, V>
     {
         public K Key { get; private set; }

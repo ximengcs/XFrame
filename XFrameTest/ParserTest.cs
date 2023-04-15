@@ -115,9 +115,9 @@ namespace XFrameTest
             var t1 = new ArrayParser<PairParser<EnumParser<Enum1>, IntParser>>();
             t1.Parse("B|1,A|2,D|4,C|3,A|5,D|6");
             Console.WriteLine(t1);
-            Console.WriteLine(t1.Has(new Pair<Enum1, int>(Enum1.A, 2)));
-            Console.WriteLine(t1.Has(new Pair<Enum1, int>(Enum1.A, 3)));
-            Console.WriteLine(t1.Has(new Pair<Enum1, int>(Enum1.A, 5)));
+            Console.WriteLine(t1.Has(Pair.Create(Enum1.A, 2)));
+            Console.WriteLine(t1.Has(Pair.Create(Enum1.A, 3)));
+            Console.WriteLine(t1.Has(Pair.Create(Enum1.A, 5)));
 
             var t2 = new PairParser<EnumParser<Enum1>, IntParser>();
             t2.Parse("A|5");
@@ -136,7 +136,7 @@ namespace XFrameTest
             PairParser<EnumParser<Enum1>, IntParser> kv1 = new Pair<EnumParser<Enum1>, IntParser>(Enum1.D, 2);
             Console.WriteLine(test.Equals(kv1));
             Console.WriteLine(test.Equals(new Pair<EnumParser<Enum1>, IntParser>(Enum1.D, 2)));
-            Console.WriteLine(test.Equals(new Pair<Enum1, int>(Enum1.D, 2)));
+            Console.WriteLine(test.Equals(Pair.Create(Enum1.D, 2)));
         }
 
         [TestMethod]
@@ -146,8 +146,8 @@ namespace XFrameTest
             parser.Parse("A|2,D|3,C|1,B|5,D|10");
             Console.WriteLine(parser);
 
-            KeyValuePair<Enum1, int> kv1 = new KeyValuePair<Enum1, int>(Enum1.B, 2);
-            KeyValuePair<Enum1, int> kv2 = new KeyValuePair<Enum1, int>(Enum1.B, 2);
+            Pair<Enum1, int> kv1 = Pair.Create(Enum1.B, 2);
+            Pair<Enum1, int> kv2 = Pair.Create(Enum1.B, 2);
             Console.WriteLine(kv1.Equals(kv2));
 
             PairParser<EnumParser<Enum1>, IntParser> kv3 = new Pair<EnumParser<Enum1>, IntParser>(Enum1.B, 5);
