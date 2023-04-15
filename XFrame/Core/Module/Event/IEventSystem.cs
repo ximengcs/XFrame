@@ -9,8 +9,20 @@ namespace XFrame.Modules.Event
         /// <summary>
         /// 触发事件
         /// </summary>
+        /// <param name="eventId">事件Id</param>
+        void Trigger(int eventId);
+
+        /// <summary>
+        /// 触发事件
+        /// </summary>
         /// <param name="e">事件</param>
         void Trigger(XEvent e);
+
+        /// <summary>
+        /// 立刻触发事件
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
+        void TriggerNow(int eventId);
 
         /// <summary>
         /// 立即触发事件

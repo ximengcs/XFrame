@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using XFrame.Modules.Pools;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Event
 {
@@ -8,17 +9,33 @@ namespace XFrame.Modules.Event
     internal class XEventSystem : IEventSystem
     {
         private List<XEvent> m_WorkQueue;
+        private IPool<DefaultEvent> m_EventPool;
         private Dictionary<int, XEventHandler> m_Handlers;
 
         public XEventSystem()
         {
             m_WorkQueue = new List<XEvent>();
             m_Handlers = new Dictionary<int, XEventHandler>();
+            m_EventPool = PoolModule.Inst.GetOrNew<DefaultEvent>();
+        }
+
+        public void Trigger(int eventId)
+        {
+            m_EventPool.Require(out DefaultEvent evt);
+            evt.SetId(eventId);
+            Trigger(evt);
         }
 
         public void Trigger(XEvent e)
         {
             m_WorkQueue.Add(e);
+        }
+
+        public void TriggerNow(int eventId)
+        {
+            m_EventPool.Require(out DefaultEvent evt);
+            evt.SetId(eventId);
+            TriggerNow(evt);
         }
 
         public void TriggerNow(XEvent e)

@@ -10,17 +10,10 @@ namespace XFrame.Modules.Event
     public class EventModule : SingletonModule<EventModule>
     {
         private List<IEventSystem> m_List;
-        private IEventSystem m_Global;
-
-        /// <summary>
-        /// 全局事件系统
-        /// </summary>
-        public IEventSystem Global => m_Global;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Global = new XEventSystem();
             m_List = new List<IEventSystem>();
         }
 
