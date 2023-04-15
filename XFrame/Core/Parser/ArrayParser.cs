@@ -38,26 +38,40 @@ namespace XFrame.Core
             return Value;
         }
 
-        public bool Has(object value)
+        public int IndexOf(object value)
         {
+            int index = 0;
             foreach (XLinkNode<T> node in Value)
             {
                 object other = node.Value;
                 if (other != null && other.Equals(value))
-                    return true;
+                    return index;
+                index++;
             }
-            return false;
+            return -1;
         }
 
-        public bool Has(object value, Func<object, object, bool> action)
+        public bool Has(object value)
         {
+            return IndexOf(value) != -1;
+        }
+
+        public int IndexOf(object value, Func<object, object, bool> action)
+        {
+            int index = 0;
             foreach (XLinkNode<T> node in Value)
             {
                 object other = node.Value.Value;
                 if (other != null && action(value, other))
-                    return true;
+                    return index;
+                index++;
             }
-            return false;
+            return -1;
+        }
+
+        public bool Has(object value, Func<object, object, bool> action)
+        {
+            return IndexOf(value, action) != -1;
         }
 
         object IParser.Parse(string pattern)

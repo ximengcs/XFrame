@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Collections.Generic;
+using System;
 
 namespace XFrame.Collections
 {
@@ -72,6 +73,11 @@ namespace XFrame.Collections
                 }
 
                 return sb.ToString();
+            }
+
+            public static implicit operator string(Line line)
+            {
+                return line.ToString();
             }
         }
     }

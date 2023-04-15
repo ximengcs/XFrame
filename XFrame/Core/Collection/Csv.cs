@@ -228,5 +228,10 @@ namespace XFrame.Collections
             }
             return sb.ToString();
         }
+
+        public static implicit operator string(Csv<T> csv)
+        {
+            return csv.ToString();
+        }
     }
 }

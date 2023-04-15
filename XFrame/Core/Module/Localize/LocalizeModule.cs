@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
-using System.Collections.Generic;
 
 namespace XFrame.Modules.Local
 {
@@ -11,13 +11,14 @@ namespace XFrame.Modules.Local
     /// 本地化模块
     /// </summary>
     [CoreModule]
-    public class LocalizeModule : SingletonModule<LocalizeModule>
+    public partial class LocalizeModule : SingletonModule<LocalizeModule>
     {
         #region Inner Fileds
         private int m_Index;
         private Csv<string> m_Data;
         private Language m_Language;
-        private Dictionary<Language, int> m_LanguageIndex;
+        private FormatterProvider m_Formatter;
+        private ArrayParser<EnumParser<Language>> m_Title;
         #endregion
 
         #region Life Fun
@@ -25,6 +26,7 @@ namespace XFrame.Modules.Local
         {
             base.OnInit(data);
 
+            m_Formatter = new FormatterProvider();
             if (!string.IsNullOrEmpty(XConfig.LocalizeFile))
             {
                 if (File.Exists(XConfig.LocalizeFile))
@@ -54,6 +56,15 @@ namespace XFrame.Modules.Local
         }
 
         /// <summary>
+        /// 设置文本格式化器
+        /// </summary>
+        /// <param name="formatter">自定义格式化</param>
+        public void SetFormater(ICustomFormatter formatter)
+        {
+            m_Formatter.SetFormatter(formatter);
+        }
+
+        /// <summary>
         /// 获取本地化值
         /// </summary>
         /// <param name="key">Id</param>
@@ -63,7 +74,7 @@ namespace XFrame.Modules.Local
         {
             Csv<string>.Line line = m_Data.Get(key);
             string content = line[m_Index];
-            return string.Format(content, values);
+            return string.Format(m_Formatter, content, values);
         }
 
         /// <summary>
@@ -80,30 +91,23 @@ namespace XFrame.Modules.Local
             for (int i = 0; i < args.Length; i++)
                 param[i] = GetValue(args[i]);
 
-            return string.Format(content, param);
+            return string.Format(m_Formatter, content, param);
         }
         #endregion
 
         #region Inner Imeplement
         private void InnerInit(string csvText, Language language)
         {
-            m_LanguageIndex = new Dictionary<Language, int>();
             m_Data = new Csv<string>(csvText, ParserModule.Inst.STRING);
-            Csv<string>.Line line = m_Data.Get(1);
-            EnumParser<Language> parser = new EnumParser<Language>();
-            for (int i = 0; i < line.Count; i++)
-            {
-                if (string.IsNullOrEmpty(line[i]))
-                    continue;
-                Language lang = parser.Parse(line[i]);
-                m_LanguageIndex[lang] = i;
-            }
+            m_Title = new ArrayParser<EnumParser<Language>>();
+            m_Title.Parse(m_Data.Get(1));
             Lang = language;
         }
 
         private void InnerRefreshLang()
         {
-            if (!m_LanguageIndex.TryGetValue(m_Language, out m_Index))
+            m_Index = m_Title.IndexOf(m_Language);
+            if (m_Index == -1)
                 Log.Debug("XFrame", "language map error.");
         }
         #endregion
