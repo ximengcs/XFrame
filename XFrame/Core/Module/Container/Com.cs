@@ -33,7 +33,7 @@ namespace XFrame.Modules.Containers
 
         public int Id { get; private set; }
 
-        void ICom.OnInit(IContainer container, int id, object owner)
+        void ICom.OnInit(IContainer container, int id, object owner, OnContainerReady onReady)
         {
             Id = id;
             Active = false;
@@ -41,13 +41,8 @@ namespace XFrame.Modules.Containers
             m_Container = (Container)container;
             m_Owner = owner;
             m_Data = new DataProvider();
+            onReady?.Invoke(this);
             OnInit();
-        }
-
-        void ICom.OnAwake()
-        {
-            Active = true;
-            OnAwake();
         }
 
         void ICom.OnUpdate()
@@ -79,42 +74,42 @@ namespace XFrame.Modules.Containers
             return m_Container.Get(type, id);
         }
 
-        public T Add<T>(Action<ICom> comInitComplete = null) where T : ICom
+        public T Add<T>(OnContainerReady comInitComplete = null) where T : ICom
         {
             return m_Container.Add<T>(default, comInitComplete);
         }
 
-        public T Add<T>(int id, Action<ICom> comInitComplete = null) where T : ICom
+        public T Add<T>(int id, OnContainerReady comInitComplete = null) where T : ICom
         {
             return m_Container.Add<T>(id, comInitComplete);
         }
 
-        public ICom Add(Type type, Action<ICom> comInitComplete = null)
+        public ICom Add(Type type, OnContainerReady comInitComplete = null)
         {
             return m_Container.Add(type, default, comInitComplete);
         }
 
-        public ICom Add(Type type, int id, Action<ICom> comInitComplete = null)
+        public ICom Add(Type type, int id, OnContainerReady comInitComplete = null)
         {
             return m_Container.Add(type, id, comInitComplete);
         }
 
-        public T GetOrAdd<T>(Action<ICom> comInitComplete = null) where T : ICom
+        public T GetOrAdd<T>(OnContainerReady comInitComplete = null) where T : ICom
         {
             return m_Container.GetOrAdd<T>(default, comInitComplete);
         }
 
-        public T GetOrAdd<T>(int id, Action<ICom> comInitComplete = null) where T : ICom
+        public T GetOrAdd<T>(int id, OnContainerReady comInitComplete = null) where T : ICom
         {
             return m_Container.GetOrAdd<T>(id, comInitComplete);
         }
 
-        public ICom GetOrAdd(Type type, Action<ICom> comInitComplete = null)
+        public ICom GetOrAdd(Type type, OnContainerReady comInitComplete = null)
         {
             return m_Container.GetOrAdd(type, default, comInitComplete);
         }
 
-        public ICom GetOrAdd(Type type, int id, Action<ICom> comInitComplete = null)
+        public ICom GetOrAdd(Type type, int id, OnContainerReady comInitComplete = null)
         {
             return m_Container.GetOrAdd(type, id, comInitComplete);
         }
@@ -134,7 +129,7 @@ namespace XFrame.Modules.Containers
             m_Container.Clear();
         }
 
-        public void Dispatch(Action<ICom> handle)
+        public void Dispatch(OnContainerReady handle)
         {
             m_Container.Dispatch(handle);
         }
@@ -172,6 +167,11 @@ namespace XFrame.Modules.Containers
         public void SetIt(XItType type)
         {
             m_Container.SetIt(type);
+        }
+
+        public ICom Add(ICom com, int id = 0, OnContainerReady onReady = null)
+        {
+            return m_Container.Add(com, id, onReady);
         }
     }
 }

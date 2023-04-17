@@ -101,7 +101,11 @@ namespace XFrame.Modules.XType
         /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNewBySub<T>() where T : class
         {
-            Type type = typeof(T);
+            return GetOrNewBySub(typeof(T));
+        }
+
+        public TypeSystem GetOrNewBySub(Type type)
+        {
             if (m_Classifyes.TryGetValue(type, out TypeSystem module))
                 return module;
 

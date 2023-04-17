@@ -1,39 +1,52 @@
-﻿using XFrame.Collections;
+﻿using System;
+using XFrame.Collections;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Containers;
+using System.Collections.Generic;
+using XFrame.Modules.Event;
+using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体
     /// </summary>
-    public abstract class Entity : IEntity, IPoolObject
+    public abstract class Entity : IEntity
     {
         #region Inner Field
-        private EntityData m_Data;
-        protected Scene m_Scene;
-        protected Entity m_Parent;
-        protected XCollection<Entity> m_Children;
+        private int m_Id;
+        private int m_TypeId;
+        private Entity m_Parent;
+        private Container m_Container;
+        private IEventSystem m_EventSys;
         #endregion
 
         #region Life Fun
-        void IEntity.OnInit(int id, IScene scene, IEntity parent, EntityData data)
+        void IEntity.OnInit(int id, IEntity parent, OnEntityReady onData)
         {
-            Id = id;
-            m_Parent = parent as Entity;
-            m_Scene = scene as Scene;
-            if (m_Children == null)
-                m_Children = new XCollection<Entity>();
-            OnInit(data);
+            m_Id = id;
+            m_Parent = parent != null ? (Entity)parent : null;
+            m_Container = new Container();
+            m_Container.OnInit(this);
+            m_EventSys = EventModule.Inst.NewSys();
+            onData?.Invoke(this);
+            m_TypeId = GetData<int>(nameof(m_TypeId));
+            OnInit();
         }
 
         void IEntity.OnUpdate(float elapseTime)
         {
+            foreach (ICom com in m_Container)
+                com.OnUpdate();
             OnUpdate(elapseTime);
         }
 
         void IEntity.OnDestroy()
         {
             OnDestroy();
+            foreach (ICom com in m_Container)
+                com.OnDestroy();
+            m_Container.Dispose();
         }
         #endregion
 
@@ -45,16 +58,14 @@ namespace XFrame.Modules.Entities
 
         void IPoolObject.OnRelease()
         {
-            Id = default;
-            m_Data = null;
-            m_Scene = null;
+            m_Id = default;
             m_Parent = null;
             OnRelease();
         }
 
         void IPoolObject.OnDelete()
         {
-            OnDestroyForever();
+            OnDestroyFromPool();
         }
 
         /// <summary>
@@ -70,7 +81,7 @@ namespace XFrame.Modules.Entities
         /// <summary>
         /// 实体永久销毁生命周期，当对象池满时会触发此生命周期
         /// </summary>
-        protected abstract void OnDestroyForever();
+        protected abstract void OnDestroyFromPool();
         #endregion
 
         #region Sub Child Life Fun
@@ -78,9 +89,8 @@ namespace XFrame.Modules.Entities
         /// 实体初始化生命周期
         /// </summary>
         /// <param name="data">实体数据，数据在销毁时不会被回收或释放</param>
-        protected virtual void OnInit(EntityData data)
+        protected virtual void OnInit()
         {
-
         }
 
         /// <summary>
@@ -89,8 +99,6 @@ namespace XFrame.Modules.Entities
         /// <param name="elapseTime">逃逸时间</param>
         protected virtual void OnUpdate(float elapseTime)
         {
-            foreach (Entity child in m_Children)
-                child.OnUpdate(elapseTime);
         }
 
         /// <summary>
@@ -99,132 +107,172 @@ namespace XFrame.Modules.Entities
         /// </summary>
         protected virtual void OnDestroy()
         {
-            foreach (Entity child in m_Children)
-                child.OnDestroy();
         }
         #endregion
 
         #region Interface
         /// <summary>
+        /// 实体事件系统
+        /// </summary>
+        public IEventSystem Event => m_EventSys;
+
+        /// <summary>
         /// 实体Id
         /// </summary>
-        public int Id { get; private set; }
+        public int Id => m_Id;
 
         /// <summary>
         /// 实体类型Id
         /// </summary>
-        public int TypeId => m_Data.TypeId;
-
-        /// <summary>
-        /// 实体所属场景
-        /// </summary>
-        public Scene Scene => m_Scene;
+        public int TypeId => m_TypeId;
 
         /// <summary>
         /// 实体父节点
         /// </summary>
-        public Entity Parent => m_Parent;
-
-        /// <summary>
-        /// 添加一个实体到孩子列表中
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="data">实体数据</param>
-        /// <returns>创建的实体</returns>
-        public T Add<T>(EntityData data) where T : Entity
+        public Entity Parent
         {
-            T entity = EntityModule.Inst.InnerCreate<T>(m_Scene, this, data);
-            InnerAdd(entity);
-            return entity;
-        }
-
-        /// <summary>
-        /// 添加一个实体到孩子列表中
-        /// 注意实体从对象池中创建或释放时孩子的对象池生命周期方法不会被调用
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <returns>创建的实体</returns>
-        public T Add<T>() where T : Entity
-        {
-            T entity = EntityModule.Inst.InnerCreate<T>(m_Scene, this);
-            InnerAdd(entity);
-            return entity;
-        }
-
-        /// <summary>
-        /// 从孩子列表中移除实体
-        /// </summary>
-        /// <param name="entity">待移除的实体</param>
-        public void Remove(Entity entity)
-        {
-            m_Children.Remove(entity);
-        }
-
-        /// <summary>
-        /// 从孩子列表中移除实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="entityId">实体Id</param>
-        public void Remove<T>(int entityId) where T : Entity
-        {
-            Entity entity = m_Children.Get<T>(entityId);
-            if (entity != null)
-                Remove(entity);
-        }
-
-        /// <summary>
-        /// 获取实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <returns>获取到的实体</returns>
-        public T Get<T>() where T : Entity
-        {
-            return m_Children.Get<T>();
-        }
-
-        /// <summary>
-        /// 获取实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="entityId">实体Id</param>
-        /// <returns>获取到的实体</returns>
-        public T Get<T>(int entityId) where T : Entity
-        {
-            return m_Children.Get<T>(entityId);
-        }
-
-        /// <summary>
-        /// 从父实体中获取实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <returns>获取到的实体</returns>
-        protected T GetOwner<T>() where T : Entity
-        {
-            if (m_Parent == null)
-                return null;
-            return m_Parent.Get<T>();
-        }
-
-        /// <summary>
-        /// 从父实体中获取实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="entityId">实体Id</param>
-        /// <returns>获取到的实体</returns>
-        protected T GetOwner<T>(int entityId) where T : Entity
-        {
-            if (m_Parent == null)
-                return null;
-            return m_Parent.Get<T>(entityId);
+            get => m_Parent;
+            set
+            {
+                if (m_Parent != value)
+                {
+                    EntityParentChangeEvent e = new EntityParentChangeEvent(m_Parent, value);
+                    m_Parent = value;
+                    m_EventSys.Trigger(e);
+                }
+            }
         }
         #endregion
 
-        #region Inner Implement
-        private Entity InnerAdd(Entity entity)
+        private ICom InnerGetOrAdd(Type type, int comId, OnContainerReady onReady)
         {
-            entity.m_Parent = this;
-            m_Children.Add(entity);
-            return entity;
+            ICom com = m_Container.Get(type, comId);
+            if (com != null)
+                return com;
+            return InnerAddCom(type, comId, onReady);
+        }
+
+        private ICom InnerAddCom(Type type, int comId, OnContainerReady onReady)
+        {
+            ICom entityCom = (ICom)Activator.CreateInstance(type);
+            m_Container.Add(entityCom, comId, onReady);
+            return entityCom;
+        }
+
+        #region IContainer Implement
+        public ICom Get(Type type, int id = 0)
+        {
+            return m_Container.Get(type, id);
+        }
+
+        public T Add<T>(OnContainerReady onReady = null) where T : ICom
+        {
+            return (T)InnerAddCom(typeof(T), IdModule.Inst.Next(), onReady);
+        }
+
+        public T Add<T>(int id, OnContainerReady onReady = null) where T : ICom
+        {
+            return (T)InnerAddCom(typeof(T), id, onReady);
+        }
+
+        public ICom Add(Type type, OnContainerReady onReady = null)
+        {
+            return InnerAddCom(type, IdModule.Inst.Next(), onReady);
+        }
+
+        public ICom Add(Type type, int id = 0, OnContainerReady onReady = null)
+        {
+            return InnerAddCom(type, id, onReady);
+        }
+
+        public T GetOrAdd<T>(OnContainerReady onReady = null) where T : ICom
+        {
+            return (T)InnerGetOrAdd(typeof(T), IdModule.Inst.Next(), onReady);
+        }
+
+        public T GetOrAdd<T>(int id = 0, OnContainerReady onReady = null) where T : ICom
+        {
+            return (T)InnerGetOrAdd(typeof(T), id, onReady);
+        }
+
+        public ICom GetOrAdd(Type type, OnContainerReady onReady = null)
+        {
+            return InnerGetOrAdd(type, IdModule.Inst.Next(), onReady);
+        }
+
+        public ICom GetOrAdd(Type type, int id = 0, OnContainerReady onReady = null)
+        {
+            return InnerGetOrAdd(type, id, onReady);
+        }
+
+        public void Remove(Type type, int id = 0)
+        {
+            m_Container.Remove(type, id);
+        }
+
+        public void Clear()
+        {
+            m_Container.Clear();
+        }
+
+        public void Dispatch(OnContainerReady handle)
+        {
+            m_Container.Dispatch(handle);
+        }
+
+        public void SetData<T>(T value)
+        {
+            m_Container.SetData(value);
+        }
+
+        public T GetData<T>()
+        {
+            return m_Container.GetData<T>();
+        }
+
+        public void SetData<T>(string name, T value)
+        {
+            m_Container.SetData(name, value);
+        }
+
+        public T GetData<T>(string name)
+        {
+            return m_Container.GetData<T>(name);
+        }
+
+        public void Dispose()
+        {
+            m_Container.Dispose();
+        }
+
+        public IEnumerator<ICom> GetEnumerator()
+        {
+            return m_Container.GetEnumerator();
+        }
+
+        public void SetIt(XItType type)
+        {
+            m_Container.SetIt(type);
+        }
+
+        public T Get<T>(int id = 0) where T : ICom
+        {
+            return m_Container.Get<T>(id);
+        }
+
+        public void Remove<T>(int id = 0) where T : ICom
+        {
+            m_Container.Remove<T>(id);
+        }
+
+        public ICom Add(ICom com, int id = 0, OnContainerReady onReady = null)
+        {
+            IEntity entity = (IEntity)com;
+            if (entity != null)
+            {
+                return m_Container.Add(com, id, onReady);
+            }
+            return default;
         }
         #endregion
     }

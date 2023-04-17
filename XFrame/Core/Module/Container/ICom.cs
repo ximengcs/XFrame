@@ -24,12 +24,7 @@ namespace XFrame.Modules.Containers
         /// <param name="container">所属容器</param>
         /// <param name="id">组件Id</param>
         /// <param name="owner">组件拥有者</param>
-        internal void OnInit(IContainer container, int id, object owner);
-
-        /// <summary>
-        /// 唤醒生命周期
-        /// </summary>
-        internal void OnAwake();
+        internal void OnInit(IContainer container, int id, object owner, OnContainerReady onReady);
 
         /// <summary>
         /// 更新生命周期

@@ -5,7 +5,7 @@ namespace XFrame.Modules.Entities
     /// 场景
     /// </summary>
     [EntityProp]
-    public class Scene : Com, IScene
+    public class Scene : EntityCom, IScene
     {
         #region Interface
         /// <summary>
@@ -41,7 +41,7 @@ namespace XFrame.Modules.Entities
 
         }
 
-        protected override void OnDestroyForever()
+        protected override void OnDestroyFromPool()
         {
 
         }

@@ -70,57 +70,72 @@ namespace XFrame.Modules.Entities
         /// 创建无实体数据的根实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="scene">实体所属场景</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IScene scene) where T : class, IEntity
+        public T Create<T>(OnEntityReady onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), scene, default, default, true) as T;
+            return InnerCreate(typeof(T), default, onReady, true) as T;
+        }
+
+        public IEntity Create(Type type, OnEntityReady onReady = null)
+        {
+            return InnerCreate(type, default, onReady, true);
         }
 
         /// <summary>
         /// 创建无实体数据的实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="scene">实体所属场景</param>
         /// <param name="parent">父实体</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IScene scene, IEntity parent) where T : class, IEntity
+        public T Create<T>(IEntity parent, OnEntityReady onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), scene, parent, default, true) as T;
+            return InnerCreate(typeof(T), parent, onReady, true) as T;
+        }
+
+        public IEntity Create(Type type, IEntity parent, OnEntityReady onReady = null)
+        {
+            return InnerCreate(type, parent, onReady, true);
         }
 
         /// <summary>
         /// 创建有实体数据的根实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="scene">实体所属场景</param>
-        /// <param name="data">实体数据</param>
+        /// <param name="typeId">实体类型</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IScene scene, EntityData data) where T : class, IEntity
+        public T Create<T>(int typeId, OnEntityReady onReady = null) where T : class, IEntity
+        {
+            return (T)Create(typeof(T), typeId, onReady);
+        }
+
+        public IEntity Create(Type baseType, int typeId, OnEntityReady onReady = null)
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
-                .GetOrNewBySub<T>()
-                .GetKey(data.TypeId);
-            T entity = InnerCreate(type, scene, default, data, true) as T;
-            return entity;
+                .GetOrNewBySub(baseType)
+                .GetKey(typeId);
+            return InnerCreate(type, default, onReady, true);
         }
 
         /// <summary>
         /// 创建有实体数据的实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="scene">实体所属场景</param>
         /// <param name="parent">父实体</param>
-        /// <param name="data">实体数据</param>
+        /// <param name="typeId">实体数据</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IScene scene, IEntity parent, EntityData data) where T : class, IEntity
+        public T Create<T>(IEntity parent, int typeId, OnEntityReady onReady = null) where T : class, IEntity
+        {
+            return (T)Create(typeof(T), parent, typeId, onReady);
+        }
+
+        public IEntity Create(Type baseType, IEntity parent, int typeId, OnEntityReady onReady = null)
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
-                .GetOrNewBySub<T>()
-                .GetKey(data.TypeId);
-            return InnerCreate(type, scene, parent, data, true) as T;
+                .GetOrNewBySub(baseType)
+                .GetKey(typeId);
+            return InnerCreate(type, parent, onReady, true);
         }
 
         /// <summary>
@@ -137,21 +152,7 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Inernal Implement
-        internal T InnerCreate<T>(IScene scene, IEntity parent, EntityData data) where T : class, IEntity
-        {
-            Type type = TypeModule.Inst
-                .GetOrNewWithAttr<EntityPropAttribute>()
-                .GetOrNewBySub<T>()
-                .GetKey(data.TypeId);
-            return InnerCreate(type, scene, parent, data, false) as T;
-        }
-
-        internal T InnerCreate<T>(IScene scene, IEntity parent) where T : class, IEntity
-        {
-            return InnerCreate(typeof(T), scene, parent, default, false) as T;
-        }
-
-        private IEntity InnerCreate(Type entityType, IScene scene, IEntity parent, EntityData data, bool fromPool)
+        private IEntity InnerCreate(Type entityType, IEntity parent, OnEntityReady onReady, bool fromPool)
         {
             IEntity entity;
 
@@ -166,7 +167,7 @@ namespace XFrame.Modules.Entities
                 entity = Activator.CreateInstance(entityType) as IEntity;
             }
 
-            entity.OnInit(IdModule.Inst.Next(), scene, parent, data);
+            entity.OnInit(IdModule.Inst.Next(), parent, onReady);
             if (parent == null)
                 m_Entities.Add(entity);
             return entity;
