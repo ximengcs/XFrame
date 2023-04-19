@@ -58,5 +58,24 @@ namespace XFrameTest
                 EntityModule.Inst.Destroy(e1);
             });
         }
+
+        [TestMethod]
+        public void Test3()
+        {
+            EntryTest.Exec(50, () =>
+            {
+                EntityModule.Inst.RegisterEntity<EBase>();
+                EBase c3 = EntityModule.Inst.Create<EBase>(3);
+            });
+        }
+
+        [TestMethod]
+        public void Test4()
+        {
+            EntryTest.Exec(50, () =>
+            {
+                EntityModule.Inst.Create<E3>();
+            });
+        }
     }
 }
