@@ -1,5 +1,7 @@
 ﻿using XFrame.Core;
+using XFrame.Modules.ID;
 using XFrame.Collections;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Containers
 {
@@ -9,17 +11,19 @@ namespace XFrame.Modules.Containers
     [XModule]
     public partial class ContainerModule : SingletonModule<ContainerModule>
     {
-        private XCollection<Container> m_Containers;
+        private IPool<Container> m_Pool;
+        private XCollection<IContainer> m_Containers;
 
         /// <summary>
         /// 请求一个新的容器
         /// </summary>
         /// <param name="owner">容器拥有者</param>
         /// <returns>容器实例</returns>
-        public IContainer New(object owner = null)
+        public IContainer New(object owner = null, OnContainerReady onReady = null)
         {
-            Container container = new Container();
-            container.OnInit(owner);
+            m_Pool.Require(out Container c);
+            IContainer container = c;
+            container.OnInit(IdModule.Inst.Next(), owner, onReady);
             m_Containers.Add(container);
             return container;
         }
@@ -30,32 +34,32 @@ namespace XFrame.Modules.Containers
         /// <param name="container">容器</param>
         public void Remove(IContainer container)
         {
-            Container cont = (Container)container;
-            if (m_Containers.Contains(cont))
+            if (m_Containers.Contains(container))
             {
-                cont.OnDestroy();
-                m_Containers.Remove(cont);
+                container.OnDestroy();
+                m_Containers.Remove(container);
             }
         }
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Containers = new XCollection<Container>();
+            m_Containers = new XCollection<IContainer>();
+            m_Pool = PoolModule.Inst.GetOrNew<Container>();
         }
 
         protected override void OnUpdate(float escapeTime)
         {
             base.OnUpdate(escapeTime);
-            foreach (Container cont in m_Containers)
-                cont.OnUpdate();
+            foreach (IContainer container in m_Containers)
+                container.OnUpdate(escapeTime);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            foreach (Container cont in m_Containers)
-                cont.OnDestroy();
+            foreach (IContainer container in m_Containers)
+                container.OnDestroy();
             m_Containers.Clear();
         }
     }

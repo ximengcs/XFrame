@@ -1,13 +1,12 @@
-﻿using XFrame.Collections;
-using XFrame.Modules.Pools;
+﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
 
 namespace XFrame.Modules.Entities
 {
-    public interface IEntity: IContainer, IXItem, IPoolObject
+    public interface IEntity: IContainer
     {
+        IEventSystem Event { get; }
+
         protected internal void OnInit(int id, IEntity parent, OnEntityReady onData);
-        protected internal void OnUpdate(float elapseTime);
-        protected internal void OnDestroy();
     }
 }

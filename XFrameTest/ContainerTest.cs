@@ -15,10 +15,10 @@ namespace XFrameTest
             public EntityA()
             {
                 m_Coms = ContainerModule.Inst.New();
-                m_Coms.Add<Com1>();
-                m_Coms.Add<Com2>((com) => com.SetData(98259));
-                m_Coms.Add<Com3>();
-                m_Coms.Add<Com1>();
+                m_Coms.AddCom<Com1>();
+                m_Coms.AddCom<Com2>((com) => com.SetData(98259));
+                m_Coms.AddCom<Com3>();
+                m_Coms.AddCom<Com1>();
             }
 
             public void Destroy()
@@ -36,16 +36,9 @@ namespace XFrameTest
                 Log.Debug($"Com1 OnInit");
             }
 
-            protected override void OnAwake()
+            protected override void OnUpdate(float elpseTime)
             {
-                base.OnAwake();
-                Log.Debug($"Com1 Awake");
-                Add<Com4>();
-            }
-
-            protected override void OnUpdate()
-            {
-                base.OnUpdate();
+                base.OnUpdate(elpseTime);
                 Log.Debug($"Com1 OnUpdate");
             }
 
@@ -64,16 +57,9 @@ namespace XFrameTest
                 Log.Debug($"Com2 OnInit");
             }
 
-            protected override void OnAwake()
+            protected override void OnUpdate(float elpseTime)
             {
-                base.OnAwake();
-                int testIntData = GetData<int>();
-                Log.Debug($"Com2 Awake {testIntData}");
-            }
-
-            protected override void OnUpdate()
-            {
-                base.OnUpdate();
+                base.OnUpdate(elpseTime);
                 Log.Debug($"Com2 OnUpdate");
             }
 
@@ -92,16 +78,9 @@ namespace XFrameTest
                 Log.Debug($"Com3 OnInit");
             }
 
-            protected override void OnAwake()
+            protected override void OnUpdate(float elpseTime)
             {
-                base.OnAwake();
-                Log.Debug($"Com3 Awake");
-                Remove<Com4>();
-            }
-
-            protected override void OnUpdate()
-            {
-                base.OnUpdate();
+                base.OnUpdate(elpseTime);
                 Log.Debug($"Com3 OnUpdate");
             }
 
@@ -120,15 +99,9 @@ namespace XFrameTest
                 Log.Debug($"Com4 OnInit");
             }
 
-            protected override void OnAwake()
+            protected override void OnUpdate(float elpseTime)
             {
-                base.OnAwake();
-                Log.Debug($"Com4 Awake");
-            }
-
-            protected override void OnUpdate()
-            {
-                base.OnUpdate();
+                base.OnUpdate(elpseTime);
                 Log.Debug($"Com4 OnUpdate");
             }
 

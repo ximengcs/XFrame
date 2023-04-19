@@ -1,5 +1,7 @@
 ﻿
 namespace XFrame.Modules.Containers
 {
-    public delegate void OnContainerReady(ICom com);
+    public delegate void OnComReady(ICom com);
+
+    public delegate void OnContainerReady(IContainer container);
 }

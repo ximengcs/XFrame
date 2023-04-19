@@ -1,12 +1,11 @@
-﻿using XFrame.Collections;
-using XFrame.Core;
+﻿using XFrame.Modules.Entities;
 
 namespace XFrame.Modules.Containers
 {
     /// <summary>
     /// 容器组件
     /// </summary>
-    public interface ICom : IXItem, IContainer
+    public interface ICom : IContainer
     {
         /// <summary>
         /// 是否处于激活状态
@@ -14,26 +13,10 @@ namespace XFrame.Modules.Containers
         bool Active { get; set; }
 
         /// <summary>
-        /// 组件共享数据提供器
+        /// 组件拥有者
         /// </summary>
-        IDataProvider ShareData { get; }
+        IContainer Owner { get; }
 
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        /// <param name="container">所属容器</param>
-        /// <param name="id">组件Id</param>
-        /// <param name="owner">组件拥有者</param>
-        internal void OnInit(IContainer container, int id, object owner, OnContainerReady onReady);
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        internal void OnUpdate();
-
-        /// <summary>
-        /// 销毁生命周期
-        /// </summary>
-        internal void OnDestroy();
+        internal void OnInit(int id, IContainer owner, OnComReady onReady);
     }
 }

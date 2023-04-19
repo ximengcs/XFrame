@@ -49,6 +49,7 @@ namespace XFrame.Modules.Pools
             {
                 Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
                 pool = Activator.CreateInstance(poolType) as IPool;
+                pool.SetHelper(new DefaultPoolHelper());
                 m_PoolContainers.Add(objType, pool);
             }
 

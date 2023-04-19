@@ -1,5 +1,4 @@
-﻿using XFrame.Core;
-using XFrame.Modules.ID;
+﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
 
 namespace XFrame.Modules.Entities
@@ -7,39 +6,25 @@ namespace XFrame.Modules.Entities
     /// <summary>
     /// 实体组件
     /// </summary>
-    public abstract class EntityCom : Entity, ICom
+    public abstract class EntityCom : Com, IEntityCom
     {
-        protected int m_ComId;
-        protected object m_Owner;
+        private IEventSystem m_EventSys;
 
-        public bool Active { get; set; }
+        public IEventSystem Event => m_EventSys;
 
-        /// <summary>
-        /// 组件共享数据,(顶层实体下所有组件共享数据)
-        /// </summary>
-        public IDataProvider ShareData { get; }
-
-        void ICom.OnInit(IContainer container, int id, object owner, OnContainerReady onReady)
+        void IEntityCom.OnInit(int id, IEntity owner, OnEntityComReady onReady)
         {
-            IEntity entity = this;
-            IEntity parent = (IEntity)owner;
-            entity.OnInit(IdModule.Inst.Next(), parent, (e) =>
+            ICom thisCom = this;
+            IEntity thisEntity = this;
+            thisEntity.OnInit(id, owner, (e) =>
             {
-                m_ComId = id;
-                m_Owner = owner;
-                onReady?.Invoke(this);
+                thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
             });
         }
 
-        void ICom.OnDestroy()
+        void IEntity.OnInit(int id, IEntity parent, OnEntityReady onData)
         {
-            m_ComId = default;
-            m_Owner = null;
-        }
-
-        void ICom.OnUpdate()
-        {
-
+            m_EventSys = EventModule.Inst.NewSys();
         }
     }
 }

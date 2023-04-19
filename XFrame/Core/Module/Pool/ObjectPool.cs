@@ -7,6 +7,7 @@ namespace XFrame.Modules.Pools
     internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {
         private Type m_Type;
+        private IPoolHelper m_Helper;
         private XLinkList<IPoolObject> m_Objects;
         private XLoopQueue<XLinkNode<IPoolObject>> m_NodeCache;
 
@@ -15,8 +16,13 @@ namespace XFrame.Modules.Pools
         public ObjectPool()
         {
             m_Type = typeof(T);
-            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(64);
             m_Objects = new XLinkList<IPoolObject>(false);
+            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(64);
+        }
+
+        public void SetHelper(IPoolHelper helper)
+        {
+            m_Helper = helper;
         }
 
         public bool Require(out T obj)
@@ -45,7 +51,7 @@ namespace XFrame.Modules.Pools
         {
             if (m_Objects.Empty)
             {
-                obj = Activator.CreateInstance(m_Type) as IPoolObject;
+                obj = m_Helper.Factory(m_Type);
                 obj.OnCreate();
                 return true;
             }
@@ -63,7 +69,7 @@ namespace XFrame.Modules.Pools
                 {
                     m_NodeCache.AddLast(node);
                 }
-                
+
                 obj.OnCreate();
                 return false;
             }

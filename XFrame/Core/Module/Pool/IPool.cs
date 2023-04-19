@@ -13,6 +13,12 @@ namespace XFrame.Modules.Pools
         Type ObjectType { get; }
 
         /// <summary>
+        /// 对象池辅助器
+        /// </summary>
+        /// <param name="helper"></param>
+        void SetHelper(IPoolHelper helper);
+
+        /// <summary>
         /// 获取一个对象
         /// </summary>
         /// <param name="obj">获取到的对象</param>
