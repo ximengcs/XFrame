@@ -1,6 +1,5 @@
 ﻿using XFrame.Modules.Archives;
 using System.Collections.Generic;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Plots
 {
