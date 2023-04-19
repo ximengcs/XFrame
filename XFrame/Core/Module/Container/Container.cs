@@ -13,7 +13,11 @@ namespace XFrame.Modules.Containers
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
-        public object Master => m_Master;
+        public object Master
+        {
+            get => m_Master; 
+            protected set => m_Master = value;
+        }
 
         public int Id { get; private set; }
 
@@ -40,10 +44,10 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
-            OnDestroy();
             m_Coms.SetIt(XItType.Backward);
             foreach (ICom com in m_Coms)
                 com.OnDestroy();
+            OnDestroy();
             m_Coms = null;
         }
 

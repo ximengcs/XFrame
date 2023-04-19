@@ -10,7 +10,7 @@ namespace XFrameTest
         {
             base.OnInit();
             C1 c1 = GetCom<C1>();
-            Log.Debug("C2 OnInit");
+            Log.Debug("C2 OnInit " + GetData<string>());
         }
 
         protected override void OnUpdate(float elapseTime)
@@ -23,6 +23,24 @@ namespace XFrameTest
         {
             base.OnDestroy();
             Log.Debug("C2 OnDestroy");
+        }
+
+        protected override void OnCreateFromPool()
+        {
+            base.OnCreateFromPool();
+            Log.Debug("C2 OnCreateFromPool");
+        }
+
+        protected override void OnDestroyFromPool()
+        {
+            base.OnDestroyFromPool();
+            Log.Debug("C2 OnDestroyFromPool");
+        }
+
+        protected override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            Log.Debug("C2 OnReleaseFromPool");
         }
     }
 }

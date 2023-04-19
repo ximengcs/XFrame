@@ -18,6 +18,16 @@ namespace XFrame.Modules.Pools
             base.OnInit(data);
             m_PoolContainers = new Dictionary<Type, IPool>();
         }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            foreach (IPool pool in m_PoolContainers.Values)
+                pool.Dispose();
+            m_PoolContainers.Clear();
+            m_PoolContainers = null;
+        }
         #endregion
 
         #region Interface

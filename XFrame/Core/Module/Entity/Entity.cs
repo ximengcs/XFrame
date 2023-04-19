@@ -16,20 +16,8 @@ namespace XFrame.Modules.Entities
         #region Life Fun
         void IEntity.OnInit(int id, IEntity parent, OnEntityReady onReady)
         {
-            object master;
-            if (parent != null)
-            {
-                m_Parent = (Entity)parent;
-                master = m_Parent.Master;
-            }
-            else
-            {
-                m_Parent = null;
-                master = this;
-            }
-
             m_EventSys = EventModule.Inst.NewSys();
-
+            object master = InnerCheckOwner(parent);
             IContainer thisContainer = this;
             thisContainer.OnInit(id, master, (c) => onReady?.Invoke(this));
         }
@@ -52,11 +40,31 @@ namespace XFrame.Modules.Entities
             {
                 if (m_Parent != value)
                 {
-                    EntityParentChangeEvent e = new EntityParentChangeEvent(m_Parent, value);
                     m_Parent = value;
+                    Master = InnerCheckOwner(value);
+                    EntityParentChangeEvent e = new EntityParentChangeEvent(m_Parent, value);
                     m_EventSys.Trigger(e);
                 }
             }
+        }
+        #endregion
+
+        #region Inner Implement
+        private object InnerCheckOwner(IEntity parent)
+        {
+            object master;
+            if (parent != null)
+            {
+                m_Parent = (Entity)parent;
+                master = parent.Master;
+            }
+            else
+            {
+                m_Parent = null;
+                master = this;
+            }
+
+            return master;
         }
         #endregion
     }
