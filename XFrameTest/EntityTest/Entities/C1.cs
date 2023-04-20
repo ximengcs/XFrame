@@ -9,7 +9,7 @@ namespace XFrameTest
         {
             base.OnInit();
 
-            Log.Debug("C1 OnInit");
+            Log.Debug("C1 OnInit " + GetData<int>());
         }
 
         protected override void OnUpdate(float elapseTime)

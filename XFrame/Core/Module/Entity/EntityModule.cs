@@ -5,6 +5,7 @@ using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Entities
 {
@@ -58,12 +59,12 @@ namespace XFrame.Modules.Entities
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub<T>();
 
-            EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(module.Main);
-            if (atr != null)
-                module.AddKey(atr.Type, module.Main);
-
             foreach (Type type in module)
-                module.AddKey(atr.Type, type);
+            {
+                EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(type);
+                if (atr != null)
+                    module.AddKey(atr.Type, type);
+            }
         }
 
         /// <summary>
@@ -114,6 +115,11 @@ namespace XFrame.Modules.Entities
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
+            if (type == null)
+            {
+                Log.Debug("XFrame", $"Entity {baseType.Name} not register.");
+                return default;
+            }
             return InnerCreate(type, default, onReady, true);
         }
 

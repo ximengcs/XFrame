@@ -51,7 +51,7 @@ namespace XFrame.Modules.XType
         {
             if ((!m_AllTypes.Contains(type) && m_MainType != type) || m_KeyTypes.ContainsKey(key))
             {
-                Log.Error("XFrame", $"Type module add index error.");
+                Log.Error("XFrame", $"Type {type.Name} module add index error.");
                 return;
             }
             m_KeyTypes[key] = type;

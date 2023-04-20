@@ -1,46 +1,52 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Entities;
 
 namespace XFrameTest
 {
-    internal class C2 : EntityCom
+    class EBase : Entity
+    {
+
+    }
+
+    [EntityProp(3)]
+    internal class E3 : EBase
     {
         protected override void OnInit()
         {
             base.OnInit();
-            C1 c1 = GetCom<C1>();
-            Log.Debug("C2 OnInit " + GetData<string>());
+            Log.Debug("E3 OnInit " + GetData<Pair<string, string>>());
         }
 
         protected override void OnUpdate(float elapseTime)
         {
             base.OnUpdate(elapseTime);
-            Log.Debug("C2 OnUpdate");
+            Log.Debug("E3 OnUpdate");
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            Log.Debug("C2 OnDestroy");
+            Log.Debug("E3 OnDestroy");
         }
 
         protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
-            Log.Debug("C2 OnCreateFromPool");
+            Log.Debug("E3 OnCreateFromPool");
         }
 
         protected override void OnDestroyFromPool()
         {
             base.OnDestroyFromPool();
-            Log.Debug("C2 OnDestroyFromPool");
+            Log.Debug("E3 OnDestroyFromPool");
         }
 
         protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
-            Log.Debug("C2 OnReleaseFromPool");
+            Log.Debug("E3 OnReleaseFromPool");
         }
     }
 }

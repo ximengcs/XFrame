@@ -17,6 +17,12 @@ namespace XFrame.Modules.Containers
         /// </summary>
         IContainer Owner { get; }
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        /// <param name="id">组件Id</param>
+        /// <param name="owner">组件容器</param>
+        /// <param name="onReady">组件就绪事件</param>
         internal void OnInit(int id, IContainer owner, OnComReady onReady);
     }
 }

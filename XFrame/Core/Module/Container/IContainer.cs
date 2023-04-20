@@ -10,10 +10,28 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public interface IContainer : IXItem, IDataProvider, IPoolObject, IXEnumerable<ICom>
     {
+        /// <summary>
+        /// 容器拥有者
+        /// </summary>
         object Master { get; }
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        /// <param name="id">容器Id</param>
+        /// <param name="master">容器拥有者</param>
+        /// <param name="onReady">容器就绪事件</param>
         internal void OnInit(int id, object master, OnContainerReady onReady);
+
+        /// <summary>
+        /// 更新生命周期
+        /// </summary>
+        /// <param name="elapseTime">逃逸时间</param>
         internal void OnUpdate(float elapseTime);
+
+        /// <summary>
+        /// 销毁生命周期
+        /// </summary>
         internal void OnDestroy();
 
         /// <summary>
