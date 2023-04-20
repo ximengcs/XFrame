@@ -119,8 +119,14 @@ namespace XFrame.Modules.XType
             m_ClassRegister.Add(pType, module);
             foreach (Type subType in m_Types)
             {
-                if (TypeUtility.HasAttribute(subType, pType))
+                Attribute attr = TypeUtility.GetAttribute(subType, pType);
+                if (attr != null)
+                {
                     module.AddSubClass(subType);
+                    XAttribute xAttr = attr as XAttribute;
+                    if (xAttr != null)
+                        module.AddKey(xAttr.Id, subType);
+                }
             }
             return module;
         }
@@ -153,7 +159,12 @@ namespace XFrame.Modules.XType
             foreach (Type type in m_Types)
             {
                 if (pType != type && pType.IsAssignableFrom(type))
+                {
                     module.AddSubClass(type);
+                    XAttribute attr = TypeUtility.GetAttribute<XAttribute>(type);
+                    if (attr != null)
+                        module.AddKey(attr.Id, type);
+                }
             }
             return module;
         }

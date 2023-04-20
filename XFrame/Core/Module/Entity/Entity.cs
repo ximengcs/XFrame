@@ -33,7 +33,6 @@ namespace XFrame.Modules.Entities
             IContainer thisContainer = this;
             thisContainer.OnInit(id, master, (c) => onReady?.Invoke(this));
         }
-
         #endregion
 
         #region Interface

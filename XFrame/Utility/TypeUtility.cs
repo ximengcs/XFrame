@@ -75,6 +75,11 @@ namespace XFrame.Utility
             return Attribute.GetCustomAttribute(inst.GetType(), typeof(T), true) as T;
         }
 
+        public static Attribute GetAttribute(object inst, Type type)
+        {
+            return Attribute.GetCustomAttribute(inst.GetType(), type, true);
+        }
+
         /// <summary>
         /// 获取特性
         /// </summary>
@@ -84,6 +89,11 @@ namespace XFrame.Utility
         public static T GetAttribute<T>(Type type) where T : Attribute
         {
             return Attribute.GetCustomAttribute(type, typeof(T), true) as T;
+        }
+
+        public static Attribute GetAttribute(Type type, Type attrType)
+        {
+            return Attribute.GetCustomAttribute(type, attrType, true);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Modules.XType;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
-using XFrame.Modules.XType; 
 
 namespace XFrame.Modules.Diagnotics
 {
