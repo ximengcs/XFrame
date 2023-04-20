@@ -1,5 +1,4 @@
-﻿using XFrame.Core;
-
+﻿
 namespace XFrame.Modules.Containers
 {
     public abstract class Com : Container, ICom

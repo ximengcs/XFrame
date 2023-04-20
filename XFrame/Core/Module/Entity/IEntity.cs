@@ -19,6 +19,6 @@ namespace XFrame.Modules.Entities
         /// <param name="id">实体Id</param>
         /// <param name="parent">父实体</param>
         /// <param name="onData">实体就绪事件</param>
-        protected internal void OnInit(int id, IEntity parent, OnEntityReady onData);
+        void OnInit(int id, IEntity parent, OnEntityReady onData);
     }
 }

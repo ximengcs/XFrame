@@ -21,18 +21,18 @@ namespace XFrame.Modules.Containers
         /// <param name="id">容器Id</param>
         /// <param name="master">容器拥有者</param>
         /// <param name="onReady">容器就绪事件</param>
-        internal void OnInit(int id, object master, OnContainerReady onReady);
+        void OnInit(int id, object master, OnContainerReady onReady);
 
         /// <summary>
         /// 更新生命周期
         /// </summary>
         /// <param name="elapseTime">逃逸时间</param>
-        internal void OnUpdate(float elapseTime);
+        void OnUpdate(float elapseTime);
 
         /// <summary>
         /// 销毁生命周期
         /// </summary>
-        internal void OnDestroy();
+        void OnDestroy();
 
         /// <summary>
         /// 获取一个组件(Id为默认Id)
@@ -89,7 +89,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id"></param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom AddCom(Type type, int id = default, OnComReady onReady = null);
+        ICom AddCom(Type type, int id, OnComReady onReady = null);
 
         /// <summary>
         /// 获取或添加一个组件(Id为默认Id)
@@ -106,7 +106,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">组件Id</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        T GetOrAddCom<T>(int id = default, OnComReady onReady = null) where T : ICom;
+        T GetOrAddCom<T>(int id, OnComReady onReady = null) where T : ICom;
 
         /// <summary>
         /// 获取或添加一个组件(Id为默认Id)
@@ -123,7 +123,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">组件Id</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom GetOrAddCom(Type type, int id = default, OnComReady onReady = null);
+        ICom GetOrAddCom(Type type, int id, OnComReady onReady = null);
 
         /// <summary>
         /// 移除组件

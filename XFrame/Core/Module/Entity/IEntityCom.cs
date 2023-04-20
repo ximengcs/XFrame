@@ -13,6 +13,6 @@ namespace XFrame.Modules.Entities
         /// <param name="id">组件Id</param>
         /// <param name="owner">组件所属实体</param>
         /// <param name="onReady">组件就绪事件</param>
-        internal void OnInit(int id, IEntity owner, OnEntityComReady onReady);
+        void OnInit(int id, IEntity owner, OnEntityComReady onReady);
     }
 }
