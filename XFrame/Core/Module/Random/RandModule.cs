@@ -61,6 +61,30 @@ namespace XFrame.Module.Rand
             }
             return string.Concat(chars);
         }
+
+        public T RandEnum<T>(params T[] exlusion) where T : Enum
+        {
+            Array values = typeof(T).GetEnumValues();
+            List<T> target = new List<T>(values.Length);
+            for (int i = 0; i <  values.Length; i++)
+            {
+                T value = (T)values.GetValue(i);
+                bool find = false;
+                foreach (T ex in exlusion)
+                {
+                    if (value.Equals(ex))
+                    {
+                        find = true;
+                        break;
+                    }
+                }
+                if (!find)
+                    target.Add(value);
+            }
+
+            int index = m_Random.Next(0, target.Count);
+            return target[index];
+        }
         #endregion
     }
 }
