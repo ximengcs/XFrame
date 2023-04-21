@@ -72,9 +72,9 @@ namespace XFrame.Modules.Entities
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <returns>创建的实体</returns>
-        public T Create<T>(OnEntityReady onReady = null) where T : class, IEntity
+        public T Create<T>(OnEntityReady<T> onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), default, onReady, true) as T;
+            return InnerCreate(typeof(T), default, (entity) => onReady?.Invoke((T)entity), true) as T;
         }
 
         public IEntity Create(Type type, OnEntityReady onReady = null)
@@ -88,9 +88,9 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="parent">父实体</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IEntity parent, OnEntityReady onReady = null) where T : class, IEntity
+        public T Create<T>(IEntity parent, OnEntityReady<T> onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), parent, onReady, true) as T;
+            return InnerCreate(typeof(T), parent, (entity) => onReady?.Invoke((T)entity), true) as T;
         }
 
         public IEntity Create(Type type, IEntity parent, OnEntityReady onReady = null)
@@ -104,9 +104,9 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="typeId">实体类型</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(int typeId, OnEntityReady onReady = null) where T : class, IEntity
+        public T Create<T>(int typeId, OnEntityReady<T> onReady = null) where T : class, IEntity
         {
-            return (T)Create(typeof(T), typeId, onReady);
+            return (T)Create(typeof(T), typeId, (entity) => onReady?.Invoke((T)entity));
         }
 
         public IEntity Create(Type baseType, int typeId, OnEntityReady onReady = null)
@@ -130,9 +130,9 @@ namespace XFrame.Modules.Entities
         /// <param name="parent">父实体</param>
         /// <param name="typeId">实体数据</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IEntity parent, int typeId, OnEntityReady onReady = null) where T : class, IEntity
+        public T Create<T>(IEntity parent, int typeId, OnEntityReady<T> onReady = null) where T : class, IEntity
         {
-            return (T)Create(typeof(T), parent, typeId, onReady);
+            return (T)Create(typeof(T), parent, typeId, (entity) => onReady?.Invoke((T)entity));
         }
 
         public IEntity Create(Type baseType, IEntity parent, int typeId, OnEntityReady onReady = null)

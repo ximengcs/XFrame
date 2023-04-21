@@ -88,14 +88,14 @@ namespace XFrame.Modules.Containers
             return InnerAdd(com, id, onReady);
         }
 
-        public T AddCom<T>(OnComReady onReady = null) where T : ICom
+        public T AddCom<T>(OnComReady<T> onReady = null) where T : ICom
         {
-            return (T)InnerAdd(typeof(T), default, onReady);
+            return (T)InnerAdd(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
-        public T AddCom<T>(int id, OnComReady onReady = null) where T : ICom
+        public T AddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
         {
-            return (T)InnerAdd(typeof(T), id, onReady);
+            return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         public ICom AddCom(Type type, OnComReady onReady = null)
@@ -108,14 +108,14 @@ namespace XFrame.Modules.Containers
             return InnerAdd(type, id, onReady);
         }
 
-        public T GetOrAddCom<T>(OnComReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(OnComReady<T> onReady = null) where T : ICom
         {
-            return (T)GetOrAddCom(typeof(T), default, onReady);
+            return (T)GetOrAddCom(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
-        public T GetOrAddCom<T>(int id, OnComReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
         {
-            return (T)GetOrAddCom(typeof(T), id, onReady);
+            return (T)GetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         public ICom GetOrAddCom(Type type, OnComReady onReady = null)
