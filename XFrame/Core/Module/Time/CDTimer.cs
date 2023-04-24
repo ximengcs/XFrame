@@ -4,17 +4,28 @@ namespace XFrame.Modules.Times
 {
     /// <summary>
     /// CD计时器
-    /// 需要TimeModule支持
     /// </summary>
-    public class CDTimer
+    public partial class CDTimer
     {
+        private IUpdater m_Updater;
         private Dictionary<int, CDInfo> m_Times;
+
+        /// <summary>
+        /// 构造CD计时器
+        /// </summary>
+        /// <param name="updater">时间更新器</param>
+        public CDTimer(IUpdater updater)
+        {
+            m_Updater = updater;
+            m_Times = new Dictionary<int, CDInfo>();
+        }
 
         /// <summary>
         /// 构造CD计时器
         /// </summary>
         public CDTimer()
         {
+            m_Updater = Default;
             m_Times = new Dictionary<int, CDInfo>();
         }
 
@@ -25,9 +36,9 @@ namespace XFrame.Modules.Times
         /// <param name="cd">cd时间</param>
         public void Record(int key, float cd)
         {
-            CDInfo info = new CDInfo();
+            CDInfo info = new CDInfo(m_Updater);
             info.CD = cd;
-            info.EndTime = TimeModule.Inst.Time;
+            info.EndTime = m_Updater.Time;
             m_Times[key] = info;
         }
 
@@ -64,17 +75,23 @@ namespace XFrame.Modules.Times
 
         private class CDInfo
         {
+            private IUpdater m_Updater;
             public float EndTime;
             public float CD;
 
+            public CDInfo(IUpdater updater)
+            {
+                m_Updater = updater;
+            }
+
             public bool Due
             {
-                get { return TimeModule.Inst.Time >= EndTime; }
+                get { return m_Updater.Time >= EndTime; }
             }
 
             public void Reset()
             {
-                EndTime = TimeModule.Inst.Time + CD;
+                EndTime = m_Updater.Time + CD;
             }
         }
     }
