@@ -23,6 +23,7 @@ namespace XFrame.Modules.Tasks
 
         #region Inner Fields
         private List<ITask> m_Tasks;
+        private Stopwatch m_Watch;
         private Dictionary<string, ITask> m_TaskWithName;
         #endregion
 
@@ -32,6 +33,7 @@ namespace XFrame.Modules.Tasks
             base.OnInit(data);
             TaskTimeout = DEFAULT_TIMEOUT;
             m_Tasks = new List<ITask>();
+            m_Watch = new Stopwatch();
             m_TaskWithName = new Dictionary<string, ITask>();
         }
 
@@ -40,10 +42,9 @@ namespace XFrame.Modules.Tasks
             base.OnUpdate(escapeTime);
 
             long timeout = 0;
-            Stopwatch sw = new Stopwatch();
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
             {
-                sw.Restart();
+                m_Watch.Restart();
                 ITask task = m_Tasks[i];
                 if (task.IsStart)
                     task.OnUpdate();
@@ -53,8 +54,8 @@ namespace XFrame.Modules.Tasks
                     m_Tasks.RemoveAt(i);
                     m_TaskWithName.Remove(task.Name);
                 }
-                sw.Stop();
-                timeout += sw.ElapsedMilliseconds;
+                m_Watch.Stop();
+                timeout += m_Watch.ElapsedMilliseconds;
                 if (timeout >= TaskTimeout)
                     break;
             }
