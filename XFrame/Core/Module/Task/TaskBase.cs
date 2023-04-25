@@ -2,6 +2,7 @@
 using XFrame.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Tasks
 {
@@ -136,7 +137,33 @@ namespace XFrame.Modules.Tasks
             OnInit();
         }
 
+        void IPoolObject.OnCreate()
+        {
+            OnCreateFromPool();
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            OnReleaseFromPool();
+        }
+
+        void IPoolObject.OnDelete()
+        {
+            OnDestroyFromPool();
+            m_Targets.Clear();
+            m_CorTasks.Clear();
+            m_OnComplete = null;
+            m_OnUpdate = null;
+            m_Current = null;
+            m_PerProRate = 0;
+            m_Pro = 0;
+            m_CurPro = 0;
+        }
+
         protected abstract void OnInit();
+        protected virtual void OnCreateFromPool() { }
+        protected virtual void OnDestroyFromPool() { }
+        protected virtual void OnReleaseFromPool() { }
 
         public void Start()
         {

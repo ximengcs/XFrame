@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Tasks;
 using XFrame.Modules.Threads;
 
 namespace XFrameTest
@@ -14,15 +16,29 @@ namespace XFrameTest
         [TestMethod]
         public void Test()
         {
-            Task task = new Task(() =>
+            EntryTest.Exec(() =>
             {
-                for (int i = 0; i < 100; i++)
-                    Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} 1 " + i);
-            });
+                ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
+                task.Add(() => Log.Debug("Exec1"));
+                task.Add(() => Log.Debug("Exec2"));
+                task.OnComplete(() =>
+                {
+                    Log.Debug($"Complete {task.GetHashCode()}");
+                }).Start();
 
-            task.Start();
-            for (int i = 0; i < 100; i++)
-                Console.WriteLine($"{Thread.CurrentThread.ManagedThreadId} 2 " + i);
+                DelayTask delay = TaskModule.Inst.GetOrNew<DelayTask>();
+                delay.Add(1.0f, () =>
+                {
+                    Log.Debug($"Delay complete {task.GetHashCode()}");
+                    ActionTask t = TaskModule.Inst.GetOrNew<ActionTask>();
+                    t.Add(() => Log.Debug("Exec3"));
+                    t.Add(() => Log.Debug("Exec4"));
+                    t.OnComplete(() =>
+                    {
+                        Log.Debug($"Complete2 {task.GetHashCode()}");
+                    }).Start();
+                }).Start();
+            });
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using XFrame.Core;
+﻿using XFrame.Core;
 using XFrame.Module.Rand;
 using System.Diagnostics;
 using XFrame.Modules.Pools;
@@ -100,10 +99,13 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_TaskWithName.TryGetValue(name, out ITask task))
             {
-                task = Activator.CreateInstance<T>();
+                IPool<T> pool = PoolModule.Inst.GetOrNew<T>();
+                bool isNew = pool.Require(out IPoolObject obj);
+                task = (ITask)obj;
                 m_TaskWithName[name] = task;
                 m_Tasks.Add(task);
-                task.OnInit(name);
+                if (isNew)
+                    task.OnInit(name);
             }
             return (T)task;
         }

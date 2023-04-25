@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using XFrame.Core;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Tasks
 {
@@ -66,6 +67,22 @@ namespace XFrame.Modules.Tasks
         }
 
         public void Delete()
+        {
+
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            m_Complete = null;
+            m_Update = null;
+        }
+
+        void IPoolObject.OnDelete()
         {
 
         }

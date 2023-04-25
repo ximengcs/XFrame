@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Modules.Pools;
 using System.Threading.Tasks;
 
 namespace XFrame.Modules.Tasks
@@ -6,7 +7,7 @@ namespace XFrame.Modules.Tasks
     /// <summary>
     /// 任务
     /// </summary>
-    public interface ITask : ITaskHandler
+    public interface ITask : ITaskHandler, IPoolObject
     {
         /// <summary>
         /// 任务名
