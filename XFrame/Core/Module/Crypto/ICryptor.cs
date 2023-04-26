@@ -15,7 +15,9 @@ namespace XFrame.Modules.Crypto
         /// <param name="ivStr">密钥</param>
         internal void OnInit(string keyStr, string ivStr);
 
-        
+        /// <summary>
+        /// 加密数据写入流
+        /// </summary>
         StreamWriter Writer { get; }
 
         /// <summary>

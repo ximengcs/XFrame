@@ -7,6 +7,10 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
 {
+    /// <summary>
+    /// 通用容器
+    /// 可继承去实现所需生命周期处理
+    /// </summary>
     public class Container : IContainer
     {
         private object m_Master;

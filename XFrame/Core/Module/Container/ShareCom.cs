@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
 {
+    /// <summary>
+    /// 共享组件基类, 会共享容器数据
+    /// </summary>
     public abstract class ShareCom : ICom
     {
         private IContainer m_Owner;
