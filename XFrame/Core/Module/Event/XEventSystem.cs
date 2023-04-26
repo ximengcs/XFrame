@@ -36,6 +36,7 @@ namespace XFrame.Modules.Event
             m_EventPool.Require(out DefaultEvent evt);
             evt.SetId(eventId);
             TriggerNow(evt);
+            InnerReleaseDefault(evt);
         }
 
         public void TriggerNow(XEvent e)
@@ -81,6 +82,13 @@ namespace XFrame.Modules.Event
             foreach (XEvent e in m_WorkQueue)
                 TriggerNow(e);
             m_WorkQueue.Clear();
+        }
+
+        private void InnerReleaseDefault(XEvent e)
+        {
+            DefaultEvent evt = e as DefaultEvent;
+            if (evt != null)
+                m_EventPool.Release(evt);
         }
     }
 }
