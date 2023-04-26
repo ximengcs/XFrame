@@ -1,4 +1,6 @@
 ﻿using XFrame.Core;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Serialize;
 
 namespace XFrameTest
 {
@@ -154,6 +156,66 @@ namespace XFrameTest
             Console.WriteLine(parser.Has(kv1));
             Console.WriteLine(parser.Has(kv2));
             Console.WriteLine(parser.Has(kv3));
+        }
+
+        class Test4Data
+        {
+            public string A;
+            public int B;
+
+            public Test4Data(string a, int b)
+            {
+                A = a;
+                B = b;
+            }
+
+            public override string ToString()
+            {
+                return $"A:{A} B:{B}";
+            }
+
+            public override bool Equals(object? obj)
+            {
+                Test4Data other = obj as Test4Data;
+                if (other != null)
+                {
+                    return A == other.A && B == other.B;
+                }
+                return base.Equals(obj);
+            }
+        }
+
+        [TestMethod]
+        public void Test4()
+        {
+            EntryTest.Exec(() =>
+            {
+                TupleParser<Test4Data> test = new TupleParser<Test4Data>();
+                TupleParser<Test4Data> test2 = new TupleParser<Test4Data>();
+                test.Parse("{{\"A\":\"T9\",\"B\":98259}}");
+                test2.Parse("{{\"A\":\"T9\",\"B\":98259}}");
+                Log.Debug(test == ValueTuple.Create(new Test4Data("T9", 98299)));
+                Log.Debug(test == ValueTuple.Create(new Test4Data("T9", 98259)));
+
+                TupleParser<Test4Data> test3 = new Test4Data("T9", 98259);
+                Test4Data test4 = test3;
+                Log.Debug(test == test3);
+                Log.Debug(test);
+                Log.Debug(test4);
+                Log.Debug(test == test4);
+            });
+        }
+
+        [TestMethod]
+        public void Test5()
+        {
+            EntryTest.Exec(() =>
+            {
+                TupleParser<Test4Data, int> test = new TupleParser<Test4Data, int>();
+                test.Parse("{{\"A\":\"T9\",\"B\":98259};999}");
+                Log.Debug(test.Value.Item1);
+                Log.Debug(test.Value.Item2);
+            });
         }
     }
 }
