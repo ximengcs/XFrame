@@ -84,7 +84,7 @@ namespace XFrameTest
                     PlotModule.Inst.NewStory("story2").AddSection(typeof(Section1))
                 };
                 NewStoryEvent e = new NewStoryEvent(stories);
-                PlotModule.Inst.Helper.OnNewStory.Trigger(e);
+                PlotModule.Inst.Helper.Event.Trigger(e);
 
                 stories = new IStory[]
                 {
@@ -92,7 +92,7 @@ namespace XFrameTest
                     PlotModule.Inst.NewStory("story4").AddSection(typeof(Section2))
                 };
                 e = new NewStoryEvent(stories, typeof(NonBlockDirector));
-                PlotModule.Inst.Helper.OnNewStory.Trigger(e);
+                PlotModule.Inst.Helper.Event.Trigger(e);
             });
         }
     }

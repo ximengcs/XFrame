@@ -66,7 +66,7 @@ namespace XFrame.Modules.Plots
 
             if (m_Helper == null)
                 m_Helper = new DefaultPlotHelper();
-            m_Helper.OnNewStory.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
+            m_Helper.Event.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
 
         protected override void OnUpdate(float escapeTime)
@@ -81,7 +81,7 @@ namespace XFrame.Modules.Plots
             base.OnDestroy();
             foreach (IDirector director in m_Directors.Values)
                 director.OnDestory();
-            m_Helper.OnNewStory.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
+            m_Helper.Event.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
         #endregion
 

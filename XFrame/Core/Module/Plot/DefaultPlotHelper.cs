@@ -4,11 +4,11 @@ namespace XFrame.Modules.Plots
 {
     internal class DefaultPlotHelper : IPlotHelper
     {
-        public IEventSystem OnNewStory { get; }
+        public IEventSystem Event { get; }
 
         public DefaultPlotHelper()
         {
-            OnNewStory = EventModule.Inst.NewSys();
+            Event = EventModule.Inst.NewSys();
         }
     }
 }

@@ -8,8 +8,8 @@ namespace XFrame.Modules.Plots
     public interface IPlotHelper
     {
         /// <summary>
-        /// 新故事事件
+        /// 剧情事件系统
         /// </summary>
-        IEventSystem OnNewStory { get; }
+        IEventSystem Event { get; }
     }
 }

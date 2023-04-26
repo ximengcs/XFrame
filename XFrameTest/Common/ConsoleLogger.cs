@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Diagnotics;
+﻿using System;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrameTest
 {
