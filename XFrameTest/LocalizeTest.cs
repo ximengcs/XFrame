@@ -50,11 +50,11 @@ namespace XFrameTest
             {
                 LocalizeModule.Inst.SetFormater(new IdFormatter());
                 LocalizeModule.Inst.Lang = Language.ChineseSimplified;
-                Log.Debug($"{LocalizeModule.Inst.GetValueParam(4, 1, 2, 3)}");
-                Log.Debug($"{LocalizeModule.Inst.GetValue(4, "q", "w", "e")}");
+                Log.Debug($"{LocalizeModule.Inst.GetValueParam(3, 0, 1, 2)}");
+                Log.Debug($"{LocalizeModule.Inst.GetValue(3, "q", "w", "e")}");
 
                 LocalizeModule.Inst.Lang = Language.English;
-                Log.Debug($"{LocalizeModule.Inst.GetValue(4, "q", "w", "e")}");
+                Log.Debug($"{LocalizeModule.Inst.GetValue(3, "q", "w", "e")}");
             });
         }
     }

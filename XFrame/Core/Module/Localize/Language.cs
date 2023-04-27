@@ -6,6 +6,7 @@ namespace XFrame.Modules.Local
     /// </summary>
     public enum Language
     {
+        None = -1,
         Afrikaans = 0,
         Arabic = 1,
         Basque = 2,

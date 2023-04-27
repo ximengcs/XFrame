@@ -17,7 +17,8 @@ namespace XFrame.Core
             }
             else
             {
-                Log.Error("Parse", "parse error");
+                Log.Error("Parse", $"parse error {pattern}");
+                Value = default;
             }
             return Value;
         }

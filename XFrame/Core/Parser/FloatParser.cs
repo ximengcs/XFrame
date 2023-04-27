@@ -13,7 +13,7 @@ namespace XFrame.Core
             if (float.TryParse(pattern, out float result))
                 Value = result;
             else
-                Log.Error("Parse", "parse error");
+                Log.Error("Parse", $"parse error {pattern}");
             return Value;
         }
 

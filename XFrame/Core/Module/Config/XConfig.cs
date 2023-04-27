@@ -33,11 +33,6 @@ namespace XFrame.Modules.Config
         public static string ResPath;
 
         /// <summary>
-        /// 本地化语言文件
-        /// </summary>
-        public static string LocalizeFile;
-
-        /// <summary>
         /// 默认Log辅助器
         /// </summary>
         public static string DefaultLogger;
