@@ -24,6 +24,9 @@ namespace XFrame.Core.Binder
         {
             m_GetHandler = getHandler;
             m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
+
+            if (getHandler() is IChangeableValue value)
+                value.OnChange += Trigger;
         }
         #endregion
 
