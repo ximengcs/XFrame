@@ -87,7 +87,7 @@ namespace XFrame.Collections
         public XLinkNode<T> Last
         {
             get { return m_Last; }
-            internal set { m_First = value; }
+            internal set { m_Last = value; }
         }
 
         /// <summary>

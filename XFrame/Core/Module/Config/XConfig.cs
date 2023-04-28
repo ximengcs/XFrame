@@ -13,11 +13,6 @@ namespace XFrame.Modules.Config
         public static string Entrance;
 
         /// <summary>
-        /// 默认语言
-        /// </summary>
-        public static Language Lang;
-
-        /// <summary>
         /// 存档路径
         /// </summary>
         public static string ArchivePath;

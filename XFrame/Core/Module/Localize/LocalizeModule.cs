@@ -1,10 +1,9 @@
 ﻿using System;
-using System.IO;
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Event;
-using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Local
 {
@@ -20,6 +19,7 @@ namespace XFrame.Modules.Local
         private Csv<string> m_Data;
         private Language m_Language;
         private IEventSystem m_Event;
+        private Dictionary<int, int> m_IdMap;
         private FormatterProvider m_Formatter;
         private ArrayParser<EnumParser<Language>> m_Title;
         #endregion
@@ -52,10 +52,20 @@ namespace XFrame.Modules.Local
                 {
                     Language oldLang = m_Language;
                     m_Language = value;
-                    InnerRefreshLang();
+                    m_Index = InnerGetLangIndex(m_Language);
                     m_Event.Trigger(new LanguageChangeEvent(oldLang, m_Language));
                 }
             }
+        }
+
+        /// <summary>
+        /// 是否存在语言
+        /// </summary>
+        /// <param name="language">语言</param>
+        /// <returns>true为存在</returns>
+        public bool HasLanguage(Language language)
+        {
+            return InnerGetLangIndex(language) != -1;
         }
 
         /// <summary>
@@ -67,7 +77,7 @@ namespace XFrame.Modules.Local
             if (!string.IsNullOrEmpty(content))
             {
                 string file = content;
-                InnerInit(file, XConfig.Lang);
+                InnerInit(file);
             }
         }
 
@@ -81,6 +91,33 @@ namespace XFrame.Modules.Local
         }
 
         /// <summary>
+        /// 获取一整行
+        /// </summary>
+        /// <param name="key">Id</param>
+        /// <returns>行</returns>
+        public string[] GetLine(int key)
+        {
+            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
+            string[] lineContent = new string[line.Count - 1];
+            for (int i = 1; i < line.Count; i++)
+                lineContent[i - 1] = line[i];
+            return lineContent;
+        }
+
+        /// <summary>
+        /// 获取本地化值
+        /// </summary>
+        /// <param name="language">指定语言</param>
+        /// <param name="key">Id</param>
+        /// <param name="values">参数</param>
+        /// <returns>值</returns>
+        public string GetValue(Language language, int key, params object[] values)
+        {
+            int index = InnerGetLangIndex(language);
+            return InnerGetValue(index, key, values);
+        }
+
+        /// <summary>
         /// 获取本地化值
         /// </summary>
         /// <param name="key">Id</param>
@@ -88,9 +125,7 @@ namespace XFrame.Modules.Local
         /// <returns>值</returns>
         public string GetValue(int key, params object[] values)
         {
-            Csv<string>.Line line = m_Data.Get(key + 1);
-            string content = line[m_Index];
-            return string.Format(m_Formatter, content, values);
+            return InnerGetValue(m_Index, key, values);
         }
 
         /// <summary>
@@ -101,30 +136,74 @@ namespace XFrame.Modules.Local
         /// <returns>值</returns>
         public string GetValueParam(int key, params int[] args)
         {
-            Csv<string>.Line line = m_Data.Get(key + 1);
-            string content = line[m_Index];
+            return InnerGetValueParam(m_Index, key, args);
+        }
+
+        /// <summary>
+        /// 获取本地化值
+        /// </summary>
+        /// <param name="language">指定语言</param>
+        /// <param name="key">Id</param>
+        /// <param name="args">参数Id</param> 
+        /// <returns>值</returns>
+        public string GetValueParam(Language language, int key, params int[] args)
+        {
+            int index = InnerGetLangIndex(language);
+            return InnerGetValueParam(index, key, args);
+        }
+        #endregion
+
+        #region Inner Imeplement
+        private string InnerGetValue(int index, int key, params object[] values)
+        {
+            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
+            string content = line[index];
+            return string.Format(m_Formatter, content, values);
+        }
+
+        private string InnerGetValueParam(int index, int key, params int[] args)
+        {
+            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
+            string content = line[index];
             string[] param = new string[args.Length];
             for (int i = 0; i < args.Length; i++)
                 param[i] = GetValue(args[i]);
 
             return string.Format(m_Formatter, content, param);
         }
-        #endregion
 
-        #region Inner Imeplement
-        private void InnerInit(string csvText, Language language)
+        private void InnerInit(string csvText)
         {
+            m_IdMap = new Dictionary<int, int>();
             m_Data = new Csv<string>(csvText, ParserModule.Inst.STRING);
             m_Title = new ArrayParser<EnumParser<Language>>();
             m_Title.Parse(m_Data.Get(1));
-            Lang = language;
+
+            for (int i = 1; i <= m_Data.Row; i++)
+            {
+                string idStr = m_Data.Get(i)[0];
+                if (!string.IsNullOrEmpty(idStr) && int.TryParse(idStr, out int id))
+                    m_IdMap.Add(id, i);
+            }
         }
 
-        private void InnerRefreshLang()
+        private int InnerGetContentIndex(int id)
         {
-            m_Index = m_Title.IndexOf(m_Language);
-            if (m_Index == -1)
-                Log.Debug("XFrame", "language map error.");
+            if (m_IdMap.TryGetValue(id, out int index))
+                return index;
+            else
+            {
+                Log.Error("XFrame", $"id {id} not index");
+                return default;
+            }
+        }
+
+        private int InnerGetLangIndex(Language language)
+        {
+            int index = m_Title.IndexOf(language);
+            if (index == -1)
+                Log.Debug("XFrame", $"language map error. {language}");
+            return index;
         }
         #endregion
     }
