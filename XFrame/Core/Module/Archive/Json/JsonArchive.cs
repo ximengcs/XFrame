@@ -41,8 +41,10 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
-        public int GetInt(string key)
+        public int GetInt(string key, int defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             return m_Root[key];
         }
 
@@ -51,8 +53,10 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
-        public long GetLong(string key)
+        public long GetLong(string key, long defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             return m_Root[key];
         }
 
@@ -81,8 +85,10 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
-        public float GetFloat(string key)
+        public float GetFloat(string key, float defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             return m_Root[key];
         }
 
@@ -91,8 +97,10 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
-        public float GetDouble(string key)
+        public float GetDouble(string key, float defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             return m_Root[key];
         }
 
@@ -111,8 +119,10 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <param name="key">键</param>
         /// <returns>如果未设置过此键，则会返回false</returns>
-        public bool GetBool(string key)
+        public bool GetBool(string key, bool defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             return m_Root[key];
         }
 
@@ -132,9 +142,13 @@ namespace XFrame.Modules.Archives
         /// <typeparam name="T">数据类型，如果与Set设置的数据类型不匹配，可能导致出错</typeparam>
         /// <param name="key">键</param>
         /// <returns>获取到的数据</returns>
-        public T Get<T>(string key)
+        public T Get<T>(string key, T defaultValue = default)
         {
+            if (!m_Root.HasKey(key))
+                return defaultValue;
             string objStr = m_Root[key].ToString();
+            if (string.IsNullOrEmpty(objStr))
+                return defaultValue;
             return SerializeModule.Inst.DeserializeJsonToObject<T>(objStr);
         }
 
@@ -176,7 +190,7 @@ namespace XFrame.Modules.Archives
             node = new JSONArray();
             m_Root[key] = node;
             return node;
-        }
+        } 
         #endregion
 
         #region Archive Interface

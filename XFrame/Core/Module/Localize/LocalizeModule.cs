@@ -78,6 +78,7 @@ namespace XFrame.Modules.Local
             {
                 string file = content;
                 InnerInit(file);
+                m_Index = InnerGetLangIndex(m_Language);
             }
         }
 
@@ -200,6 +201,8 @@ namespace XFrame.Modules.Local
 
         private int InnerGetLangIndex(Language language)
         {
+            if (m_Title == null)
+                return -1;
             int index = m_Title.IndexOf(language);
             if (index == -1)
                 Log.Debug("XFrame", $"language map error. {language}");

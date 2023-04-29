@@ -130,12 +130,12 @@ namespace XFrame.Core
         public static void ShutDown()
         {
             m_Runing = false;
-            m_Custom.Destroy();
-            m_Core.Destroy();
-            m_Base.Destroy();
+            m_Custom?.Destroy();
+            m_Core?.Destroy();
+            m_Base?.Destroy();
             m_Custom = null;
             m_Core = null;
-            m_Core = null;
+            m_Base = null;
             m_OnRun = null;
         }
 

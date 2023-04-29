@@ -8,7 +8,7 @@ using XFrame.Core.Binder;
 
 namespace XFrameTest.Test
 {
-    public class List_<T> : IList<T>, ITriggerChangeble
+    public class List_<T> : IList<T>, IChangeableValue
     {
         private List<T> list;
 
