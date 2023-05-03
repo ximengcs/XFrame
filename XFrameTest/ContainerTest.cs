@@ -12,6 +12,8 @@ namespace XFrameTest
         {
             private IContainer m_Coms;
 
+            public IContainer Container => m_Coms;
+
             public EntityA()
             {
                 m_Coms = ContainerModule.Inst.New();
@@ -28,7 +30,12 @@ namespace XFrameTest
             }
         }
 
-        private class Com1 : Com
+        private interface IT : ICom
+        {
+
+        }
+
+        private class Com1 : Com, IT
         {
             protected override void OnInit()
             {
@@ -118,6 +125,8 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 EntityA a = new EntityA();
+                IT it = a.Container.GetCom<IT>();
+                Log.Debug($"it {it == null} {it.GetType().Name}");
                 TaskModule.Inst.GetOrNew<DelayTask>().Add(1.0f, a.Destroy).Start();
             });
         }

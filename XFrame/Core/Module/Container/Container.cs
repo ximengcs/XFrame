@@ -19,7 +19,7 @@ namespace XFrame.Modules.Containers
 
         public object Master
         {
-            get => m_Master; 
+            get => m_Master;
             protected set => m_Master = value;
         }
 
@@ -79,12 +79,12 @@ namespace XFrame.Modules.Containers
 
         public T GetCom<T>(int id = 0) where T : ICom
         {
-            return m_Coms.Get<T>(id);
+            return (T)InnerGetCom(typeof(T), id);
         }
 
         public ICom GetCom(Type type, int id = 0)
         {
-            return m_Coms.Get(type, id);
+            return InnerGetCom(type, id);
         }
 
         public ICom AddCom(ICom com, int id = default, OnComReady onReady = null)
@@ -222,6 +222,24 @@ namespace XFrame.Modules.Containers
         public void SetIt(XItType type)
         {
             m_Coms.SetIt(type);
+        }
+
+        private ICom InnerGetCom(Type type, int id)
+        {
+            if (type.IsInterface || type.IsAbstract)
+            {
+                foreach (ICom com in m_Coms)
+                {
+                    Type comType = com.GetType();
+                    if (type.IsAssignableFrom(comType) && com.Id == id)
+                        return com;
+                }
+            }
+            else
+            {
+                return m_Coms.Get(type, id);
+            }
+            return default;
         }
     }
 }
