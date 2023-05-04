@@ -52,7 +52,6 @@ namespace XFrame.Modules.Containers
             foreach (ICom com in m_Coms)
                 com.OnDestroy();
             OnDestroy();
-            m_Coms = null;
         }
 
         void IPoolObject.OnCreate()
@@ -69,6 +68,8 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnDelete()
         {
             OnDestroyFromPool();
+            Dispose();
+            m_Coms = null;
         }
 
         protected virtual void OnInit() { }
