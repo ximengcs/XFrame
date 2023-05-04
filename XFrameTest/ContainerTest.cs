@@ -17,8 +17,13 @@ namespace XFrameTest
             public EntityA()
             {
                 m_Coms = ContainerModule.Inst.New();
+                Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
+
                 m_Coms.AddCom<Com1>();
-                m_Coms.AddCom<Com2>((com) => com.SetData(98259));
+                m_Coms.AddCom<Com2>((com) =>
+                {
+                    com.SetData(98259);
+                });
                 m_Coms.AddCom<Com3>();
                 m_Coms.AddCom<Com1>();
             }
@@ -126,8 +131,9 @@ namespace XFrameTest
             {
                 EntityA a = new EntityA();
                 IT it = a.Container.GetCom<IT>();
-                Log.Debug($"it {it == null} {it.GetType().Name}");
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(1.0f, a.Destroy).Start();
+                a.Destroy();
+
+                a = new EntityA();
             });
         }
     }

@@ -38,6 +38,7 @@ namespace XFrame.Modules.Containers
             {
                 container.OnDestroy();
                 m_Containers.Remove(container);
+                m_Pool.Release(container);
             }
         }
 

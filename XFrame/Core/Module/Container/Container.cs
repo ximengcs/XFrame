@@ -4,6 +4,7 @@ using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Containers
 {
@@ -29,8 +30,6 @@ namespace XFrame.Modules.Containers
         {
             Id = id;
             m_Master = master;
-            m_Data = new DataProvider();
-            m_Coms = new XCollection<ICom>();
             onReady?.Invoke(this);
             OnInit();
         }
@@ -56,6 +55,11 @@ namespace XFrame.Modules.Containers
 
         void IPoolObject.OnCreate()
         {
+            if (m_Data == null)
+            {
+                m_Data = new DataProvider();
+                m_Coms = new XCollection<ICom>();
+            }
             OnCreateFromPool();
         }
 
@@ -67,6 +71,11 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnDelete()
         {
             OnDestroyFromPool();
+            foreach (ICom com in m_Coms)
+            {
+                IPool pool = PoolModule.Inst.GetOrNew(com.GetType());
+                pool.Release(com);
+            }
             Dispose();
             m_Coms = null;
         }
@@ -178,7 +187,9 @@ namespace XFrame.Modules.Containers
             if (m_Coms.Get(type, id) != null)
                 id = IdModule.Inst.Next();
 
-            ICom newCom = (ICom)Activator.CreateInstance(type);
+            IPool pool = PoolModule.Inst.GetOrNew(type);
+            pool.Require(out IPoolObject obj);
+            ICom newCom = (ICom)obj;
             return InnerAdd(newCom, id, onReady);
         }
 
