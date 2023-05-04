@@ -19,13 +19,13 @@ namespace XFrameTest
                 m_Coms = ContainerModule.Inst.New();
                 Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
 
-                m_Coms.AddCom<Com1>();
-                m_Coms.AddCom<Com2>((com) =>
+                m_Coms.GetOrAddCom<Com1>();
+                m_Coms.GetOrAddCom<Com2>((com) =>
                 {
                     com.SetData(98259);
                 });
-                m_Coms.AddCom<Com3>();
-                m_Coms.AddCom<Com1>();
+                m_Coms.GetOrAddCom<Com3>();
+                m_Coms.GetOrAddCom<Com1>();
             }
 
             public void Destroy()
@@ -45,6 +45,7 @@ namespace XFrameTest
             protected override void OnInit()
             {
                 base.OnInit();
+                GetOrAddCom<Com4>();
                 Log.Debug($"Com1 OnInit");
             }
 
@@ -58,6 +59,24 @@ namespace XFrameTest
             {
                 base.OnDestroy();
                 Log.Debug($"Com1 OnDestroy");
+            }
+
+            protected override void OnCreateFromPool()
+            {
+                base.OnCreateFromPool();
+                Log.Debug($"Com1 OnCreateFromPool");
+            }
+
+            protected override void OnReleaseFromPool()
+            {
+                base.OnReleaseFromPool();
+                Log.Debug($"Com1 OnReleaseFromPool");
+            }
+
+            protected override void OnDestroyFromPool()
+            {
+                base.OnDestroyFromPool();
+                Log.Debug($"Com1 OnDestroyFromPool");
             }
         }
 
@@ -82,7 +101,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com3 : Com
+        private class Com3 : ShareCom
         {
             protected override void OnInit()
             {
@@ -103,7 +122,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com4 : Com
+        private class Com4 : ShareCom
         {
             protected override void OnInit()
             {

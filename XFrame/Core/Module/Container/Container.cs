@@ -12,7 +12,7 @@ namespace XFrame.Modules.Containers
     /// 通用容器
     /// 可继承去实现所需生命周期处理
     /// </summary>
-    public class Container : IContainer
+    public class Container : ContainerBase, IContainer
     {
         private object m_Master;
         private DataProvider m_Data;
@@ -31,6 +31,12 @@ namespace XFrame.Modules.Containers
             Id = id;
             m_Master = master;
             onReady?.Invoke(this);
+
+            foreach (ICom com in m_Coms)
+            {
+                ContainerBase realCom = com as ContainerBase;
+                realCom?.OnInit();
+            }
             OnInit();
         }
 
@@ -79,13 +85,6 @@ namespace XFrame.Modules.Containers
             Dispose();
             m_Coms = null;
         }
-
-        protected virtual void OnInit() { }
-        protected virtual void OnUpdate(float elapseTime) { }
-        protected virtual void OnDestroy() { }
-        protected virtual void OnCreateFromPool() { }
-        protected virtual void OnDestroyFromPool() { }
-        protected virtual void OnReleaseFromPool() { }
 
         public T GetCom<T>(int id = 0) where T : ICom
         {

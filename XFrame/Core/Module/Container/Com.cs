@@ -39,6 +39,16 @@ namespace XFrame.Modules.Containers
             });
         }
 
+        protected internal override void OnInit()
+        {
+            base.OnInit();
+            foreach (ICom com in this)
+            {
+                ContainerBase realCom = com as ContainerBase;
+                realCom?.OnInit();
+            }
+        }
+
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }
     }

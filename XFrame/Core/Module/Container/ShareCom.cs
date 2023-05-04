@@ -8,7 +8,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ICom
+    public abstract class ShareCom : ContainerBase, ICom
     {
         private IContainer m_Owner;
         private bool m_Active;
@@ -78,12 +78,6 @@ namespace XFrame.Modules.Containers
 
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }
-        protected virtual void OnInit() { }
-        protected virtual void OnUpdate(float elapseTime) { }
-        protected virtual void OnDestroy() { }
-        protected virtual void OnCreateFromPool() { }
-        protected virtual void OnDestroyFromPool() { }
-        protected virtual void OnReleaseFromPool() { }
 
         public T GetCom<T>(int id = 0) where T : ICom
         {
