@@ -13,6 +13,8 @@ namespace XFrame.Modules.Entities
         /// </summary>
         IEventSystem Event { get; }
 
+        IEntity Parent { get; }
+
         /// <summary>
         /// 初始化生命周期
         /// </summary>

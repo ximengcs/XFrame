@@ -9,7 +9,7 @@ namespace XFrame.Modules.Entities
     public abstract class Entity : Container, IEntity
     {
         #region Inner Field
-        private Entity m_Parent;
+        private IEntity m_Parent;
         private IEventSystem m_EventSys;
         #endregion
 
@@ -32,7 +32,7 @@ namespace XFrame.Modules.Entities
         /// <summary>
         /// 实体父节点
         /// </summary>
-        public Entity Parent
+        public IEntity Parent
         {
             get => m_Parent;
             set
@@ -54,7 +54,7 @@ namespace XFrame.Modules.Entities
             object master;
             if (parent != null)
             {
-                m_Parent = (Entity)parent;
+                m_Parent = parent;
                 master = parent.Master;
             }
             else
