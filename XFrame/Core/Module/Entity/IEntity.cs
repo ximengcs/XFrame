@@ -13,6 +13,9 @@ namespace XFrame.Modules.Entities
         /// </summary>
         IEventSystem Event { get; }
 
+        /// <summary>
+        /// 父实体
+        /// </summary>
         IEntity Parent { get; }
 
         /// <summary>
