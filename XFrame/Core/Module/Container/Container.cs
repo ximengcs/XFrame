@@ -63,6 +63,7 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnRelease()
         {
             OnReleaseFromPool();
+            Dispose();
         }
 
         void IPoolObject.OnDelete()

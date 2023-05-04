@@ -8,7 +8,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 容器
     /// </summary>
-    public interface IContainer : IXItem, IDataProvider, IPoolObject, IXEnumerable<ICom>
+    public interface IContainer : IXItem, IDataProvider, IPoolObject, IXEnumerable<ICom>, IDisposable
     {
         /// <summary>
         /// 容器拥有者
