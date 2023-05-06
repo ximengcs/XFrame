@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Entities
 {
@@ -14,6 +15,18 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Life Fun
+        protected override void InnerInitCom(ICom com, int id, OnComReady onReady)
+        {
+            IEntityCom entityCom = com as IEntityCom;
+            if (entityCom == null)
+            {
+                Log.Error("XFrame", "EntityCom type error");
+                return;
+            }
+
+            entityCom.OnInit(id, this, (c) => onReady?.Invoke(c));
+        }
+
         void IEntity.OnInit(int id, IEntity parent, OnEntityReady onReady)
         {
             m_EventSys = EventModule.Inst.NewSys();

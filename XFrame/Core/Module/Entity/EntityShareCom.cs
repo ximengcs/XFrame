@@ -9,9 +9,8 @@ namespace XFrame.Modules.Entities
     public class EntityShareCom : ShareCom, IEntityCom
     {
         private IEntity m_Parent;
-        private IEventSystem m_EventSys;
 
-        public IEventSystem Event => m_EventSys;
+        public IEventSystem Event => m_Parent.Event;
         public IEntity Parent => m_Parent;
 
         void IEntityCom.OnInit(int id, IEntity owner, OnEntityComReady onReady)
@@ -19,15 +18,13 @@ namespace XFrame.Modules.Entities
             ICom thisCom = this;
             IEntity thisEntity = this;
             m_Parent = owner;
-            thisEntity.OnInit(id, owner, (e) =>
-            {
-                thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
-            });
+            thisEntity.OnInit(id, owner, null);
+            thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
         }
 
         void IEntity.OnInit(int id, IEntity parent, OnEntityReady onData)
         {
-            m_EventSys = EventModule.Inst.NewSys();
+
         }
     }
 }

@@ -19,10 +19,8 @@ namespace XFrame.Modules.Entities
             ICom thisCom = this;
             IEntity thisEntity = this;
             m_Parent = owner;
-            thisEntity.OnInit(id, owner, (e) =>
-            {
-                thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
-            });
+            thisEntity.OnInit(id, owner, null);
+            thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
         }
 
         void IEntity.OnInit(int id, IEntity parent, OnEntityReady onData)

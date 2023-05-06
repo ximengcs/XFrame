@@ -194,9 +194,14 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerAdd(ICom com, int id, OnComReady onReady)
         {
-            com.OnInit(id, this, onReady);
+            InnerInitCom(com, id, onReady);
             m_Coms.Add(com);
             return com;
+        }
+
+        protected virtual void InnerInitCom(ICom com, int id, OnComReady onReady)
+        {
+            com.OnInit(id, this, onReady);
         }
 
         public void SetData<T>(T value)
