@@ -40,9 +40,8 @@ namespace XFrame.Modules.Entities
 
             foreach (IEntity entity in m_Entities)
             {
-                IPool pool = PoolModule.Inst.GetOrNew(entity.GetType());
                 entity.OnDestroy();
-                pool.Release(entity);
+                entity.OnDelete();
             }
             m_Entities.Clear();
         }
