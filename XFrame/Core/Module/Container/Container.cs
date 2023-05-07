@@ -16,6 +16,7 @@ namespace XFrame.Modules.Containers
     {
         private object m_Master;
         private DataProvider m_Data;
+        private bool m_Disposed;
         private XCollection<ICom> m_Coms;
 
         public object Master
@@ -53,6 +54,8 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
+            if (m_Disposed)
+                return;
             m_Coms.SetIt(XItType.Backward);
             foreach (ICom com in m_Coms)
                 com.OnDestroy();
@@ -66,11 +69,19 @@ namespace XFrame.Modules.Containers
                 m_Data = new DataProvider();
                 m_Coms = new XCollection<ICom>();
             }
+            foreach (ICom com in m_Coms)
+                com.OnCreate();
             OnCreateFromPool();
         }
 
         void IPoolObject.OnRelease()
         {
+            if (m_Coms != null)
+            {
+                foreach (ICom com in m_Coms)
+                    com.OnRelease();
+            }
+
             OnReleaseFromPool();
         }
 
@@ -84,6 +95,7 @@ namespace XFrame.Modules.Containers
             }
             Dispose();
             m_Coms = null;
+            m_Disposed = true;
         }
 
         public T GetCom<T>(int id = 0) where T : ICom
@@ -140,7 +152,10 @@ namespace XFrame.Modules.Containers
         {
             ICom com = m_Coms.Get(type, id);
             if (com != null)
+            {
+                onReady?.Invoke(com);
                 return com;
+            }
             else
                 return InnerAdd(type, id, onReady);
         }

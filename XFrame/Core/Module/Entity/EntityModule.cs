@@ -149,6 +149,8 @@ namespace XFrame.Modules.Entities
         /// <param name="entity">需要销毁的实体</param>
         public void Destroy(IEntity entity)
         {
+            if (entity == null)
+                return;
             IPool pool = PoolModule.Inst.GetOrNew(entity.GetType());
             pool.Release(entity);
             entity.OnDestroy();
@@ -166,6 +168,8 @@ namespace XFrame.Modules.Entities
                 IPool pool = PoolModule.Inst.GetOrNew(entityType);
                 pool.Require(out IPoolObject obj);
                 entity = obj as IEntity;
+                onReady?.Invoke(entity);
+                onReady = null;
             }
             else
             {
