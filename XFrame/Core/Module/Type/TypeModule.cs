@@ -39,6 +39,8 @@ namespace XFrame.Modules.XType
             m_OnTypeChange?.Invoke();
         }
 
+        private Dictionary<Type, List<Type>> m_TypesWithAttrs;
+
         private void InnerInit()
         {
             List<Type> types = new List<Type>(128);
@@ -48,6 +50,22 @@ namespace XFrame.Modules.XType
 
             if (m_Types != null && m_Types.Length == types.Count)
                 return;
+
+            m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
+            foreach (Type type in types)
+            {
+                Attribute[] attrs = Attribute.GetCustomAttributes(type);
+                foreach (Attribute attr in attrs)
+                {
+                    Type attrType = attr.GetType();
+                    if (!m_TypesWithAttrs.TryGetValue(attrType, out List<Type> list))
+                    {
+                        list = new List<Type>(32);
+                        m_TypesWithAttrs.Add(attrType, list);
+                    }
+                    list.Add(type);
+                }
+            }
 
             m_Types = types.ToArray();
             if (m_ClassRegister != null)
@@ -117,17 +135,24 @@ namespace XFrame.Modules.XType
 
             module = new TypeSystem(pType);
             m_ClassRegister.Add(pType, module);
-            foreach (Type subType in m_Types)
+            foreach (var item in m_TypesWithAttrs)
             {
-                Attribute attr = TypeUtility.GetAttribute(subType, pType);
-                if (attr != null)
+                if (item.Key.IsSubclassOf(pType) || item.Key == pType)
                 {
-                    module.AddSubClass(subType);
-                    XAttribute xAttr = attr as XAttribute;
-                    if (xAttr != null)
-                        module.AddKey(xAttr.Id, subType);
+                    foreach (Type subType in item.Value)
+                    {
+                        Attribute attr = TypeUtility.GetAttribute(subType, pType);
+                        if (attr != null)
+                        {
+                            module.AddSubClass(subType);
+                            XAttribute xAttr = attr as XAttribute;
+                            if (xAttr != null)
+                                module.AddKey(xAttr.Id, subType);
+                        }
+                    }
                 }
             }
+
             return module;
         }
 
