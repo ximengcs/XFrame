@@ -5,7 +5,7 @@ namespace XFrame.Core
     /// <summary>
     /// 数据提供者
     /// </summary>
-    public interface IDataProvider : IDisposable
+    public interface IDataProvider
     {
         /// <summary>
         /// 设置数据
@@ -36,5 +36,7 @@ namespace XFrame.Core
         /// <param name="name">数据标识</param>
         /// <returns>获取到的数据</returns>
         T GetData<T>(string name);
+
+        void ClearData();
     }
 }

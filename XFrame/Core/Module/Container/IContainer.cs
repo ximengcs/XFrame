@@ -8,11 +8,8 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 容器
     /// </summary>
-    public interface IContainer : IXItem, IDataProvider, IPoolObject, IXEnumerable<ICom>, IDisposable
+    public interface IContainer : IXItem, IDataProvider, IPoolObject, IXEnumerable<ICom>
     {
-        /// <summary>
-        /// 容器拥有者
-        /// </summary>
         object Master { get; }
 
         /// <summary>
@@ -21,7 +18,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">容器Id</param>
         /// <param name="master">容器拥有者</param>
         /// <param name="onReady">容器就绪事件</param>
-        void OnInit(int id, object master, OnContainerReady onReady);
+        void OnInit(int id, object master, OnDataProviderReady onReady);
 
         /// <summary>
         /// 更新生命周期
@@ -56,14 +53,14 @@ namespace XFrame.Modules.Containers
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        T AddCom<T>(OnComReady<T> onReady = null) where T : ICom;
+        T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom;
 
         /// <summary>
         /// 添加一个组件
         /// </summary>
         /// <param name="com">组件实例</param>
         /// <returns>组件实例</returns>
-        ICom AddCom(ICom com, int id = default, OnComReady onReady = null);
+        ICom AddCom(ICom com, int id = default, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 添加一个组件
@@ -72,7 +69,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">组件Id</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        T AddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom;
+        T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom;
 
         /// <summary>
         /// 添加一个组件(Id为默认Id)
@@ -80,7 +77,7 @@ namespace XFrame.Modules.Containers
         /// <param name="type">组件类型</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom AddCom(Type type, OnComReady onReady = null);
+        ICom AddCom(Type type, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 添加一个组件
@@ -89,7 +86,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id"></param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom AddCom(Type type, int id, OnComReady onReady = null);
+        ICom AddCom(Type type, int id, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 获取或添加一个组件(Id为默认Id)
@@ -97,7 +94,7 @@ namespace XFrame.Modules.Containers
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        T GetOrAddCom<T>(OnComReady<T> onReady = null) where T : ICom;
+        T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom;
 
         /// <summary>
         /// 获取或添加一个组件
@@ -106,7 +103,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">组件Id</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        T GetOrAddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom;
+        T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom;
 
         /// <summary>
         /// 获取或添加一个组件(Id为默认Id)
@@ -114,7 +111,7 @@ namespace XFrame.Modules.Containers
         /// <param name="type">组件类型</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom GetOrAddCom(Type type, OnComReady onReady = null);
+        ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 获取或添加一个组件
@@ -123,7 +120,7 @@ namespace XFrame.Modules.Containers
         /// <param name="id">组件Id</param>
         /// <param name="onReady">初始化完成事件</param>
         /// <returns>添加的组件</returns>
-        ICom GetOrAddCom(Type type, int id, OnComReady onReady = null);
+        ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 移除组件
@@ -143,11 +140,5 @@ namespace XFrame.Modules.Containers
         /// 移除所有组件
         /// </summary>
         void ClearCom();
-
-        /// <summary>
-        /// 分发所有组件事件
-        /// </summary>
-        /// <param name="handle">处理委托</param>
-        void DispatchCom(OnComReady handle);
     }
 }

@@ -7,7 +7,6 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public abstract class Com : Container, ICom
     {
-        private IContainer m_Owner;
         private bool m_Active;
 
         public bool Active
@@ -26,28 +25,7 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        public IContainer Owner => m_Owner;
-
-        void ICom.OnInit(int id, IContainer owner, OnComReady onReady)
-        {
-            m_Owner = owner;
-            IContainer thisContainer = this;
-            thisContainer.OnInit(id, m_Owner.Master, (c) =>
-            {
-                onReady?.Invoke(this);
-                Active = true;
-            });
-        }
-
-        protected internal override void OnInit()
-        {
-            base.OnInit();
-            foreach (ICom com in this)
-            {
-                ContainerBase realCom = com as ContainerBase;
-                realCom?.OnInit();
-            }
-        }
+        IContainer ICom.Owner { get; set; }
 
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }

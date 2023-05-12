@@ -25,11 +25,14 @@ namespace XFrame.Modules.Pools
             m_Helper = helper;
         }
 
-        public bool Require(out T obj)
+        public T Require()
         {
-            bool isNew = InnerRequire(out IPoolObject target);
-            obj = (T)target;
-            return isNew;
+            return (T)InnerRequire();
+        }
+
+        IPoolObject IPool.Require()
+        {
+            return InnerRequire();
         }
 
         public void Release(T obj)
@@ -37,30 +40,24 @@ namespace XFrame.Modules.Pools
             InnerRelease(obj);
         }
 
-        public bool Require(out IPoolObject obj)
-        {
-            return InnerRequire(out obj);
-        }
-
         public void Release(IPoolObject obj)
         {
             InnerRelease(obj);
         }
 
-        private bool InnerRequire(out IPoolObject obj)
+        private IPoolObject InnerRequire()
         {
+            IPoolObject obj;
             if (m_Objects.Empty)
             {
                 obj = m_Helper.Factory(m_Type);
                 obj.OnCreate();
-                return true;
             }
             else
             {
                 XLinkNode<IPoolObject> node = m_Objects.RemoveFirstNode();
-                IPoolObject nodeOrigin = node;
                 obj = node.Value;
-                nodeOrigin.OnRelease();
+                node.OnDispose();
                 if (m_NodeCache.Full)
                 {
                     Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
@@ -69,10 +66,10 @@ namespace XFrame.Modules.Pools
                 {
                     m_NodeCache.AddLast(node);
                 }
-
-                obj.OnCreate();
-                return false;
             }
+
+            obj.OnRequest();
+            return obj;
         }
 
         private void InnerRelease(IPoolObject obj)
@@ -90,7 +87,7 @@ namespace XFrame.Modules.Pools
             }
         }
 
-        public void Dispose()
+        public void ClearObject()
         {
             foreach (IPoolObject obj in m_Objects)
                 obj.OnDelete();

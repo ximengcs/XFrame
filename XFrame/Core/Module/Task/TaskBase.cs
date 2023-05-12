@@ -129,17 +129,22 @@ namespace XFrame.Modules.Tasks
         {
             Name = name;
             m_OnComplete = null;
-            m_CorTasks = new XLinkList<Task>();
-            HandlerTypeBase = typeof(ITaskStrategy<>);
-            m_Targets = new Queue<ITaskHandler>();
-            m_Infos = new XNode<StrategyInfo>();
-            AddStrategy(new TaskStrategy());
             OnInit();
         }
 
         void IPoolObject.OnCreate()
         {
+            m_CorTasks = new XLinkList<Task>();
+            HandlerTypeBase = typeof(ITaskStrategy<>);
+            m_Targets = new Queue<ITaskHandler>();
+            m_Infos = new XNode<StrategyInfo>();
+            AddStrategy(new TaskStrategy());
             OnCreateFromPool();
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            OnRequestFromPool();
         }
 
         void IPoolObject.OnRelease()
@@ -162,6 +167,7 @@ namespace XFrame.Modules.Tasks
 
         protected abstract void OnInit();
         protected virtual void OnCreateFromPool() { }
+        protected virtual void OnRequestFromPool() { }
         protected virtual void OnDestroyFromPool() { }
         protected virtual void OnReleaseFromPool() { }
 

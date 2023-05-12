@@ -24,8 +24,7 @@ namespace XFrame.Modules.Pools
             base.OnDestroy();
 
             foreach (IPool pool in m_PoolContainers.Values)
-                pool.Dispose();
-            m_PoolContainers.Clear();
+                pool.ClearObject();
             m_PoolContainers = null;
         }
         #endregion
@@ -36,9 +35,9 @@ namespace XFrame.Modules.Pools
         /// </summary>
         /// <typeparam name="T">对象池持有类型</typeparam>
         /// <returns>对象池</returns>
-        public IPool<T> GetOrNew<T>() where T : IPoolObject
+        public IPool<T> GetOrNew<T>(IPoolHelper helper = null) where T : IPoolObject
         {
-            return InnerGetOrNew(typeof(T)) as IPool<T>;
+            return InnerGetOrNew(typeof(T), helper) as IPool<T>;
         }
 
         /// <summary>
@@ -46,20 +45,22 @@ namespace XFrame.Modules.Pools
         /// </summary>
         /// <param name="objType">对象池持有数据类型</param>
         /// <returns>对象池</returns>
-        public IPool GetOrNew(Type objType)
+        public IPool GetOrNew(Type objType, IPoolHelper helper = null)
         {
-            return InnerGetOrNew(objType);
+            return InnerGetOrNew(objType, helper);
         }
         #endregion
 
         #region Inner Implement
-        internal IPool InnerGetOrNew(Type objType)
+        internal IPool InnerGetOrNew(Type objType, IPoolHelper helper = null)
         {
             if (!m_PoolContainers.TryGetValue(objType, out IPool pool))
             {
                 Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
                 pool = Activator.CreateInstance(poolType) as IPool;
-                pool.SetHelper(new DefaultPoolHelper());
+                if (helper == null)
+                    helper = new DefaultPoolHelper();
+                pool.SetHelper(helper);
                 m_PoolContainers.Add(objType, pool);
             }
 

@@ -3,8 +3,8 @@ using XFrame.Core;
 using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
-using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
 {
@@ -12,37 +12,39 @@ namespace XFrame.Modules.Containers
     /// 通用容器
     /// 可继承去实现所需生命周期处理
     /// </summary>
-    public class Container : ContainerBase, IContainer
+    public partial class Container : IContainer
     {
-        private object m_Master;
+        private State m_State;
         private DataProvider m_Data;
-        private bool m_Disposed;
         private XCollection<ICom> m_Coms;
 
-        public object Master
-        {
-            get => m_Master;
-            protected set => m_Master = value;
-        }
-
+        public object Master { get; private set; }
         public int Id { get; private set; }
 
-        void IContainer.OnInit(int id, object master, OnContainerReady onReady)
+        #region Container Life Fun
+        void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
         {
-            Id = id;
-            m_Master = master;
-            onReady?.Invoke(this);
-
-            foreach (ICom com in m_Coms)
+            if (m_State == State.Using)
             {
-                ContainerBase realCom = com as ContainerBase;
-                realCom?.OnInit();
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnInit.");
+                return;
             }
+
+            Id = id;
+            Master = master;
+            m_State = State.Using;
+            onReady?.Invoke(this);
             OnInit();
         }
 
         void IContainer.OnUpdate(float elapseTime)
         {
+            if (m_State != State.Using)
+            {
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnUpdate.");
+                return;
+            }
+
             m_Coms.SetIt(XItType.Forward);
             foreach (ICom com in m_Coms)
             {
@@ -54,50 +56,65 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
-            if (m_Disposed)
+            if (m_State == State.Disposed)
+            {
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnDestroy agin.");
                 return;
+            }
+
             m_Coms.SetIt(XItType.Backward);
             foreach (ICom com in m_Coms)
                 com.OnDestroy();
             OnDestroy();
+            m_State = State.Disposed;
         }
+        #endregion
 
+        #region Pool Life Fun
         void IPoolObject.OnCreate()
         {
-            if (m_Data == null)
-            {
-                m_Data = new DataProvider();
-                m_Coms = new XCollection<ICom>();
-            }
-            foreach (ICom com in m_Coms)
-                com.OnCreate();
+            m_Data = new DataProvider();
+            m_Coms = new XCollection<ICom>();
             OnCreateFromPool();
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            foreach (ICom com in m_Coms)
+                com.OnRequest();
+            OnRequestFromPool();
+            m_State = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
         {
-            if (m_Coms != null)
-            {
-                foreach (ICom com in m_Coms)
-                    com.OnRelease();
-            }
-
             OnReleaseFromPool();
+            foreach (ICom com in m_Coms)
+                com.OnRelease();
+            m_Data.ClearData();
         }
 
         void IPoolObject.OnDelete()
         {
             OnDestroyFromPool();
             foreach (ICom com in m_Coms)
-            {
-                IPool pool = PoolModule.Inst.GetOrNew(com.GetType());
-                pool.Release(com);
-            }
-            Dispose();
+                com.OnDelete();
+            m_Data = null;
             m_Coms = null;
-            m_Disposed = true;
         }
+        #endregion
 
+        #region Sub Interface
+        protected internal virtual void OnInit() { }
+        protected internal virtual void OnUpdate(float elapseTime) { }
+        protected internal virtual void OnDestroy() { }
+        protected internal virtual void OnCreateFromPool() { }
+        protected internal virtual void OnRequestFromPool() { }
+        protected internal virtual void OnDestroyFromPool() { }
+        protected internal virtual void OnReleaseFromPool() { }
+        #endregion
+
+        #region Container Interface
         public T GetCom<T>(int id = 0) where T : ICom
         {
             return (T)InnerGetCom(typeof(T), id);
@@ -108,47 +125,47 @@ namespace XFrame.Modules.Containers
             return InnerGetCom(type, id);
         }
 
-        public ICom AddCom(ICom com, int id = default, OnComReady onReady = null)
+        public ICom AddCom(ICom com, int id = default, OnDataProviderReady onReady = null)
         {
             return InnerAdd(com, id, onReady);
         }
 
-        public T AddCom<T>(OnComReady<T> onReady = null) where T : ICom
+        public T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)InnerAdd(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
-        public T AddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
+        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
-        public ICom AddCom(Type type, OnComReady onReady = null)
+        public ICom AddCom(Type type, OnDataProviderReady onReady = null)
         {
             return InnerAdd(type, default, onReady);
         }
 
-        public ICom AddCom(Type type, int id, OnComReady onReady = null)
+        public ICom AddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return InnerAdd(type, id, onReady);
         }
 
-        public T GetOrAddCom<T>(OnComReady<T> onReady = null) where T : ICom
+        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)GetOrAddCom(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
-        public T GetOrAddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
+        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)GetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
-        public ICom GetOrAddCom(Type type, OnComReady onReady = null)
+        public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
             return GetOrAddCom(type, default, onReady);
         }
 
-        public ICom GetOrAddCom(Type type, int id, OnComReady onReady = null)
+        public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             ICom com = m_Coms.Get(type, id);
             if (com != null)
@@ -172,53 +189,89 @@ namespace XFrame.Modules.Containers
 
         public void ClearCom()
         {
+            foreach (ICom com in m_Coms)
+            {
+                com.OnDestroy();
+            }
             m_Coms.Clear();
         }
+        #endregion
 
-        public void DispatchCom(OnComReady handle)
-        {
-            if (handle == null)
-                return;
-
-            m_Coms.SetIt(XItType.Forward);
-            foreach (ICom com in m_Coms)
-                handle.Invoke(com);
-        }
-
+        #region Inner Implement
         private void InnerRemove(Type type, int id)
         {
             ICom com = m_Coms.Get(type, id);
             if (com != null)
             {
                 m_Coms.Remove(com);
-                com.Dispose();
                 com.OnDestroy();
             }
         }
 
-        private ICom InnerAdd(Type type, int id, OnComReady onReady)
+        private ICom InnerGetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
-            if (m_Coms.Get(type, id) != null)
-                id = IdModule.Inst.Next();
+            ICom com = m_Coms.Get(type, id);
+            if (com != null)
+            {
+                Container container = com as Container;
+                if (container != null && container.m_State == State.NotInit)
+                {
+                    com.Owner = this;
+                    com.OnInit(id, Master, onReady);
+                }
+                return com;
+            }
+            else
+            {
+                return InnerAdd(type, id, onReady);
+            }
+        }
 
+        private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
+        {
+            id = InnerCheckId(type, id);
             IPool pool = PoolModule.Inst.GetOrNew(type);
-            pool.Require(out IPoolObject obj);
+            IPoolObject obj = pool.Require();
             ICom newCom = (ICom)obj;
             return InnerAdd(newCom, id, onReady);
         }
 
-        private ICom InnerAdd(ICom com, int id, OnComReady onReady)
+        private ICom InnerAdd(ICom com, int id, OnDataProviderReady onReady)
         {
-            InnerInitCom(com, id, onReady);
+            id = InnerCheckId(com.GetType(), id);
+            com.Owner = this;
+            com.OnInit(id, Master, onReady);
             m_Coms.Add(com);
             return com;
         }
 
-        protected virtual void InnerInitCom(ICom com, int id, OnComReady onReady)
+        private int InnerCheckId(Type type, int id)
         {
-            com.OnInit(id, this, onReady);
+            if (m_Coms.Get(type, id) != null)
+                id = IdModule.Inst.Next();
+            return id;
         }
 
+        private ICom InnerGetCom(Type type, int id)
+        {
+            if (type.IsInterface || type.IsAbstract)
+            {
+                foreach (ICom com in m_Coms)
+                {
+                    Type comType = com.GetType();
+                    if (type.IsAssignableFrom(comType) && com.Id == id)
+                        return com;
+                }
+            }
+            else
+            {
+                return m_Coms.Get(type, id);
+            }
+            return default;
+        }
+        #endregion
+
+        #region Data Interface
         public void SetData<T>(T value)
         {
             m_Data.SetData<T>(value);
@@ -239,11 +292,11 @@ namespace XFrame.Modules.Containers
             return m_Data.GetData<T>(name);
         }
 
-        public void Dispose()
+        public void ClearData()
         {
-            m_Data.Dispose();
-            ClearCom();
+            m_Data.ClearData();
         }
+        #endregion
 
         public IEnumerator<ICom> GetEnumerator()
         {
@@ -253,24 +306,6 @@ namespace XFrame.Modules.Containers
         public void SetIt(XItType type)
         {
             m_Coms.SetIt(type);
-        }
-
-        private ICom InnerGetCom(Type type, int id)
-        {
-            if (type.IsInterface || type.IsAbstract)
-            {
-                foreach (ICom com in m_Coms)
-                {
-                    Type comType = com.GetType();
-                    if (type.IsAssignableFrom(comType) && com.Id == id)
-                        return com;
-                }
-            }
-            else
-            {
-                return m_Coms.Get(type, id);
-            }
-            return default;
         }
     }
 }

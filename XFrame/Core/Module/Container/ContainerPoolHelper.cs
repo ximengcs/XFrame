@@ -1,12 +1,14 @@
-﻿using System;
+﻿
+using System;
+using XFrame.Modules.Pools;
 
-namespace XFrame.Modules.Pools
+namespace XFrame.Modules.Containers
 {
-    internal class DefaultPoolHelper : IPoolHelper
+    internal class ContainerPoolHelper : IPoolHelper
     {
         IPoolObject IPoolHelper.Factory(Type type)
         {
-            return (IPoolObject)Activator.CreateInstance(type);
+
         }
 
         void IPoolHelper.OnObjectCreate(IPoolObject obj)

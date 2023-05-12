@@ -5,7 +5,7 @@ namespace XFrame.Modules.Pools
     /// <summary>
     /// 对象池
     /// </summary>
-    public interface IPool : IDisposable
+    public interface IPool
     {
         /// <summary>
         /// 对象池持有类型
@@ -22,14 +22,15 @@ namespace XFrame.Modules.Pools
         /// 获取一个对象
         /// </summary>
         /// <param name="obj">获取到的对象</param>
-        /// <returns>是否是新创建的对象</returns>
-        bool Require(out IPoolObject obj);
+        IPoolObject Require();
 
         /// <summary>
         /// 释放一个对象 
         /// </summary>
         /// <param name="obj">待释放的对象</param>
         void Release(IPoolObject obj);
+
+        void ClearObject();
     }
 
     /// <summary>
@@ -49,6 +50,6 @@ namespace XFrame.Modules.Pools
         /// </summary>
         /// <param name="obj">请求的对象</param>
         /// <returns>是否是新创建的对象，返回false表示从对象池中创建</returns>
-        bool Require(out T obj);
+        new T Require();
     }
 }

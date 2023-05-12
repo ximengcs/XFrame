@@ -62,12 +62,10 @@ namespace XFrame.Core
             values[name] = value;
         }
 
-        public void Dispose()
+        public void ClearData()
         {
             m_MainDatas.Clear();
             m_Datas.Clear();
-            m_MainDatas = null;
-            m_Datas = null;
         }
         #endregion
     }

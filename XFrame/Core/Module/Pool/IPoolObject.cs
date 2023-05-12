@@ -12,12 +12,17 @@ namespace XFrame.Modules.Pools
         protected internal void OnCreate();
 
         /// <summary>
+        /// 从对象池中请求时被调用
+        /// </summary>
+        protected internal void OnRequest();
+
+        /// <summary>
         /// 释放到对象池中时被调用
         /// </summary>
         protected internal void OnRelease();
 
         /// <summary>
-        /// 释放到对象池失败时被调用或永久销毁时调用
+        /// 从对象池中销毁时被调用
         /// </summary>
         protected internal void OnDelete();
     }

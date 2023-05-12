@@ -1,3 +1,4 @@
+using System;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Collections
@@ -94,23 +95,30 @@ namespace XFrame.Collections
             m_List.Count++;
             return node;
         }
-        #endregion
 
-        #region Pool Life Fun
-        void IPoolObject.OnCreate()
+        public void OnDispose()
         {
             m_List = null;
             Pre = null;
             Next = null;
             Value = default;
         }
+        #endregion
+
+        #region Pool Life Fun
+        void IPoolObject.OnCreate()
+        {
+            
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
 
         void IPoolObject.OnRelease()
         {
-            m_List = null;
-            Pre = null;
-            Next = null;
-            Value = default;
+            OnDispose();
         }
 
         void IPoolObject.OnDelete()
