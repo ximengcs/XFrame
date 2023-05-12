@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Utility;
 using System.Reflection;
+using XFrame.Modules.Config;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.XType
@@ -15,6 +16,7 @@ namespace XFrame.Modules.XType
         private Action m_OnTypeChange;
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
+        private Dictionary<Type, List<Type>> m_TypesWithAttrs;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
         #endregion
 
@@ -39,35 +41,43 @@ namespace XFrame.Modules.XType
             m_OnTypeChange?.Invoke();
         }
 
-        private Dictionary<Type, List<Type>> m_TypesWithAttrs;
-
         private void InnerInit()
         {
-            List<Type> types = new List<Type>(128);
-            m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (Assembly assembly in m_Assemblys)
-                types.AddRange(assembly.GetTypes());
-
-            if (m_Types != null && m_Types.Length == types.Count)
-                return;
-
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
-            foreach (Type type in types)
+            m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            List<Type> tmpList = new List<Type>(short.MaxValue);
+            foreach (Assembly assembly in m_Assemblys)
             {
-                Attribute[] attrs = Attribute.GetCustomAttributes(type);
-                foreach (Attribute attr in attrs)
+                Type[] types = assembly.GetTypes();
+                foreach (Type type in types)
                 {
-                    Type attrType = attr.GetType();
-                    if (!m_TypesWithAttrs.TryGetValue(attrType, out List<Type> list))
+                    Attribute[] attrs = Attribute.GetCustomAttributes(type);
+                    foreach (Attribute attr in attrs)
                     {
-                        list = new List<Type>(32);
-                        m_TypesWithAttrs.Add(attrType, list);
+                        Type attrType = attr.GetType();
+                        if (!m_TypesWithAttrs.TryGetValue(attrType, out List<Type> list))
+                        {
+                            list = new List<Type>(32);
+                            m_TypesWithAttrs.Add(attrType, list);
+                        }
+                        list.Add(type);
                     }
-                    list.Add(type);
+
+                    if (XConfig.UseClassModule != null)
+                    {
+                        string moduleName = type.Module.Name;
+                        foreach (string name in XConfig.UseClassModule)
+                        {
+                            if (moduleName.StartsWith(name))
+                            {
+                                tmpList.Add(type);
+                            }
+                        }
+                    }
                 }
             }
 
-            m_Types = types.ToArray();
+            m_Types = tmpList.ToArray();
             if (m_ClassRegister != null)
                 m_ClassRegister.Clear();
             else
@@ -171,19 +181,19 @@ namespace XFrame.Modules.XType
         /// 获取(不存在时创建)一个类型系统
         /// 类型都是所给定的类型或子类
         /// </summary>
-        /// <param name="pType">基类</param>
+        /// <param name="baseType">基类</param>
         /// <returns>获取到的类型系统</returns>
-        public TypeSystem GetOrNew(Type pType)
+        public TypeSystem GetOrNew(Type baseType)
         {
             TypeSystem module;
-            if (m_ClassRegister.TryGetValue(pType, out module))
+            if (m_ClassRegister.TryGetValue(baseType, out module))
                 return module;
 
-            module = new TypeSystem(pType);
-            m_ClassRegister.Add(pType, module);
+            module = new TypeSystem(baseType);
+            m_ClassRegister.Add(baseType, module);
             foreach (Type type in m_Types)
             {
-                if (pType != type && pType.IsAssignableFrom(type))
+                if (baseType != type && baseType.IsAssignableFrom(type))
                 {
                     module.AddSubClass(type);
                     XAttribute attr = TypeUtility.GetAttribute<XAttribute>(type);

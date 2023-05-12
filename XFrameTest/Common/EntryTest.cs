@@ -1,4 +1,5 @@
 ﻿using XFrame.Core;
+using XFrame.Modules.Config;
 
 namespace XFrameTest
 {
@@ -11,6 +12,12 @@ namespace XFrameTest
 
         public static void Exec(int times, Action runCallback)
         {
+            XConfig.ArchiveEncrypt = false;
+            XConfig.UseClassModule = new string[] { "XFrameTest" };
+            XConfig.DefaultJsonSerializer = typeof(TestJsonSerializer).FullName;
+            XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
+            XConfig.ArchivePath = "D:\\TestXFrame";
+
             Entry.Init();
             Entry.OnRun += runCallback;
             Entry.Start();

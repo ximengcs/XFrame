@@ -13,6 +13,11 @@ namespace XFrame.Modules.Config
         public static string Entrance;
 
         /// <summary>
+        /// 类型系统使用类型
+        /// </summary>
+        public static string[] UseClassModule;
+
+        /// <summary>
         /// 存档路径
         /// </summary>
         public static string ArchivePath;
