@@ -1,6 +1,5 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Utility;
 using System.Reflection;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ namespace XFrame.Modules.XType
         private Action m_OnTypeChange;
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
+        private Dictionary<Type, Attribute[]> m_TypesAllAttrs;
         private Dictionary<Type, List<Type>> m_TypesWithAttrs;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
         #endregion
@@ -43,6 +43,7 @@ namespace XFrame.Modules.XType
 
         private void InnerInit()
         {
+            m_TypesAllAttrs = new Dictionary<Type, Attribute[]>();
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
             List<Type> tmpList = new List<Type>(short.MaxValue);
@@ -52,6 +53,7 @@ namespace XFrame.Modules.XType
                 foreach (Type type in types)
                 {
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
+                    m_TypesAllAttrs.Add(type, attrs);
                     foreach (Attribute attr in attrs)
                     {
                         Type attrType = attr.GetType();
@@ -151,7 +153,7 @@ namespace XFrame.Modules.XType
                 {
                     foreach (Type subType in item.Value)
                     {
-                        Attribute attr = TypeUtility.GetAttribute(subType, pType);
+                        Attribute attr = GetAttribute(subType, pType);
                         if (attr != null)
                         {
                             module.AddSubClass(subType);
@@ -164,6 +166,35 @@ namespace XFrame.Modules.XType
             }
 
             return module;
+        }
+
+        public bool HasAttribute<T>(Type classType) where T : Attribute
+        {
+            return GetAttribute(classType, typeof(T)) != null;
+        }
+
+        public bool HasAttribute(Type classType, Type pType)
+        {
+            return GetAttribute(classType, pType) != null;
+        }
+
+        public T GetAttribute<T>(Type classType) where T : Attribute
+        {
+            return (T)GetAttribute(classType, typeof(T));
+        }
+
+        public Attribute GetAttribute(Type classType, Type pType)
+        {
+            if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
+            {
+                foreach (Attribute attr in values)
+                {
+                    Type attrType = attr.GetType();
+                    if (attrType.IsSubclassOf(pType) || attrType == pType)
+                        return attr;
+                }
+            }
+            return default;
         }
 
         /// <summary>
@@ -196,7 +227,7 @@ namespace XFrame.Modules.XType
                 if (baseType != type && baseType.IsAssignableFrom(type))
                 {
                     module.AddSubClass(type);
-                    XAttribute attr = TypeUtility.GetAttribute<XAttribute>(type);
+                    XAttribute attr = TypeModule.Inst.GetAttribute<XAttribute>(type);
                     if (attr != null)
                         module.AddKey(attr.Id, type);
                 }

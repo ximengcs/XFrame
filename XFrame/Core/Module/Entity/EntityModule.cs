@@ -60,7 +60,7 @@ namespace XFrame.Modules.Entities
 
             foreach (Type type in module)
             {
-                EntityPropAttribute atr = TypeUtility.GetAttribute<EntityPropAttribute>(type);
+                EntityPropAttribute atr = TypeModule.Inst.GetAttribute<EntityPropAttribute>(type);
                 if (atr != null)
                     module.AddKey(atr.Type, type);
             }

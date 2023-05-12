@@ -49,7 +49,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerAddType(Type type)
         {
-            ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
             if (attri != null)
             {
                 if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
@@ -120,7 +120,7 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            ArchiveAttribute attri = TypeUtility.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
             return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 

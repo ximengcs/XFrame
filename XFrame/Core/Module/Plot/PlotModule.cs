@@ -48,7 +48,7 @@ namespace XFrame.Modules.Plots
             foreach (Type type in typeSys)
             {
                 IDirector director = (IDirector)Activator.CreateInstance(type);
-                DirectorAttribute attr = TypeUtility.GetAttribute<DirectorAttribute>(type);
+                DirectorAttribute attr = TypeModule.Inst.GetAttribute<DirectorAttribute>(type);
                 if (attr.Default)
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
