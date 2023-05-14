@@ -4,43 +4,55 @@ using XFrame.Modules.Entities;
 
 namespace XFrameTest
 {
-    internal class C2 : EntityCom
+    internal class C2 : EntityShareCom
     {
+        private bool m_Update;
+
         protected override void OnInit()
         {
             base.OnInit();
-            C1 c1 = GetCom<C1>();
-            Log.Debug("C2 OnInit " + GetData<string>());
+            Log.Debug(GetHashCode() + " " + "C2 OnInit " + GetData<string>());
+            m_Update = true;
         }
 
         protected override void OnUpdate(float elapseTime)
         {
             base.OnUpdate(elapseTime);
-            Log.Debug("C2 OnUpdate");
+            if (m_Update)
+            {
+                m_Update = false;
+                Log.Debug(GetHashCode() + " " + "C2 OnUpdate");
+            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            Log.Debug("C2 OnDestroy");
+            Log.Debug(GetHashCode() + " " + "C2 OnDestroy");
         }
 
         protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
-            Log.Debug("C2 OnCreateFromPool");
+            Log.Debug(GetHashCode() + " " + "C2 OnCreateFromPool");
+        }
+
+        protected override void OnRequestFromPool()
+        {
+            base.OnRequestFromPool();
+            Log.Debug(GetHashCode() + " " + "C2 OnRequestFromPool");
         }
 
         protected override void OnDestroyFromPool()
         {
             base.OnDestroyFromPool();
-            Log.Debug("C2 OnDestroyFromPool");
+            Log.Debug(GetHashCode() + " " + "C2 OnDestroyFromPool");
         }
 
         protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
-            Log.Debug("C2 OnReleaseFromPool");
+            Log.Debug(GetHashCode() + " " + "C2 OnReleaseFromPool");
         }
     }
 }

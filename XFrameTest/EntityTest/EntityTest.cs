@@ -13,24 +13,32 @@ namespace XFrameTest
         {
             EntryTest.Exec(100, () =>
             {
-                E1 e1 = EntityModule.Inst.Create<E1>((entity) =>
+                Log.Debug("-------------Create E1 Start-------------");
+                E1 e1 = EntityModule.Inst.Create<E1>((db) =>
                 {
-                    Log.Debug("OnEntityReady");
-                    entity.SetData(Pair.Create("TestKey", "TestValue"));
+                    Log.Debug("DB OnReady");
+                    db.SetData(Pair.Create("TestKey", "TestValue"));
+                    db.SetData(1);
+                    db.SetData("2");
                 });
-                e1.AddCom<C1>((com) =>
-                {
-                    e1.AddCom<C2>((com2) =>
-                    {
-                        com2.SetData("2");
-                    });
-                    com.SetData(1);
-                });
+                Log.Debug("-------------Create E1 End-------------");
 
                 TaskModule.Inst.GetOrNew<DelayTask>()
                     .Add(1f, () =>
                     {
+                        Log.Debug("-------------Destroy E1 Start-------------");
                         EntityModule.Inst.Destroy(e1);
+                        Log.Debug("-------------Destroy E1 End-------------");
+
+                        Log.Debug("-------------Create E1 Start Again-------------");
+                        e1 = EntityModule.Inst.Create<E1>((db) =>
+                        {
+                            Log.Debug("DB OnReady");
+                            db.SetData(Pair.Create("TestKey 2", "TestValue 2"));
+                            db.SetData(3);
+                            db.SetData("4");
+                        });
+                        Log.Debug("-------------Create E1 End Again-------------");
                     }).Start();
             });
         }

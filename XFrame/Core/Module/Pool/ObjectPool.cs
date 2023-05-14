@@ -89,8 +89,8 @@ namespace XFrame.Modules.Pools
 
         public void ClearObject()
         {
-            foreach (IPoolObject obj in m_Objects)
-                obj.OnDelete();
+            foreach (XLinkNode<IPoolObject> obj in m_Objects)
+                obj.Value.OnDelete();
             m_Objects.Clear();
         }
     }

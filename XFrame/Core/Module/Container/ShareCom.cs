@@ -3,6 +3,7 @@ using XFrame.Collections;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using State = XFrame.Modules.Containers.Container.State;
 
 namespace XFrame.Modules.Containers
 {
@@ -36,15 +37,15 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
         {
-            if (Status == Container.State.Using)
+            if (Status == State.Using)
             {
                 Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
                 return;
             }
-
             Id = id;
             Master = master;
-            Status = Container.State.Using;
+            m_Owner = ((ICom)this).Owner;
+            Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
@@ -57,6 +58,7 @@ namespace XFrame.Modules.Containers
         void IContainer.OnDestroy()
         {
             OnDestroy();
+            Status = State.Disposed;
         }
 
         void IPoolObject.OnCreate()
@@ -67,6 +69,7 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnRequest()
         {
             OnReleaseFromPool();
+            Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
