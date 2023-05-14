@@ -10,12 +10,14 @@ namespace XFrame.Modules.Pools
     [BaseModule]
     public class PoolModule : SingletonModule<PoolModule>
     {
+        private object[] m_ParamCache;
         private Dictionary<Type, IPool> m_PoolContainers;
 
         #region Life Fun
         protected override void OnInit(object data)
         {
             base.OnInit(data);
+            m_ParamCache = new object[1];
             m_PoolContainers = new Dictionary<Type, IPool>();
         }
 
@@ -56,11 +58,11 @@ namespace XFrame.Modules.Pools
         {
             if (!m_PoolContainers.TryGetValue(objType, out IPool pool))
             {
-                Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
-                pool = Activator.CreateInstance(poolType) as IPool;
                 if (helper == null)
                     helper = new DefaultPoolHelper();
-                pool.SetHelper(helper);
+                Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
+                m_ParamCache[0] = helper;
+                pool = Activator.CreateInstance(poolType, m_ParamCache) as IPool;
                 m_PoolContainers.Add(objType, pool);
             }
 

@@ -4,6 +4,8 @@ namespace XFrame.Modules.Pools
 {
     public interface IPoolHelper
     {
+        int CacheCount { get; }
+
         protected internal IPoolObject Factory(Type type);
 
         protected internal void OnObjectCreate(IPoolObject obj);

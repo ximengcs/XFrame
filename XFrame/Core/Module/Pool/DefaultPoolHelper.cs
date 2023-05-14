@@ -4,6 +4,8 @@ namespace XFrame.Modules.Pools
 {
     internal class DefaultPoolHelper : IPoolHelper
     {
+        public int CacheCount => 64;
+
         IPoolObject IPoolHelper.Factory(Type type)
         {
             return (IPoolObject)Activator.CreateInstance(type);

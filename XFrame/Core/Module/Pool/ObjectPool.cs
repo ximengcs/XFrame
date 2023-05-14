@@ -13,16 +13,12 @@ namespace XFrame.Modules.Pools
 
         public Type ObjectType => m_Type;
 
-        public ObjectPool()
+        public ObjectPool(IPoolHelper helper)
         {
             m_Type = typeof(T);
-            m_Objects = new XLinkList<IPoolObject>(false);
-            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(64);
-        }
-
-        public void SetHelper(IPoolHelper helper)
-        {
             m_Helper = helper;
+            m_Objects = new XLinkList<IPoolObject>(false);
+            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
         }
 
         public T Require()
