@@ -45,6 +45,16 @@ namespace XFrame.Modules.Pools
             InnerRelease(obj);
         }
 
+        public void Spawn(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                IPoolObject obj = m_Helper.Factory(m_Type);
+                obj.OnCreate();
+                InnerRelease(obj);
+            }
+        }
+
         private IPoolObject InnerRequire()
         {
             IPoolObject obj;

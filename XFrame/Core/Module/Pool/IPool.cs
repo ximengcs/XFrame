@@ -30,6 +30,15 @@ namespace XFrame.Modules.Pools
         /// <param name="obj">待释放的对象</param>
         void Release(IPoolObject obj);
 
+        /// <summary>
+        /// 生成池对象
+        /// </summary>
+        /// <param name="count">生成数量</param>
+        void Spawn(int count = 1);
+
+        /// <summary>
+        /// 清除所有池化对象
+        /// </summary>
         void ClearObject();
     }
 
