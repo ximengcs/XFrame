@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
@@ -30,23 +31,20 @@ namespace XFrame.Modules.Containers
         }
 
         public int Id { get; private set; }
-        public IContainer Owner => m_Owner;
-        public object Master => m_Owner.Master;
+        IContainer ICom.Owner { get; set; }
+        public object Master { get; private set; }
 
-        void ICom.OnInit(int id, IContainer owner, OnComReady onReady)
+        void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
         {
-            m_Owner = owner;
-            IContainer thisContainer = this;
-            thisContainer.OnInit(id, m_Owner.Master, (c) =>
+            if (Status == Container.State.Using)
             {
-                onReady?.Invoke(this);
-                Active = true;
-            });
-        }
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
+                return;
+            }
 
-        void IContainer.OnInit(int id, object master, OnContainerReady onReady)
-        {
             Id = id;
+            Master = master;
+            Status = Container.State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
@@ -64,6 +62,11 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnCreate()
         {
             OnCreateFromPool();
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            OnReleaseFromPool();
         }
 
         void IPoolObject.OnRelease()
@@ -89,47 +92,47 @@ namespace XFrame.Modules.Containers
             return m_Owner.GetCom(type, id);
         }
 
-        public T AddCom<T>(OnComReady<T> onReady = null) where T : ICom
+        public T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
-            return m_Owner.AddCom(onReady);
+            return m_Owner.AddCom<T>(onReady);
         }
 
-        public ICom AddCom(ICom com, int id = 0, OnComReady onReady = null)
+        public ICom AddCom(ICom com, int id = 0, OnDataProviderReady onReady = null)
         {
             return m_Owner.AddCom(com, id, onReady);
         }
 
-        public T AddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
+        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
-            return m_Owner.AddCom(id, onReady);
+            return m_Owner.AddCom<T>(id, onReady);
         }
 
-        public ICom AddCom(Type type, OnComReady onReady = null)
+        public ICom AddCom(Type type, OnDataProviderReady onReady = null)
         {
             return m_Owner.AddCom(type, onReady);
         }
 
-        public ICom AddCom(Type type, int id, OnComReady onReady = null)
+        public ICom AddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return m_Owner.AddCom(type, id, onReady);
         }
 
-        public T GetOrAddCom<T>(OnComReady<T> onReady = null) where T : ICom
+        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
-            return m_Owner.GetOrAddCom(onReady);
+            return m_Owner.GetOrAddCom<T>(onReady);
         }
 
-        public T GetOrAddCom<T>(int id, OnComReady<T> onReady = null) where T : ICom
+        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
-            return m_Owner.GetOrAddCom(id, onReady);
+            return m_Owner.GetOrAddCom<T>(id, onReady);
         }
 
-        public ICom GetOrAddCom(Type type, OnComReady onReady = null)
+        public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
             return m_Owner.GetOrAddCom(type, onReady);
         }
 
-        public ICom GetOrAddCom(Type type, int id, OnComReady onReady = null)
+        public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return m_Owner.GetOrAddCom(type, id, onReady);
         }
@@ -147,11 +150,6 @@ namespace XFrame.Modules.Containers
         public void ClearCom()
         {
             m_Owner.ClearCom();
-        }
-
-        public void DispatchCom(OnComReady handle)
-        {
-            m_Owner.DispatchCom(handle);
         }
 
         public void SetData<T>(T value)
@@ -174,9 +172,9 @@ namespace XFrame.Modules.Containers
             return m_Owner.GetData<T>(name);
         }
 
-        public void Dispose()
+        public void ClearData()
         {
-            m_Owner.Dispose();
+            m_Owner.ClearData();
         }
 
         public IEnumerator<ICom> GetEnumerator()

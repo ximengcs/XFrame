@@ -102,7 +102,7 @@ namespace XFrame.Modules.Plots
 
         void IStory.OnDestroy()
         {
-            m_Data.Dispose();
+            m_Data.ClearData();
             ArchiveModule.Inst.Delete(Name);
         }
     }

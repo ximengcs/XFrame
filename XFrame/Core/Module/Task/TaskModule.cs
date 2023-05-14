@@ -100,12 +100,11 @@ namespace XFrame.Modules.Tasks
             if (!m_TaskWithName.TryGetValue(name, out ITask task))
             {
                 IPool<T> pool = PoolModule.Inst.GetOrNew<T>();
-                bool isNew = pool.Require(out IPoolObject obj);
+                IPoolObject obj = pool.Require();
                 task = (ITask)obj;
                 m_TaskWithName[name] = task;
                 m_Tasks.Add(task);
-                if (isNew)
-                    task.OnInit(name);
+                task.OnInit(name);
             }
             return (T)task;
         }

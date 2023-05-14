@@ -21,7 +21,7 @@ namespace XFrame.Modules.Event
 
         public void Trigger(int eventId)
         {
-            m_EventPool.Require(out DefaultEvent evt);
+            DefaultEvent evt = m_EventPool.Require();
             evt.SetId(eventId);
             Trigger(evt);
         }
@@ -33,7 +33,7 @@ namespace XFrame.Modules.Event
 
         public void TriggerNow(int eventId)
         {
-            m_EventPool.Require(out DefaultEvent evt);
+            DefaultEvent evt = m_EventPool.Require();
             evt.SetId(eventId);
             TriggerNow(evt);
             InnerReleaseDefault(evt);

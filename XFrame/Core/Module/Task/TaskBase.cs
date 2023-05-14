@@ -150,11 +150,17 @@ namespace XFrame.Modules.Tasks
         void IPoolObject.OnRelease()
         {
             OnReleaseFromPool();
+            InnerClearState();
         }
 
         void IPoolObject.OnDelete()
         {
             OnDestroyFromPool();
+            InnerClearState();
+        }
+
+        private void InnerClearState()
+        {
             m_Targets.Clear();
             m_CorTasks.Clear();
             m_OnComplete = null;

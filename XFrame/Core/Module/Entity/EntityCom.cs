@@ -8,24 +8,12 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public abstract class EntityCom : Com, IEntityCom
     {
-        private IEventSystem m_EventSys;
-        private IEntity m_Parent;
+        public IEventSystem Event { get; private set; }
 
-        public IEventSystem Event => m_EventSys;
-        public IEntity Parent => m_Parent;
-
-        void IEntityCom.OnInit(int id, IEntity owner, OnEntityComReady onReady)
+        protected internal override void OnInit()
         {
-            ICom thisCom = this;
-            IEntity thisEntity = this;
-            m_Parent = owner;
-            thisEntity.OnInit(id, owner, null);
-            thisCom.OnInit(id, owner, (c) => onReady?.Invoke(this));
-        }
-
-        void IEntity.OnInit(int id, IEntity parent, OnEntityReady onData)
-        {
-            m_EventSys = EventModule.Inst.NewSys();
+            base.OnInit();
+            Event = EventModule.Inst.NewSys();
         }
     }
 }

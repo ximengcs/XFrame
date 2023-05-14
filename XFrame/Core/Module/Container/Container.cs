@@ -10,11 +10,9 @@ namespace XFrame.Modules.Containers
 {
     /// <summary>
     /// 通用容器
-    /// 可继承去实现所需生命周期处理
     /// </summary>
-    public partial class Container : IContainer
+    public partial class Container : ContainerBase, IContainer
     {
-        private State m_State;
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
@@ -24,24 +22,24 @@ namespace XFrame.Modules.Containers
         #region Container Life Fun
         void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
         {
-            if (m_State == State.Using)
+            if (Status == State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnInit.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
                 return;
             }
 
             Id = id;
             Master = master;
-            m_State = State.Using;
+            Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
 
         void IContainer.OnUpdate(float elapseTime)
         {
-            if (m_State != State.Using)
+            if (Status != State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnUpdate.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnUpdate.");
                 return;
             }
 
@@ -56,9 +54,9 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
-            if (m_State == State.Disposed)
+            if (Status == State.Disposed)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_State}, but enter OnDestroy agin.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnDestroy agin.");
                 return;
             }
 
@@ -66,7 +64,7 @@ namespace XFrame.Modules.Containers
             foreach (ICom com in m_Coms)
                 com.OnDestroy();
             OnDestroy();
-            m_State = State.Disposed;
+            Status = State.Disposed;
         }
         #endregion
 
@@ -83,7 +81,7 @@ namespace XFrame.Modules.Containers
             foreach (ICom com in m_Coms)
                 com.OnRequest();
             OnRequestFromPool();
-            m_State = State.NotInit;
+            Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
@@ -102,16 +100,6 @@ namespace XFrame.Modules.Containers
             m_Data = null;
             m_Coms = null;
         }
-        #endregion
-
-        #region Sub Interface
-        protected internal virtual void OnInit() { }
-        protected internal virtual void OnUpdate(float elapseTime) { }
-        protected internal virtual void OnDestroy() { }
-        protected internal virtual void OnCreateFromPool() { }
-        protected internal virtual void OnRequestFromPool() { }
-        protected internal virtual void OnDestroyFromPool() { }
-        protected internal virtual void OnReleaseFromPool() { }
         #endregion
 
         #region Container Interface
@@ -167,14 +155,7 @@ namespace XFrame.Modules.Containers
 
         public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
-            ICom com = m_Coms.Get(type, id);
-            if (com != null)
-            {
-                onReady?.Invoke(com);
-                return com;
-            }
-            else
-                return InnerAdd(type, id, onReady);
+            return InnerGetOrAddCom(type, id, onReady);
         }
 
         public void RemoveCom<T>(int id = 0) where T : ICom
@@ -205,6 +186,8 @@ namespace XFrame.Modules.Containers
             {
                 m_Coms.Remove(com);
                 com.OnDestroy();
+                IPool pool = PoolModule.Inst.GetOrNew(type);
+                pool.Release(com);
             }
         }
 
@@ -213,11 +196,10 @@ namespace XFrame.Modules.Containers
             ICom com = m_Coms.Get(type, id);
             if (com != null)
             {
-                Container container = com as Container;
-                if (container != null && container.m_State == State.NotInit)
+                ContainerBase container = com as ContainerBase;
+                if (container != null && container.Status == State.NotInit)
                 {
-                    com.Owner = this;
-                    com.OnInit(id, Master, onReady);
+                    InnerInitCom(com, id, onReady);
                 }
                 return com;
             }
@@ -239,10 +221,16 @@ namespace XFrame.Modules.Containers
         private ICom InnerAdd(ICom com, int id, OnDataProviderReady onReady)
         {
             id = InnerCheckId(com.GetType(), id);
-            com.Owner = this;
-            com.OnInit(id, Master, onReady);
+            InnerInitCom(com, id, onReady);
             m_Coms.Add(com);
             return com;
+        }
+
+        private void InnerInitCom(ICom com, int id, OnDataProviderReady onReady)
+        {
+            com.Owner = this;
+            com.Active = true;
+            com.OnInit(id, Master, onReady);
         }
 
         private int InnerCheckId(Type type, int id)

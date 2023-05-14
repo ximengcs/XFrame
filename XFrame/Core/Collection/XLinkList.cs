@@ -46,7 +46,7 @@ namespace XFrame.Collections
         {
             XLinkNode<T> node;
             if (m_NodePool != null)
-                m_NodePool.Require(out node);
+                node = m_NodePool.Require();
             else
                 node = new XLinkNode<T>();
             node.m_List = this;
@@ -187,7 +187,7 @@ namespace XFrame.Collections
         {
             XLinkNode<T> node;
             if (m_NodePool != null)
-                m_NodePool.Require(out node);
+                node = m_NodePool.Require();
             else
                 node = new XLinkNode<T>();
             node.m_List = this;
@@ -317,14 +317,6 @@ namespace XFrame.Collections
             m_First = null;
             m_Last = null;
             m_Count = 0;
-        }
-
-        /// <summary>
-        ///  Õ∑≈Node≥ÿ
-        /// </summary>
-        public void Dispose()
-        {
-            m_NodePool?.Dispose();
         }
         #endregion
 

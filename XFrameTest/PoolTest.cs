@@ -38,6 +38,11 @@ namespace XFrameTest
             Log.Debug($"OnCreate{Name}");
         }
 
+        void IPoolObject.OnRequest()
+        {
+            Log.Debug($"OnRequest{Name}");
+        }
+
         void IPoolObject.OnRelease()
         {
             Log.Debug($"OnRelease{Name}");

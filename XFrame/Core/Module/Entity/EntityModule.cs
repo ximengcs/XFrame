@@ -1,11 +1,9 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Utility;
-using XFrame.Modules.ID;
 using XFrame.Collections;
-using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Containers;
 
 namespace XFrame.Modules.Entities
 {
@@ -27,22 +25,9 @@ namespace XFrame.Modules.Entities
             m_Entities = new XCollection<IEntity>();
         }
 
-        protected override void OnUpdate(float escapeTime)
-        {
-            base.OnUpdate(escapeTime);
-            foreach (IEntity entity in m_Entities)
-                entity.OnUpdate(escapeTime);
-        }
-
         protected override void OnDestroy()
         {
-            base.OnDestroy();
-
-            foreach (IEntity entity in m_Entities)
-            {
-                entity.OnDestroy();
-                entity.OnDelete();
-            }
+            base.OnDestroy(); 
             m_Entities.Clear();
         }
         #endregion
@@ -71,14 +56,14 @@ namespace XFrame.Modules.Entities
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <returns>创建的实体</returns>
-        public T Create<T>(OnEntityReady<T> onReady = null) where T : class, IEntity
+        public T Create<T>(OnDataProviderReady onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), default, (entity) => onReady?.Invoke((T)entity), true) as T;
+            return InnerCreate(typeof(T), default, onReady) as T;
         }
 
-        public IEntity Create(Type type, OnEntityReady onReady = null)
+        public IEntity Create(Type type, OnDataProviderReady onReady = null)
         {
-            return InnerCreate(type, default, onReady, true);
+            return InnerCreate(type, default, onReady);
         }
 
         /// <summary>
@@ -87,14 +72,14 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="parent">父实体</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IEntity parent, OnEntityReady<T> onReady = null) where T : class, IEntity
+        public T Create<T>(IEntity parent, OnDataProviderReady onReady = null) where T : class, IEntity
         {
-            return InnerCreate(typeof(T), parent, (entity) => onReady?.Invoke((T)entity), true) as T;
+            return InnerCreate(typeof(T), parent, onReady) as T;
         }
 
-        public IEntity Create(Type type, IEntity parent, OnEntityReady onReady = null)
+        public IEntity Create(Type type, IEntity parent, OnDataProviderReady onReady = null)
         {
-            return InnerCreate(type, parent, onReady, true);
+            return InnerCreate(type, parent, onReady);
         }
 
         /// <summary>
@@ -103,12 +88,12 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="typeId">实体类型</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(int typeId, OnEntityReady<T> onReady = null) where T : class, IEntity
+        public T Create<T>(int typeId, OnDataProviderReady onReady = null) where T : class, IEntity
         {
-            return (T)Create(typeof(T), typeId, (entity) => onReady?.Invoke((T)entity));
+            return (T)Create(typeof(T), typeId, onReady);
         }
 
-        public IEntity Create(Type baseType, int typeId, OnEntityReady onReady = null)
+        public IEntity Create(Type baseType, int typeId, OnDataProviderReady onReady = null)
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
@@ -119,7 +104,7 @@ namespace XFrame.Modules.Entities
                 Log.Debug("XFrame", $"Entity {baseType.Name} not register.");
                 return default;
             }
-            return InnerCreate(type, default, onReady, true);
+            return InnerCreate(type, default, onReady);
         }
 
         /// <summary>
@@ -129,18 +114,18 @@ namespace XFrame.Modules.Entities
         /// <param name="parent">父实体</param>
         /// <param name="typeId">实体数据</param>
         /// <returns>创建的实体</returns>
-        public T Create<T>(IEntity parent, int typeId, OnEntityReady<T> onReady = null) where T : class, IEntity
+        public T Create<T>(IEntity parent, int typeId, OnDataProviderReady onReady = null) where T : class, IEntity
         {
-            return (T)Create(typeof(T), parent, typeId, (entity) => onReady?.Invoke((T)entity));
+            return (T)Create(typeof(T), parent, typeId, onReady);
         }
 
-        public IEntity Create(Type baseType, IEntity parent, int typeId, OnEntityReady onReady = null)
+        public IEntity Create(Type baseType, IEntity parent, int typeId, OnDataProviderReady onReady = null)
         {
             Type type = TypeModule.Inst
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
-            return InnerCreate(type, parent, onReady, true);
+            return InnerCreate(type, parent, onReady);
         }
 
         /// <summary>
@@ -151,35 +136,16 @@ namespace XFrame.Modules.Entities
         {
             if (entity == null)
                 return;
-            IPool pool = PoolModule.Inst.GetOrNew(entity.GetType());
-            pool.Release(entity);
-            entity.OnDestroy();
+
+            ContainerModule.Inst.Remove(entity);
             m_Entities.Remove(entity);
         }
         #endregion
 
         #region Inernal Implement
-        private IEntity InnerCreate(Type entityType, IEntity parent, OnEntityReady onReady, bool fromPool)
+        private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            IEntity entity;
-
-            if (fromPool)
-            {
-                IPool pool = PoolModule.Inst.GetOrNew(entityType);
-                pool.Require(out IPoolObject obj);
-                entity = obj as IEntity;
-                onReady?.Invoke(entity);
-                onReady = null;
-            }
-            else
-            {
-                entity = Activator.CreateInstance(entityType) as IEntity;
-            }
-
-            entity.OnInit(IdModule.Inst.Next(), parent, onReady);
-            if (parent == null)
-                m_Entities.Add(entity);
-            return entity;
+            return (IEntity)ContainerModule.Inst.New(entityType, parent, onReady);
         }
         #endregion
     }

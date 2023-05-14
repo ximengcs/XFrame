@@ -76,6 +76,11 @@ namespace XFrame.Modules.Tasks
 
         }
 
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
         void IPoolObject.OnRelease()
         {
             m_Complete = null;

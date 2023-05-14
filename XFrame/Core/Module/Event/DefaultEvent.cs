@@ -16,6 +16,11 @@ namespace XFrame.Modules.Event
 
         }
 
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
         void IPoolObject.OnDelete()
         {
 

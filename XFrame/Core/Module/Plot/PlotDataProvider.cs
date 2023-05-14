@@ -42,7 +42,7 @@ namespace XFrame.Modules.Plots
             m_Sections[key] = finish;
         }
 
-        public void Dispose()
+        public void ClearData()
         {
 
         }
