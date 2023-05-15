@@ -18,7 +18,7 @@ namespace XFrameTest.Test
 
         public bool IsReadOnly => false;
 
-        public event Action OnChange;
+        public event Action OnValueChange;
 
         public List_()
         {
@@ -28,13 +28,13 @@ namespace XFrameTest.Test
         public void Add(T item)
         {
             list.Add(item);
-            OnChange?.Invoke();
+            OnValueChange?.Invoke();
         }
 
         public void Clear()
         {
             list.Clear();
-            OnChange?.Invoke();
+            OnValueChange?.Invoke();
         }
 
         public bool Contains(T item)
@@ -60,20 +60,20 @@ namespace XFrameTest.Test
         public void Insert(int index, T item)
         {
             list.Insert(index, item);
-            OnChange?.Invoke();
+            OnValueChange?.Invoke();
         }
 
         public bool Remove(T item)
         {
             bool success = list.Remove(item);
-            OnChange?.Invoke();
+            OnValueChange?.Invoke();
             return success;
         }
 
         public void RemoveAt(int index)
         {
             list.RemoveAt(index);
-            OnChange?.Invoke();
+            OnValueChange?.Invoke();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

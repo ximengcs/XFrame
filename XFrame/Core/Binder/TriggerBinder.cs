@@ -26,7 +26,7 @@ namespace XFrame.Core.Binder
             m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
 
             if (getHandler() is IChangeableValue value)
-                value.OnChange += Trigger;
+                value.OnValueChange += Trigger;
         }
         #endregion
 
@@ -50,7 +50,7 @@ namespace XFrame.Core.Binder
             while (node != null)
             {
                 Func<T, bool> fun = node.Value;
-                if (fun == null || fun(Value))
+                if (fun(Value))
                 {
                     XLinkNode<Func<T, bool>> tmpNode = node.Next;
                     node.Delete();
@@ -80,9 +80,11 @@ namespace XFrame.Core.Binder
         /// <param name="atonceInvoke">是否立即执行</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
+            if (handler == null)
+                return;
             m_UpdateHandler += handler;
             if (atonceInvoke)
-                handler?.Invoke(Value);
+                handler.Invoke(Value);
         }
 
         /// <summary>
@@ -91,6 +93,8 @@ namespace XFrame.Core.Binder
         /// <param name="handler">要移除的委托</param>
         public void RemoveHandler(Action<T> handler)
         {
+            if (handler == null)
+                return;
             m_UpdateHandler -= handler;
         }
 
@@ -100,7 +104,10 @@ namespace XFrame.Core.Binder
         /// <param name="handler">需要添加的委托，当委托返回true时，在通知完后会移除掉该委托</param>
         public void AddCondHandler(Func<T, bool> handler)
         {
-            m_CondUpdateHandler.AddLast(handler);
+            if (handler == null)
+                return;
+            if (!handler(Value))
+                m_CondUpdateHandler.AddLast(handler);
         }
 
         /// <summary>
@@ -109,6 +116,8 @@ namespace XFrame.Core.Binder
         /// <param name="handler">需要移除的委托</param>
         public void RemoveCondHandler(Func<T, bool> handler)
         {
+            if (handler == null)
+                return;
             m_CondUpdateHandler.Remove(handler);
         }
 

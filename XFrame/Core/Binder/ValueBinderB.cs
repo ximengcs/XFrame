@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Core.Binder
 {
@@ -11,10 +12,10 @@ namespace XFrame.Core.Binder
     public class ValueBinder<T, VT> : IDisposable
     {
         #region Inner Fields
-        private ValueBinder<VT> m_ChangeBinder;
         private Func<T> m_GetHandler;
         private Action<T> m_UpdateHandler;
-        private List<Func<T, bool>> m_CondUpdateHandler;
+        private ValueBinder<VT> m_ChangeBinder;
+        private XLinkList<Func<T, bool>> m_CondUpdateHandler;
         #endregion
 
         #region Constructor
@@ -26,7 +27,7 @@ namespace XFrame.Core.Binder
         public ValueBinder(Func<T> getHandler, ValueBinder<VT> changeBinder)
         {
             m_GetHandler = getHandler;
-            m_CondUpdateHandler = new List<Func<T, bool>>();
+            m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
             m_ChangeBinder = changeBinder;
             m_ChangeBinder.AddHandler(InnerHandleChange);
         }
@@ -49,15 +50,26 @@ namespace XFrame.Core.Binder
                     return;
             }
             else if (Value == null)
+            {
                 return;
+            }
 
             m_UpdateHandler?.Invoke(Value);
 
-            for (int i = m_CondUpdateHandler.Count - 1; i >= 0; i--)
+            XLinkNode<Func<T, bool>> node = m_CondUpdateHandler.First;
+            while (node != null)
             {
-                Func<T, bool> fun = m_CondUpdateHandler[i];
-                if (fun == null || fun(Value))
-                    m_CondUpdateHandler.RemoveAt(i);
+                Func<T, bool> fun = node.Value;
+                if (fun(Value))
+                {
+                    XLinkNode<Func<T, bool>> tmpNode = node.Next;
+                    node.Delete();
+                    node = tmpNode;
+                }
+                else
+                {
+                    node = node.Next;
+                }
             }
         }
 
@@ -79,9 +91,11 @@ namespace XFrame.Core.Binder
         /// <param name="handler">更新时的处理委托</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
+            if (handler == null)
+                return;
             m_UpdateHandler += handler;
             if (atonceInvoke)
-                handler?.Invoke(Value);
+                handler.Invoke(Value);
         }
 
         /// <summary>
@@ -90,6 +104,8 @@ namespace XFrame.Core.Binder
         /// <param name="handler">要移除的委托</param>
         public void RemoveHandler(Action<T> handler)
         {
+            if (handler == null)
+                return;
             m_UpdateHandler -= handler;
         }
 
@@ -99,7 +115,10 @@ namespace XFrame.Core.Binder
         /// <param name="handler">需要添加的委托，当委托返回true时，在通知完后会移除掉该委托</param>
         public void AddCondHandler(Func<T, bool> handler)
         {
-            m_CondUpdateHandler.Add(handler);
+            if (handler == null)
+                return;
+            if (!handler(Value))
+                m_CondUpdateHandler.AddLast(handler);
         }
 
         /// <summary>
@@ -108,6 +127,8 @@ namespace XFrame.Core.Binder
         /// <param name="handler">需要移除的委托</param>
         public void RemoveCondHandler(Func<T, bool> handler)
         {
+            if (handler == null)
+                return;
             m_CondUpdateHandler.Remove(handler);
         }
 
