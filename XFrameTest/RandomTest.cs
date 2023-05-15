@@ -1,5 +1,7 @@
-﻿using XFrame.Module.Rand;
+﻿using XFrame.Collections;
+using XFrame.Module.Rand;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrameTest
 {
@@ -18,6 +20,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
+                References.Require<XLinkList<int>>();
                 Log.Debug(RandModule.Inst.RandString());
                 Log.Debug(RandModule.Inst.RandString());
                 Log.Debug(RandModule.Inst.RandString());

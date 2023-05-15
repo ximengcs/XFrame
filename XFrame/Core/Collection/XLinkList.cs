@@ -22,6 +22,10 @@ namespace XFrame.Collections
         #endregion
 
         #region Constructor
+        public XLinkList() : this(false)
+        {
+        }
+
         /// <summary>
         /// 构造一个链表
         /// usePool 内部使用一个所给容量的对象池
