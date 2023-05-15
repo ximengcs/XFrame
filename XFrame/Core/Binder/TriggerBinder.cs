@@ -1,5 +1,6 @@
 ﻿using System;
 using XFrame.Collections;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core.Binder
 {
@@ -23,7 +24,7 @@ namespace XFrame.Core.Binder
         public TriggerBinder(Func<T> getHandler)
         {
             m_GetHandler = getHandler;
-            m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
+            m_CondUpdateHandler = References.Require<XLinkList<Func<T, bool>>>();
 
             if (getHandler() is IChangeableValue value)
                 value.OnValueChange += Trigger;

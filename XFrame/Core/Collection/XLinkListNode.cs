@@ -45,7 +45,8 @@ namespace XFrame.Collections
                 m_List.Last = Pre;
 
             m_List.Count--;
-            m_List.NodePool?.Release(this);
+            if (m_List.UsePool)
+                References.Release(this);
             Value = default;
             m_List = default;
         }
@@ -98,27 +99,24 @@ namespace XFrame.Collections
 
         public void OnDispose()
         {
-            m_List = null;
-            Pre = null;
-            Next = null;
-            Value = default;
+            InnerInitState();
         }
         #endregion
 
         #region Pool Life Fun
         void IPoolObject.OnCreate()
         {
-            
+
         }
 
         void IPoolObject.OnRequest()
         {
-
+            InnerInitState();
         }
 
         void IPoolObject.OnRelease()
         {
-            OnDispose();
+            InnerInitState();
         }
 
         void IPoolObject.OnDelete()
@@ -126,5 +124,13 @@ namespace XFrame.Collections
 
         }
         #endregion
+
+        private void InnerInitState()
+        {
+            m_List = null;
+            Pre = null;
+            Next = null;
+            Value = default;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Pools
 {
@@ -19,6 +20,18 @@ namespace XFrame.Modules.Pools
             base.OnInit(data);
             m_ParamCache = new object[1];
             m_PoolContainers = new Dictionary<Type, IPool>();
+
+            Type helperType = typeof(IPoolHelper);
+            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<PoolHelperAttribute>();
+            foreach (Type type in typeSys)
+            {
+                if (type.IsAssignableFrom(helperType))
+                {
+                    PoolHelperAttribute attr = TypeModule.Inst.GetAttribute<PoolHelperAttribute>(type);
+                    IPoolHelper helper = Activator.CreateInstance(type) as IPoolHelper;
+                    InnerGetOrNew(attr.Target, helper);
+                }
+            }
         }
 
         protected override void OnDestroy()

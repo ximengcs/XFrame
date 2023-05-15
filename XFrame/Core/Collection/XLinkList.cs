@@ -10,16 +10,15 @@ namespace XFrame.Collections
     ///	使用场景：需要顺序迭代，需要随时删除节点，不需要随机访问
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class XLinkList<T> : IXEnumerable<XLinkNode<T>>
+    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>
     {
         #region Inner Fields
-        private IPool<XLinkNode<T>> m_NodePool;
         private XLinkNode<T> m_First;
         private XLinkNode<T> m_Last;
         private int m_Count;
         private XItType m_ItType;
 
-        internal IPool<XLinkNode<T>> NodePool => m_NodePool;
+        internal bool UsePool { get; }
         #endregion
 
         #region Constructor
@@ -29,12 +28,8 @@ namespace XFrame.Collections
         /// </summary>
         public XLinkList(bool usePool = true)
         {
-            if (usePool)
-                m_NodePool = PoolModule.Inst.GetOrNew<XLinkNode<T>>();
-            m_ItType = XItType.Forward;
-            m_First = null;
-            m_Last = null;
-            m_Count = 0;
+            UsePool = usePool;
+            InnerInitState();
         }
 
         /// <summary>
@@ -44,11 +39,7 @@ namespace XFrame.Collections
         /// <returns>添加的节点</returns>
         public XLinkNode<T> AddLast(T data)
         {
-            XLinkNode<T> node;
-            if (m_NodePool != null)
-                node = m_NodePool.Require();
-            else
-                node = new XLinkNode<T>();
+            XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
             node.m_List = this;
             node.Value = data;
 
@@ -185,11 +176,7 @@ namespace XFrame.Collections
         /// <returns>添加的节点</returns>
         public XLinkNode<T> AddFirst(T data)
         {
-            XLinkNode<T> node;
-            if (m_NodePool != null)
-                node = m_NodePool.Require();
-            else
-                node = new XLinkNode<T>();
+            XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
             node.m_List = this;
             node.Value = data;
 
@@ -307,16 +294,12 @@ namespace XFrame.Collections
         /// </summary>
         public void Clear()
         {
-            if (m_NodePool != null)
+            if (UsePool)
             {
-                XLinkNode<T> node = m_First;
-                while (node != null)
-                    m_NodePool.Release(node);
+                foreach (XLinkNode<T> node in this)
+                    References.Release(node);
             }
-
-            m_First = null;
-            m_Last = null;
-            m_Count = 0;
+            InnerInitState();
         }
         #endregion
 
@@ -336,6 +319,36 @@ namespace XFrame.Collections
             }
         }
         #endregion
+
+        #region Pool Life Fun
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            InnerInitState();
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            InnerInitState();
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
+        }
+        #endregion
+
+        private void InnerInitState()
+        {
+            m_ItType = XItType.Forward;
+            m_First = null;
+            m_Last = null;
+            m_Count = 0;
+        }
     }
 
 }
