@@ -3,6 +3,7 @@ using XFrame.Core;
 using System.Reflection;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
+using XFrame.Modules.ID;
 
 namespace XFrame.Modules.XType
 {
@@ -15,6 +16,7 @@ namespace XFrame.Modules.XType
         private Action m_OnTypeChange;
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
+        private string m_Module;
         private Dictionary<Type, Attribute[]> m_TypesAllAttrs;
         private Dictionary<Type, List<Type>> m_TypesWithAttrs;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
@@ -43,6 +45,7 @@ namespace XFrame.Modules.XType
 
         private void InnerInit()
         {
+            m_Module = nameof(XFrame);
             m_TypesAllAttrs = new Dictionary<Type, Attribute[]>();
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
@@ -68,11 +71,18 @@ namespace XFrame.Modules.XType
                     if (XConfig.UseClassModule != null)
                     {
                         string moduleName = type.Module.Name;
-                        foreach (string name in XConfig.UseClassModule)
+                        if (moduleName.StartsWith(m_Module))
                         {
-                            if (moduleName.StartsWith(name))
+                            tmpList.Add(type);
+                        }
+                        else
+                        {
+                            foreach (string name in XConfig.UseClassModule)
                             {
-                                tmpList.Add(type);
+                                if (moduleName.StartsWith(name))
+                                {
+                                    tmpList.Add(type);
+                                }
                             }
                         }
                     }

@@ -15,7 +15,7 @@ namespace XFrame.Modules.Pools
 
         public ObjectPool(IPoolHelper helper)
         {
-            m_Type = typeof(T);
+            m_Type = typeof(T); 
             m_Helper = helper;
             m_Objects = new XLinkList<IPoolObject>(false);
             m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
