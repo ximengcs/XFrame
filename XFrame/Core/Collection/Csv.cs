@@ -4,6 +4,7 @@ using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Collections
 {
@@ -11,7 +12,7 @@ namespace XFrame.Collections
     /// CSV
     /// </summary>
     /// <typeparam name="T">数据类型</typeparam>
-    public partial class Csv<T> : IXEnumerable<Csv<T>.Line>
+    public partial class Csv<T> : IXEnumerable<Csv<T>.Line>, IDisposable
     {
         #region Inner Fields
         private int m_Row;
@@ -35,7 +36,7 @@ namespace XFrame.Collections
         public Csv(int column = DEFAULT_COLUMN)
         {
             m_Column = column;
-            m_Lines = new XLinkList<Line>();
+            m_Lines =  References.Require<XLinkList<Line>>();
             m_LinesWithIndex = new Dictionary<int, XLinkNode<Line>>();
         }
 
@@ -226,6 +227,13 @@ namespace XFrame.Collections
                     sb.Append('\n');
             }
             return sb.ToString();
+        }
+
+        public void Dispose()
+        {
+            References.Release(m_Lines);
+            m_Lines = null;
+            m_LinesWithIndex = null;
         }
 
         public static implicit operator string(Csv<T> csv)

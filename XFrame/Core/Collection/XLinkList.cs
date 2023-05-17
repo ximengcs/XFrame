@@ -337,6 +337,14 @@ namespace XFrame.Collections
 
         void IPoolObject.OnRelease()
         {
+            XLinkNode<T> node = m_First;
+            while (node != null)
+            {
+                XLinkNode<T> cur = node;
+                node = node.Next;
+                References.Release(cur);
+            }
+
             InnerInitState();
         }
 
