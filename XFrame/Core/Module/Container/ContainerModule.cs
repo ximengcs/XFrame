@@ -19,28 +19,29 @@ namespace XFrame.Modules.Containers
         /// </summary>
         /// <param name="owner">容器拥有者</param>
         /// <returns>容器实例</returns>
-        public T New<T>(object owner = null, OnDataProviderReady onReady = null) where T : IContainer
+        public T New<T>(bool updateTrusteeship = true, object owner = null, OnDataProviderReady onReady = null) where T : IContainer
         {
-            return (T)InnerNew(typeof(T), owner, onReady);
+            return (T)InnerNew(typeof(T), updateTrusteeship, owner, onReady);
         }
 
-        public Container New(object owner = null, OnDataProviderReady onReady = null)
+        public Container New(bool updateTrusteeship = true, object owner = null, OnDataProviderReady onReady = null)
         {
-            return (Container)InnerNew(typeof(Container), owner, onReady);
+            return (Container)InnerNew(typeof(Container), updateTrusteeship, owner, onReady);
         }
 
-        public IContainer New(Type type, object owner = null, OnDataProviderReady onReady = null)
+        public IContainer New(Type type, bool updateTrusteeship = true, object owner = null, OnDataProviderReady onReady = null)
         {
-            return InnerNew(type, owner, onReady);
+            return InnerNew(type, updateTrusteeship, owner, onReady);
         }
 
-        private IContainer InnerNew(Type type, object owner, OnDataProviderReady onReady)
+        private IContainer InnerNew(Type type, bool updateTrusteeship, object owner, OnDataProviderReady onReady)
         {
             IPool pool = PoolModule.Inst.GetOrNew(type);
             IPoolObject obj = pool.Require();
             IContainer container = obj as IContainer;
             container.OnInit(IdModule.Inst.Next(), owner, onReady);
-            m_Containers.Add(container);
+            if (updateTrusteeship)
+                m_Containers.Add(container);
             return container;
         }
 

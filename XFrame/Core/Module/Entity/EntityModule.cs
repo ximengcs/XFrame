@@ -145,7 +145,7 @@ namespace XFrame.Modules.Entities
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            return (IEntity)ContainerModule.Inst.New(entityType, parent, onReady);
+            return (IEntity)ContainerModule.Inst.New(entityType, true, parent, onReady);
         }
         #endregion
     }
