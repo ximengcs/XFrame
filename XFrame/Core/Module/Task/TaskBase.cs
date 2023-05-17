@@ -132,6 +132,8 @@ namespace XFrame.Modules.Tasks
             OnInit();
         }
 
+        int IPoolObject.PoolKey => 0;
+
         void IPoolObject.OnCreate()
         {
             m_CorTasks = new XLinkList<Task>();

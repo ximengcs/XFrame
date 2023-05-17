@@ -71,6 +71,8 @@ namespace XFrame.Modules.Tasks
 
         }
 
+        int IPoolObject.PoolKey => 0;
+
         void IPoolObject.OnCreate()
         {
 

@@ -6,6 +6,8 @@ namespace XFrame.Modules.Pools
     /// </summary>
     public interface IPoolObject
     {
+        int PoolKey { get; }
+
         /// <summary>
         /// 从对象池中创建时被调用
         /// </summary>

@@ -11,6 +11,8 @@ namespace XFrame.Modules.Event
             Id = eventId;
         }
 
+        int IPoolObject.PoolKey => 0;
+
         void IPoolObject.OnCreate()
         {
 

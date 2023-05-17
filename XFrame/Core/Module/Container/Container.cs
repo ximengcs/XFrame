@@ -69,6 +69,8 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Pool Life Fun
+        int IPoolObject.PoolKey => 0;
+
         void IPoolObject.OnCreate()
         {
             m_Data = new DataProvider();

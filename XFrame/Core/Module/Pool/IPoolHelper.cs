@@ -6,7 +6,7 @@ namespace XFrame.Modules.Pools
     {
         int CacheCount { get; }
 
-        protected internal IPoolObject Factory(Type type);
+        protected internal IPoolObject Factory(Type type, int poolKey = default);
 
         protected internal void OnObjectCreate(IPoolObject obj);
 
