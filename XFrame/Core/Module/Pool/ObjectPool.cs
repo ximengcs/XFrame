@@ -21,14 +21,14 @@ namespace XFrame.Modules.Pools
             m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
         }
 
-        public T Require(int poolKey)
+        public T Require(int poolKey, object userData = default)
         {
-            return (T)InnerRequire(poolKey);
+            return (T)InnerRequire(poolKey, userData);
         }
 
-        IPoolObject IPool.Require(int poolKey)
+        IPoolObject IPool.Require(int poolKey, object userData)
         {
-            return InnerRequire(poolKey);
+            return InnerRequire(poolKey, userData);
         }
 
         public void Release(T obj)
@@ -41,25 +41,25 @@ namespace XFrame.Modules.Pools
             InnerRelease(obj);
         }
 
-        public void Spawn(int poolKey, int count)
+        public void Spawn(int poolKey, int count, object userData = default)
         {
             for (int i = 0; i < count; i++)
-                InnerRelease(InnerCreate(poolKey));
+                InnerRelease(InnerCreate(poolKey, userData));
         }
 
-        private IPoolObject InnerCreate(int poolKey)
+        private IPoolObject InnerCreate(int poolKey, object userData)
         {
-            IPoolObject obj = m_Helper.Factory(m_Type, poolKey);
+            IPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
             obj.OnCreate();
             return obj;
         }
 
-        private IPoolObject InnerRequire(int poolKey)
+        private IPoolObject InnerRequire(int poolKey, object userData)
         {
             IPoolObject obj;
             if (m_Objects.Empty)
             {
-                obj = InnerCreate(poolKey);
+                obj = InnerCreate(poolKey, userData);
             }
             else
             {

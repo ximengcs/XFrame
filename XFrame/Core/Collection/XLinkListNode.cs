@@ -27,7 +27,7 @@ namespace XFrame.Collections
         /// <summary>
         /// 数据
         /// </summary>
-        public T Value { get; internal set; }
+        public T Value { get; set; }
 
         /// <summary>
         /// 删除当前节点，并释放节点到池中

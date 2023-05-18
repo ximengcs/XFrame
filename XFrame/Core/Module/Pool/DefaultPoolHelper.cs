@@ -6,7 +6,7 @@ namespace XFrame.Modules.Pools
     {
         public int CacheCount => 64;
 
-        IPoolObject IPoolHelper.Factory(Type type, int poolKey)
+        IPoolObject IPoolHelper.Factory(Type type, int poolKey, object userData)
         {
             return (IPoolObject)Activator.CreateInstance(type);
         }
