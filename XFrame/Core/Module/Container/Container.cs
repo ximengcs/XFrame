@@ -24,7 +24,7 @@ namespace XFrame.Modules.Containers
         {
             if (Status == State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit. hash is {GetHashCode()}");
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace XFrame.Modules.Containers
         {
             if (Status != State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnUpdate.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnUpdate. hash is {GetHashCode()}");
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace XFrame.Modules.Containers
         {
             if (Status == State.Disposed)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnDestroy agin.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnDestroy again. hash is {GetHashCode()}");
                 return;
             }
 

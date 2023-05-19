@@ -155,5 +155,20 @@ namespace XFrameTest
                 a = new EntityA();
             });
         }
+
+        [TestMethod]
+        public void Test2()
+        {
+            EntryTest.Exec(() =>
+            {
+                Console.WriteLine("New");
+                Container container = ContainerModule.Inst.New();
+                TaskModule.Inst.GetOrNew<DelayTask>()
+                .Add(0, () =>
+                {
+                    ContainerModule.Inst.Remove(container);
+                }).Start();
+            });
+        }
     }
 }

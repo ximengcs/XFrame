@@ -3,6 +3,7 @@ using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
 using System;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Containers
 {
@@ -78,6 +79,7 @@ namespace XFrame.Modules.Containers
             base.OnDestroy();
             foreach (IContainer container in m_Containers)
             {
+                m_Containers.Remove(container);
                 container.OnDestroy();
                 IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
                 pool.Release(container);
