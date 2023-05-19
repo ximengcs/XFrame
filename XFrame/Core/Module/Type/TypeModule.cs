@@ -52,6 +52,25 @@ namespace XFrame.Modules.XType
             List<Type> tmpList = new List<Type>(short.MaxValue);
             foreach (Assembly assembly in m_Assemblys)
             {
+                bool find = false;
+                AssemblyName aName = assembly.GetName();
+                string assemblyName = aName.Name;
+                if (assemblyName == m_Module)
+                {
+                    find = true;
+                }
+                else if (XConfig.UseClassModule != null)
+                {
+                    foreach (string name in XConfig.UseClassModule)
+                    {
+                        if (assemblyName == name)
+                            find = true;
+                    }
+                }
+
+                if (!find)
+                    continue;
+
                 Type[] types = assembly.GetTypes();
                 foreach (Type type in types)
                 {
@@ -67,25 +86,7 @@ namespace XFrame.Modules.XType
                         }
                         list.Add(type);
                     }
-
-                    if (XConfig.UseClassModule != null)
-                    {
-                        string moduleName = type.Module.Name;
-                        if (moduleName.StartsWith(m_Module))
-                        {
-                            tmpList.Add(type);
-                        }
-                        else
-                        {
-                            foreach (string name in XConfig.UseClassModule)
-                            {
-                                if (moduleName.StartsWith(name))
-                                {
-                                    tmpList.Add(type);
-                                }
-                            }
-                        }
-                    }
+                    tmpList.Add(type);
                 }
             }
 

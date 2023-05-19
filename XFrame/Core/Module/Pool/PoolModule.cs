@@ -25,7 +25,6 @@ namespace XFrame.Modules.Pools
             TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<PoolHelperAttribute>();
             foreach (Type type in typeSys)
             {
-                Console.WriteLine(type.FullName);
                 if (helperType.IsAssignableFrom(type))
                 {
                     PoolHelperAttribute attr = TypeModule.Inst.GetAttribute<PoolHelperAttribute>(type);
