@@ -26,7 +26,7 @@ namespace XFrame.Modules.Containers
         }
 
         IContainer ICom.Owner { get; set; }
-        protected IContainer Owner => Owner;
+        protected IContainer Owner => ((ICom)this).Owner;
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }
     }
