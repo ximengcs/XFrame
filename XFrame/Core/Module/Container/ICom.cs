@@ -14,6 +14,6 @@ namespace XFrame.Modules.Containers
         /// <summary>
         /// 组件拥有者
         /// </summary>
-        IContainer Owner { get; protected internal set; }
+        IContainer Owner { get; internal set; }
     }
 }

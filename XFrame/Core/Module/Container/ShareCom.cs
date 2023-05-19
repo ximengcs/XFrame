@@ -32,10 +32,11 @@ namespace XFrame.Modules.Containers
         }
 
         public int Id { get; private set; }
+        public IContainer Master { get; private set; }
         IContainer ICom.Owner { get; set; }
-        public object Master { get; private set; }
+        protected IContainer Owner => m_Owner;
 
-        void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
+        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
             if (Status == State.Using)
             {
@@ -43,9 +44,8 @@ namespace XFrame.Modules.Containers
                 return;
             }
             Id = id;
-            IContainer masterContainer = master as IContainer;
-            if (masterContainer != null && masterContainer.Master != null)
-                Master = masterContainer.Master;
+            if (master != null && master.Master != null)
+                Master = master.Master;
             else
                 Master = master;
             m_Owner = ((ICom)this).Owner;

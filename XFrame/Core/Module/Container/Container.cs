@@ -16,11 +16,11 @@ namespace XFrame.Modules.Containers
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
-        public object Master { get; private set; }
+        public IContainer Master { get; private set; }
         public int Id { get; private set; }
 
         #region Container Life Fun
-        void IContainer.OnInit(int id, object master, OnDataProviderReady onReady)
+        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
             if (Status == State.Using)
             {
@@ -29,9 +29,8 @@ namespace XFrame.Modules.Containers
             }
 
             Id = id;
-            IContainer masterContainer = master as IContainer;
-            if (masterContainer != null && masterContainer.Master != null)
-                Master = masterContainer.Master;
+            if (master != null && master.Master != null)
+                Master = master.Master;
             else
                 Master = master;
             Status = State.Using;
