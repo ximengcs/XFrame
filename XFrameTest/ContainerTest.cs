@@ -46,7 +46,7 @@ namespace XFrameTest
             {
                 base.OnInit();
                 GetOrAddCom<Com4>();
-                Log.Debug($"Com1 OnInit");
+                Log.Debug($"Com1 OnInit " + (Master == null));
             }
 
             protected override void OnUpdate(float elpseTime)

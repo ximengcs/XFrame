@@ -232,7 +232,10 @@ namespace XFrame.Modules.Containers
         {
             com.Owner = this;
             com.Active = true;
-            com.OnInit(id, Master, onReady);
+            if (Master != null)
+                com.OnInit(id, Master, onReady);
+            else
+                com.OnInit(id, this, onReady);
         }
 
         private int InnerCheckId(Type type, int id)

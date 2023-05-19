@@ -70,7 +70,7 @@ namespace XFrame.Modules.Containers
 
         void IPoolObject.OnRequest()
         {
-            OnReleaseFromPool();
+            OnRequestFromPool();
             Status = State.NotInit;
         }
 
