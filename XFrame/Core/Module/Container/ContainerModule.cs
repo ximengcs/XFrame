@@ -53,8 +53,8 @@ namespace XFrame.Modules.Containers
         {
             if (m_Containers.Contains(container))
             {
-                container.OnDestroy();
                 m_Containers.Remove(container);
+                container.OnDestroy();
                 IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
                 pool.Release(container);
             }
