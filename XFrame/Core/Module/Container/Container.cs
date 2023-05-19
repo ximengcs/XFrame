@@ -29,7 +29,11 @@ namespace XFrame.Modules.Containers
             }
 
             Id = id;
-            Master = master;
+            IContainer masterContainer = master as IContainer;
+            if (masterContainer != null && masterContainer.Master != null)
+                Master = masterContainer.Master;
+            else
+                Master = master;
             Status = State.Using;
             onReady?.Invoke(this);
             OnInit();

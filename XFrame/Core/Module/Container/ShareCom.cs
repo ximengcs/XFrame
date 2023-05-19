@@ -43,7 +43,11 @@ namespace XFrame.Modules.Containers
                 return;
             }
             Id = id;
-            Master = master;
+            IContainer masterContainer = master as IContainer;
+            if (masterContainer != null && masterContainer.Master != null)
+                Master = masterContainer.Master;
+            else
+                Master = master;
             m_Owner = ((ICom)this).Owner;
             Status = State.Using;
             onReady?.Invoke(this);
