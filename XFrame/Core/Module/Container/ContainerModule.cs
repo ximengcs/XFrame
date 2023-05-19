@@ -79,6 +79,8 @@ namespace XFrame.Modules.Containers
             base.OnDestroy();
             foreach (IContainer container in m_Containers)
             {
+                if (container == null)
+                    continue;
                 m_Containers.Remove(container);
                 container.OnDestroy();
                 IPool pool = PoolModule.Inst.GetOrNew(container.GetType());

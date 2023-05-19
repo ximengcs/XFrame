@@ -96,11 +96,6 @@ namespace XFrame.Collections
             m_List.Count++;
             return node;
         }
-
-        public void OnDispose()
-        {
-            InnerInitState();
-        }
         #endregion
 
         #region Pool Life Fun

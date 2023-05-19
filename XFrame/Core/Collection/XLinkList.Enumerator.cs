@@ -7,91 +7,81 @@ namespace XFrame.Collections
     {
         private struct ForwardIt : IEnumerator<XLinkNode<T>>
         {
-            private XLinkList<T> m_List;
-            private XLinkNode<T> m_Node;
-            private bool m_Start;
+            private XLinkNode<T>[] m_Cache;
+            private int m_Index;
 
-            public XLinkNode<T> Current => m_Node;
+            public XLinkNode<T> Current => m_Cache[m_Index];
 
-            object IEnumerator.Current => m_Node.Value;
+            object IEnumerator.Current => Current;
 
             public ForwardIt(XLinkList<T> list)
             {
-                m_Start = true;
-                m_List = list;
-                m_Node = null;
+                m_Cache = new XLinkNode<T>[list.Count];
+                int index = 0;
+                XLinkNode<T> node = list.First;
+                while (node != null)
+                {
+                    m_Cache[index++] = node;
+                    node = node.Next;
+                }
+                m_Index = -1;
             }
 
             public bool MoveNext()
             {
-                if (!m_Start)
-                    return false;
-
-                if (m_Node == null)
-                    m_Node = m_List.First;
-                else
-                    m_Node = m_Node.Next;
-                bool hasNext = m_Node != null;
-                if (!hasNext)
-                    m_Start = false;
-                return hasNext;
+                while (m_Index >= 0 && m_Index < m_Cache.Length && m_Cache[m_Index].m_List == null)
+                    m_Index++;
+                return ++m_Index < m_Cache.Length;
             }
 
             public void Dispose()
             {
-                m_List = null;
-                m_Node = null;
+                m_Cache = null;
             }
 
             public void Reset()
             {
-                m_Start = true;
-                m_Node = null;
+                m_Index = 0;
             }
         }
 
         private struct BackwardIt : IEnumerator<XLinkNode<T>>
         {
-            private XLinkList<T> m_List;
-            private XLinkNode<T> m_Node;
-            private bool m_Start;
+            private XLinkNode<T>[] m_Cache;
+            private int m_Index;
 
-            public XLinkNode<T> Current => m_Node;
+            public XLinkNode<T> Current => m_Cache[m_Index];
 
-            object IEnumerator.Current => m_Node.Value;
+            object IEnumerator.Current => Current;
 
             public BackwardIt(XLinkList<T> list)
             {
-                m_Start = true;
-                m_List = list;
-                m_Node = null;
+                m_Cache = new XLinkNode<T>[list.Count];
+                int index = 0;
+                XLinkNode<T> node = list.First;
+                while (node != null)
+                {
+                    m_Cache[index++] = node;
+                    node = node.Next;
+                }
+                m_Index = m_Cache.Length;
             }
 
             public bool MoveNext()
             {
-                if (!m_Start)
-                    return false;
-
-                if (m_Node == null)
-                    m_Node = m_List.Last;
-                else
-                    m_Node = m_Node.Pre;
-                bool hasPre = m_Node != null;
-                if (!hasPre)
-                    m_Start = false;
-                return hasPre;
+                while (m_Index >= 0 && m_Index < m_Cache.Length && m_Cache[m_Index].m_List == null)
+                    m_Index--;
+                return --m_Index >= 0;
             }
 
             public void Dispose()
             {
-                m_List = null;
-                m_Node = null;
+                m_Cache = null;
             }
 
             public void Reset()
             {
-                m_Start = true;
-                m_Node = null;
+                m_Index = 0;
             }
         }
     }

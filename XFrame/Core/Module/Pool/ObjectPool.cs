@@ -15,7 +15,7 @@ namespace XFrame.Modules.Pools
 
         public ObjectPool(IPoolHelper helper)
         {
-            m_Type = typeof(T); 
+            m_Type = typeof(T);
             m_Helper = helper;
             m_Objects = new XLinkList<IPoolObject>(false);
             m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
@@ -70,7 +70,7 @@ namespace XFrame.Modules.Pools
                         break;
                 }
                 obj = node.Value;
-                node.OnDispose();
+                node.Delete();
                 if (m_NodeCache.Full)
                 {
                     Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
