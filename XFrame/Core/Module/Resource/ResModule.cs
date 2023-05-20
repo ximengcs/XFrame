@@ -41,22 +41,32 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Interface
-        public ITask Preload(string[] resPaths, Type[] types)
+        public ITask Preload(string[] resPaths, Type type)
         {
             InnerEnsurePreload();
-            if (resPaths.Length != types.Length)
-            {
-                Log.Error("XFrame", $"Preload res path is not equal types");
-                return default;
-            }
 
             XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
             int count = resPaths.Length;
             for (int i = 0; i < count; i++)
             {
                 string path = resPaths[i];
-                Type type = types[i];
                 ResLoadTask loadTask = LoadAsync(path, type);
+                loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
+                allTask.Add(loadTask);
+            }
+            return allTask;
+        }
+
+        public ITask Preload<T>(string[] resPaths)
+        {
+            InnerEnsurePreload();
+
+            XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
+            int count = resPaths.Length;
+            for (int i = 0; i < count; i++)
+            {
+                string path = resPaths[i];
+                ResLoadTask<T> loadTask = LoadAsync<T>(path);
                 loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
                 allTask.Add(loadTask);
             }

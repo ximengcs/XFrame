@@ -11,7 +11,9 @@ namespace XFrame.Modules.Resource
         /// <param name="resPaths">需要加载的资源列表</param>
         /// <param name="types">资源类型列表</param>
         /// <returns>加载任务</returns>
-        ITask Preload(string[] resPaths, Type[] types);
+        ITask Preload(string[] resPaths, Type type);
+
+        ITask Preload<T>(string[] resPaths);
 
         /// <summary>
         /// 加载资源(同步)
