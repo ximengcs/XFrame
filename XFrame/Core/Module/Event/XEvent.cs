@@ -1,10 +1,11 @@
-﻿
+﻿using XFrame.Modules.Pools;
+
 namespace XFrame.Modules.Event
 {
     /// <summary>
     /// 事件
     /// </summary>
-    public abstract class XEvent
+    public abstract class XEvent : IPoolObject
     {
         /// <summary>
         /// 事件Id
@@ -17,5 +18,33 @@ namespace XFrame.Modules.Event
         }
 
         public XEvent() { }
+
+        int IPoolObject.PoolKey => 0;
+
+        void IPoolObject.OnCreate()
+        {
+            OnCreateFromPool();
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            OnRequestFromPool();
+        }
+
+        void IPoolObject.OnDelete()
+        {
+            OnDestroyFromPool();
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            OnReleaseFromPool();
+            Id = default;
+        }
+
+        protected internal virtual void OnCreateFromPool() { }
+        protected internal virtual void OnRequestFromPool() { }
+        protected internal virtual void OnDestroyFromPool() { }
+        protected internal virtual void OnReleaseFromPool() { }
     }
 }
