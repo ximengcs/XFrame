@@ -89,6 +89,13 @@ namespace XFrame.Modules.Tasks
             return default;
         }
 
+        public ITask Get(string name)
+        {
+            if (m_TaskWithName.TryGetValue(name, out ITask task))
+                return task;
+            return default;
+        }
+
         /// <summary>
         /// 获取(不存在时创建)一个任务
         /// </summary>
