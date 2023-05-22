@@ -32,7 +32,6 @@ namespace XFrame.Modules.Procedure
             string entrance = XConfig.Entrance;
             if (!string.IsNullOrEmpty(entrance) && m_Procedures.TryGetByName(entrance, out Type type))
             {
-                Log.Debug("XFrame", $"Enter {TypeUtility.GetSimpleName(entrance)} Procedure");
                 m_Fsm = (Fsm)FsmModule.Inst.GetOrNew(m_Procedures.ToArray());
                 m_Fsm.Start(type);
             }
