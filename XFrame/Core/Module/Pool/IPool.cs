@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Pools
 {
@@ -28,7 +29,7 @@ namespace XFrame.Modules.Pools
         /// 生成池对象
         /// </summary>
         /// <param name="count">生成数量</param>
-        void Spawn(int poolKey = default, int count = 1, object userData = default);
+        XLinkList<IPoolObject> Spawn(int poolKey = default, int count = 1, object userData = default);
 
         /// <summary>
         /// 清除所有池化对象

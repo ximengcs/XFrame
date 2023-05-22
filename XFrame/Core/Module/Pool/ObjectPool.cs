@@ -41,10 +41,16 @@ namespace XFrame.Modules.Pools
             InnerRelease(obj);
         }
 
-        public void Spawn(int poolKey, int count, object userData = default)
+        public XLinkList<IPoolObject> Spawn(int poolKey, int count, object userData = default)
         {
+            XLinkList<IPoolObject> result = References.Require<XLinkList<IPoolObject>>();
             for (int i = 0; i < count; i++)
-                InnerRelease(InnerCreate(poolKey, userData));
+            {
+                IPoolObject obj = InnerCreate(poolKey, userData);
+                InnerRelease(obj);
+                result.AddLast(obj);
+            }
+            return result;
         }
 
         private IPoolObject InnerCreate(int poolKey, object userData)
