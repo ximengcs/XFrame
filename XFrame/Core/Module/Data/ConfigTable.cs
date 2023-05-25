@@ -20,6 +20,11 @@ namespace XFrame.Modules.Datas
             return m_Data;
         }
 
+        public T GetByIndex(int index)
+        {
+            return m_Data;
+        }
+
         public T Get()
         {
             return m_Data;

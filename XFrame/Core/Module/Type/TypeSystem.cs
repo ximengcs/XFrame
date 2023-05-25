@@ -114,7 +114,12 @@ namespace XFrame.Modules.XType
             foreach (Type subType in m_AllTypes)
             {
                 if (type.IsAssignableFrom(subType))
+                {
+                    XAttribute xAttr = TypeModule.Inst.GetAttribute<XAttribute>(subType);
                     module.AddSubClass(subType);
+                    if (xAttr != null)
+                        module.AddKey(xAttr.Id, subType);
+                }
             }
 
             return module;

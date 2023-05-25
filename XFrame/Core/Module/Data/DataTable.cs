@@ -68,6 +68,13 @@ namespace XFrame.Modules.Datas
             }
         }
 
+        public T GetByIndex(int index)
+        {
+            if (index < 0 || index >= Count)
+                return default;
+            return m_List[index];
+        }
+
         public int Select(string name, object value, List<T> target)
         {
             FieldInfo field;

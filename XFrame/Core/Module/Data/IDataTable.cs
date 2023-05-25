@@ -39,6 +39,8 @@ namespace XFrame.Modules.Datas
         /// <returns>获取到的数据</returns>
         T Get(int id);
 
+        T GetByIndex(int index);
+
         /// <summary>
         /// 检索数据
         /// </summary>
