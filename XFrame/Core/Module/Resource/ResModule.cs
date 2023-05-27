@@ -5,6 +5,8 @@ using XFrame.Modules.XType;
 using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using System.Collections;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Resource
 {
@@ -41,15 +43,13 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Interface
-        public ITask Preload(string[] resPaths, Type type)
+        public ITask Preload(IEnumerable resPaths, Type type)
         {
             InnerEnsurePreload();
 
             XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
-            int count = resPaths.Length;
-            for (int i = 0; i < count; i++)
+            foreach (string path in resPaths)
             {
-                string path = resPaths[i];
                 ResLoadTask loadTask = LoadAsync(path, type);
                 loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
                 allTask.Add(loadTask);
@@ -57,20 +57,39 @@ namespace XFrame.Modules.Resource
             return allTask;
         }
 
-        public ITask Preload<T>(string[] resPaths)
+        public ITask Preload(IXEnumerable<string> resPaths, Type type)
+        {
+            return Preload((IEnumerable)resPaths, type);
+        }
+
+        public ITask Preload(string[] resPaths, Type type)
+        {
+            return Preload((IEnumerable)resPaths, type);
+        }
+
+        public ITask Preload<T>(IEnumerable resPaths)
         {
             InnerEnsurePreload();
 
             XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
-            int count = resPaths.Length;
-            for (int i = 0; i < count; i++)
+            foreach (string path in resPaths)
             {
-                string path = resPaths[i];
                 ResLoadTask<T> loadTask = LoadAsync<T>(path);
                 loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
                 allTask.Add(loadTask);
             }
+
             return allTask;
+        }
+
+        public ITask Preload<T>(string[] resPaths)
+        {
+            return Preload<T>((IEnumerable)resPaths);
+        }
+
+        public ITask Preload<T>(IXEnumerable<string> resPaths)
+        {
+            return Preload<T>((IEnumerable)resPaths);
         }
 
         public object Load(string resPath, Type type)
