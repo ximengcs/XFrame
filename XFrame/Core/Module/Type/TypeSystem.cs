@@ -37,6 +37,8 @@ namespace XFrame.Modules.XType
         #endregion
 
         #region Interface
+        public int Count => m_AllTypes.Count;
+
         /// <summary>
         /// 主类
         /// </summary>

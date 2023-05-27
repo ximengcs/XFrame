@@ -50,6 +50,8 @@ namespace XFrame.Modules.Resource
             XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
+                if (m_PreLoadRes.ContainsKey(path))
+                    continue;
                 ResLoadTask loadTask = LoadAsync(path, type);
                 loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
                 allTask.Add(loadTask);
@@ -70,10 +72,11 @@ namespace XFrame.Modules.Resource
         public ITask Preload<T>(IEnumerable resPaths)
         {
             InnerEnsurePreload();
-
             XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
+                if (m_PreLoadRes.ContainsKey(path))
+                    continue;
                 ResLoadTask<T> loadTask = LoadAsync<T>(path);
                 loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
                 allTask.Add(loadTask);
