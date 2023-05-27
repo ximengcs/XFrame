@@ -76,22 +76,37 @@ namespace XFrame.Modules.Containers
 
         void IPoolObject.OnCreate()
         {
+            InnerOnCreate();
+            OnCreateFromPool();
+        }
+
+        protected virtual void InnerOnCreate()
+        {
             m_Data = new DataProvider();
             m_Coms = new XCollection<ICom>();
-            OnCreateFromPool();
         }
 
         void IPoolObject.OnRequest()
         {
+            InnerOnRequest();
+            OnRequestFromPool();
+        }
+
+        protected virtual void InnerOnRequest()
+        {
             foreach (ICom com in m_Coms)
                 com.OnRequest();
-            OnRequestFromPool();
             Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
         {
             OnReleaseFromPool();
+            InnerOnRelease();
+        }
+
+        protected virtual void InnerOnRelease()
+        {
             foreach (ICom com in m_Coms)
                 com.OnRelease();
             m_Data.ClearData();
@@ -100,6 +115,11 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnDelete()
         {
             OnDestroyFromPool();
+            InnerOnDelete();
+        }
+
+        protected virtual void InnerOnDelete()
+        {
             foreach (ICom com in m_Coms)
                 com.OnDelete();
             m_Data = null;
