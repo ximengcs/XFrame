@@ -4,6 +4,7 @@ using XFrame.Collections;
 using XFrame.Modules.Event;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace XFrame.Modules.Local
 {
@@ -98,6 +99,12 @@ namespace XFrame.Modules.Local
         /// <returns>行</returns>
         public string[] GetLine(int key)
         {
+            if (m_Data == null)
+            {
+                Log.Error("XFrame", $"data can not init finish. key {key}");
+                return default;
+            }
+
             Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
             string[] lineContent = new string[line.Count - 1];
             for (int i = 1; i < line.Count; i++)
@@ -157,6 +164,12 @@ namespace XFrame.Modules.Local
         #region Inner Imeplement
         private string InnerGetValue(int index, int key, params object[] values)
         {
+            if (m_Data == null)
+            {
+                Log.Error("XFrame", $"data can not init finish. index {index}, key {key}");
+                return default;
+            }
+
             Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
             string content = line[index];
             return string.Format(m_Formatter, content, values);
@@ -164,6 +177,12 @@ namespace XFrame.Modules.Local
 
         private string InnerGetValueParam(int index, int key, params int[] args)
         {
+            if (m_Data == null)
+            {
+                Log.Error("XFrame", $"data can not init finish. index {index}, key {key}");
+                return default;
+            }
+
             Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
             string content = line[index];
             string[] param = new string[args.Length];
