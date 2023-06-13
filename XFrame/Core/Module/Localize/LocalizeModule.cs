@@ -105,11 +105,18 @@ namespace XFrame.Modules.Local
                 return default;
             }
 
-            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
-            string[] lineContent = new string[line.Count - 1];
-            for (int i = 1; i < line.Count; i++)
-                lineContent[i - 1] = line[i];
-            return lineContent;
+            if (InnerGetContentIndex(key, out int contentIndex))
+            {
+                Csv<string>.Line line = m_Data.Get(contentIndex);
+                string[] lineContent = new string[line.Count - 1];
+                for (int i = 1; i < line.Count; i++)
+                    lineContent[i - 1] = line[i];
+                return lineContent;
+            }
+            else
+            {
+                return default;
+            }
         }
 
         /// <summary>
@@ -170,9 +177,16 @@ namespace XFrame.Modules.Local
                 return default;
             }
 
-            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
-            string content = line[index];
-            return string.Format(m_Formatter, content, values);
+            if (InnerGetContentIndex(key, out int contentIndex))
+            {
+                Csv<string>.Line line = m_Data.Get(contentIndex);
+                string content = line[index];
+                return string.Format(m_Formatter, content, values);
+            }
+            else
+            {
+                return default;
+            }
         }
 
         private string InnerGetValueParam(int index, int key, params int[] args)
@@ -183,13 +197,20 @@ namespace XFrame.Modules.Local
                 return default;
             }
 
-            Csv<string>.Line line = m_Data.Get(InnerGetContentIndex(key));
-            string content = line[index];
-            string[] param = new string[args.Length];
-            for (int i = 0; i < args.Length; i++)
-                param[i] = GetValue(args[i]);
+            if (InnerGetContentIndex(key, out int contentIndex))
+            {
+                Csv<string>.Line line = m_Data.Get(contentIndex);
+                string content = line[index];
+                string[] param = new string[args.Length];
+                for (int i = 0; i < args.Length; i++)
+                    param[i] = GetValue(args[i]);
 
-            return string.Format(m_Formatter, content, param);
+                return string.Format(m_Formatter, content, param);
+            }
+            else
+            {
+                return default;
+            }
         }
 
         private void InnerInit(string csvText)
@@ -207,14 +228,15 @@ namespace XFrame.Modules.Local
             }
         }
 
-        private int InnerGetContentIndex(int id)
+        private bool InnerGetContentIndex(int id, out int index)
         {
-            if (m_IdMap.TryGetValue(id, out int index))
-                return index;
+            if (m_IdMap.TryGetValue(id, out index))
+                return true;
             else
             {
+                index = default;
                 Log.Error("XFrame", $"id {id} not index");
-                return default;
+                return false;
             }
         }
 
