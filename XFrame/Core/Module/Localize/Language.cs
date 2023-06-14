@@ -1,9 +1,11 @@
-﻿
+﻿using System.ComponentModel;
+
 namespace XFrame.Modules.Local
 {
     /// <summary>
     /// 语言
     /// </summary>
+    [DefaultValue(None)]
     public enum Language
     {
         None = -1,

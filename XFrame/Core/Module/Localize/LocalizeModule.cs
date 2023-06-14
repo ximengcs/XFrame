@@ -30,6 +30,7 @@ namespace XFrame.Modules.Local
         {
             base.OnInit(data);
 
+            m_Language = Language.None;
             m_Event = EventModule.Inst.NewSys();
             m_Formatter = new FormatterProvider();
         }
@@ -58,6 +59,8 @@ namespace XFrame.Modules.Local
                 }
             }
         }
+
+        public ArrayParser<EnumParser<Language>> ExistLangs => m_Title;
 
         /// <summary>
         /// 是否存在语言

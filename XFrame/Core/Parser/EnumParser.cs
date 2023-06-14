@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -17,7 +19,11 @@ namespace XFrame.Core
             }
             else
             {
-                Value = default;
+                DefaultValueAttribute attr = TypeModule.Inst.GetAttribute<DefaultValueAttribute>(typeof(T));
+                if (attr != null)
+                    Value = (T)attr.Value;
+                else
+                    Value = default;
             }
             return Value;
         }
