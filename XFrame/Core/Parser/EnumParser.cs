@@ -13,18 +13,20 @@ namespace XFrame.Core
 
         public T Parse(string pattern)
         {
-            if (Enum.TryParse(typeof(T), pattern, out object result))
+            if (!string.IsNullOrEmpty(pattern))
             {
-                Value = (T)result;
+                if (Enum.TryParse(typeof(T), pattern, out object result))
+                {
+                    Value = (T)result;
+                    return Value;
+                }
             }
+
+            DefaultValueAttribute attr = TypeModule.Inst.GetAttribute<DefaultValueAttribute>(typeof(T));
+            if (attr != null)
+                Value = (T)attr.Value;
             else
-            {
-                DefaultValueAttribute attr = TypeModule.Inst.GetAttribute<DefaultValueAttribute>(typeof(T));
-                if (attr != null)
-                    Value = (T)attr.Value;
-                else
-                    Value = default;
-            }
+                Value = default;
             return Value;
         }
 

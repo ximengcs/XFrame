@@ -10,6 +10,8 @@ namespace XFrame.Core
 
         public int Parse(string pattern)
         {
+            if (string.IsNullOrEmpty(pattern))
+                return default;
             if (int.TryParse(pattern, out int result))
                 Value = result;
             else

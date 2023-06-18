@@ -7,6 +7,7 @@ namespace XFrame.Core
         public StringParser STRING { get; private set; }
         public IntParser INT { get; private set; }
         public FloatParser FLOAT { get; private set; }
+        public BoolParser BOOL { get; private set; }
 
         protected override void OnInit(object data)
         {
@@ -14,6 +15,7 @@ namespace XFrame.Core
             STRING = new StringParser();
             INT = new IntParser();
             FLOAT = new FloatParser();
+            BOOL = new BoolParser();
         }
     }
 }

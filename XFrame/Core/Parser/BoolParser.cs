@@ -1,19 +1,22 @@
-﻿using XFrame.Modules.Diagnotics;
+﻿
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
-    public class FloatParser : IParser<float>
+    public class BoolParser : IParser<bool>
     {
-        public float Value { get; private set; }
+        public bool Value { get; private set; }
 
         object IParser.Value => Value;
 
-        public float Parse(string pattern)
+        public bool Parse(string pattern)
         {
             if (string.IsNullOrEmpty(pattern))
                 return default;
-            if (float.TryParse(pattern, out float result))
+            if (bool.TryParse(pattern, out bool result))
                 Value = result;
+            else if (int.TryParse(pattern, out int intResult))
+                Value = intResult != 0 ? true : false;
             else
                 Log.Error("Parse", $"parse error {pattern}");
             return Value;
@@ -37,37 +40,27 @@ namespace XFrame.Core
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
-            if (parser != null)
-            {
-                return Value.Equals(parser.Value);
-            }
-            else
-            {
-                if (obj is int)
-                    return Value.Equals((int)obj);
-                else
-                    return Value.Equals((float)obj);
-            }
+            return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
         }
 
-        public static bool operator ==(FloatParser src, object tar)
+        public static bool operator ==(BoolParser src, object tar)
         {
             return src.Equals(tar);
         }
 
-        public static bool operator !=(FloatParser src, object tar)
+        public static bool operator !=(BoolParser src, object tar)
         {
             return !src.Equals(tar);
         }
 
-        public static implicit operator float(FloatParser parser)
+        public static implicit operator bool(BoolParser parser)
         {
             return parser.Value;
         }
 
-        public static implicit operator FloatParser(int value)
+        public static implicit operator BoolParser(bool value)
         {
-            FloatParser parser = new FloatParser();
+            BoolParser parser = new BoolParser();
             parser.Value = value;
             return parser;
         }
