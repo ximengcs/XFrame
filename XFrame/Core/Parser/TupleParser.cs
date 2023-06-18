@@ -18,7 +18,7 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1>(
-                SerializeModule.Inst.DeserializeJsonToObject<T1>(contents[0]));
+                SerializeModule.Inst.DeserializeToObject<T1>(contents[0]));
 
             return m_Value;
         }
@@ -83,8 +83,8 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1, T2>(
-                SerializeModule.Inst.DeserializeJsonToObject<T1>(contents[0]),
-                SerializeModule.Inst.DeserializeJsonToObject<T2>(contents[1]));
+                SerializeModule.Inst.DeserializeToObject<T1>(contents[0]),
+                SerializeModule.Inst.DeserializeToObject<T2>(contents[1]));
 
             return m_Value;
         }

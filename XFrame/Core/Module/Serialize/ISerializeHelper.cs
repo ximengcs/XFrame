@@ -5,7 +5,7 @@ namespace XFrame.Modules.Serialize
     /// <summary>
     /// Json序列化辅助器
     /// </summary>
-    public interface IJsonSerializeHelper
+    public interface ISerializeHelper
     {
         /// <summary>
         /// 反序列化

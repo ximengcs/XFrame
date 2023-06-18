@@ -3,7 +3,7 @@ using XFrame.Modules.Serialize;
 
 namespace XFrameTest
 {
-    public class TestJsonSerializer : IJsonSerializeHelper
+    public class TestJsonSerializer : ISerializeHelper
     {
         public object Deserialize(string json, Type dataType)
         {

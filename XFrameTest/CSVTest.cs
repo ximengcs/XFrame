@@ -7,6 +7,17 @@ namespace XFrameTest
     public class CSVTest
     {
         [TestMethod]
+        public void Test3()
+        {
+            EntryTest.Exec(() =>
+            {
+                string text = ",1,,2,3,4";
+                Csv<string> csv = new Csv<string>(text, ParserModule.Inst.STRING);
+                Console.WriteLine(csv.ToString());
+            });
+        }
+
+        [TestMethod]
         public void Test2()
         {
             EntryTest.Exec(() =>

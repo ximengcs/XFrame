@@ -11,14 +11,14 @@ namespace XFrame.Modules.Serialize
     [CoreModule]
     public class SerializeModule : SingletonModule<SerializeModule>
     {
-        private IJsonSerializeHelper m_JsonHelper;
+        private ISerializeHelper m_Helper;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            if (!string.IsNullOrEmpty(XConfig.DefaultJsonSerializer))
+            if (!string.IsNullOrEmpty(XConfig.DefaultSerializer))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultJsonSerializer);
+                Type type = TypeModule.Inst.GetType(XConfig.DefaultSerializer);
                 InnerInit(type);
             }
         }
@@ -30,9 +30,9 @@ namespace XFrame.Modules.Serialize
         /// <param name="json">json本文</param>
         /// <param name="type">目标类型</param>
         /// <returns>序列化到的对象</returns>
-        public object DeserializeJsonToObject(string json, Type type)
+        public object DeserializeToObject(string json, Type type)
         {
-            return m_JsonHelper.Deserialize(json, type);
+            return m_Helper.Deserialize(json, type);
         }
 
         /// <summary>
@@ -41,9 +41,9 @@ namespace XFrame.Modules.Serialize
         /// <typeparam name="T">目标类型</typeparam>
         /// <param name="json">json本文</param>
         /// <returns>序列化到的对象</returns>
-        public T DeserializeJsonToObject<T>(string json)
+        public T DeserializeToObject<T>(string json)
         {
-            return m_JsonHelper.Deserialize<T>(json);
+            return m_Helper.Deserialize<T>(json);
         }
 
         /// <summary>
@@ -51,16 +51,16 @@ namespace XFrame.Modules.Serialize
         /// </summary>
         /// <param name="obj">需要序列化的对象</param>
         /// <returns>json本文</returns>
-        public string SerializeObjectToJson(object obj)
+        public string SerializeObjectToRaw(object obj)
         {
-            return m_JsonHelper.Serialize(obj);
+            return m_Helper.Serialize(obj);
         }
 
         #endregion
 
         private void InnerInit(Type type)
         {
-            m_JsonHelper = Activator.CreateInstance(type) as IJsonSerializeHelper;
+            m_Helper = Activator.CreateInstance(type) as ISerializeHelper;
         }
     }
 }

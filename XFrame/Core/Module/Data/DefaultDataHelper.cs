@@ -101,7 +101,7 @@ namespace XFrame.Modules.Datas
 
         private IDataTable InnerAdd(Type tbType, Type jsonType, string json)
         {
-            object data = SerializeModule.Inst.DeserializeJsonToObject(json, jsonType);
+            object data = SerializeModule.Inst.DeserializeToObject(json, jsonType);
             IDataTable table = (IDataTable)Activator.CreateInstance(tbType);
             table.OnInit(data);
 

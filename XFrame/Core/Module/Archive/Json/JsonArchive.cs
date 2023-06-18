@@ -133,7 +133,7 @@ namespace XFrame.Modules.Archives
         /// <param name="v">此值将会被序列化并保存</param>
         public void Set(string key, object v)
         {
-            m_Root[key] = JSONNode.Parse(SerializeModule.Inst.SerializeObjectToJson(v));
+            m_Root[key] = JSONNode.Parse(SerializeModule.Inst.SerializeObjectToRaw(v));
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace XFrame.Modules.Archives
             string objStr = m_Root[key].ToString();
             if (string.IsNullOrEmpty(objStr))
                 return defaultValue;
-            return SerializeModule.Inst.DeserializeJsonToObject<T>(objStr);
+            return SerializeModule.Inst.DeserializeToObject<T>(objStr);
         }
 
         /// <summary>

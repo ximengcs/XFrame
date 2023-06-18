@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Tasks;
 using XFrame.Modules.Diagnotics;
+using System;
 
 namespace XFrame.Modules.Download
 {
@@ -8,6 +9,9 @@ namespace XFrame.Modules.Download
     /// </summary>
     public class DownTask : TaskBase
     {
+        private Action<byte[]> m_BytesCallback;
+        private Action<string> m_TextCallback;
+
         /// <summary>
         /// 是否成功
         /// </summary>
@@ -29,6 +33,29 @@ namespace XFrame.Modules.Download
         protected override void OnInit()
         {
             AddStrategy(new Strategy());
+        }
+
+        public DownTask OnComplete(Action<byte[]> callback)
+        {
+            m_BytesCallback += callback;
+            return this;
+        }
+
+        public DownTask OnComplete(Action<string> callback)
+        {
+            m_TextCallback += callback;
+            return this;
+        }
+
+        protected override void InnerComplete()
+        {
+            base.InnerComplete();
+            if (Data != null)
+                m_BytesCallback?.Invoke(Data);
+            if (Text != null)
+                m_TextCallback?.Invoke(Text);
+            m_BytesCallback = null;
+            m_TextCallback = null;
         }
 
         private class Strategy : ITaskStrategy<IDownloadHelper>

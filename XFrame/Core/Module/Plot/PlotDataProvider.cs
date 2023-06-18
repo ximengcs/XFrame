@@ -58,7 +58,7 @@ namespace XFrame.Modules.Plots
             if (m_Sections.HasKey(key))
             {
                 string content = m_Sections[key];
-                return SerializeModule.Inst.DeserializeJsonToObject<T>(content);
+                return SerializeModule.Inst.DeserializeToObject<T>(content);
             }
 
             return default;
@@ -72,7 +72,7 @@ namespace XFrame.Modules.Plots
         public void SetData<T>(string name, T value)
         {
             string key = $"{name}_{typeof(T).Name}";
-            string content = SerializeModule.Inst.SerializeObjectToJson(value);
+            string content = SerializeModule.Inst.SerializeObjectToRaw(value);
             m_Sections[key] = content;
         }
     }
