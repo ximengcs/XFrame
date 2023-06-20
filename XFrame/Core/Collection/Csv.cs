@@ -24,8 +24,9 @@ namespace XFrame.Collections
 
         #region Const Fields
         private const int DEFAULT_COLUMN = 8;
-        private const int REQUIRE = 2;
-        private const string CSV_PATTERN = "\"([^\"]+?)\",?|([^,]+),?|,";
+        private const int REQUIRE = 1;
+        private const string CSV_PATTERN = "(?:,|\\n|^)(\"(?:(?:\"\")*[^\"]*)*\"|[^\",\\n]*|(?:\\n|$))";
+        //private const string CSV_PATTERN = "\"([^\"]+?)\",?|([^,]+),?|,";
         #endregion
 
         #region Constructor
