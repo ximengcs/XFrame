@@ -3,8 +3,10 @@ using System.Text;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using XFrame.Modules.Pools;
+using System.IO;
+using System.Globalization;
+using CsvHelper;
 
 namespace XFrame.Collections
 {
@@ -194,19 +196,21 @@ namespace XFrame.Collections
                     m_Row--;
                     continue;
                 }
-                MatchCollection matchs = Regex.Matches(content, CSV_PATTERN);
-                int columnCount = matchs.Count;
-                if (m_Column < columnCount)
-                    m_Column = columnCount;
 
-                Line line = new Line(columnCount);
-                for (int j = 0; j < columnCount; j++)
+                CsvReader csvReader = new CsvReader(new StringReader(content), CultureInfo.CurrentCulture);
+                CsvDataReader csvDataReader = new CsvDataReader(csvReader);
+                m_Column = csvDataReader.FieldCount;
+
+                Line line = new Line(m_Column);
+                for (int j = 0; j < m_Column; j++)
                 {
-                    string value = matchs[j].Groups[REQUIRE].Value;
-                    value = value.Trim(' ', '\n', '\t', '\r');
+                    string value = csvDataReader[j].ToString();
                     line[j] = parser.Parse(value);
                 }
                 rows.Add(line);
+
+                csvDataReader.Dispose();
+                csvReader.Dispose();
             }
 
             for (int i = 0; i < rows.Count; i++)

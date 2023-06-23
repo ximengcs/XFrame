@@ -13,6 +13,8 @@ namespace XFrame.Modules.Pools
 
         public Type ObjectType => m_Type;
 
+        public IPoolHelper Helper => m_Helper;
+
         public ObjectPool(IPoolHelper helper)
         {
             m_Type = typeof(T);
@@ -56,6 +58,7 @@ namespace XFrame.Modules.Pools
         private IPoolObject InnerCreate(int poolKey, object userData)
         {
             IPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
+            m_Helper.OnObjectCreate(obj);
             obj.OnCreate();
             return obj;
         }
@@ -87,12 +90,14 @@ namespace XFrame.Modules.Pools
                 }
             }
 
+            m_Helper.OnObjectRequest(obj);
             obj.OnRequest();
             return obj;
         }
 
         private void InnerRelease(IPoolObject obj)
         {
+            m_Helper.OnObjectRelease(obj);
             obj.OnRelease();
             if (m_NodeCache.Empty)
             {
@@ -109,7 +114,10 @@ namespace XFrame.Modules.Pools
         public void ClearObject()
         {
             foreach (XLinkNode<IPoolObject> obj in m_Objects)
+            {
+                m_Helper.OnObjectDestroy(obj);
                 obj.Value.OnDelete();
+            }
             m_Objects.Clear();
         }
     }

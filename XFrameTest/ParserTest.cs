@@ -174,7 +174,7 @@ namespace XFrameTest
                 return $"A:{A} B:{B}";
             }
 
-            public override bool Equals(object? obj)
+            public override bool Equals(object obj)
             {
                 Test4Data other = obj as Test4Data;
                 if (other != null)

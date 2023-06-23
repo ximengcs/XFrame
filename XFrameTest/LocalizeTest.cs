@@ -37,7 +37,7 @@ namespace XFrameTest
 
         class IdFormatter : ICustomFormatter
         {
-            public string Format(string? format, object? arg, IFormatProvider? formatProvider)
+            public string Format(string format, object arg, IFormatProvider? formatProvider)
             {
                 return format;
             }

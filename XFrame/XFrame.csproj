@@ -8,4 +8,8 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Plugins\CsvHelper\" />
+  </ItemGroup>
+
 </Project>

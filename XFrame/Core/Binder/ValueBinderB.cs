@@ -136,6 +136,11 @@ namespace XFrame.Core.Binder
         {
             return binder.Value;
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
         #endregion
     }
 }

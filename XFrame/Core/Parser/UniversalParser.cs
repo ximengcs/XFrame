@@ -47,12 +47,26 @@ namespace XFrame.Core
 
         public static bool operator ==(UniversalParser src, object tar)
         {
-            return src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return src.Equals(tar);
+            }
         }
 
         public static bool operator !=(UniversalParser src, object tar)
         {
-            return !src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return !ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return !src.Equals(tar);
+            }
         }
 
         public static implicit operator string(UniversalParser parser)

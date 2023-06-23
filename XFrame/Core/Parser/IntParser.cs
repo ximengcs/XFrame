@@ -14,8 +14,7 @@ namespace XFrame.Core
                 return default;
             if (int.TryParse(pattern, out int result))
                 Value = result;
-            else
-                Log.Error("Parse", $"parse error {pattern}");
+
             return Value;
         }
 

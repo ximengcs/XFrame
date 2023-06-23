@@ -13,6 +13,8 @@ namespace XFrame.Modules.Pools
         /// </summary>
         Type ObjectType { get; }
 
+        IPoolHelper Helper { get; }
+
         /// <summary>
         /// 获取一个对象
         /// </summary>
