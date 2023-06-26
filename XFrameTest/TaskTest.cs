@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Threads;
+using XFrame.Modules.Times;
 
 namespace XFrameTest
 {
@@ -18,24 +19,31 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
+                Log.Debug($"[{TimeModule.Inst.Frame}]");
                 ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
-                task.Add(() => Log.Debug("Exec1"));
-                task.Add(() => Log.Debug("Exec2"));
+                task.Add(() =>
+                {
+                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec1");
+                });
+                task.Add(() =>
+                {
+                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec2");
+                });
                 task.OnComplete(() =>
                 {
-                    Log.Debug($"Complete {task.GetHashCode()}");
+                    Log.Debug($"[{TimeModule.Inst.Frame}] Complete {task.GetHashCode()}");
                 }).Start();
 
                 DelayTask delay = TaskModule.Inst.GetOrNew<DelayTask>();
                 delay.Add(1.0f, () =>
                 {
-                    Log.Debug($"Delay complete {task.GetHashCode()}");
+                    Log.Debug($"[{TimeModule.Inst.Frame}] Delay complete {task.GetHashCode()}");
                     ActionTask t = TaskModule.Inst.GetOrNew<ActionTask>();
-                    t.Add(() => Log.Debug("Exec3"));
-                    t.Add(() => Log.Debug("Exec4"));
+                    t.Add(() => Log.Debug($"[{TimeModule.Inst.Frame}] Exec3"));
+                    t.Add(() => Log.Debug($"[{TimeModule.Inst.Frame}] Exec4"));
                     t.OnComplete(() =>
                     {
-                        Log.Debug($"Complete2 {task.GetHashCode()}");
+                        Log.Debug($"[{TimeModule.Inst.Frame}] Complete2 {task.GetHashCode()}");
                     }).Start();
                 }).Start();
             });

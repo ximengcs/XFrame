@@ -14,7 +14,7 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_Task.IsStart)
             {
-                m_Task.OnUpdate();
+                TaskModule.Inst.InnerExecTask(m_Task);
             }
 
             if (m_Task.IsComplete)

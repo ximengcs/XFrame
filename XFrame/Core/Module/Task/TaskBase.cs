@@ -3,6 +3,8 @@ using XFrame.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
 {
@@ -58,6 +60,11 @@ namespace XFrame.Modules.Tasks
 
         void ITask.OnUpdate()
         {
+            InnerUpdate();
+        }
+
+        private void InnerUpdate()
+        {
             if (m_Current != null)
             {
                 m_CurPro = m_Current.Handle(this);
@@ -73,7 +80,16 @@ namespace XFrame.Modules.Tasks
                     m_Current = null;
                     m_Pro += m_CurPro;
                     m_CurPro = 0;
-                    InnerCheckComplete();
+
+                    if (m_Targets.Count > 0)
+                    {
+                        if (TaskModule.Inst.InnerCanContinue())
+                            InnerUpdate();
+                    }
+                    else
+                    {
+                        InnerCheckComplete();
+                    }
                 }
             }
             else
@@ -83,6 +99,7 @@ namespace XFrame.Modules.Tasks
                     ITaskHandler handler = m_Targets.Dequeue();
                     m_Current = InnerFindStrategy(handler);
                     m_Current.Use(handler);
+                    InnerUpdate();
                 }
                 else
                 {
@@ -194,6 +211,8 @@ namespace XFrame.Modules.Tasks
 
         private void InnerCheckComplete()
         {
+            if (IsComplete)
+                return;
             if (m_Targets.Count == 0)
             {
                 m_Pro = MAX_PRO;

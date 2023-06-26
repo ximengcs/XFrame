@@ -4,6 +4,7 @@ using System.Diagnostics;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Times;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Tasks
 {
@@ -23,6 +24,7 @@ namespace XFrame.Modules.Tasks
         #region Inner Fields
         private List<ITask> m_Tasks;
         private Stopwatch m_Watch;
+        private float m_ThisFrameTime;
         private Dictionary<string, ITask> m_TaskWithName;
         #endregion
 
@@ -40,26 +42,37 @@ namespace XFrame.Modules.Tasks
         {
             base.OnUpdate(escapeTime);
 
-            long timeout = 0;
+            m_ThisFrameTime = 0;
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
             {
-                m_Watch.Restart();
                 ITask task = m_Tasks[i];
                 if (task.IsStart)
-                    task.OnUpdate();
-
-                if (task.IsComplete)
                 {
-                    m_Tasks.RemoveAt(i);
-                    m_TaskWithName.Remove(task.Name);
+                    InnerExecTask(task);
+                    if (task.IsComplete)
+                    {
+                        m_Tasks.RemoveAt(i);
+                        m_TaskWithName.Remove(task.Name);
+                    }
+                    if (!InnerCanContinue())
+                        break;
                 }
-                m_Watch.Stop();
-                timeout += m_Watch.ElapsedMilliseconds;
-                if (timeout >= TaskTimeout)
-                    break;
             }
         }
         #endregion
+
+        internal void InnerExecTask(ITask task)
+        {
+            m_Watch.Restart();
+            task.OnUpdate();
+            m_Watch.Stop();
+            m_ThisFrameTime += m_Watch.ElapsedMilliseconds;
+        }
+
+        internal bool InnerCanContinue()
+        {
+            return m_ThisFrameTime < TaskTimeout;
+        }
 
         #region Interface
         /// <summary>
