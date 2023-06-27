@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using XFrame.Core;
-using XFrame.Modules.Config;
 using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Serialize
@@ -11,14 +11,16 @@ namespace XFrame.Modules.Serialize
     [CoreModule]
     public class SerializeModule : SingletonModule<SerializeModule>
     {
-        private ISerializeHelper m_Helper;
+        private Dictionary<int, ISerializeHelper> m_Helpers;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            if (!string.IsNullOrEmpty(XConfig.DefaultSerializer))
+
+            m_Helpers = new Dictionary<int, ISerializeHelper>();
+            TypeSystem typeSys = TypeModule.Inst.GetOrNew<ISerializeHelper>();
+            foreach (Type type in typeSys)
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultSerializer);
                 InnerInit(type);
             }
         }
@@ -27,40 +29,61 @@ namespace XFrame.Modules.Serialize
         /// <summary>
         /// 反序列化
         /// </summary>
-        /// <param name="json">json本文</param>
+        /// <param name="text">text本文</param>
         /// <param name="type">目标类型</param>
         /// <returns>序列化到的对象</returns>
-        public object DeserializeToObject(string json, Type type)
+        public object DeserializeToObject(string text, Type type)
         {
-            return m_Helper.Deserialize(json, type);
+            return DeserializeToObject(text, default, type);
+        }
+
+        public object DeserializeToObject(string text, int textType, Type type)
+        {
+            if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))
+                return helper.Deserialize(text, type);
+            return default;
         }
 
         /// <summary>
         /// 反序列化
         /// </summary>
         /// <typeparam name="T">目标类型</typeparam>
-        /// <param name="json">json本文</param>
+        /// <param name="text">text本文</param>
         /// <returns>序列化到的对象</returns>
-        public T DeserializeToObject<T>(string json)
+        public T DeserializeToObject<T>(string text)
         {
-            return m_Helper.Deserialize<T>(json);
+            return DeserializeToObject<T>(text, default);
+        }
+
+        public T DeserializeToObject<T>(string text, int textType)
+        {
+            if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))
+                return helper.Deserialize<T>(text);
+            return default;
         }
 
         /// <summary>
-        /// 序列化
+        /// 序列化 
         /// </summary>
         /// <param name="obj">需要序列化的对象</param>
         /// <returns>json本文</returns>
         public string SerializeObjectToRaw(object obj)
         {
-            return m_Helper.Serialize(obj);
+            return SerializeObjectToRaw(obj, default);
         }
 
+        public string SerializeObjectToRaw(object obj, int textType)
+        {
+            if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))
+                return helper.Serialize(obj);
+            return default;
+        }
         #endregion
 
         private void InnerInit(Type type)
         {
-            m_Helper = Activator.CreateInstance(type) as ISerializeHelper;
+            ISerializeHelper helper = Activator.CreateInstance(type) as ISerializeHelper;
+            m_Helpers.Add(helper.HandleType, helper);
         }
     }
 }

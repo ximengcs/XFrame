@@ -7,6 +7,8 @@ namespace XFrame.Modules.Serialize
     /// </summary>
     public interface ISerializeHelper
     {
+        int HandleType { get; }
+
         /// <summary>
         /// 反序列化
         /// </summary>

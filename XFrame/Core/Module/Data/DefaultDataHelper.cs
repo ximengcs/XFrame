@@ -46,11 +46,11 @@ namespace XFrame.Modules.Datas
             }
         }
 
-        public IDataTable Add(string json, Type dataType)
+        public IDataTable Add(string text, Type dataType, int textType)
         {
             if (InnerFindType(dataType, out Type tbType, out Type jsonType))
             {
-                return InnerAdd(tbType, jsonType, json);
+                return InnerAdd(tbType, jsonType, text, textType);
             }
             else
             {
@@ -99,9 +99,9 @@ namespace XFrame.Modules.Datas
             return false;
         }
 
-        private IDataTable InnerAdd(Type tbType, Type jsonType, string json)
+        private IDataTable InnerAdd(Type tbType, Type jsonType, string json, int textType)
         {
-            object data = SerializeModule.Inst.DeserializeToObject(json, jsonType);
+            object data = SerializeModule.Inst.DeserializeToObject(json, textType, jsonType);
             IDataTable table = (IDataTable)Activator.CreateInstance(tbType);
             table.OnInit(data);
 

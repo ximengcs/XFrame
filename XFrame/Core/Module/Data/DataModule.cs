@@ -55,9 +55,9 @@ namespace XFrame.Modules.Datas
         /// <typeparam name="T">数据表持有数据类型</typeparam>
         /// <param name="json">需要被序列化的数据</param>
         /// <returns>数据表接口实例</returns>
-        public IDataTable<T> Add<T>(string json) where T : IDataRaw
+        public IDataTable<T> Add<T>(string json, int textType = default) where T : IDataRaw
         {
-            return (IDataTable<T>)m_Helper.Add(json, typeof(T));
+            return (IDataTable<T>)m_Helper.Add(json, typeof(T), textType);
         }
 
         /// <summary>

@@ -5,6 +5,8 @@ namespace XFrameTest
 {
     public class TestJsonSerializer : ISerializeHelper
     {
+        public int HandleType => default;
+
         public object Deserialize(string json, Type dataType)
         {
             return JsonConvert.DeserializeObject(json, dataType);
