@@ -77,16 +77,24 @@ namespace XFrame.Modules.Pools
                 {
                     if (node.Value.PoolKey == poolKey)
                         break;
+                    node = node.Next;
                 }
-                obj = node.Value;
-                node.Delete();
-                if (m_NodeCache.Full)
+                if (node != null)
                 {
-                    Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
+                    obj = node.Value;
+                    node.Delete();
+                    if (m_NodeCache.Full)
+                    {
+                        Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
+                    }
+                    else
+                    {
+                        m_NodeCache.AddLast(node);
+                    }
                 }
                 else
                 {
-                    m_NodeCache.AddLast(node);
+                    obj = InnerCreate(poolKey, userData);
                 }
             }
 

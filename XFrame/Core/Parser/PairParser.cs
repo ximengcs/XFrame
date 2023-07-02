@@ -35,10 +35,15 @@ namespace XFrame.Core
         public Pair<K, V> Parse(string pattern)
         {
             string[] values = pattern.Split(m_Split);
-            if (values.Length != 2)
-                return Value;
-            m_KParser.Parse(values[0]);
-            m_VParser.Parse(values[1]);
+            if (values.Length == 1)
+            {
+                m_KParser.Parse(values[0]);
+            }
+            else if (values.Length == 2)
+            {
+                m_KParser.Parse(values[0]);
+                m_VParser.Parse(values[1]);
+            }
             return Value;
         }
 
@@ -65,12 +70,26 @@ namespace XFrame.Core
 
         public static bool operator ==(PairParser<K, V> src, object tar)
         {
-            return src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return src.Equals(tar);
+            }
         }
 
         public static bool operator !=(PairParser<K, V> src, object tar)
         {
-            return !src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return !ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return !src.Equals(tar);
+            }
         }
 
         public static implicit operator PairParser<K, V>(Pair<K, V> value)

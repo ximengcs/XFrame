@@ -144,6 +144,7 @@ namespace XFrame.Modules.StateMachine
             {
                 m_Fsms.Remove(name);
                 m_FsmList.Remove(fsm);
+                fsm.OnDestroy();
             }
         }
         #endregion

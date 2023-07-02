@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text;
 
 namespace XFrame.Core
 {
@@ -34,6 +35,8 @@ namespace XFrame.Core
 
         public override bool Equals(object obj)
         {
+            if (obj == null)
+                return false;
             if (obj is Pair<K, V> other)
             {
                 return Key.Equals(other.Key) && Value.Equals(other.Value);
