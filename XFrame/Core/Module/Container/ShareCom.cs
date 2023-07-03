@@ -32,8 +32,15 @@ namespace XFrame.Modules.Containers
         }
 
         public int Id { get; private set; }
+
         public IContainer Master { get; private set; }
-        IContainer ICom.Owner { get; set; }
+
+        IContainer ICom.Owner
+        {
+            get => m_Owner;
+            set => m_Owner = value;
+        }
+
         protected IContainer Owner => m_Owner;
 
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
@@ -43,12 +50,13 @@ namespace XFrame.Modules.Containers
                 Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
                 return;
             }
+
             Id = id;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else
                 Master = master;
-            m_Owner = ((ICom)this).Owner;
+
             Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
@@ -106,9 +114,9 @@ namespace XFrame.Modules.Containers
             return m_Owner.AddCom<T>(onReady);
         }
 
-        public ICom AddCom(ICom com, int id = 0, OnDataProviderReady onReady = null)
+        public ICom AddCom(ICom com)
         {
-            return m_Owner.AddCom(com, id, onReady);
+            return m_Owner.AddCom(com);
         }
 
         public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom

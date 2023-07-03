@@ -60,7 +60,7 @@ namespace XFrame.Modules.Containers
         /// </summary>
         /// <param name="com">组件实例</param>
         /// <returns>组件实例</returns>
-        ICom AddCom(ICom com, int id = default, OnDataProviderReady onReady = null);
+        ICom AddCom(ICom com);
 
         /// <summary>
         /// 添加一个组件
