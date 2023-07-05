@@ -148,5 +148,5 @@ namespace XFrame.Modules.StateMachine
             }
         }
         #endregion
-    }
-}
+    } 
+} 
