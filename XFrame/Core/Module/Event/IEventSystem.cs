@@ -38,11 +38,25 @@ namespace XFrame.Modules.Event
         void Listen(int eventId, XEventHandler handler);
 
         /// <summary>
+        /// 监听事件
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
+        /// <param name="handler">事件处理委托</param>
+        void Listen(int eventId, XEventHandler2 handler);
+
+        /// <summary>
         /// 移除事件监听
         /// </summary>
         /// <param name="eventId">事件Id</param>
         /// <param name="handler">需要移除的委托</param>
         void Unlisten(int eventId, XEventHandler handler);
+
+        /// <summary>
+        /// 移除事件监听
+        /// </summary>
+        /// <param name="eventId">事件Id</param>
+        /// <param name="handler">需要移除的委托</param>
+        void Unlisten(int eventId, XEventHandler2 handler);
 
         /// <summary>
         /// 移除事件的所有监听
