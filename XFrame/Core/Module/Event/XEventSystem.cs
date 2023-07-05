@@ -9,12 +9,14 @@ namespace XFrame.Modules.Event
     internal class XEventSystem : IEventSystem
     {
         private List<XEvent> m_WorkQueue;
+        private List<XEvent> m_UpdateQueue;
         private IPool<DefaultEvent> m_EventPool;
         private Dictionary<int, XEventHandler> m_Handlers;
 
         public XEventSystem()
         {
             m_WorkQueue = new List<XEvent>();
+            m_UpdateQueue = new List<XEvent>();
             m_Handlers = new Dictionary<int, XEventHandler>();
             m_EventPool = PoolModule.Inst.GetOrNew<DefaultEvent>();
         }
@@ -79,9 +81,11 @@ namespace XFrame.Modules.Event
             if (m_WorkQueue == null || m_WorkQueue.Count == 0)
                 return;
 
-            foreach (XEvent e in m_WorkQueue)
+            m_UpdateQueue.AddRange(m_WorkQueue);
+            foreach (XEvent e in m_UpdateQueue)
                 TriggerNow(e);
             m_WorkQueue.Clear();
+            m_UpdateQueue.Clear();
         }
 
         private void InnerReleaseDefault(XEvent e)
