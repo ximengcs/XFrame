@@ -9,6 +9,8 @@ namespace XFrame.Modules.Plots
     [Director(true)]
     public partial class BlockDirector : IDirector
     {
+        private const string NAME = "block_director";
+        private JsonArchive m_Archive;
         private StoryInfo m_Current;
         private Queue<StoryInfo> m_StoryQueue;
 
@@ -16,6 +18,8 @@ namespace XFrame.Modules.Plots
         {
             m_Current = null;
             m_StoryQueue = new Queue<StoryInfo>();
+            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(NAME);
+            InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
         void IDirector.OnUpdate()
@@ -43,6 +47,7 @@ namespace XFrame.Modules.Plots
 
                 case StoryState.Complete:
                     m_Current.Story.OnDestroy();
+                    Remove(m_Current.Story);
                     m_Current = null;
                     break;
             }
@@ -50,15 +55,29 @@ namespace XFrame.Modules.Plots
 
         void IDirector.OnDestory()
         {
-
+            m_Current = null;
+            m_StoryQueue = null;
         }
 
         public void Play(IStory story)
         {
-            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
+            PlotUtility.InnerRecordStoryState(m_Archive, story);
+            InnerPlay(story);
+        }
+
+        private void InnerPlay(IStory story)
+        {
+            string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
+            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(saveName);
             PlotDataProvider binder = new PlotDataProvider(archive);
             m_StoryQueue.Enqueue(new StoryInfo(story, binder));
             story.OnInit(binder);
+        }
+
+        private void InnerPlay(IStory[] stories)
+        {
+            foreach (IStory story in stories)
+                InnerPlay(story);
         }
 
         public void Play(IStory[] stories)
@@ -69,12 +88,12 @@ namespace XFrame.Modules.Plots
 
         public void Remove(IStory story)
         {
-
+            Remove(story.Name);
         }
 
         public void Remove(string storyName)
         {
-
+            PlotUtility.InnerRemoveStoryState(m_Archive, storyName);
         }
     }
 }

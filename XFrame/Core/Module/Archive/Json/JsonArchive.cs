@@ -16,6 +16,8 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Value Interface
+        public string Name { get; private set; }
+
         /// <summary>
         /// 设置int值
         /// </summary>
@@ -201,8 +203,9 @@ namespace XFrame.Modules.Archives
                 File.Delete(m_Path);
         }
 
-        void IArchive.OnInit(string path, object param)
+        void IArchive.OnInit(string path, string name, object param)
         {
+            Name = name;
             m_Path = path;
             if (File.Exists(m_Path))
             {

@@ -22,12 +22,15 @@ namespace XFrame.Modules.Event
             {
                 Handler1?.Invoke(e);
 
-                var list = Handler2.GetInvocationList();
-                foreach (Delegate dele in list)
+                if (Handler2 != null)
                 {
-                    XEventHandler2 handler = (XEventHandler2)dele;
-                    if (handler(e))
-                        Handler2 -= handler;
+                    var list = Handler2.GetInvocationList();
+                    foreach (Delegate dele in list)
+                    {
+                        XEventHandler2 handler = (XEventHandler2)dele;
+                        if (handler(e))
+                            Handler2 -= handler;
+                    }
                 }
             }
 

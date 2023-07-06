@@ -95,5 +95,14 @@ namespace XFrameTest
                 PlotModule.Inst.Helper.Event.Trigger(e);
             });
         }
+
+        [TestMethod]
+        public void Test2()
+        {
+            EntryTest.Exec(() =>
+            {
+
+            });
+        }
     }
 }

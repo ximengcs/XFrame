@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Module.Rand;
 using System.Collections.Generic;
-using XFrame.Modules.Archives;
 
 namespace XFrame.Modules.Plots
 {
@@ -103,7 +102,11 @@ namespace XFrame.Modules.Plots
         void IStory.OnDestroy()
         {
             m_Data.ClearData();
-            ArchiveModule.Inst.Delete(Name);
+        }
+
+        public Type[] GetSections()
+        {
+            return m_SectionTypes.ToArray();
         }
     }
 }

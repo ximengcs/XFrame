@@ -115,6 +115,15 @@ namespace XFrame.Modules.Archives
                 m_Archives.Remove(name);
             }
         }
+
+        public void Delete(IArchive archive)
+        {
+            if (m_Archives.ContainsKey(archive.Name))
+            {
+                archive.Delete();
+                m_Archives.Remove(archive.Name);
+            }
+        }
         #endregion
 
         #region Inner Implement
@@ -150,7 +159,7 @@ namespace XFrame.Modules.Archives
             else
             {
                 IArchive source = (IArchive)Activator.CreateInstance(archiveType);
-                source.OnInit(InnerGetPath(archiveType, name), param);
+                source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;
             }
