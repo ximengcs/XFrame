@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Collections;
 
 namespace XFrame.Core.Binder
@@ -44,16 +43,6 @@ namespace XFrame.Core.Binder
 
         private void InnerHandleChange(VT newValue)
         {
-            if (newValue != null)
-            {
-                if (newValue.Equals(Value))
-                    return;
-            }
-            else if (Value == null)
-            {
-                return;
-            }
-
             m_UpdateHandler?.Invoke(Value);
 
             XLinkNode<Func<T, bool>> node = m_CondUpdateHandler.First;

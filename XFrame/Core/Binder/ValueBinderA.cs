@@ -13,8 +13,8 @@ namespace XFrame.Core.Binder
         #region Inner Fields
         private Func<T> m_GetHandler;
         private Action<T> m_SetHandler;
-        private Action<T> m_UpdateHandler;
-        private XLinkList<Func<T, bool>> m_CondUpdateHandler;
+        private Action<T, T> m_UpdateHandler;
+        private XLinkList<Func<T, T, bool>> m_CondUpdateHandler;
         #endregion
 
         #region Constructor
@@ -27,7 +27,7 @@ namespace XFrame.Core.Binder
         {
             m_GetHandler = getHandler;
             m_SetHandler = setHandler;
-            m_CondUpdateHandler = new XLinkList<Func<T, bool>>();
+            m_CondUpdateHandler = new XLinkList<Func<T, T, bool>>();
         }
         #endregion
 
@@ -40,26 +40,28 @@ namespace XFrame.Core.Binder
             get { return m_GetHandler(); }
             set
             {
+                T oldValue = Value;
                 if (value != null)
                 {
-                    if (value.Equals(Value))
+                    if (value.Equals(oldValue))
                         return;
                 }
-                else if (Value == null)
+                else if (oldValue == null)
                 {
                     return;
                 }
 
                 m_SetHandler.Invoke(value);
-                m_UpdateHandler?.Invoke(Value);
+                T newValue = Value;
+                m_UpdateHandler?.Invoke(oldValue, newValue);
 
-                XLinkNode<Func<T, bool>> node = m_CondUpdateHandler.First;
+                XLinkNode<Func<T, T, bool>> node = m_CondUpdateHandler.First;
                 while (node != null)
                 {
-                    Func<T, bool> fun = node.Value;
-                    if (fun(Value))
+                    Func<T, T, bool> fun = node.Value;
+                    if (fun(oldValue, newValue))
                     {
-                        XLinkNode<Func<T, bool>> tmpNode = node.Next;
+                        XLinkNode<Func<T, T, bool>> tmpNode = node.Next;
                         node.Delete();
                         node = tmpNode;
                     }
@@ -87,20 +89,23 @@ namespace XFrame.Core.Binder
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
         /// <param name="atonceInvoke">是否立即执行</param>
-        public void AddHandler(Action<T> handler, bool atonceInvoke = false)
+        public void AddHandler(Action<T, T> handler, bool atonceInvoke = false)
         {
             if (handler == null)
                 return;
             m_UpdateHandler += handler;
             if (atonceInvoke)
-                handler.Invoke(Value);
+            {
+                T value = Value;
+                handler.Invoke(value, value);
+            }
         }
 
         /// <summary>
         /// 移除一个数值变更处理委托
         /// </summary>
         /// <param name="handler">要移除的委托</param>
-        public void RemoveHandler(Action<T> handler)
+        public void RemoveHandler(Action<T, T> handler)
         {
             if (handler == null)
                 return;
@@ -111,11 +116,12 @@ namespace XFrame.Core.Binder
         /// 添加一个带返回值的数值变更处理委托
         /// </summary>
         /// <param name="handler">需要添加的委托，当委托返回true时，在通知完后会移除掉该委托</param>
-        public void AddCondHandler(Func<T, bool> handler)
+        public void AddCondHandler(Func<T, T, bool> handler)
         {
             if (handler == null)
                 return;
-            if (!handler(Value))
+            T value = Value;
+            if (!handler(value, value))
                 m_CondUpdateHandler.AddLast(handler);
         }
 
@@ -123,7 +129,7 @@ namespace XFrame.Core.Binder
         /// 移除一个带返回值的数值变更处理委托
         /// </summary>
         /// <param name="handler">需要移除的委托</param>
-        public void RemoveCondHandler(Func<T, bool> handler)
+        public void RemoveCondHandler(Func<T, T, bool> handler)
         {
             if (handler == null)
                 return;
