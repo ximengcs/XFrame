@@ -56,6 +56,18 @@ namespace XFrame.Core
             return IndexOf(value) != -1;
         }
 
+        public T Get(int index)
+        {
+            int current = 0;
+            foreach (XLinkNode<T> node in Value)
+            {
+                if (index == current)
+                    return node.Value;
+                current++;
+            }
+            return default;
+        }
+
         public int IndexOf(object value, Func<object, object, bool> action)
         {
             int index = 0;

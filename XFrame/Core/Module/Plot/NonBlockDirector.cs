@@ -45,6 +45,7 @@ namespace XFrame.Modules.Plots
                     case StoryState.Complete:
                         item.Story.OnDestroy();
                         story.Delete();
+                        Remove(item.Story);
                         break;
                 }
             }

@@ -41,7 +41,7 @@ namespace XFrame.Core.Binder
             get { return m_GetHandler(); }
         }
 
-        private void InnerHandleChange(VT newValue)
+        private void InnerHandleChange(VT oldValue, VT newValue)
         {
             m_UpdateHandler?.Invoke(Value);
 
