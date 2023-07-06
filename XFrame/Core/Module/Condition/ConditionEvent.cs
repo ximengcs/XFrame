@@ -19,14 +19,18 @@ namespace XFrame.Modules.Conditions
         public int Target { get; private set; }
         public object Param { get; private set; }
 
-        internal ConditionEvent() : base(EventId) { }
-
         public static ConditionEvent Create(int target, object param)
         {
             ConditionEvent evt = PoolModule.Inst.GetOrNew<ConditionEvent>().Require();
             evt.Target = target;
             evt.Param = param;
             return evt;
+        }
+
+        protected internal override void OnRequestFromPool()
+        {
+            base.OnRequestFromPool();
+            Id = EventId;
         }
 
         protected internal override void OnReleaseFromPool()

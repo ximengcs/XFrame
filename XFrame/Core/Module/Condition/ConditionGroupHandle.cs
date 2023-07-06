@@ -12,11 +12,11 @@ namespace XFrame.Modules.Conditions
         private bool m_Complete;
         private Action<ConditionGroupHandle> m_CompleteEvent;
         private List<ConditionHandle> m_AllInfos;
-        private Dictionary<int, ConditionHandle> m_NotInfos;
+        private Dictionary<int, List<ConditionHandle>> m_NotInfos;
 
         public string Name => m_Name;
         public List<ConditionHandle> AllInfo => m_AllInfos;
-        public Dictionary<int, ConditionHandle> NotInfo => m_NotInfos;
+        public Dictionary<int, List<ConditionHandle>> NotInfo => m_NotInfos;
 
         internal ConditionGroupHandle(string name, ArrayParser<PairParser<IntParser, UniversalParser>> parser, Action<ConditionGroupHandle> completeCallback = null)
         {
@@ -24,7 +24,7 @@ namespace XFrame.Modules.Conditions
             m_Complete = false;
             m_CompleteEvent = completeCallback;
             m_AllInfos = new List<ConditionHandle>();
-            m_NotInfos = new Dictionary<int, ConditionHandle>();
+            m_NotInfos = new Dictionary<int, List<ConditionHandle>>();
 
             var list = parser.Value;
             foreach (var node in list)
@@ -33,7 +33,12 @@ namespace XFrame.Modules.Conditions
                 m_AllInfos.Add(info);
                 if (!ConditionModule.Inst.InnerCheckFinish(info))
                 {
-                    m_NotInfos.Add(info.Target, info);
+                    if (!m_NotInfos.TryGetValue(info.Target, out List<ConditionHandle> conds))
+                    {
+                        conds = new List<ConditionHandle>();
+                        m_NotInfos.Add(info.Target, conds);
+                    }
+                    conds.Add(info);
                 }
             }
             ConditionModule.Inst.Event.Listen(ConditionEvent.EventId, InnerTriggerHandler);
@@ -43,13 +48,17 @@ namespace XFrame.Modules.Conditions
         private void InnerTriggerHandler(XEvent e)
         {
             ConditionEvent evt = (ConditionEvent)e;
-            if (m_NotInfos.TryGetValue(evt.Target, out ConditionHandle handle))
+            if (m_NotInfos.TryGetValue(evt.Target, out List<ConditionHandle> handles))
             {
-                if (ConditionModule.Inst.InnerCheckCompare(handle, evt.Param))
+                for (int i = handles.Count - 1; i >= 0; i--)
                 {
-                    m_NotInfos.Remove(evt.Target);
-                    InnerCheckComplete();
+                    ConditionHandle handle = handles[i];
+                    if (ConditionModule.Inst.InnerCheckCompare(handle, evt.Param))
+                        handles.RemoveAt(i);
                 }
+                if (handles.Count == 0)
+                    m_NotInfos.Remove(evt.Target);
+                InnerCheckComplete();
             }
         }
 
