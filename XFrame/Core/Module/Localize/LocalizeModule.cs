@@ -55,7 +55,7 @@ namespace XFrame.Modules.Local
                     Language oldLang = m_Language;
                     m_Language = value;
                     m_Index = InnerGetLangIndex(m_Language);
-                    m_Event.Trigger(new LanguageChangeEvent(oldLang, m_Language));
+                    m_Event.Trigger(LanguageChangeEvent.Create(oldLang, m_Language));
                 }
             }
         }

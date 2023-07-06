@@ -89,9 +89,7 @@ namespace XFrame.Modules.Event
 
         public void Trigger(int eventId)
         {
-            DefaultEvent evt = References.Require<DefaultEvent>();
-            evt.SetId(eventId);
-            Trigger(evt);
+            Trigger(DefaultEvent.Create(eventId));
         }
 
         public void Trigger(XEvent e)
@@ -101,9 +99,7 @@ namespace XFrame.Modules.Event
 
         public void TriggerNow(int eventId)
         {
-            DefaultEvent evt = References.Require<DefaultEvent>();
-            evt.SetId(eventId);
-            TriggerNow(evt);
+            TriggerNow(DefaultEvent.Create(eventId));
         }
 
         public void TriggerNow(XEvent e)

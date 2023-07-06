@@ -83,16 +83,14 @@ namespace XFrameTest
                     PlotModule.Inst.NewStory("story1").AddSection(typeof(Section1)),
                     PlotModule.Inst.NewStory("story2").AddSection(typeof(Section1))
                 };
-                NewStoryEvent e = new NewStoryEvent(stories);
-                PlotModule.Inst.Helper.Event.Trigger(e);
+                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories));
 
                 stories = new IStory[]
                 {
                     PlotModule.Inst.NewStory("story3").AddSection(typeof(Section2)),
                     PlotModule.Inst.NewStory("story4").AddSection(typeof(Section2))
                 };
-                e = new NewStoryEvent(stories, typeof(NonBlockDirector));
-                PlotModule.Inst.Helper.Event.Trigger(e);
+                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories, typeof(NonBlockDirector)));
             });
         }
 
