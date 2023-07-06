@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Collections;
 using System.Xml.Linq;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Archives
 {
@@ -30,7 +31,7 @@ namespace XFrame.Modules.Archives
             if (File.Exists(m_Path))
             {
                 string text = ArchiveUtility.ReadText(m_Path);
-                m_Csv = new Csv<string>(text, ParserModule.Inst.STRING);
+                m_Csv = new Csv<string>(text, References.Require<StringParser>());
             }
             else
             {

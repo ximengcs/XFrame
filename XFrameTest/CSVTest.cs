@@ -1,5 +1,6 @@
 ﻿using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Modules.Pools;
 
 namespace XFrameTest
 {
@@ -12,7 +13,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 string text = ",1,,2,3,4";
-                Csv<string> csv = new Csv<string>(text, ParserModule.Inst.STRING);
+                Csv<string> csv = new Csv<string>(text, References.Require<StringParser>());
                 Console.WriteLine(csv.ToString());
             });
         }
@@ -30,7 +31,7 @@ namespace XFrameTest
                 line2[0] = "20"; line2[2] = "22"; line2[3] = "23";
                 Console.WriteLine(csv);
 
-                Csv<string> csv3 = new Csv<string>(csv.ToString(), ParserModule.Inst.STRING);
+                Csv<string> csv3 = new Csv<string>(csv.ToString(), References.Require<StringParser>());
                 Console.WriteLine(csv3.ToString());
             });
         }
@@ -41,7 +42,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 string csvFile = "1,2,3\n4,5,6";
-                Csv<string> csv = new Csv<string>(csvFile, ParserModule.Inst.STRING);
+                Csv<string> csv = new Csv<string>(csvFile, References.Require<StringParser>());
                 Console.Write("Row " + csv.Row);
                 foreach (var line in csv)
                 {

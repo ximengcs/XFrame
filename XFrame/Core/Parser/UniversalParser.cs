@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -18,6 +19,8 @@ namespace XFrame.Core
         public bool BoolValue => m_BoolValue;
 
         object IParser.Value => m_Value;
+
+        int IPoolObject.PoolKey => default;
 
         public T GetOrAddParser<T>() where T : IParser
         {
@@ -109,9 +112,19 @@ namespace XFrame.Core
         public string Parse(string pattern)
         {
             m_Value = pattern;
-            m_IntValue = ParserModule.Inst.INT.Parse(m_Value);
-            m_FloatValue = ParserModule.Inst.FLOAT.Parse(m_Value);
-            m_BoolValue = ParserModule.Inst.BOOL.Parse(m_Value);
+
+            IntParser p1 = References.Require<IntParser>();
+            FloatParser p2 = References.Require<FloatParser>();
+            BoolParser p3 = References.Require<BoolParser>();
+
+            m_IntValue = p1.Parse(m_Value);
+            m_FloatValue = p2.Parse(m_Value);
+            m_BoolValue = p3.Parse(m_Value);
+
+            References.Release(p1);
+            References.Release(p2);
+            References.Release(p3);
+
             return m_Value;
         }
 
@@ -134,6 +147,32 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            foreach (var item in m_Parsers)
+                References.Release(item.Value);
+            m_Parsers.Clear();
+            m_Value = default;
+            m_IntValue = default;
+            m_FloatValue = default;
+            m_BoolValue = default;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(UniversalParser src, object tar)

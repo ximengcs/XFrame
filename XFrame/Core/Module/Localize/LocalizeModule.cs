@@ -5,6 +5,7 @@ using XFrame.Modules.Event;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using System.Reflection;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Local
 {
@@ -219,7 +220,7 @@ namespace XFrame.Modules.Local
         private void InnerInit(string csvText)
         {
             m_IdMap = new Dictionary<int, int>();
-            m_Data = new Csv<string>(csvText, ParserModule.Inst.STRING);
+            m_Data = new Csv<string>(csvText, References.Require<StringParser>());
             m_Title = new ArrayParser<EnumParser<Language>>();
             m_Title.Parse(m_Data.Get(1));
 

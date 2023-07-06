@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
 
 namespace XFrame.Core
@@ -10,6 +10,8 @@ namespace XFrame.Core
         public T Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public T Parse(string pattern)
         {
@@ -22,12 +24,17 @@ namespace XFrame.Core
                 }
             }
 
+            InnerSetDefault();
+            return Value;
+        }
+
+        private void InnerSetDefault()
+        {
             DefaultValueAttribute attr = TypeModule.Inst.GetAttribute<DefaultValueAttribute>(typeof(T));
             if (attr != null)
                 Value = (T)attr.Value;
             else
                 Value = default;
-            return Value;
         }
 
         object IParser.Parse(string pattern)
@@ -49,6 +56,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            InnerSetDefault();
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(EnumParser<T> src, object tar)

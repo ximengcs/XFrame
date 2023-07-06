@@ -1,5 +1,4 @@
-﻿
-using XFrame.Modules.Diagnotics;
+﻿using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -8,6 +7,8 @@ namespace XFrame.Core
         public bool Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public bool Parse(string pattern)
         {
@@ -40,6 +41,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            Value = false;
+        }
+
+        void IPoolObject.OnDelete()
+        {
+            
         }
 
         public static bool operator ==(BoolParser src, object tar)

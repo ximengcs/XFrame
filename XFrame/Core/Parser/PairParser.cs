@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -31,6 +32,8 @@ namespace XFrame.Core
         public Pair<K, V> Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => throw new NotImplementedException();
 
         public Pair<K, V> Parse(string pattern)
         {
@@ -66,6 +69,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            m_Split = SPLIT;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(PairParser<K, V> src, object tar)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using XFrame.Collections;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -12,6 +13,8 @@ namespace XFrame.Core
         public XLinkList<T> Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public ArrayParser()
         {
@@ -26,7 +29,7 @@ namespace XFrame.Core
         public XLinkList<T> Parse(string pattern)
         {
             string[] pArray = pattern.Split(m_Split);
-            Value = new XLinkList<T>(false);
+            Value = new XLinkList<T>();
             Type type = typeof(T);
             for (int i = 0; i < pArray.Length; i++)
             {
@@ -116,6 +119,27 @@ namespace XFrame.Core
                     return false;
             }
             return true;
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            m_Split = SPLIT;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            Value.Clear();
+        }
+
+        void IPoolObject.OnDelete()
+        {
+            Value.Clear();
+            Value = null;
         }
     }
 }

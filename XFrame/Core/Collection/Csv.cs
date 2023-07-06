@@ -209,6 +209,7 @@ namespace XFrame.Collections
                 }
                 rows.Add(line);
 
+                References.Release(parser);
                 csvDataReader.Dispose();
                 csvReader.Dispose();
             }
