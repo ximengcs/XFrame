@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
@@ -40,8 +41,17 @@ namespace XFrame.Core
         {
             if (parser != null)
             {
+                Type type = typeof(T);
                 parser.Parse(m_Value);
-                m_Parsers.Add(typeof(T), parser);
+                if (m_Parsers.TryGetValue(type, out IParser oldParser))
+                {
+                    Log.Warning("XFrame", $"Universal parser already has parser {type.Name}.");
+                    m_Parsers[type] = parser;
+                }
+                else
+                {
+                    m_Parsers.Add(type, parser);
+                }
             }
             return parser;
         }
