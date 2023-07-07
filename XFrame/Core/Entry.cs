@@ -50,7 +50,7 @@ namespace XFrame.Core
 
             if (handler != null)
             {
-                handler.BeforeHandle()
+                handler.BeforeHandle() 
                        .OnComplete(() =>
                        {
                            InnerInit<CoreModuleAttribute>(m_Core);

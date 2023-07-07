@@ -177,7 +177,12 @@ namespace XFrame.Core
 
         private IModule InnerAddModule(Type moduleType, object data)
         {
-            IModule module = (IModule)TypeModule.Inst.CreateInstance(moduleType);
+            IModule module;
+            if (TypeModule.Inst != null)
+                module = (IModule)TypeModule.Inst.CreateInstance(moduleType);
+            else
+                module = (IModule)Activator.CreateInstance(moduleType);
+
             InnerInitModule(module, data);
             return module;
         }
