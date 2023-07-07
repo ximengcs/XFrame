@@ -124,6 +124,15 @@ namespace XFrame.Modules.Archives
                 m_Archives.Remove(archive.Name);
             }
         }
+
+        public void DeleteAll()
+        {
+            foreach (IArchive archive in m_Archives.Values)
+            {
+                archive.Delete();
+            }
+            m_Archives.Clear();
+        }
         #endregion
 
         #region Inner Implement

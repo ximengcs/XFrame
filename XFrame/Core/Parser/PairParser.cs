@@ -11,6 +11,12 @@ namespace XFrame.Core
         private IParser m_KParser;
         private IParser m_VParser;
 
+        public char Split
+        {
+            get => m_Split;
+            set => m_Split = value;
+        }
+
         public PairParser()
         {
             m_Split = SPLIT;
@@ -34,7 +40,7 @@ namespace XFrame.Core
 
         object IParser.Value => Value;
 
-        int IPoolObject.PoolKey => throw new NotImplementedException();
+        int IPoolObject.PoolKey => default;
 
         public Pair<K, V> Parse(string pattern)
         {

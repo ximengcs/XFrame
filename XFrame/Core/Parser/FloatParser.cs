@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Pools;
+﻿using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -16,6 +17,8 @@ namespace XFrame.Core
                 return default;
             if (float.TryParse(pattern, out float result))
                 Value = result;
+            else
+                Log.Warning("XFrame", $"FloatParser parse failure. {pattern}");
 
             return Value;
         }

@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Pools;
+﻿using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -18,6 +19,8 @@ namespace XFrame.Core
                 Value = result;
             else if (int.TryParse(pattern, out int intResult))
                 Value = intResult != 0 ? true : false;
+            else
+                Log.Warning("XFrame", $"BoolParser parse failure. {pattern}");
 
             return Value;
         }

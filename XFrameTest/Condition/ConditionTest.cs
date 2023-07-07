@@ -23,7 +23,6 @@ namespace XFrameTest.Condition
                 PairParser<IntParser, IntParser> valuePairParser = new PairParser<IntParser, IntParser>(';');
                 Pair<IntParser, IntParser> valuePair = pair.Value.AddParser(valuePairParser);
                 Log.Debug(valuePair.Key + " " + valuePair.Value);
-                ConditionModule.Inst.AddHelper(new ConditionHelper());
                 //ConditionModule.Inst.Register(name1, cond1).OnComplete((handle) =>
                 //{
                 //    Log.Debug($"{handle.Name} complete");

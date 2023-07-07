@@ -101,7 +101,7 @@ namespace XFrame.Core
 
         object IParser.Value => m_Value;
 
-        int IPoolObject.PoolKey => throw new NotImplementedException();
+        int IPoolObject.PoolKey => default;
 
         public ValueTuple<T1, T2> Parse(string pattern)
         {

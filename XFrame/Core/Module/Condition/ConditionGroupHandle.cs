@@ -31,13 +31,15 @@ namespace XFrame.Modules.Conditions
             if (m_Helper != null && m_Helper.CheckFinish(setting.Name))
             {
                 m_Complete = true;
+                m_CompleteEvent?.Invoke(this);
+                m_CompleteEvent = null;
             }
             else
             {
                 var list = setting.Condition.Value;
                 foreach (var node in list)
                 {
-                    ConditionHandle info = new ConditionHandle(node.Value);
+                    ConditionHandle info = new ConditionHandle(this, node.Value);
                     m_AllInfos.Add(info);
                     if (!ConditionModule.Inst.InnerCheckFinish(info))
                     {
@@ -50,9 +52,8 @@ namespace XFrame.Modules.Conditions
                     }
                 }
                 ConditionModule.Inst.Event.Listen(ConditionEvent.EventId, InnerTriggerHandler);
+                InnerCheckComplete();
             }
-
-            InnerCheckComplete();
         }
 
         private void InnerTriggerHandler(XEvent e)
@@ -74,7 +75,7 @@ namespace XFrame.Modules.Conditions
 
         private void InnerCheckComplete()
         {
-            if (m_NotInfos.Count == 0 || m_Complete)
+            if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
                 m_Helper?.MarkFinish(m_Setting.Name);

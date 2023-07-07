@@ -40,7 +40,7 @@ namespace XFrame.Core
             m_Base = XCore.Create();
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
-            m_Base.Register(Activator.CreateInstance<TypeModule>());
+            m_Base.Register(typeof(TypeModule));
 
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
@@ -50,7 +50,7 @@ namespace XFrame.Core
 
             if (handler != null)
             {
-                handler.BeforeHandle() 
+                handler.BeforeHandle()
                        .OnComplete(() =>
                        {
                            InnerInit<CoreModuleAttribute>(m_Core);

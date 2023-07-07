@@ -32,6 +32,13 @@ namespace XFrame.Modules.Conditions
                 IConditionCompare compare = (IConditionCompare)TypeModule.Inst.CreateInstance(type);
                 m_Compares.Add(compare.Target, compare);
             }
+
+            typeSys = TypeModule.Inst.GetOrNew<IConditionHelper>();
+            foreach (Type type in typeSys)
+            {
+                IConditionHelper helper = (IConditionHelper)TypeModule.Inst.CreateInstance(type);
+                m_Helpers.Add(helper.Type, helper);
+            }
         }
 
         public ConditionGroupHandle Get(string name)
@@ -45,6 +52,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
                 return group;
+            Log.Debug("Condition", $"Register {setting.Name} : {setting.Condition}");
             m_Helpers.TryGetValue(setting.UseHelper, out IConditionHelper helper);
             group = new ConditionGroupHandle(setting, helper, InnerGroupCompleteHandler);
             m_Groups.Add(setting.Name, group);
@@ -55,6 +63,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
             {
+                Log.Debug("Condition", $"UnRegister {name} : {handle.Setting.Condition}");
                 m_Groups.Remove(handle.Name);
                 handle.Dispose();
             }
@@ -67,32 +76,13 @@ namespace XFrame.Modules.Conditions
 
         private void InnerGroupCompleteHandler(ConditionGroupHandle group)
         {
+            Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Condition}");
             ConditionSetting setting = group.Setting;
             if (setting.AutoRemove)
             {
                 m_Groups.Remove(group.Name);
                 group.Dispose();
             }
-        }
-
-        public void AddHelper(IConditionHelper helper)
-        {
-            InnerAddHelper(helper);
-        }
-
-        public void AddHelper<T>() where T : IConditionHelper
-        {
-            InnerAddHelper(TypeModule.Inst.CreateInstance<T>());
-        }
-
-        public void AddHelper(Type type)
-        {
-            InnerAddHelper((IConditionHelper)TypeModule.Inst.CreateInstance(type));
-        }
-
-        private void InnerAddHelper(IConditionHelper helper)
-        {
-            m_Helpers.Add(helper.Type, helper);
         }
 
         internal bool InnerCheckFinish(ConditionHandle info)
