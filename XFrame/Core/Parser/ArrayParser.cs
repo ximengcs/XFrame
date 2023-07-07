@@ -2,6 +2,7 @@
 using System.Text;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -33,7 +34,7 @@ namespace XFrame.Core
             Type type = typeof(T);
             for (int i = 0; i < pArray.Length; i++)
             {
-                T parser = (T)Activator.CreateInstance(type);
+                T parser = (T)TypeModule.Inst.CreateInstance(type);
                 parser.Parse(pArray[i]);
                 Value.AddLast(parser);
             }

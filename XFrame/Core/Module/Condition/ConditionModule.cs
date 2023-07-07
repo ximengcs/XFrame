@@ -11,7 +11,7 @@ namespace XFrame.Modules.Conditions
     public class ConditionModule : SingletonModule<ConditionModule>
     {
         private IEventSystem m_Event;
-        private IConditionHelper m_Helper;
+        private Dictionary<int, IConditionHelper> m_Helpers;
         private Dictionary<int, IConditionCompare> m_Compares;
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
@@ -24,22 +24,30 @@ namespace XFrame.Modules.Conditions
             m_Event = EventModule.Inst.NewSys();
             m_Compares = new Dictionary<int, IConditionCompare>();
             m_Groups = new Dictionary<string, ConditionGroupHandle>();
+            m_Helpers = new Dictionary<int, IConditionHelper>();
 
             TypeSystem typeSys = TypeModule.Inst.GetOrNew<IConditionCompare>();
             foreach (Type type in typeSys)
             {
-                IConditionCompare compare = (IConditionCompare)Activator.CreateInstance(type);
+                IConditionCompare compare = (IConditionCompare)TypeModule.Inst.CreateInstance(type);
                 m_Compares.Add(compare.Target, compare);
             }
         }
 
-        public ConditionGroupHandle Register(string name, ArrayParser<PairParser<IntParser, UniversalParser>> conditions)
+        public ConditionGroupHandle Get(string name)
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle group))
                 return group;
+            return default;
+        }
 
-            group = new ConditionGroupHandle(name, conditions, InnerGroupCompleteHandler);
-            m_Groups.Add(name, group);
+        public ConditionGroupHandle Register(ConditionSetting setting)
+        {
+            if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
+                return group;
+            m_Helpers.TryGetValue(setting.UseHelper, out IConditionHelper helper);
+            group = new ConditionGroupHandle(setting, helper, InnerGroupCompleteHandler);
+            m_Groups.Add(setting.Name, group);
             return group;
         }
 
@@ -59,25 +67,32 @@ namespace XFrame.Modules.Conditions
 
         private void InnerGroupCompleteHandler(ConditionGroupHandle group)
         {
-            if (m_Helper != null)
+            ConditionSetting setting = group.Setting;
+            if (setting.AutoRemove)
             {
-                if (!m_Helper.CheckFinish(group.Name))
-                    m_Helper.MarkFinish(group.Name);
+                m_Groups.Remove(group.Name);
+                group.Dispose();
             }
-            m_Groups.Remove(group.Name);
-            group.Dispose();
         }
 
-        public void SetHelper(IConditionHelper helper)
+        public void AddHelper(IConditionHelper helper)
         {
-            m_Helper = helper;
+            InnerAddHelper(helper);
         }
 
-        public bool CheckFinish(string groupName)
+        public void AddHelper<T>() where T : IConditionHelper
         {
-            if (m_Helper != null)
-                return m_Helper.CheckFinish(groupName);
-            return false;
+            InnerAddHelper(TypeModule.Inst.CreateInstance<T>());
+        }
+
+        public void AddHelper(Type type)
+        {
+            InnerAddHelper((IConditionHelper)TypeModule.Inst.CreateInstance(type));
+        }
+
+        private void InnerAddHelper(IConditionHelper helper)
+        {
+            m_Helpers.Add(helper.Type, helper);
         }
 
         internal bool InnerCheckFinish(ConditionHandle info)

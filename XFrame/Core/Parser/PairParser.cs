@@ -1,5 +1,6 @@
 ﻿using System;
 using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -24,8 +25,8 @@ namespace XFrame.Core
 
         private void InnerInitParser()
         {
-            m_KParser = (IParser)Activator.CreateInstance(typeof(K));
-            m_VParser = (IParser)Activator.CreateInstance(typeof(V));
+            m_KParser = (IParser)TypeModule.Inst.CreateInstance(typeof(K));
+            m_VParser = (IParser)TypeModule.Inst.CreateInstance(typeof(V));
             Value = new Pair<K, V>((K)m_KParser, (V)m_VParser);
         }
 

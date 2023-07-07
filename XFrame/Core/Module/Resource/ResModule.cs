@@ -36,7 +36,7 @@ namespace XFrame.Modules.Resource
 
         protected IResourceHelper InnerSetHelper(Type type)
         {
-            m_ResHelper = Activator.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = TypeModule.Inst.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }

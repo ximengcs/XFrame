@@ -158,7 +158,7 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)Activator.CreateInstance(archiveType);
+                IArchive source = (IArchive)TypeModule.Inst.CreateInstance(archiveType);
                 source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;

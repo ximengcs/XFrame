@@ -2,6 +2,7 @@
 using XFrame.Core;
 using System.Collections.Generic;
 using XFrame.Module.Rand;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.StateMachine
 {
@@ -111,7 +112,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState<T>> states = new List<FsmState<T>>(types.Length);
             foreach (Type type in types)
             {
-                FsmState<T> state = (FsmState<T>)Activator.CreateInstance(type);
+                FsmState<T> state = (FsmState<T>)TypeModule.Inst.CreateInstance(type);
                 states.Add(state);
             }
 
@@ -127,7 +128,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState> states = new List<FsmState>(types.Length);
             foreach (Type type in types)
             {
-                FsmState state = (FsmState)Activator.CreateInstance(type);
+                FsmState state = (FsmState)TypeModule.Inst.CreateInstance(type);
                 states.Add(state);
             }
 

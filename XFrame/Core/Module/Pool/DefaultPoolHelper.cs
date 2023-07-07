@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Pools
 {
@@ -8,7 +9,7 @@ namespace XFrame.Modules.Pools
 
         IPoolObject IPoolHelper.Factory(Type type, int poolKey, object userData)
         {
-            return (IPoolObject)Activator.CreateInstance(type);
+            return (IPoolObject)TypeModule.Inst.CreateInstance(type);
         }
 
         void IPoolHelper.OnObjectCreate(IPoolObject obj)

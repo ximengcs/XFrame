@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Module.Rand;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Plots
 {
@@ -89,7 +90,7 @@ namespace XFrame.Modules.Plots
                 }
                 else
                 {
-                    ISection section = (ISection)Activator.CreateInstance(type);
+                    ISection section = (ISection)TypeModule.Inst.CreateInstance(type);
                     m_Current = new SectionInfo(section, SectionState.WaitInit);
                 }
             }

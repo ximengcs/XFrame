@@ -1,47 +1,57 @@
 ﻿using System;
-using XFrame.Core;
 using XFrame.Modules.Event;
 using System.Collections.Generic;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Conditions
 {
     public class ConditionGroupHandle
     {
-        private string m_Name;
         private bool m_Complete;
-        private Action<ConditionGroupHandle> m_CompleteEvent;
+        private IConditionHelper m_Helper;
+        private ConditionSetting m_Setting;
         private List<ConditionHandle> m_AllInfos;
+        private Action<ConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<ConditionHandle>> m_NotInfos;
 
-        public string Name => m_Name;
+        public string Name => m_Setting.Name;
+        public bool Complete => m_Complete;
+        public ConditionSetting Setting => m_Setting;
         public List<ConditionHandle> AllInfo => m_AllInfos;
         public Dictionary<int, List<ConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(string name, ArrayParser<PairParser<IntParser, UniversalParser>> parser, Action<ConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<ConditionGroupHandle> completeCallback = null)
         {
-            m_Name = name;
+            m_Setting = setting;
             m_Complete = false;
+            m_Helper = helper;
             m_CompleteEvent = completeCallback;
             m_AllInfos = new List<ConditionHandle>();
             m_NotInfos = new Dictionary<int, List<ConditionHandle>>();
 
-            var list = parser.Value;
-            foreach (var node in list)
+            if (m_Helper != null && m_Helper.CheckFinish(setting.Name))
             {
-                ConditionHandle info = new ConditionHandle(node.Value);
-                m_AllInfos.Add(info);
-                if (!ConditionModule.Inst.InnerCheckFinish(info))
-                {
-                    if (!m_NotInfos.TryGetValue(info.Target, out List<ConditionHandle> conds))
-                    {
-                        conds = new List<ConditionHandle>();
-                        m_NotInfos.Add(info.Target, conds);
-                    }
-                    conds.Add(info);
-                }
+                m_Complete = true;
             }
-            ConditionModule.Inst.Event.Listen(ConditionEvent.EventId, InnerTriggerHandler);
+            else
+            {
+                var list = setting.Condition.Value;
+                foreach (var node in list)
+                {
+                    ConditionHandle info = new ConditionHandle(node.Value);
+                    m_AllInfos.Add(info);
+                    if (!ConditionModule.Inst.InnerCheckFinish(info))
+                    {
+                        if (!m_NotInfos.TryGetValue(info.Target, out List<ConditionHandle> conds))
+                        {
+                            conds = new List<ConditionHandle>();
+                            m_NotInfos.Add(info.Target, conds);
+                        }
+                        conds.Add(info);
+                    }
+                }
+                ConditionModule.Inst.Event.Listen(ConditionEvent.EventId, InnerTriggerHandler);
+            }
+
             InnerCheckComplete();
         }
 
@@ -64,9 +74,10 @@ namespace XFrame.Modules.Conditions
 
         private void InnerCheckComplete()
         {
-            if (m_NotInfos.Count == 0)
+            if (m_NotInfos.Count == 0 || m_Complete)
             {
                 m_Complete = true;
+                m_Helper?.MarkFinish(m_Setting.Name);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }

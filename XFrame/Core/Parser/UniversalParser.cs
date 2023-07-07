@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -64,7 +65,7 @@ namespace XFrame.Core
             Type type = typeof(T);
             if (!m_Parsers.TryGetValue(typeof(T), out IParser parser))
             {
-                parser = (IParser)Activator.CreateInstance(type);
+                parser = (IParser)TypeModule.Inst.CreateInstance(type);
                 parser.Parse(m_Value);
                 m_Parsers.Add(type, parser);
             }

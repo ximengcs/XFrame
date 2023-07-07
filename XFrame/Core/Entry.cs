@@ -40,8 +40,8 @@ namespace XFrame.Core
             m_Base = XCore.Create();
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
+            m_Base.Register(Activator.CreateInstance<TypeModule>());
 
-            m_Base.Register<TypeModule>();
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
             handler.EnterHandle();
@@ -151,7 +151,7 @@ namespace XFrame.Core
             {
                 if (handType == typeof(IEntryHandler))
                     continue;
-                m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
+                m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
             }
         }
 
@@ -216,7 +216,7 @@ namespace XFrame.Core
                 {
                     if (handType == typeof(IEntryHandler))
                         continue;
-                    m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
+                    m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
                 }
             }
         }

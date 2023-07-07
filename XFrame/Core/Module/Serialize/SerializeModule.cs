@@ -82,7 +82,7 @@ namespace XFrame.Modules.Serialize
 
         private void InnerInit(Type type)
         {
-            ISerializeHelper helper = Activator.CreateInstance(type) as ISerializeHelper;
+            ISerializeHelper helper = TypeModule.Inst.CreateInstance(type) as ISerializeHelper;
             m_Helpers.Add(helper.HandleType, helper);
         }
     }

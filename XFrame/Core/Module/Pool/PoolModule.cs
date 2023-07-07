@@ -28,7 +28,7 @@ namespace XFrame.Modules.Pools
                 if (helperType.IsAssignableFrom(type))
                 {
                     PoolHelperAttribute attr = TypeModule.Inst.GetAttribute<PoolHelperAttribute>(type);
-                    IPoolHelper helper = Activator.CreateInstance(type) as IPoolHelper;
+                    IPoolHelper helper = TypeModule.Inst.CreateInstance(type) as IPoolHelper;
                     InnerGetOrNew(attr.Target, helper);
                 }
             }
@@ -75,7 +75,7 @@ namespace XFrame.Modules.Pools
                     helper = new DefaultPoolHelper();
                 Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
                 m_ParamCache[0] = helper;
-                pool = Activator.CreateInstance(poolType, m_ParamCache) as IPool;
+                pool = TypeModule.Inst.CreateInstance(poolType, m_ParamCache) as IPool;
                 m_PoolContainers.Add(objType, pool);
             }
 

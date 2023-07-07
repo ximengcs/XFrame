@@ -24,7 +24,7 @@ namespace XFrame.Modules.Datas
             {
                 Type type = TypeModule.Inst.GetType(XConfig.DefaultDataTableHelper);
                 if (type != null)
-                    m_Helper = (IDataHelper)Activator.CreateInstance(type);
+                    m_Helper = (IDataHelper)TypeModule.Inst.CreateInstance(type);
             }
 
             if (m_Helper == null)

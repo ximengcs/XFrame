@@ -37,7 +37,7 @@ namespace XFrame.Modules.Crypto
         /// <returns>加密器</returns>
         public ICryptor New(string keyStr, string ivStr)
         {
-            ICryptor cryptor = (ICryptor)Activator.CreateInstance(m_Type);
+            ICryptor cryptor = (ICryptor)TypeModule.Inst.CreateInstance(m_Type);
             cryptor.OnInit(keyStr, ivStr);
             return cryptor;
         }
@@ -48,7 +48,7 @@ namespace XFrame.Modules.Crypto
         /// <returns>加密器</returns>
         public ICryptor New()
         {
-            ICryptor cryptor = (ICryptor)Activator.CreateInstance(m_Type);
+            ICryptor cryptor = (ICryptor)TypeModule.Inst.CreateInstance(m_Type);
             cryptor.OnInit(DEFAULT_KEY, DEFAULT_IV);
             return cryptor;
         }

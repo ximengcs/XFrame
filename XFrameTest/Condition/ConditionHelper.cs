@@ -13,6 +13,8 @@ namespace XFrameTest.Condition
             m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>("condition_persist");
         }
 
+        public int Type => 0;
+
         public bool CheckFinish(string groupName)
         {
             return m_Archive.GetBool(groupName);

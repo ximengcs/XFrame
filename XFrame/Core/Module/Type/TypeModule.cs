@@ -4,6 +4,7 @@ using System.Reflection;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
 using XFrame.Modules.ID;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.XType
 {
@@ -20,6 +21,7 @@ namespace XFrame.Modules.XType
         private Dictionary<Type, Attribute[]> m_TypesAllAttrs;
         private Dictionary<Type, List<Type>> m_TypesWithAttrs;
         private Dictionary<Type, TypeSystem> m_ClassRegister;
+        private Dictionary<Type, ConstructorInfo[]> m_Constructors;
         #endregion
 
         #region Life Fun
@@ -48,6 +50,7 @@ namespace XFrame.Modules.XType
             m_Module = nameof(XFrame);
             m_TypesAllAttrs = new Dictionary<Type, Attribute[]>();
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
+            m_Constructors = new Dictionary<Type, ConstructorInfo[]>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
             List<Type> tmpList = new List<Type>(short.MaxValue);
             foreach (Assembly assembly in m_Assemblys)
@@ -99,6 +102,65 @@ namespace XFrame.Modules.XType
         #endregion
 
         #region Interface
+        public T CreateInstance<T>(params object[] args)
+        {
+            return (T)InnerCreateInstance(typeof(T), args);
+        }
+
+        public object CreateInstance(Type type, params object[] args)
+        {
+            return InnerCreateInstance(type, args);
+        }
+
+        public object CreateInstance(string typeName, params object[] args)
+        {
+            Type type = GetType(typeName);
+            if (type == null)
+                return null;
+            return InnerCreateInstance(type, args);
+        }
+
+        private object InnerCreateInstance(Type type, params object[] args)
+        {
+            object instance = default;
+            if (!m_Constructors.TryGetValue(type, out ConstructorInfo[] ctors))
+            {
+                ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                m_Constructors.Add(type, ctors);
+            }
+
+            foreach (ConstructorInfo ctor in ctors)
+            {
+                ParameterInfo[] paramInfos = ctor.GetParameters();
+                if (args.Length == paramInfos.Length)
+                {
+                    int i = 0;
+                    while (i < paramInfos.Length)
+                    {
+                        Type argType = args[i].GetType();
+                        Type paramType = paramInfos[i].ParameterType;
+                        if (argType != paramType && !paramType.IsAssignableFrom(argType))
+                        {
+                            break;
+                        }
+                        i++;
+                    }
+
+                    if (i == paramInfos.Length)
+                    {
+                        instance = ctor.Invoke(args);
+                        break;
+                    }
+                }
+            }
+
+            if (instance == null)
+            {
+                Log.Error("XFrame", $"Create instance failure, {type.FullName}");
+            }
+            return instance;
+        }
+
         /// <summary>
         /// 加载程序集
         /// </summary>
