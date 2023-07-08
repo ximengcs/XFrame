@@ -29,14 +29,17 @@ namespace XFrame.Core
 
         public XLinkList<T> Parse(string pattern)
         {
-            string[] pArray = pattern.Split(m_Split);
             Value = new XLinkList<T>();
-            Type type = typeof(T);
-            for (int i = 0; i < pArray.Length; i++)
+            if (!string.IsNullOrEmpty(pattern))
             {
-                T parser = (T)TypeModule.Inst.CreateInstance(type);
-                parser.Parse(pArray[i]);
-                Value.AddLast(parser);
+                string[] pArray = pattern.Split(m_Split);
+                Type type = typeof(T);
+                for (int i = 0; i < pArray.Length; i++)
+                {
+                    T parser = (T)TypeModule.Inst.CreateInstance(type);
+                    parser.Parse(pArray[i]);
+                    Value.AddLast(parser);
+                }
             }
 
             return Value;

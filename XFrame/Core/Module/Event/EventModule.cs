@@ -10,7 +10,7 @@ namespace XFrame.Modules.Event
     public class EventModule : SingletonModule<EventModule>
     {
         private List<IEventSystem> m_List;
-
+         
         protected override void OnInit(object data)
         {
             base.OnInit(data);

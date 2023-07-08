@@ -65,7 +65,10 @@ namespace XFrame.Modules.Conditions
                 {
                     ConditionHandle handle = handles[i];
                     if (ConditionModule.Inst.InnerCheckCompare(handle, evt.Param))
+                    {
+                        handle.MarkComplete();
                         handles.RemoveAt(i);
+                    }
                 }
                 if (handles.Count == 0)
                     m_NotInfos.Remove(evt.Target);

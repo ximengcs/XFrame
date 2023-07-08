@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using XFrame.Core;
 
 namespace XFrame.Modules.Conditions
@@ -10,6 +9,8 @@ namespace XFrame.Modules.Conditions
         private UniversalParser m_Param;
         private IDataProvider m_Data;
         private ConditionGroupHandle m_Group;
+        private Action<ConditionHandle> m_OnComplete;
+        private bool m_Complete;
 
         public int Target => m_Target;
         public UniversalParser Param => m_Param;
@@ -24,6 +25,26 @@ namespace XFrame.Modules.Conditions
             m_Target = pair.Key;
             m_Param = pair.Value;
             m_Data = new DataProvider();
+            m_Complete = false;
+        }
+
+        internal void MarkComplete()
+        {
+            m_Complete = true;
+            m_OnComplete?.Invoke(this);
+            m_OnComplete = null;
+        }
+
+        public void OnComplete(Action<ConditionHandle> callback)
+        {
+            if (m_Complete)
+            {
+                callback?.Invoke(this);
+            }
+            else
+            {
+                m_OnComplete += callback;
+            }
         }
     }
 }

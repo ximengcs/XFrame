@@ -43,6 +43,8 @@ namespace XFrame.Modules.Procedure
         #endregion
 
         #region Interface
+        public IFsm Fsm => m_Fsm;
+
         /// <summary>
         /// 重定向启动流程
         /// </summary>
