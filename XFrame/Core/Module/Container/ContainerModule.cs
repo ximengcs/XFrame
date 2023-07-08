@@ -3,7 +3,7 @@ using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
 using System;
-using XFrame.Modules.Diagnotics;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Containers
 {
@@ -13,6 +13,7 @@ namespace XFrame.Modules.Containers
     [XModule]
     public partial class ContainerModule : SingletonModule<ContainerModule>
     {
+        private IContainerHelper m_Helper;
         private XCollection<IContainer> m_Containers;
 
         /// <summary>
@@ -43,7 +44,8 @@ namespace XFrame.Modules.Containers
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
             IPool pool = PoolModule.Inst.GetOrNew(type);
-            IPoolObject obj = pool.Require();
+            int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
+            IPoolObject obj = pool.Require(poolKey);
             IContainer container = obj as IContainer;
             container.OnInit(id, master, onReady);
             if (updateTrusteeship)
@@ -70,6 +72,12 @@ namespace XFrame.Modules.Containers
         {
             base.OnInit(data);
             m_Containers = new XCollection<IContainer>();
+            TypeSystem typeSys = TypeModule.Inst.GetOrNew<IContainerHelper>();
+            foreach (Type type in typeSys)
+            {
+                m_Helper = (IContainerHelper)TypeModule.Inst.CreateInstance(type);
+                break;
+            }
         }
 
         protected override void OnUpdate(float escapeTime)

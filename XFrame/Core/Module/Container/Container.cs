@@ -70,7 +70,7 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Pool Life Fun
-        int IPoolObject.PoolKey => 0;
+        public int PoolKey { get; protected set; }
 
         void IPoolObject.OnCreate()
         {
@@ -224,8 +224,7 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            IContainer master = Master != null ? Master : this;
-            ICom newCom = (ICom)ContainerModule.Inst.New(type, id, false, master, (db) =>
+            ICom newCom = (ICom)ContainerModule.Inst.New(type, id, false, this, (db) =>
             {
                 InnerInitCom((ICom)db);
                 onReady?.Invoke(db);

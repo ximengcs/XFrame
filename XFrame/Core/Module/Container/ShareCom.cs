@@ -73,7 +73,7 @@ namespace XFrame.Modules.Containers
             Status = State.Disposed;
         }
 
-        int IPoolObject.PoolKey => 0;
+        public int PoolKey { get; protected set; }
 
         void IPoolObject.OnCreate()
         {
