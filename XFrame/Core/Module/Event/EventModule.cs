@@ -21,8 +21,8 @@ namespace XFrame.Modules.Event
         {
             base.OnUpdate(escapeTime);
 
-            foreach (IEventSystem evtSys in m_List)
-                evtSys.OnUpdate();
+            for (int i = m_List.Count - 1; i >= 0; i--)
+                m_List[i].OnUpdate();
         }
 
         /// <summary>
