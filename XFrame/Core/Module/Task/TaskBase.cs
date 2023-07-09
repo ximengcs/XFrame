@@ -217,6 +217,7 @@ namespace XFrame.Modules.Tasks
             {
                 m_Pro = MAX_PRO;
                 m_CurPro = 0;
+                m_OnUpdate?.Invoke(Pro);
                 InnerComplete();
             }
         }
