@@ -10,13 +10,14 @@ namespace XFrame.Modules.Conditions
         private IDataProvider m_Data;
         private ConditionGroupHandle m_Group;
         private Action<ConditionHandle> m_OnComplete;
+        private Action<object, object> m_UpdateEvent;
         private bool m_Complete;
+        private object m_Value;
 
         public int Target => m_Target;
         public UniversalParser Param => m_Param;
         public ConditionGroupHandle Group => m_Group;
         public IDataProvider Data => m_Data;
-        public Action<object, object> UpdateEvent;
 
         internal ConditionHandle(ConditionGroupHandle group, PairParser<IntParser, UniversalParser> parser)
         {
@@ -33,6 +34,19 @@ namespace XFrame.Modules.Conditions
             m_Complete = true;
             m_OnComplete?.Invoke(this);
             m_OnComplete = null;
+        }
+
+        public void Trigger(object oldValue, object newValue)
+        {
+            m_Value = newValue;
+            m_UpdateEvent?.Invoke(oldValue, newValue);
+        }
+
+        public void OnUpdate(Action<object, object> callback)
+        {
+            if (m_Value != null)
+                callback?.Invoke(m_Value, m_Value);
+            m_UpdateEvent += callback;
         }
 
         public void OnComplete(Action<ConditionHandle> callback)
