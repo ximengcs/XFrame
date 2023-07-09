@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
+    /// <summary>
+    /// 条件组句柄，一个实例的条件控制句柄，一个实例可以有多个条件。
+    /// <para>
+    /// </para>
+    /// </summary>
     public class ConditionGroupHandle
     {
         private bool m_Complete;
@@ -13,10 +18,29 @@ namespace XFrame.Modules.Conditions
         private Action<ConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<ConditionHandle>> m_NotInfos;
 
+        /// <summary>
+        /// 条件组名称
+        /// </summary>
         public string Name => m_Setting.Name;
+
+        /// <summary>
+        /// 条件是否完成
+        /// </summary>
         public bool Complete => m_Complete;
+
+        /// <summary>
+        /// 条件配置
+        /// </summary>
         public ConditionSetting Setting => m_Setting;
+
+        /// <summary>
+        /// 组内所有的条件
+        /// </summary>
         public List<ConditionHandle> AllInfo => m_AllInfos;
+
+        /// <summary>
+        /// 组内还未达成的条件
+        /// </summary>
         public Dictionary<int, List<ConditionHandle>> NotInfo => m_NotInfos;
 
         internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<ConditionGroupHandle> completeCallback = null)
@@ -87,11 +111,18 @@ namespace XFrame.Modules.Conditions
             }
         }
 
+        /// <summary>
+        /// 释放条件实例
+        /// </summary>
         public void Dispose()
         {
             ConditionModule.Inst.Event.Unlisten(ConditionEvent.EventId, InnerTriggerHandler);
         }
 
+        /// <summary>
+        /// 注册完成回调
+        /// </summary>
+        /// <param name="callback">回调</param>
         public void OnComplete(Action<ConditionGroupHandle> callback)
         {
             if (m_Complete)

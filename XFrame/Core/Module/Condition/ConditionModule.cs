@@ -7,6 +7,9 @@ using System;
 
 namespace XFrame.Modules.Conditions
 {
+    /// <summary>
+    /// 条件监听模块
+    /// </summary>
     [XModule]
     public class ConditionModule : SingletonModule<ConditionModule>
     {
@@ -15,6 +18,9 @@ namespace XFrame.Modules.Conditions
         private Dictionary<int, IConditionCompare> m_Compares;
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
+        /// <summary>
+        /// 当需要触发某个条件时，触发 <see cref="ConditionEvent"/> 事件到此事件系统
+        /// </summary>
         public IEventSystem Event => m_Event;
 
         protected override void OnInit(object data)
@@ -41,6 +47,11 @@ namespace XFrame.Modules.Conditions
             }
         }
 
+        /// <summary>
+        /// 获取条件组句柄
+        /// </summary>
+        /// <param name="name">组名称</param>
+        /// <returns>条件组句柄</returns>
         public ConditionGroupHandle Get(string name)
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle group))
@@ -48,6 +59,11 @@ namespace XFrame.Modules.Conditions
             return default;
         }
 
+        /// <summary>
+        /// 注册条件实例 查看<see cref="ConditionSetting"/>具体参数
+        /// </summary>
+        /// <param name="setting">条件配置</param>
+        /// <returns>条件组句柄</returns>
         public ConditionGroupHandle Register(ConditionSetting setting)
         {
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
@@ -59,6 +75,10 @@ namespace XFrame.Modules.Conditions
             return group;
         }
 
+        /// <summary>
+        /// 取消条件注册
+        /// </summary>
+        /// <param name="name">条件名</param>
         public void UnRegister(string name)
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
@@ -69,6 +89,10 @@ namespace XFrame.Modules.Conditions
             }
         }
 
+        /// <summary>
+        /// 取消条件注册
+        /// </summary>
+        /// <param name="name">条件组句柄</param>
         public void UnRegister(ConditionGroupHandle handle)
         {
             UnRegister(handle.Name);
@@ -79,10 +103,8 @@ namespace XFrame.Modules.Conditions
             Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Condition}");
             ConditionSetting setting = group.Setting;
             if (setting.AutoRemove)
-            {
                 m_Groups.Remove(group.Name);
-                group.Dispose();
-            }
+            group.Dispose();
         }
 
         internal bool InnerCheckFinish(ConditionHandle info)
