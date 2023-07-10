@@ -35,6 +35,18 @@ namespace XFrame.Modules.Diagnotics
             s_WaitQueue = null;
         }
 
+        public static void Print(LogLevel level, params object[] content)
+        {
+            switch (level)
+            {
+                case LogLevel.Ignore: break;
+                case LogLevel.Debug: Debug(content); break; 
+                case LogLevel.Warning: Warning(content); break; 
+                case LogLevel.Error: Error(content); break; 
+                case LogLevel.Fatal: Fatal(content); break;
+            }
+        }
+
         /// <summary>
         /// 调试信息
         /// </summary>

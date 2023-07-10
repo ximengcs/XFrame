@@ -118,6 +118,10 @@ namespace XFrame.Core
             FloatParser p2 = References.Require<FloatParser>();
             BoolParser p3 = References.Require<BoolParser>();
 
+            p1.LogLv = LogLevel.Ignore;
+            p2.LogLv = LogLevel.Ignore;
+            p3.LogLv = LogLevel.Ignore;
+
             m_IntValue = p1.Parse(m_Value);
             m_FloatValue = p2.Parse(m_Value);
             m_BoolValue = p3.Parse(m_Value);

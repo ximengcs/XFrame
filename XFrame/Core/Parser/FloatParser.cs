@@ -5,22 +5,23 @@ namespace XFrame.Core
 {
     public class FloatParser : IParser<float>
     {
-        public float Value { get; private set; }
+        private float m_Value;
+        public float Value => m_Value;
+        public LogLevel LogLv { get; set; }
 
-        object IParser.Value => Value;
+        object IParser.Value => m_Value;
 
         int IPoolObject.PoolKey => default;
 
         public float Parse(string pattern)
         {
-            if (string.IsNullOrEmpty(pattern))
-                return default;
-            if (float.TryParse(pattern, out float result))
-                Value = result;
-            else
-                Log.Warning("XFrame", $"FloatParser parse failure. {pattern}");
+            if (string.IsNullOrEmpty(pattern) || !float.TryParse(pattern, out m_Value))
+            {
+                m_Value = default;
+                Log.Print(LogLv, "XFrame", $"FloatParser parse failure. {pattern}");
+            }
 
-            return Value;
+            return m_Value;
         }
 
         object IParser.Parse(string pattern)
@@ -30,7 +31,7 @@ namespace XFrame.Core
 
         public override string ToString()
         {
-            return Value.ToString();
+            return m_Value.ToString();
         }
 
         public override int GetHashCode()
@@ -43,14 +44,14 @@ namespace XFrame.Core
             IParser parser = obj as IParser;
             if (parser != null)
             {
-                return Value.Equals(parser.Value);
+                return m_Value.Equals(parser.Value);
             }
             else
             {
                 if (obj is int)
-                    return Value.Equals((int)obj);
+                    return m_Value.Equals((int)obj);
                 else
-                    return Value.Equals((float)obj);
+                    return m_Value.Equals((float)obj);
             }
         }
 
@@ -61,7 +62,8 @@ namespace XFrame.Core
 
         void IPoolObject.OnRequest()
         {
-            Value = 0;
+            m_Value = default;
+            LogLv = LogLevel.Warning;
         }
 
         void IPoolObject.OnRelease()
@@ -86,13 +88,13 @@ namespace XFrame.Core
 
         public static implicit operator float(FloatParser parser)
         {
-            return parser.Value;
+            return parser.m_Value;
         }
 
         public static implicit operator FloatParser(int value)
         {
             FloatParser parser = new FloatParser();
-            parser.Value = value;
+            parser.m_Value = value;
             return parser;
         }
     }
