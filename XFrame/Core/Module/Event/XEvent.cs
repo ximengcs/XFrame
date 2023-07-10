@@ -8,7 +8,7 @@ namespace XFrame.Modules.Event
     public abstract class XEvent : IPoolObject
     {
         /// <summary>
-        /// 事件Id
+        /// 事件Id 
         /// </summary>
         public int Id { get; protected set; }
 

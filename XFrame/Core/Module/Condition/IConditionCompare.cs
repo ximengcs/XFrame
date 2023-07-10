@@ -34,5 +34,12 @@ namespace XFrame.Modules.Conditions
         /// <param name="param">参数(事件参数<see cref="ConditionEvent.Param"/>)</param>
         /// <returns>返回true时，句柄会进入完成状态。反之亦然</returns>
         bool Check(ConditionHandle info, object param);
+
+        /// <summary>
+        /// 当事件<see cref="ConditionEvent"/>触发时，与<see cref="ConditionEvent.Target"/>相匹配的<see cref="Target"/>实现类
+        /// 的此方法会执行，一般可以在此方法执行时执行一些存储状态的操作
+        /// </summary>
+        /// <param name="param">参数(事件参数<see cref="ConditionEvent.Param"/>)，随后执行check时的<see cref="Check"/>的param与此为同一值</param>
+        void OnEventTrigger(object param);
     }
 }

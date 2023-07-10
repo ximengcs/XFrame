@@ -28,6 +28,7 @@ namespace XFrame.Modules.Conditions
             base.OnInit(data);
 
             m_Event = EventModule.Inst.NewSys();
+            m_Event.Listen(ConditionEvent.EventId, InnerConditionTouchHandler);
             m_Compares = new Dictionary<int, IConditionCompare>();
             m_Groups = new Dictionary<string, ConditionGroupHandle>();
             m_Helpers = new Dictionary<int, IConditionHelper>();
@@ -121,6 +122,15 @@ namespace XFrame.Modules.Conditions
                 return compare.Check(info, param);
             Log.Error("Condition", $"Target {info.Target} compare is null");
             return false;
+        }
+
+        private void InnerConditionTouchHandler(XEvent e)
+        {
+            ConditionEvent evt = (ConditionEvent)e;
+            if (m_Compares.TryGetValue(evt.Target, out IConditionCompare compare))
+            {
+                compare.OnEventTrigger(evt.Param);
+            }
         }
     }
 }

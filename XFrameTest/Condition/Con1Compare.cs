@@ -8,6 +8,11 @@ namespace XFrameTest.Condition
     {
         int IConditionCompare.Target => CondConst.COIN;
 
+        public void OnEventTrigger(object param)
+        {
+
+        }
+
         bool IConditionCompare.Check(ConditionHandle info, object param)
         {
             Log.Debug("Check Coin " + info.Param.IntValue + " " + CondConst.Coin);
@@ -25,6 +30,11 @@ namespace XFrameTest.Condition
     {
         int IConditionCompare.Target => CondConst.GEM;
 
+        public void OnEventTrigger(object param)
+        {
+
+        }
+
         bool IConditionCompare.Check(ConditionHandle info, object param)
         {
             Log.Debug("Check Gem " + info.Param.FloatValue + " " + CondConst.Gem);
@@ -41,6 +51,11 @@ namespace XFrameTest.Condition
     public class Con3Compare : IConditionCompare
     {
         int IConditionCompare.Target => CondConst.TEST;
+
+        public void OnEventTrigger(object param)
+        {
+
+        }
 
         bool IConditionCompare.Check(ConditionHandle info, object param)
         {

@@ -41,6 +41,16 @@ namespace XFrame.Core
             return default;
         }
 
+        public void RemoveParser<T>() where T : IParser
+        {
+            Type type = typeof(T);
+            if (m_Parsers.TryGetValue(type, out IParser parser))
+            {
+                m_Parsers.Remove(type);
+                References.Release(parser);
+            }
+        }
+
         public T AddParser<T>(T parser) where T : IParser
         {
             if (parser != null)
@@ -49,7 +59,8 @@ namespace XFrame.Core
                 parser.Parse(m_Value);
                 if (m_Parsers.TryGetValue(type, out IParser oldParser))
                 {
-                    Log.Warning("XFrame", $"Universal parser already has parser {type.Name}.");
+                    Log.Warning("XFrame", $"Universal parser already has parser {type.Name}. will release old.");
+                    References.Release(oldParser);
                     m_Parsers[type] = parser;
                 }
                 else
@@ -60,16 +71,20 @@ namespace XFrame.Core
             return parser;
         }
 
+        public IParser AddParser(Type parserType)
+        {
+            if (!m_Parsers.TryGetValue(parserType, out IParser parser))
+            {
+                parser = (IParser)References.Require(parserType);
+                parser.Parse(m_Value);
+                m_Parsers.Add(parserType, parser);
+            }
+            return parser;
+        }
+
         public T AddParser<T>() where T : IParser
         {
-            Type type = typeof(T);
-            if (!m_Parsers.TryGetValue(typeof(T), out IParser parser))
-            {
-                parser = (IParser)TypeModule.Inst.CreateInstance(type);
-                parser.Parse(m_Value);
-                m_Parsers.Add(type, parser);
-            }
-            return (T)parser;
+            return (T)AddParser(typeof(T));
         }
 
         public UniversalParser()
