@@ -1,4 +1,6 @@
-﻿using XFrame.Collections;
+﻿using CsvHelper;
+using System.Globalization;
+using XFrame.Collections;
 using XFrame.Core;
 using XFrame.Modules.Pools;
 
@@ -53,6 +55,25 @@ namespace XFrameTest
                     }
                 }
             });
+        }
+
+        [TestMethod]
+        public void Test4()
+        {
+            string text = File.ReadAllText("C:\\Users\\XM\\Desktop\\1.csv");
+            CsvReader csvReader = new CsvReader(new StringReader(text), CultureInfo.CurrentCulture);
+            int row = 0;
+            while (csvReader.Read())
+            {
+                Console.WriteLine("row " + row++);
+                int count = csvReader.Parser.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    Console.WriteLine("=============");
+                    Console.Write($"[{csvReader[i]}]");
+                    Console.WriteLine("\n=============");
+                }
+            }
         }
     }
 }
