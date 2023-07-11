@@ -1,4 +1,6 @@
 ﻿
+using XFrame.Modules.Pools;
+
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
@@ -8,7 +10,7 @@ namespace XFrame.Modules.Conditions
     /// 在达成完成条件时会调用<see cref="CheckFinish"/>标记未完成状态
     /// </para>
     /// </summary>
-    public interface IConditionHelper
+    public interface IConditionHelper : IPoolObject
     {
         /// <summary>
         /// 辅助器类型 
@@ -22,13 +24,13 @@ namespace XFrame.Modules.Conditions
         /// 标记条件组完成
         /// </summary>
         /// <param name="groupName">条件组名称</param>
-        void MarkFinish(string groupName);
+        void MarkFinish(IConditionGroupHandle group);
 
         /// <summary>
         /// 检查条件组是否完成
         /// </summary>
         /// <param name="groupName">条件组名称</param>
         /// <returns>true为完成，反之亦然</returns>
-        bool CheckFinish(string groupName);
+        bool CheckFinish(IConditionGroupHandle group);
     }
 }

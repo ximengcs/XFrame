@@ -19,7 +19,7 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         /// <param name="info">句柄</param>
         /// <returns>true为完成状态，反之亦然</returns>
-        bool CheckFinish(ConditionHandle info);
+        bool CheckFinish(IConditionHandle info);
 
         /// <summary>
         /// 检查条件是否完成，当<see cref="ConditionEvent"/>事件触发时，会将<see cref="ConditionEvent.Param"/>传入此方法方法检查
@@ -33,7 +33,7 @@ namespace XFrame.Modules.Conditions
         /// <param name="info">条件句柄</param>
         /// <param name="param">参数(事件参数<see cref="ConditionEvent.Param"/>)</param>
         /// <returns>返回true时，句柄会进入完成状态。反之亦然</returns>
-        bool Check(ConditionHandle info, object param);
+        bool Check(IConditionHandle info, object param);
 
         /// <summary>
         /// 当事件<see cref="ConditionEvent"/>触发时，与<see cref="ConditionEvent.Target"/>相匹配的<see cref="Target"/>实现类

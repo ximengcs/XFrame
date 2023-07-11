@@ -1,4 +1,5 @@
-﻿using XFrame.Core;
+﻿using System.Collections.Generic;
+using XFrame.Core;
 using Condition = XFrame.Core.ArrayParser<XFrame.Core.PairParser<XFrame.Core.IntParser, XFrame.Core.UniversalParser>>;
 
 namespace XFrame.Modules.Conditions
@@ -21,7 +22,11 @@ namespace XFrame.Modules.Conditions
         /// 标记条件组完成。调用者可根据实际需求实现定制的条件组辅助器，如需要持久化状态的辅助器。
         /// 当指定的辅助器不存在时会自动忽略 <see cref="IConditionHelper.CheckFinish(string)"/> 和 <see cref="IConditionHelper.MarkFinish(string)"/> 操作
         /// </summary>
-        public int UseHelper;
+        public int UseGroupHelper;
+
+        public bool GroupHelperInstance;
+
+        public Dictionary<int, bool> UseConditionHelperInstance;
 
         /// <summary>
         /// 在条件组完成时自动清理并从模块移除
@@ -42,8 +47,17 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public Condition Condition;
 
+        public bool ConditionIsInstance(int target)
+        {
+            if (UseConditionHelperInstance == null)
+                return false;
+            if (UseConditionHelperInstance.TryGetValue(target, out bool value))
+                return value;
+            return false;
+        }
+
         /// <summary>
-        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 <see cref="true"/>, <see cref="UseHelper"/> 为 0
+        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 <see cref="true"/>, <see cref="UseGroupHelper"/> 为 0
         /// </summary>
         /// <param name="name">条件名称</param>
         /// <param name="condition">原始条件配置</param>
@@ -52,7 +66,9 @@ namespace XFrame.Modules.Conditions
             Name = name;
             Condition = condition;
             AutoRemove = true;
-            UseHelper = 0;
+            UseGroupHelper = 0;
+            GroupHelperInstance = false;
+            UseConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -66,11 +82,13 @@ namespace XFrame.Modules.Conditions
             Name = name;
             Condition = condition;
             AutoRemove = true;
-            UseHelper = useHelper;
+            UseGroupHelper = useHelper;
+            GroupHelperInstance = false;
+            UseConditionHelperInstance = null;
         }
 
         /// <summary>
-        /// 构造条件配置，默认<see cref="UseHelper"/> 为 0
+        /// 构造条件配置，默认<see cref="UseGroupHelper"/> 为 0
         /// </summary>
         /// <param name="name">条件名称</param>
         /// <param name="condition">原始条件配置</param>
@@ -80,7 +98,9 @@ namespace XFrame.Modules.Conditions
             Name = name;
             Condition = condition;
             AutoRemove = autoRemove;
-            UseHelper = 0;
+            UseGroupHelper = 0;
+            GroupHelperInstance = false;
+            UseConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -95,7 +115,9 @@ namespace XFrame.Modules.Conditions
             Name = name;
             Condition = condition;
             AutoRemove = autoRemove;
-            UseHelper = useHelper;
+            UseGroupHelper = useHelper;
+            GroupHelperInstance = false;
+            UseConditionHelperInstance = null;
         }
     }
 }

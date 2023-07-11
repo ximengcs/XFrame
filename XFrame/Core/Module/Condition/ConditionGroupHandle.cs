@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Modules.Event;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Conditions
 {
@@ -9,13 +10,13 @@ namespace XFrame.Modules.Conditions
     /// <para>
     /// </para>
     /// </summary>
-    public class ConditionGroupHandle
+    internal class ConditionGroupHandle : IConditionGroupHandle
     {
         private bool m_Complete;
         private IConditionHelper m_Helper;
         private ConditionSetting m_Setting;
         private List<ConditionHandle> m_AllInfos;
-        private Action<ConditionGroupHandle> m_CompleteEvent;
+        private Action<IConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<ConditionHandle>> m_NotInfos;
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public Dictionary<int, List<ConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<ConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<IConditionGroupHandle> completeCallback = null)
         {
             m_Setting = setting;
             m_Complete = false;
@@ -52,7 +53,36 @@ namespace XFrame.Modules.Conditions
             m_AllInfos = new List<ConditionHandle>();
             m_NotInfos = new Dictionary<int, List<ConditionHandle>>();
 
-            if (m_Helper != null && m_Helper.CheckFinish(setting.Name))
+            var list = setting.Condition.Value;
+            foreach (var node in list)
+            {
+                ConditionHandle handle = new ConditionHandle(this, node.Value);
+                int target = handle.Target;
+                IConditionCompare compare;
+                bool isInstanceHelper = setting.ConditionIsInstance(target);
+                if (isInstanceHelper)
+                {
+                    Type compType = ConditionModule.Inst.GetCompareType(target);
+                    compare = (IConditionCompare)TypeModule.Inst.CreateInstance(compType);
+                }
+                else
+                {
+                    compare = ConditionModule.Inst.GetCompare(target);
+                }
+                handle.SetHelper(isInstanceHelper, compare);
+                m_AllInfos.Add(handle);
+                if (!handle.InnerCheckComplete())
+                {
+                    if (!m_NotInfos.TryGetValue(handle.Target, out List<ConditionHandle> conds))
+                    {
+                        conds = new List<ConditionHandle>();
+                        m_NotInfos.Add(handle.Target, conds);
+                    }
+                    conds.Add(handle);
+                }
+            }
+
+            if (m_Helper != null && m_Helper.CheckFinish(this))
             {
                 m_Complete = true;
                 m_CompleteEvent?.Invoke(this);
@@ -60,42 +90,25 @@ namespace XFrame.Modules.Conditions
             }
             else
             {
-                var list = setting.Condition.Value;
-                foreach (var node in list)
-                {
-                    ConditionHandle info = new ConditionHandle(this, node.Value);
-                    m_AllInfos.Add(info);
-                    if (!ConditionModule.Inst.InnerCheckFinish(info))
-                    {
-                        if (!m_NotInfos.TryGetValue(info.Target, out List<ConditionHandle> conds))
-                        {
-                            conds = new List<ConditionHandle>();
-                            m_NotInfos.Add(info.Target, conds);
-                        }
-                        conds.Add(info);
-                    }
-                }
-                ConditionModule.Inst.Event.Listen(ConditionEvent.EventId, InnerTriggerHandler);
                 InnerCheckComplete();
             }
         }
 
-        private void InnerTriggerHandler(XEvent e)
+        internal void InnerTrigger(int target, object param)
         {
-            ConditionEvent evt = (ConditionEvent)e;
-            if (m_NotInfos.TryGetValue(evt.Target, out List<ConditionHandle> handles))
+            if (m_NotInfos.TryGetValue(target, out List<ConditionHandle> handles))
             {
                 for (int i = handles.Count - 1; i >= 0; i--)
                 {
                     ConditionHandle handle = handles[i];
-                    if (ConditionModule.Inst.InnerCheckCompare(handle, evt.Param))
+                    if (handle.InnerCheckComplete(param))
                     {
                         handle.MarkComplete();
                         handles.RemoveAt(i);
                     }
                 }
                 if (handles.Count == 0)
-                    m_NotInfos.Remove(evt.Target);
+                    m_NotInfos.Remove(target);
                 InnerCheckComplete();
             }
         }
@@ -105,7 +118,7 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
-                m_Helper?.MarkFinish(m_Setting.Name);
+                m_Helper?.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
@@ -114,16 +127,16 @@ namespace XFrame.Modules.Conditions
         /// <summary>
         /// 释放条件实例
         /// </summary>
-        public void Dispose()
+        internal void Dispose()
         {
-            ConditionModule.Inst.Event.Unlisten(ConditionEvent.EventId, InnerTriggerHandler);
+
         }
 
         /// <summary>
         /// 注册完成回调
         /// </summary>
         /// <param name="callback">回调</param>
-        public void OnComplete(Action<ConditionGroupHandle> callback)
+        public void OnComplete(Action<IConditionGroupHandle> callback)
         {
             if (m_Complete)
                 callback?.Invoke(this);

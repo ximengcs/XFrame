@@ -1,5 +1,6 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Conditions
 {
@@ -15,7 +16,7 @@ namespace XFrame.Modules.Conditions
     /// 需要实现类<see cref="IConditionCompare"/>去执行<see cref="Trigger(object, object)"/>来触发更新<see cref="OnComplete(Action{ConditionHandle})"/>事件
     /// </para>
     /// </summary>
-    public class ConditionHandle
+    public class ConditionHandle : DataProvider, IConditionHandle
     {
         private int m_Target;
         private UniversalParser m_Param;
@@ -25,6 +26,9 @@ namespace XFrame.Modules.Conditions
         private Action<object, object> m_UpdateEvent;
         private bool m_Complete;
         private object m_Value;
+
+        private bool m_HelperInstance;
+        private IConditionCompare m_Helper;
 
         /// <summary>
         /// 条件目标
@@ -41,11 +45,11 @@ namespace XFrame.Modules.Conditions
         /// 条件需要达成的目标参数，如数量等
         /// </summary>
         public UniversalParser Param => m_Param;
-        
+
         /// <summary>
         /// 条件句柄所有条件组
         /// </summary>
-        public ConditionGroupHandle Group => m_Group;
+        public IConditionGroupHandle Group => m_Group;
 
         /// <summary>
         /// 条件句柄数据提供器
@@ -62,11 +66,31 @@ namespace XFrame.Modules.Conditions
             m_Complete = false;
         }
 
+        internal void SetHelper(bool helperInstance, IConditionCompare helper)
+        {
+            m_HelperInstance = helperInstance;
+            m_Helper = helper;
+        }
+
         internal void MarkComplete()
         {
             m_Complete = true;
             m_OnComplete?.Invoke(this);
             m_OnComplete = null;
+        }
+
+        internal bool InnerCheckComplete()
+        {
+            Log.Error("Condition", $"Target {Target} compare is null");
+            return m_Helper.CheckFinish(this);
+        }
+
+        internal bool InnerCheckComplete(object param)
+        {
+            Log.Error("Condition", $"Target {Target} compare is null");
+            if (m_HelperInstance)
+                m_Helper.OnEventTrigger(param);
+            return m_Helper.Check(this, param);
         }
 
         /// <summary>
