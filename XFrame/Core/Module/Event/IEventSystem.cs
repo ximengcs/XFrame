@@ -68,10 +68,5 @@ namespace XFrame.Modules.Event
         /// 移除所有监听
         /// </summary>
         void Unlisten();
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        internal void OnUpdate();
     }
 }

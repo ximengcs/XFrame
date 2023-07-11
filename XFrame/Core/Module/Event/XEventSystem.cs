@@ -174,7 +174,7 @@ namespace XFrame.Modules.Event
             m_Handlers.Clear();
         }
 
-        void IEventSystem.OnUpdate()
+        public void OnUpdate()
         {
             if (m_WorkQueue == null || m_WorkQueue.Count == 0)
                 return;

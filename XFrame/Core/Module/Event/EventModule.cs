@@ -9,12 +9,12 @@ namespace XFrame.Modules.Event
     [CoreModule]
     public class EventModule : SingletonModule<EventModule>
     {
-        private List<IEventSystem> m_List;
+        private List<XEventSystem> m_List;
          
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_List = new List<IEventSystem>();
+            m_List = new List<XEventSystem>();
         }
 
         protected override void OnUpdate(float escapeTime)
@@ -31,7 +31,7 @@ namespace XFrame.Modules.Event
         /// <returns>事件系统</returns>
         public IEventSystem NewSys()
         {
-            IEventSystem evtSys = new XEventSystem();
+            XEventSystem evtSys = new XEventSystem();
             m_List.Add(evtSys);
             return evtSys;
         }
@@ -42,7 +42,7 @@ namespace XFrame.Modules.Event
         /// <param name="evtSys">事件系统</param>
         public void Remove(IEventSystem evtSys)
         {
-            m_List.Remove(evtSys);
+            m_List.Remove((XEventSystem)evtSys);
         }
     }
 }
