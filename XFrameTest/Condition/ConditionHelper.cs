@@ -18,7 +18,7 @@ namespace XFrameTest.Condition
 
         public int PoolKey => throw new NotImplementedException();
 
-        int IConditionHelper.Type => throw new NotImplementedException();
+        int IConditionHelper.Type => 0;
 
         int IPoolObject.PoolKey => throw new NotImplementedException();
 

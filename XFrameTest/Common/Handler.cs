@@ -1,5 +1,6 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Config;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Times;
 
@@ -10,14 +11,14 @@ namespace XFrameTest
         public ITask BeforeHandle()
         {
             ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("IInitHandler BeforeHandle " + TimeModule.Inst.Time));
+            task.Add(() => Log.Debug("IInitHandler BeforeHandle " + TimeModule.Inst.Time));
             return task;
         }
 
         public ITask AfterHandle()
         {
             DelayTask task = TaskModule.Inst.GetOrNew<DelayTask>();
-            task.Add(3.0f, () => Console.WriteLine("IInitHandler AfterHandle " + TimeModule.Inst.Time));
+            task.Add(3.0f, () => Log.Debug("IInitHandler AfterHandle " + TimeModule.Inst.Time));
             return task;
         }
 

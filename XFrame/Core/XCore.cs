@@ -188,7 +188,7 @@ namespace XFrame.Core
 
             InnerInitModule(module, data);
             sw.Stop();
-            Log.EnqueueWaitQueue("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
             return module;
         }
 

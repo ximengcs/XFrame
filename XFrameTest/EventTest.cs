@@ -80,6 +80,8 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
+                Log.ConsumeWaitQueue();
+                Log.ToQueue = false;
                 IEventSystem evtSys = EventModule.Inst.NewSys();
                 evtSys.Listen(TestEvent.EventId, (e) =>
                 {

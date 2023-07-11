@@ -20,7 +20,7 @@ namespace XFrame.Modules.Conditions
         /// 条件组初始化时会调用 <see cref="IConditionHelper.CheckFinish(string)"/>检查条件是否是完成状态，若为完成状态，则此条件组会进入完成状态，
         /// 若未完成，会开始监听组内所有未达成的条件，当所有条件达成时，条件组进入完成状态，同时调用<see cref="IConditionHelper.MarkFinish(string)"/>
         /// 标记条件组完成。调用者可根据实际需求实现定制的条件组辅助器，如需要持久化状态的辅助器。
-        /// 当指定的辅助器不存在时会自动忽略 <see cref="IConditionHelper.CheckFinish(string)"/> 和 <see cref="IConditionHelper.MarkFinish(string)"/> 操作
+        /// 当指定的辅助器不存在时会自动忽略 <see cref="IConditionHelper.CheckFinish"/> 和 <see cref="IConditionHelper.MarkFinish(string)"/> 操作
         /// </summary>
         public int UseGroupHelper;
 

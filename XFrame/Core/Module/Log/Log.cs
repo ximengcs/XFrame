@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Diagnotics
@@ -8,41 +8,68 @@ namespace XFrame.Modules.Diagnotics
     /// </summary>
     public static class Log
     {
-        private static Dictionary<int, List<object[]>> s_WaitQueue = new Dictionary<int, List<object[]>>
+        private struct LogInfo
         {
-            { 0, new List<object[]>() },
-            { 1, new List<object[]>() },
-            { 2, new List<object[]>() },
-            { 3, new List<object[]>() }
-        };
+            public LogLevel Level;
+            public object[] Content;
 
-        public static void EnqueueWaitQueue(params object[] content)
+            public LogInfo(LogLevel level, object[] content)
+            {
+                Level = level;
+                Content = content;
+            }
+        }
+
+        public static bool ToQueue { get; set; }
+        public static bool Power { get; set; }
+
+        private static Queue<LogInfo> s_WaitQueue;
+
+        static Log()
         {
-            if (s_WaitQueue != null)
-                s_WaitQueue[0].Add(content);
-            else
-                Debug(content);
+            ToQueue = true;
+            Power = true;
+            s_WaitQueue = new Queue<LogInfo>(128);
         }
 
         public static void ConsumeWaitQueue()
         {
             if (s_WaitQueue == null)
                 return;
-            foreach (object[] message in s_WaitQueue[0]) Debug(message);
-            foreach (object[] message in s_WaitQueue[1]) Warning(message);
-            foreach (object[] message in s_WaitQueue[2]) Error(message);
-            foreach (object[] message in s_WaitQueue[3]) Fatal(message);
-            s_WaitQueue = null;
+            bool toQueue = ToQueue;
+            ToQueue = false;
+            while (s_WaitQueue.Count > 0)
+            {
+                LogInfo info = s_WaitQueue.Dequeue();
+                InnerPrint(info.Level, info.Content);
+            }
+            ToQueue = toQueue;
+            s_WaitQueue.Clear();
         }
 
         public static void Print(LogLevel level, params object[] content)
         {
+            if (!Power)
+                return;
+
+            if (ToQueue)
+            {
+                s_WaitQueue.Enqueue(new LogInfo(level, content));
+            }
+            else
+            {
+                InnerPrint(level, content);
+            }
+        }
+
+        private static void InnerPrint(LogLevel level, params object[] content)
+        {
             switch (level)
             {
                 case LogLevel.Ignore: break;
-                case LogLevel.Debug: Debug(content); break; 
-                case LogLevel.Warning: Warning(content); break; 
-                case LogLevel.Error: Error(content); break; 
+                case LogLevel.Debug: Debug(content); break;
+                case LogLevel.Warning: Warning(content); break;
+                case LogLevel.Error: Error(content); break;
                 case LogLevel.Fatal: Fatal(content); break;
             }
         }
@@ -53,8 +80,10 @@ namespace XFrame.Modules.Diagnotics
         /// <param name="content">信息</param>
         public static void Debug(params object[] content)
         {
-            if (LogModule.Inst == null)
-                s_WaitQueue[0].Add(content);
+            if (!Power)
+                return;
+            if (ToQueue)
+                s_WaitQueue.Enqueue(new LogInfo(LogLevel.Debug, content));
             else
                 LogModule.Inst.Debug(content);
         }
@@ -65,8 +94,10 @@ namespace XFrame.Modules.Diagnotics
         /// <param name="content">信息</param>
         public static void Warning(params object[] content)
         {
-            if (LogModule.Inst == null)
-                s_WaitQueue[1].Add(content);
+            if (!Power)
+                return;
+            if (ToQueue)
+                s_WaitQueue.Enqueue(new LogInfo(LogLevel.Warning, content));
             else
                 LogModule.Inst.Warning(content);
         }
@@ -77,8 +108,10 @@ namespace XFrame.Modules.Diagnotics
         /// <param name="content">信息</param>
         public static void Error(params object[] content)
         {
-            if (LogModule.Inst == null)
-                s_WaitQueue[2].Add(content);
+            if (!Power)
+                return;
+            if (ToQueue)
+                s_WaitQueue.Enqueue(new LogInfo(LogLevel.Error, content));
             else
                 LogModule.Inst.Error(content);
         }
@@ -89,8 +122,10 @@ namespace XFrame.Modules.Diagnotics
         /// <param name="content">信息</param>
         public static void Fatal(params object[] content)
         {
-            if (LogModule.Inst == null)
-                s_WaitQueue[3].Add(content);
+            if (!Power)
+                return;
+            if (ToQueue)
+                s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, content));
             else
                 LogModule.Inst.Fatal(content);
         }
