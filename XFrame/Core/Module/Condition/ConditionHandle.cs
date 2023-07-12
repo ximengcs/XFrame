@@ -81,13 +81,22 @@ namespace XFrame.Modules.Conditions
 
         internal bool InnerCheckComplete()
         {
-            Log.Error("Condition", $"Target {Target} compare is null");
+            if (m_Helper == null)
+            {
+                Log.Error("Condition", $"Target {Target} compare is null");
+                return false;
+            }
+
             return m_Helper.CheckFinish(this);
         }
 
         internal bool InnerCheckComplete(object param)
         {
-            Log.Error("Condition", $"Target {Target} compare is null");
+            if (m_Helper == null)
+            {
+                Log.Error("Condition", $"Target {Target} compare is null");
+                return false;
+            }
             if (m_HelperInstance)
                 m_Helper.OnEventTrigger(param);
             return m_Helper.Check(this, param);

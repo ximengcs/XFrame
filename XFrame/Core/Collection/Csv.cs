@@ -198,8 +198,7 @@ namespace XFrame.Collections
                     line[j] = parser.Parse(value);
                 }
                 XLinkNode<Line> node = m_Lines.AddLast(line);
-                m_LinesWithIndex.Add(m_Row, node);
-                m_Row++;
+                m_LinesWithIndex.Add(++m_Row, node);
             }
             References.Release(parser);
             csvReader.Dispose();
