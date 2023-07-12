@@ -10,8 +10,9 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ContainerBase, ICom
+    public abstract class ShareCom : PoolObjectBase, ICom
     {
+        private State m_Status;
         private IContainer m_Owner;
         private bool m_Active;
 
@@ -45,9 +46,9 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
-            if (Status == State.Using)
+            if (m_Status == State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnInit.");
                 return;
             }
 
@@ -57,21 +58,27 @@ namespace XFrame.Modules.Containers
             else
                 Master = master;
 
-            Status = State.Using;
+            m_Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
+
+        protected internal virtual void OnInit() { }
 
         void IContainer.OnUpdate(float elapseTime)
         {
             OnUpdate(elapseTime);
         }
 
+        protected internal virtual void OnUpdate(float elapseTime) { }
+
         void IContainer.OnDestroy()
         {
             OnDestroy();
-            Status = State.Disposed;
+            m_Status = State.Disposed;
         }
+
+        protected internal virtual void OnDestroy() { }
 
         public int PoolKey { get; protected set; }
 
@@ -83,7 +90,7 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnRequest()
         {
             OnRequestFromPool();
-            Status = State.NotInit;
+            m_Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()

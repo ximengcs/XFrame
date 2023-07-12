@@ -11,8 +11,9 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 通用容器
     /// </summary>
-    public partial class Container : ContainerBase, IContainer
+    public partial class Container : PoolObjectBase, IContainer
     {
+        private State m_Status;
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
@@ -22,9 +23,9 @@ namespace XFrame.Modules.Containers
         #region Container Life Fun
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
-            if (Status == State.Using)
+            if (m_Status == State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit. hash is {GetHashCode()}");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnInit. hash is {GetHashCode()}");
                 return;
             }
 
@@ -33,16 +34,18 @@ namespace XFrame.Modules.Containers
                 Master = master.Master;
             else
                 Master = master;
-            Status = State.Using;
+            m_Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
 
+        protected internal virtual void OnInit() { }
+
         void IContainer.OnUpdate(float elapseTime)
         {
-            if (Status != State.Using)
+            if (m_Status != State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnUpdate. hash is {GetHashCode()}");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnUpdate. hash is {GetHashCode()}");
                 return;
             }
 
@@ -55,18 +58,22 @@ namespace XFrame.Modules.Containers
             OnUpdate(elapseTime);
         }
 
+        protected internal virtual void OnUpdate(float elapseTime) { }
+
         void IContainer.OnDestroy()
         {
-            if (Status == State.Disposed)
+            if (m_Status == State.Disposed)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnDestroy again. hash is {GetHashCode()}");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnDestroy again. hash is {GetHashCode()}");
                 return;
             }
 
             ClearCom();
             OnDestroy();
-            Status = State.Disposed;
+            m_Status = State.Disposed;
         }
+
+        protected internal virtual void OnDestroy() { }
         #endregion
 
         #region Pool Life Fun
@@ -92,7 +99,7 @@ namespace XFrame.Modules.Containers
 
         protected virtual void InnerOnRequest()
         {
-            Status = State.NotInit;
+            m_Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
