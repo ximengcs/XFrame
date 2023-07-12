@@ -4,7 +4,7 @@ using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Modules.XType;
 using System;
-using XFrame.Collections;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
@@ -15,8 +15,10 @@ namespace XFrame.Modules.Conditions
     public class ConditionModule : SingletonModule<ConditionModule>
     {
         private IEventSystem m_Event;
-        private Dictionary<int, IConditionHelper> m_Helpers;
-        private Dictionary<int, IConditionCompare> m_Compares;
+        private Dictionary<int, Dictionary<int, IConditionHelper>> m_Helpers;
+        private Dictionary<int, Dictionary<int, IConditionCompare>> m_Compares;
+        private Dictionary<int, Type> m_HelpersType;
+        private Dictionary<int, Type> m_ComparesType;
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
         /// <summary>
@@ -32,39 +34,61 @@ namespace XFrame.Modules.Conditions
             m_Event.Listen(ConditionEvent.EventId, InnerConditionTouchHandler);
             m_Event.Listen(ConditionGroupEvent.EventId, InnerConditionGroupTouchHandler);
             m_Event.Listen(SpecificConditionEvent.EventId, InnerSpecificCondition);
-            m_Compares = new Dictionary<int, IConditionCompare>();
+            m_Helpers = new Dictionary<int, Dictionary<int, IConditionHelper>>();
+            m_Compares = new Dictionary<int, Dictionary<int, IConditionCompare>>();
             m_Groups = new Dictionary<string, ConditionGroupHandle>();
-            m_Helpers = new Dictionary<int, IConditionHelper>();
+            m_HelpersType = new Dictionary<int, Type>();
+            m_ComparesType = new Dictionary<int, Type>();
 
             TypeSystem typeSys = TypeModule.Inst.GetOrNew<IConditionCompare>();
             foreach (Type type in typeSys)
             {
                 IConditionCompare compare = (IConditionCompare)TypeModule.Inst.CreateInstance(type);
-                m_Compares.Add(compare.Target, compare);
+                m_Compares.Add(compare.Target, new Dictionary<int, IConditionCompare>() { { ConditionHelperSetting.DEFAULT_INSTANCE, compare } });
+                m_ComparesType.Add(compare.Target, compare.GetType());
             }
 
             typeSys = TypeModule.Inst.GetOrNew<IConditionHelper>();
             foreach (Type type in typeSys)
             {
                 IConditionHelper helper = (IConditionHelper)TypeModule.Inst.CreateInstance(type);
-                m_Helpers.Add(helper.Type, helper);
+                m_Helpers.Add(helper.Type, new Dictionary<int, IConditionHelper>() { { ConditionHelperSetting.DEFAULT_INSTANCE, helper } });
+                m_HelpersType.Add(helper.Type, helper.GetType());
             }
         }
 
-        public IConditionCompare GetCompare(int target)
+        public IConditionCompare GetOrNewCompare(int target, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
-            if (m_Compares.TryGetValue(target, out IConditionCompare compare))
-                return compare;
+            if (m_Compares.TryGetValue(target, out Dictionary<int, IConditionCompare> compares))
+            {
+                if (compares.TryGetValue(instance, out IConditionCompare compare))
+                    return compare;
+
+                if (m_ComparesType.TryGetValue(target, out Type type))
+                {
+                    compare = (IConditionCompare)References.Require(type);
+                    compares.Add(instance, compare);
+                    return compare;
+                }
+            }
             return default;
         }
 
-        public Type GetCompareType(int target)
+        public IConditionHelper GetOrNewHelper(int type, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
-            IConditionCompare compare = GetCompare(target);
-            if (compare == null)
-                return compare.GetType();
-            else
-                return default;
+            if (m_Helpers.TryGetValue(type, out Dictionary<int, IConditionHelper> helpers))
+            {
+                if (helpers.TryGetValue(instance, out IConditionHelper helper))
+                    return helper;
+
+                if (m_HelpersType.TryGetValue(type, out Type helperType))
+                {
+                    helper = (IConditionHelper)References.Require(helperType);
+                    helpers.Add(instance, helper);
+                    return helper;
+                }
+            }
+            return default;
         }
 
         /// <summary>
@@ -89,8 +113,7 @@ namespace XFrame.Modules.Conditions
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
                 return group;
             Log.Debug("Condition", $"Register {setting.Name} : {setting.Condition}");
-            m_Helpers.TryGetValue(setting.UseGroupHelper, out IConditionHelper helper);
-            group = new ConditionGroupHandle(setting, helper, InnerGroupCompleteHandler);
+            group = new ConditionGroupHandle(setting, InnerGroupCompleteHandler);
             m_Groups.Add(setting.Name, group);
             return group;
         }
@@ -165,8 +188,13 @@ namespace XFrame.Modules.Conditions
 
         private void InnerTriggerCompare(int target, object param)
         {
-            if (m_Compares.TryGetValue(target, out IConditionCompare compare))
-                compare.OnEventTrigger(param);
+            if (m_Compares.TryGetValue(target, out Dictionary<int, IConditionCompare> compares))
+            {
+                foreach (var item in compares)
+                {
+                    item.Value.OnEventTrigger(param);
+                }
+            }
         }
     }
 }

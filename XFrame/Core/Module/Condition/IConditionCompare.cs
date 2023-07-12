@@ -1,10 +1,12 @@
 ﻿
+using XFrame.Modules.Pools;
+
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
     /// 条件(单)检查器，比较器
     /// </summary>
-    public interface IConditionCompare
+    public interface IConditionCompare : IPoolObject
     {
         /// <summary>
         /// 匹配条件目标，类型

@@ -1,7 +1,6 @@
 ﻿using System;
-using XFrame.Modules.Event;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
+using XFrame.Core;
 
 namespace XFrame.Modules.Conditions
 {
@@ -13,6 +12,7 @@ namespace XFrame.Modules.Conditions
     internal class ConditionGroupHandle : IConditionGroupHandle
     {
         private bool m_Complete;
+        private IDataProvider m_Data;
         private IConditionHelper m_Helper;
         private ConditionSetting m_Setting;
         private List<IConditionHandle> m_AllInfos;
@@ -44,32 +44,35 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<IConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
         {
             m_Setting = setting;
             m_Complete = false;
-            m_Helper = helper;
             m_CompleteEvent = completeCallback;
             m_AllInfos = new List<IConditionHandle>();
             m_NotInfos = new Dictionary<int, List<IConditionHandle>>();
+
+            ConditionHelperSetting helperSetting = setting.HelperSetting;
+            m_Helper = ConditionModule.Inst.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
+            if (helperSetting.UsePersistData)
+                m_Data = new PersistDataProvider($"condition_group_{m_Setting.Name}_{helperSetting.UseInstance}");
+            else
+                m_Data = new DataProvider();
 
             var list = setting.Condition.Value;
             foreach (var node in list)
             {
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
                 int target = handle.Target;
-                IConditionCompare compare;
-                bool isInstanceHelper = setting.ConditionIsInstance(target);
-                if (isInstanceHelper)
-                {
-                    Type compType = ConditionModule.Inst.GetCompareType(target);
-                    compare = (IConditionCompare)TypeModule.Inst.CreateInstance(compType);
-                }
+                ConditionHelperSetting conditionSetting = setting.GetConditionHelperSettting(target);
+                IConditionCompare compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
+                IDataProvider dataProvider;
+                if (conditionSetting.UsePersistData)
+                    dataProvider = new PersistDataProvider($"condition_group_{m_Setting.Name}_{target}_{conditionSetting.UseInstance}");
                 else
-                {
-                    compare = ConditionModule.Inst.GetCompare(target);
-                }
-                handle.SetHelper(isInstanceHelper, compare);
+                    dataProvider = new DataProvider();
+
+                handle.OnInit(conditionSetting.IsUseInstance, compare, dataProvider);
                 m_AllInfos.Add(handle);
                 if (!handle.InnerCheckComplete())
                 {
@@ -142,6 +145,31 @@ namespace XFrame.Modules.Conditions
                 callback?.Invoke(this);
             else
                 m_CompleteEvent += callback;
+        }
+
+        public void SetData<T>(T value)
+        {
+            m_Data.SetData(value);
+        }
+
+        public T GetData<T>()
+        {
+            return m_Data.GetData<T>();
+        }
+
+        public void SetData<T>(string name, T value)
+        {
+            m_Data.SetData<T>(name, value);
+        }
+
+        public T GetData<T>(string name)
+        {
+            return m_Data.GetData<T>(name);
+        }
+
+        public void ClearData()
+        {
+            m_Data.ClearData();
         }
     }
 }

@@ -4,6 +4,27 @@ using Condition = XFrame.Core.ArrayParser<XFrame.Core.PairParser<XFrame.Core.Int
 
 namespace XFrame.Modules.Conditions
 {
+    public struct ConditionHelperSetting
+    {
+        public const int DEFAULT_INSTANCE = 0;
+
+        public int UseInstance;
+        public bool UsePersistData;
+
+        public bool IsUseInstance => UseInstance != DEFAULT_INSTANCE;
+
+        private ConditionHelperSetting(int useInstance, bool usePersistData)
+        {
+            UseInstance = useInstance;
+            UsePersistData = usePersistData;
+        }
+
+        public static ConditionHelperSetting Create(int useInstance = DEFAULT_INSTANCE, bool usePersistData = false)
+        {
+            return new ConditionHelperSetting(useInstance, usePersistData);
+        }
+    }
+
     /// <summary>
     /// 条件配置
     /// </summary>
@@ -24,9 +45,8 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public int UseGroupHelper;
 
-        public bool GroupHelperInstance;
-
-        public Dictionary<int, bool> UseConditionHelperInstance;
+        public ConditionHelperSetting HelperSetting;
+        public Dictionary<int, ConditionHelperSetting> ConditionHelperInstance;
 
         /// <summary>
         /// 在条件组完成时自动清理并从模块移除
@@ -47,13 +67,13 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public Condition Condition;
 
-        public bool ConditionIsInstance(int target)
+        public ConditionHelperSetting GetConditionHelperSettting(int target)
         {
-            if (UseConditionHelperInstance == null)
-                return false;
-            if (UseConditionHelperInstance.TryGetValue(target, out bool value))
-                return value;
-            return false;
+            if (ConditionHelperInstance == null)
+                return ConditionHelperSetting.Create();
+            if (ConditionHelperInstance.TryGetValue(target, out ConditionHelperSetting settting))
+                return settting;
+            return ConditionHelperSetting.Create();
         }
 
         /// <summary>
@@ -67,8 +87,8 @@ namespace XFrame.Modules.Conditions
             Condition = condition;
             AutoRemove = true;
             UseGroupHelper = 0;
-            GroupHelperInstance = false;
-            UseConditionHelperInstance = null;
+            HelperSetting = ConditionHelperSetting.Create();
+            ConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -83,8 +103,8 @@ namespace XFrame.Modules.Conditions
             Condition = condition;
             AutoRemove = true;
             UseGroupHelper = useHelper;
-            GroupHelperInstance = false;
-            UseConditionHelperInstance = null;
+            HelperSetting = ConditionHelperSetting.Create();
+            ConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -99,8 +119,8 @@ namespace XFrame.Modules.Conditions
             Condition = condition;
             AutoRemove = autoRemove;
             UseGroupHelper = 0;
-            GroupHelperInstance = false;
-            UseConditionHelperInstance = null;
+            HelperSetting = ConditionHelperSetting.Create();
+            ConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -116,8 +136,8 @@ namespace XFrame.Modules.Conditions
             Condition = condition;
             AutoRemove = autoRemove;
             UseGroupHelper = useHelper;
-            GroupHelperInstance = false;
-            UseConditionHelperInstance = null;
+            HelperSetting = ConditionHelperSetting.Create();
+            ConditionHelperInstance = null;
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFrame.Core;
 
 namespace XFrame.Modules.Conditions
 {
-    public interface IConditionGroupHandle
+    public interface IConditionGroupHandle : IDataProvider
     {
         string Name { get; }
 

@@ -1,4 +1,4 @@
-﻿
+﻿using XFrame.Core;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions

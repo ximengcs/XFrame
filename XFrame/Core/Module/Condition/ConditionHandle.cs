@@ -62,14 +62,14 @@ namespace XFrame.Modules.Conditions
             Pair<IntParser, UniversalParser> pair = parser;
             m_Target = pair.Key;
             m_Param = pair.Value;
-            m_Data = new DataProvider();
             m_Complete = false;
         }
 
-        internal void SetHelper(bool helperInstance, IConditionCompare helper)
+        internal void OnInit(bool helperInstance, IConditionCompare helper, IDataProvider dataProvider)
         {
             m_HelperInstance = helperInstance;
             m_Helper = helper;
+            m_Data = dataProvider;
         }
 
         internal void MarkComplete()
