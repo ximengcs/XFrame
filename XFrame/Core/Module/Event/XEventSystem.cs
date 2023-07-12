@@ -25,11 +25,14 @@ namespace XFrame.Modules.Event
                 if (Handler2 != null)
                 {
                     var list = Handler2.GetInvocationList();
-                    foreach (Delegate dele in list)
+                    if (list != null)
                     {
-                        XEventHandler2 handler = (XEventHandler2)dele;
-                        if (handler(e))
-                            Handler2 -= handler;
+                        foreach (Delegate dele in list)
+                        {
+                            XEventHandler2 handler = (XEventHandler2)dele;
+                            if (handler(e))
+                                Handler2 -= handler;
+                        }
                     }
                 }
             }
