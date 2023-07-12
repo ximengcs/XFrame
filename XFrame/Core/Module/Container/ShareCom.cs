@@ -80,8 +80,6 @@ namespace XFrame.Modules.Containers
 
         protected internal virtual void OnDestroy() { }
 
-        public int PoolKey { get; protected set; }
-
         void IPoolObject.OnCreate()
         {
             OnCreateFromPool();

@@ -77,7 +77,6 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Pool Life Fun
-        public int PoolKey { get; protected set; }
 
         void IPoolObject.OnCreate()
         {
