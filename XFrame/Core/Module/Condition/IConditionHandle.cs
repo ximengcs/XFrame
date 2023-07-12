@@ -30,6 +30,6 @@ namespace XFrame.Modules.Conditions
 
         void OnUpdate(Action<object, object> callback);
 
-        void OnComplete(Action<ConditionHandle> callback);
+        void OnComplete(Action<IConditionHandle> callback);
     }
 }

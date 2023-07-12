@@ -15,9 +15,9 @@ namespace XFrame.Modules.Conditions
         private bool m_Complete;
         private IConditionHelper m_Helper;
         private ConditionSetting m_Setting;
-        private List<ConditionHandle> m_AllInfos;
+        private List<IConditionHandle> m_AllInfos;
         private Action<IConditionGroupHandle> m_CompleteEvent;
-        private Dictionary<int, List<ConditionHandle>> m_NotInfos;
+        private Dictionary<int, List<IConditionHandle>> m_NotInfos;
 
         /// <summary>
         /// 条件组名称
@@ -37,12 +37,12 @@ namespace XFrame.Modules.Conditions
         /// <summary>
         /// 组内所有的条件
         /// </summary>
-        public List<ConditionHandle> AllInfo => m_AllInfos;
+        public List<IConditionHandle> AllInfo => m_AllInfos;
 
         /// <summary>
         /// 组内还未达成的条件
         /// </summary>
-        public Dictionary<int, List<ConditionHandle>> NotInfo => m_NotInfos;
+        public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
         internal ConditionGroupHandle(ConditionSetting setting, IConditionHelper helper, Action<IConditionGroupHandle> completeCallback = null)
         {
@@ -50,8 +50,8 @@ namespace XFrame.Modules.Conditions
             m_Complete = false;
             m_Helper = helper;
             m_CompleteEvent = completeCallback;
-            m_AllInfos = new List<ConditionHandle>();
-            m_NotInfos = new Dictionary<int, List<ConditionHandle>>();
+            m_AllInfos = new List<IConditionHandle>();
+            m_NotInfos = new Dictionary<int, List<IConditionHandle>>();
 
             var list = setting.Condition.Value;
             foreach (var node in list)
@@ -73,9 +73,9 @@ namespace XFrame.Modules.Conditions
                 m_AllInfos.Add(handle);
                 if (!handle.InnerCheckComplete())
                 {
-                    if (!m_NotInfos.TryGetValue(handle.Target, out List<ConditionHandle> conds))
+                    if (!m_NotInfos.TryGetValue(handle.Target, out List<IConditionHandle> conds))
                     {
-                        conds = new List<ConditionHandle>();
+                        conds = new List<IConditionHandle>();
                         m_NotInfos.Add(handle.Target, conds);
                     }
                     conds.Add(handle);
@@ -96,11 +96,11 @@ namespace XFrame.Modules.Conditions
 
         internal void InnerTrigger(int target, object param)
         {
-            if (m_NotInfos.TryGetValue(target, out List<ConditionHandle> handles))
+            if (m_NotInfos.TryGetValue(target, out List<IConditionHandle> handles))
             {
                 for (int i = handles.Count - 1; i >= 0; i--)
                 {
-                    ConditionHandle handle = handles[i];
+                    ConditionHandle handle = (ConditionHandle)handles[i];
                     if (handle.InnerCheckComplete(param))
                     {
                         handle.MarkComplete();

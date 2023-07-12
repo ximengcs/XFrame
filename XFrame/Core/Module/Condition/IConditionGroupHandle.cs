@@ -20,12 +20,12 @@ namespace XFrame.Modules.Conditions
         /// <summary>
         /// 组内所有的条件
         /// </summary>
-        List<ConditionHandle> AllInfo { get; }
+        List<IConditionHandle> AllInfo { get; }
 
         /// <summary>
         /// 组内还未达成的条件
         /// </summary>
-        Dictionary<int, List<ConditionHandle>> NotInfo { get; }
+        Dictionary<int, List<IConditionHandle>> NotInfo { get; }
 
         void OnComplete(Action<IConditionGroupHandle> callback);
     }

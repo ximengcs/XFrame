@@ -16,13 +16,13 @@ namespace XFrame.Modules.Conditions
     /// 需要实现类<see cref="IConditionCompare"/>去执行<see cref="Trigger(object, object)"/>来触发更新<see cref="OnComplete(Action{ConditionHandle})"/>事件
     /// </para>
     /// </summary>
-    public class ConditionHandle : DataProvider, IConditionHandle
+    internal class ConditionHandle : DataProvider, IConditionHandle
     {
         private int m_Target;
         private UniversalParser m_Param;
         private IDataProvider m_Data;
         private ConditionGroupHandle m_Group;
-        private Action<ConditionHandle> m_OnComplete;
+        private Action<IConditionHandle> m_OnComplete;
         private Action<object, object> m_UpdateEvent;
         private bool m_Complete;
         private object m_Value;
@@ -129,7 +129,7 @@ namespace XFrame.Modules.Conditions
         /// 条件完成事件，当条件已经完成时，会立刻执行回调
         /// </summary>
         /// <param name="callback">回调</param>
-        public void OnComplete(Action<ConditionHandle> callback)
+        public void OnComplete(Action<IConditionHandle> callback)
         {
             if (m_Complete)
             {
