@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
@@ -27,7 +28,7 @@ namespace XFrame.Modules.Conditions
         private bool m_Complete;
         private object m_Value;
 
-        private bool m_HelperInstance;
+        private ConditionHelperSetting m_Setting;
         private IConditionCompare m_Helper;
 
         /// <summary>
@@ -65,11 +66,18 @@ namespace XFrame.Modules.Conditions
             m_Complete = false;
         }
 
-        internal void OnInit(bool helperInstance, IConditionCompare helper, IDataProvider dataProvider)
+        internal void OnInit(ConditionHelperSetting setting, IConditionCompare helper, IDataProvider dataProvider)
         {
-            m_HelperInstance = helperInstance;
+            m_Setting = setting;
             m_Helper = helper;
             m_Data = dataProvider;
+        }
+
+        internal void Dispose()
+        {
+            if (m_Setting.IsUseInstance)
+                References.Release(m_Helper);
+            m_Helper = null;
         }
 
         internal void MarkComplete()
@@ -97,7 +105,7 @@ namespace XFrame.Modules.Conditions
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
             }
-            if (m_HelperInstance)
+            if (m_Setting.IsUseInstance)
                 m_Helper.OnEventTrigger(param);
             return m_Helper.Check(this, param);
         }

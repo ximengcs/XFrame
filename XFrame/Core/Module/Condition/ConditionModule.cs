@@ -112,7 +112,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
                 return group;
-            Log.Debug("Condition", $"Register {setting.Name} : {setting.Condition}");
+            Log.Debug("Condition", $"Register {setting.Name} : {setting.Data}");
             group = new ConditionGroupHandle(setting, InnerGroupCompleteHandler);
             m_Groups.Add(setting.Name, group);
             return group;
@@ -126,7 +126,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
             {
-                Log.Debug("Condition", $"UnRegister {name} : {handle.Setting.Condition}");
+                Log.Debug("Condition", $"UnRegister {name} : {handle.Setting.Data}");
                 m_Groups.Remove(handle.Name);
                 handle.Dispose();
             }
@@ -143,7 +143,7 @@ namespace XFrame.Modules.Conditions
 
         private void InnerGroupCompleteHandler(IConditionGroupHandle group)
         {
-            Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Condition}");
+            Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Data}");
             ConditionSetting setting = group.Setting;
             if (setting.AutoRemove)
                 m_Groups.Remove(group.Name);
@@ -164,7 +164,16 @@ namespace XFrame.Modules.Conditions
             SpecificConditionEvent evt = (SpecificConditionEvent)e;
             IConditionHandle handle = evt.Handle;
             IConditionGroupHandle group = handle.Group;
-            InnerTriggerGroup(group.Name, handle.Target, evt.Param);
+
+            if (m_Groups.TryGetValue(group.Name, out ConditionGroupHandle realGroup))
+            {
+                InnerTriggerCompare(handle.Target, evt.Param);
+                realGroup.InnerTrigger(handle.Target, evt.Param);
+            }
+            else
+            {
+                Log.Error("Condition", $"Module do not has {group.Name}");
+            }
         }
 
         private void InnerConditionGroupTouchHandler(XEvent e)

@@ -1,6 +1,4 @@
-﻿using XFrame.Core;
-using XFrame.Modules.Conditions;
-using XFrame.Modules.Diagnotics;
+﻿using XFrame.Modules.Conditions;
 using XFrame.Modules.Pools;
 
 namespace XFrameTest.Condition

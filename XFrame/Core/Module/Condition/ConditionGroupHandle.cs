@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using XFrame.Core;
+using XFrame.Modules.Archives;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
@@ -13,6 +16,7 @@ namespace XFrame.Modules.Conditions
     {
         private bool m_Complete;
         private IDataProvider m_Data;
+        private JsonArchive m_Archive;
         private IConditionHelper m_Helper;
         private ConditionSetting m_Setting;
         private List<IConditionHandle> m_AllInfos;
@@ -55,11 +59,16 @@ namespace XFrame.Modules.Conditions
             ConditionHelperSetting helperSetting = setting.HelperSetting;
             m_Helper = ConditionModule.Inst.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
             if (helperSetting.UsePersistData)
-                m_Data = new PersistDataProvider($"condition_group_{m_Setting.Name}_{helperSetting.UseInstance}");
+            {
+                InnerEnsureArchive();
+                m_Data = m_Archive;
+            }
             else
+            {
                 m_Data = new DataProvider();
+            }
 
-            var list = setting.Condition.Value;
+            var list = setting.Data.Parser.Value;
             foreach (var node in list)
             {
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
@@ -68,11 +77,16 @@ namespace XFrame.Modules.Conditions
                 IConditionCompare compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
                 IDataProvider dataProvider;
                 if (conditionSetting.UsePersistData)
-                    dataProvider = new PersistDataProvider($"condition_group_{m_Setting.Name}_{target}_{conditionSetting.UseInstance}");
+                {
+                    InnerEnsureArchive();
+                    dataProvider = m_Archive.SpwanDataProvider($"condition_group_{m_Setting.Name}_{target}_{conditionSetting.UseInstance}");
+                }
                 else
+                {
                     dataProvider = new DataProvider();
+                }
 
-                handle.OnInit(conditionSetting.IsUseInstance, compare, dataProvider);
+                handle.OnInit(conditionSetting, compare, dataProvider);
                 m_AllInfos.Add(handle);
                 if (!handle.InnerCheckComplete())
                 {
@@ -93,6 +107,34 @@ namespace XFrame.Modules.Conditions
             }
             else
             {
+                InnerCheckComplete();
+            }
+        }
+
+        private void InnerEnsureArchive()
+        {
+            if (m_Archive != null)
+                return;
+            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
+        }
+
+        internal void InnerTrigger(IConditionHandle handle, object param)
+        {
+            if (m_NotInfos.TryGetValue(handle.Target, out List<IConditionHandle> handles))
+            {
+                int index = handles.IndexOf(handle);
+                if (index != -1)
+                {
+                    ConditionHandle realHandle = (ConditionHandle)handle;
+                    if (realHandle.InnerCheckComplete(param))
+                    {
+                        realHandle.MarkComplete();
+                        handles.RemoveAt(index);
+                    }
+                }
+
+                if (handles.Count == 0)
+                    m_NotInfos.Remove(handle.Target);
                 InnerCheckComplete();
             }
         }
@@ -132,7 +174,21 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         internal void Dispose()
         {
+            if (m_Setting.HelperSetting.IsUseInstance)
+                References.Release(m_Helper);
 
+            foreach (IConditionHandle h in m_AllInfos)
+            {
+                ConditionHandle handle = (ConditionHandle)h;
+                handle.Dispose();
+            }
+
+            if (m_Data is JsonArchive archvie)
+                archvie.Delete();
+
+            m_Data = null;
+            m_AllInfos = null;
+            m_NotInfos = null;
         }
 
         /// <summary>
