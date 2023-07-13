@@ -168,7 +168,7 @@ namespace XFrame.Modules.Conditions
             if (m_Groups.TryGetValue(group.Name, out ConditionGroupHandle realGroup))
             {
                 InnerTriggerCompare(handle.Target, evt.Param);
-                realGroup.InnerTrigger(handle.Target, evt.Param);
+                realGroup.InnerTrigger(handle, evt.Param);
             }
             else
             {

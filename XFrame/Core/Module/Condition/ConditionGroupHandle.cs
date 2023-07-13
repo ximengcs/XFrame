@@ -120,6 +120,8 @@ namespace XFrame.Modules.Conditions
 
         internal void InnerTrigger(IConditionHandle handle, object param)
         {
+            if (m_Complete)
+                return;
             if (m_NotInfos.TryGetValue(handle.Target, out List<IConditionHandle> handles))
             {
                 int index = handles.IndexOf(handle);
@@ -141,6 +143,8 @@ namespace XFrame.Modules.Conditions
 
         internal void InnerTrigger(int target, object param)
         {
+            if (m_Complete)
+                return;
             if (m_NotInfos.TryGetValue(target, out List<IConditionHandle> handles))
             {
                 for (int i = handles.Count - 1; i >= 0; i--)
