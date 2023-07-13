@@ -1,33 +1,67 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Times
 {
     /// <summary>
     /// CD计时器
     /// </summary>
-    public partial class CDTimer
+    public partial class CDTimer : IPoolObject
     {
+        private string m_Name;
         private IUpdater m_Updater;
         private Dictionary<int, CDInfo> m_Times;
+
+        public string Name => m_Name;
+
+        int IPoolObject.PoolKey => default;
 
         /// <summary>
         /// 构造CD计时器
         /// </summary>
-        /// <param name="updater">时间更新器</param>
-        public CDTimer(IUpdater updater)
+        private CDTimer()
         {
-            m_Updater = updater;
+            m_Updater = Default;
             m_Times = new Dictionary<int, CDInfo>();
         }
 
         /// <summary>
         /// 构造CD计时器
         /// </summary>
-        public CDTimer()
+        /// <param name="updater">时间更新器</param>
+        public static CDTimer Create(IUpdater updater)
         {
-            m_Updater = Default;
-            m_Times = new Dictionary<int, CDInfo>();
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Updater = updater;
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            return timer;
+        }
+
+        public static CDTimer Create()
+        {
+            return References.Require<CDTimer>();
+        }
+
+        public static CDTimer Create(string name)
+        {
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Name = name;
+            return timer;
+        }
+
+        public static CDTimer Create(string name, IUpdater updater)
+        {
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Name = name;
+            timer.m_Updater = updater;
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            return timer;
+        }
+
+        public void SetUpdater(IUpdater updater)
+        {
+            m_Updater = updater;
         }
 
         /// <summary>
@@ -102,6 +136,28 @@ namespace XFrame.Modules.Times
         public float CheckTime()
         {
             return CheckTime(default);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            m_Name = null;
+            m_Times.Clear();
+            m_Updater = null;
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         private class CDInfo

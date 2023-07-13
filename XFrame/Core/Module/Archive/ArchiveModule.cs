@@ -31,7 +31,7 @@ namespace XFrame.Modules.Archives
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Timer = new CDTimer();
+            m_Timer = CDTimer.Create();
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
