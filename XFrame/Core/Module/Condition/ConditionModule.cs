@@ -156,7 +156,11 @@ namespace XFrame.Modules.Conditions
             ConditionEvent evt = (ConditionEvent)e;
             InnerTriggerCompare(evt.Target, evt.Param);
             foreach (var item in m_Groups)
-                item.Value.InnerTrigger(evt.Target, evt.Param);
+            {
+                ConditionGroupHandle group = item.Value;
+                if (!group.Complete)
+                    item.Value.InnerTrigger(evt.Target, evt.Param);
+            }
         }
 
         private void InnerSpecificCondition(XEvent e)
@@ -168,7 +172,8 @@ namespace XFrame.Modules.Conditions
             if (m_Groups.TryGetValue(group.Name, out ConditionGroupHandle realGroup))
             {
                 InnerTriggerCompare(handle.Target, evt.Param);
-                realGroup.InnerTrigger(handle, evt.Param);
+                if (!group.Complete)
+                    realGroup.InnerTrigger(handle, evt.Param);
             }
             else
             {
@@ -187,7 +192,8 @@ namespace XFrame.Modules.Conditions
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle group))
             {
                 InnerTriggerCompare(target, param);
-                group.InnerTrigger(target, param);
+                if (!group.Complete)
+                    group.InnerTrigger(target, param);
             }
             else
             {
