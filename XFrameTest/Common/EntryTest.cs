@@ -17,6 +17,7 @@ namespace XFrameTest
             XConfig.DefaultSerializer = typeof(TestJsonSerializer).FullName;
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "D:\\TestXFrame";
+            XConfig.DefaultDownloadHelper = typeof(TestDownloadHelper).FullName;
 
             Entry.Init();
             Entry.OnRun += runCallback;

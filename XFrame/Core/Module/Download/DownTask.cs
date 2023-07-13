@@ -117,6 +117,7 @@ namespace XFrame.Modules.Download
 
             public void OnFinish()
             {
+                m_Handler?.OnDispose();
                 m_Handler = null;
             }
 
