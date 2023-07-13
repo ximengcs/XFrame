@@ -64,5 +64,11 @@ namespace XFrameTest
                 }).Start();
             });
         }
+
+        [TestMethod]
+        public void TestStartup()
+        {
+            EntryTest.Exec(() => { Log.ConsumeWaitQueue(); });
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace XFrame.Modules.XType
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
             m_Constructors = new Dictionary<Type, ConstructorInfo[]>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            List<Type> tmpList = new List<Type>(short.MaxValue);
+            List<Type> tmpList = new List<Type>(1024);
             foreach (Assembly assembly in m_Assemblys)
             {
                 bool find = false;
@@ -74,9 +74,9 @@ namespace XFrame.Modules.XType
                 if (!find)
                     continue;
 
-                Type[] types = assembly.GetTypes();
-                foreach (Type type in types)
+                foreach (TypeInfo typeInfo in assembly.DefinedTypes)
                 {
+                    Type type = typeInfo.AsType();
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
                     m_TypesAllAttrs.Add(type, attrs);
                     foreach (Attribute attr in attrs)
