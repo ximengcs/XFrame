@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace XFrame.Modules.Times
 {
@@ -42,6 +43,11 @@ namespace XFrame.Modules.Times
             m_Times[key] = info;
         }
 
+        public void Record(float cd)
+        {
+            Record(default, cd);
+        }
+
         /// <summary>
         /// 重置一个cd, 调用后重置CD时间
         /// </summary>
@@ -50,6 +56,11 @@ namespace XFrame.Modules.Times
         {
             if (m_Times.TryGetValue(key, out CDInfo info))
                 info.Reset();
+        }
+
+        public void Reset()
+        {
+            Reset(default);
         }
 
         /// <summary>
@@ -73,6 +84,26 @@ namespace XFrame.Modules.Times
             return false;
         }
 
+        public bool Check(bool reset = false)
+        {
+            return Check(default, reset);
+        }
+
+        public float CheckTime(int key)
+        {
+            if (m_Times.TryGetValue(key, out CDInfo info))
+            {
+                return info.Suplus;
+            }
+
+            return -1;
+        }
+
+        public float CheckTime()
+        {
+            return CheckTime(default);
+        }
+
         private class CDInfo
         {
             private IUpdater m_Updater;
@@ -82,6 +113,11 @@ namespace XFrame.Modules.Times
             public CDInfo(IUpdater updater)
             {
                 m_Updater = updater;
+            }
+
+            public float Suplus
+            {
+                get { return EndTime - m_Updater.Time; }
             }
 
             public bool Due
