@@ -51,7 +51,7 @@ namespace XFrame.Modules.Download
         public DownTask Down(string url)
         {
             DownTask task = TaskModule.Inst.GetOrNew<DownTask>();
-            IDownloadHelper helper = (IDownloadHelper)Activator.CreateInstance(m_Helper);
+            IDownloadHelper helper = (IDownloadHelper)TypeModule.Inst.CreateInstance(m_Helper);
             helper.Url = url;
             helper.OnInit();
             task.Add(helper);

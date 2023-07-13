@@ -6,7 +6,7 @@ namespace XFrame.Modules.StateMachine
     /// 有限状态机
     /// </summary>
     /// <typeparam name="T">状态机拥有者类型</typeparam>
-    public interface IGenericFsm<T> : IFsmBase, IDataProvider
+    public interface IFsm<T> : IFsmBase, IDataProvider
     {
         /// <summary>
         /// 状态机拥有者

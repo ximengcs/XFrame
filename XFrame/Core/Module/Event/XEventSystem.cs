@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Pools;
 using System.Collections.Generic;
+using System;
 
 namespace XFrame.Modules.Event
 {
@@ -8,22 +9,90 @@ namespace XFrame.Modules.Event
     /// </summary>
     internal class XEventSystem : IEventSystem
     {
+        private class HandlerInfo : IPoolObject
+        {
+            public XEventHandler Handler1;
+            public XEventHandler2 Handler2;
+
+            public bool Empty => Handler1 == null && Handler2 == null;
+
+            int IPoolObject.PoolKey => default;
+
+            public void Do(XEvent e)
+            {
+                Handler1?.Invoke(e);
+
+                if (Handler2 != null)
+                {
+                    var list = Handler2.GetInvocationList();
+                    if (list != null)
+                    {
+                        foreach (Delegate dele in list)
+                        {
+                            XEventHandler2 handler = (XEventHandler2)dele;
+                            if (handler(e))
+                                Handler2 -= handler;
+                        }
+                    }
+                }
+            }
+
+            public void Add(XEventHandler handler1)
+            {
+                Handler1 += handler1;
+            }
+
+            public void Add(XEventHandler2 handler2)
+            {
+                Handler2 += handler2;
+            }
+
+            public void Remove(XEventHandler handler1)
+            {
+                Handler1 -= handler1;
+            }
+            public void Remove(XEventHandler2 handler2)
+            {
+                Handler2 -= handler2;
+            }
+
+            void IPoolObject.OnCreate()
+            {
+
+            }
+
+            void IPoolObject.OnRequest()
+            {
+                Handler1 = null;
+                Handler2 = null;
+            }
+
+            void IPoolObject.OnRelease()
+            {
+                Handler1 = null;
+                Handler2 = null;
+            }
+
+            void IPoolObject.OnDelete()
+            {
+
+            }
+        }
+
         private List<XEvent> m_WorkQueue;
-        private IPool<DefaultEvent> m_EventPool;
-        private Dictionary<int, XEventHandler> m_Handlers;
+        private List<XEvent> m_UpdateQueue;
+        private Dictionary<int, HandlerInfo> m_Handlers;
 
         public XEventSystem()
         {
             m_WorkQueue = new List<XEvent>();
-            m_Handlers = new Dictionary<int, XEventHandler>();
-            m_EventPool = PoolModule.Inst.GetOrNew<DefaultEvent>();
+            m_UpdateQueue = new List<XEvent>();
+            m_Handlers = new Dictionary<int, HandlerInfo>();
         }
 
         public void Trigger(int eventId)
         {
-            DefaultEvent evt = m_EventPool.Require();
-            evt.SetId(eventId);
-            Trigger(evt);
+            Trigger(DefaultEvent.Create(eventId));
         }
 
         public void Trigger(XEvent e)
@@ -33,62 +102,91 @@ namespace XFrame.Modules.Event
 
         public void TriggerNow(int eventId)
         {
-            DefaultEvent evt = m_EventPool.Require();
-            evt.SetId(eventId);
-            TriggerNow(evt);
-            InnerReleaseDefault(evt);
+            TriggerNow(DefaultEvent.Create(eventId));
         }
 
         public void TriggerNow(XEvent e)
         {
-            if (m_Handlers.TryGetValue(e.Id, out XEventHandler target))
+            if (m_Handlers.TryGetValue(e.Id, out HandlerInfo target))
             {
-                target?.Invoke(e);
+                target.Do(e);
             }
+            References.Release(e);
         }
 
         public void Listen(int eventId, XEventHandler handler)
         {
-            if (m_Handlers.TryGetValue(eventId, out XEventHandler target))
-                m_Handlers[eventId] += handler;
-            else
-                m_Handlers.Add(eventId, handler);
+            InnerGetInfo(eventId).Add(handler);
+        }
+
+        public void Listen(int eventId, XEventHandler2 handler)
+        {
+            InnerGetInfo(eventId).Add(handler);
+        }
+
+        private HandlerInfo InnerGetInfo(int eventId)
+        {
+            if (!m_Handlers.TryGetValue(eventId, out HandlerInfo target))
+            {
+                target = References.Require<HandlerInfo>();
+                m_Handlers.Add(eventId, target);
+            }
+            return target;
         }
 
         public void Unlisten(int eventId, XEventHandler handler)
         {
-            if (m_Handlers.TryGetValue(eventId, out XEventHandler target))
-                m_Handlers[eventId] -= handler;
-            else
+            if (m_Handlers.TryGetValue(eventId, out HandlerInfo target))
+            {
+                target.Remove(handler);
+                InnerCheckRelease(eventId, target);
+            }
+        }
+
+        public void Unlisten(int eventId, XEventHandler2 handler)
+        {
+            if (m_Handlers.TryGetValue(eventId, out HandlerInfo target))
+            {
+                target.Remove(handler);
+                InnerCheckRelease(eventId, target);
+            }
+        }
+
+        private void InnerCheckRelease(int eventId, HandlerInfo info)
+        {
+            if (info.Empty)
+            {
                 m_Handlers.Remove(eventId);
+                References.Release(info);
+            }
         }
 
         public void Unlisten(int eventId)
         {
-            if (m_Handlers.ContainsKey(eventId))
+            if (m_Handlers.TryGetValue(eventId, out HandlerInfo info))
+            {
                 m_Handlers.Remove(eventId);
+                References.Release(info);
+            }
         }
 
         public void Unlisten()
         {
+            foreach (var item in m_Handlers)
+                References.Release(item.Value);
             m_Handlers.Clear();
         }
 
-        void IEventSystem.OnUpdate()
+        public void OnUpdate()
         {
             if (m_WorkQueue == null || m_WorkQueue.Count == 0)
                 return;
 
-            foreach (XEvent e in m_WorkQueue)
+            m_UpdateQueue.AddRange(m_WorkQueue);
+            foreach (XEvent e in m_UpdateQueue)
                 TriggerNow(e);
             m_WorkQueue.Clear();
-        }
-
-        private void InnerReleaseDefault(XEvent e)
-        {
-            DefaultEvent evt = e as DefaultEvent;
-            if (evt != null)
-                m_EventPool.Release(evt);
+            m_UpdateQueue.Clear();
         }
     }
 }

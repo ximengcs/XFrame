@@ -1,6 +1,8 @@
 ﻿using System;
 using XFrame.Modules.XType;
 using System.Collections.Generic;
+using System.Diagnostics;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
@@ -11,6 +13,7 @@ namespace XFrame.Core
         private static bool m_DoStart;
         private static bool m_Runing;
         private static Action m_OnRun;
+        private static Stopwatch m_Sw;
 
         private static XCore m_Base;
         private static XCore m_Core;
@@ -33,6 +36,8 @@ namespace XFrame.Core
         /// </summary>
         public static void Init()
         {
+            Log.Debug("XFrame", "Launch Framework");
+            m_Sw = Stopwatch.StartNew();
             m_Inited = false;
             m_Runing = false;
             m_DoStart = false;
@@ -40,8 +45,8 @@ namespace XFrame.Core
             m_Base = XCore.Create();
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
+            m_Base.Register(typeof(TypeModule));
 
-            m_Base.Register<TypeModule>();
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
             handler.EnterHandle();
@@ -93,21 +98,24 @@ namespace XFrame.Core
                        {
                            m_Core.Start();
                            m_Custom.Start();
-                           handler.AfterHandle()
-                                  .OnComplete(() =>
-                                  {
-                                      m_Runing = true;
-                                      m_OnRun?.Invoke();
-                                  }).Start();
+                           handler.AfterHandle().OnComplete(InnerStartRun).Start();
                        }).Start();
             }
             else
             {
                 m_Core.Start();
                 m_Custom.Start();
-                m_Runing = true;
-                m_OnRun?.Invoke();
+                InnerStartRun();
             }
+        }
+
+        private static void InnerStartRun()
+        {
+            m_Sw.Stop();
+            Log.Debug("XFrame", $"Lunch spend time {m_Sw.ElapsedMilliseconds} ms");
+            m_Sw = null;
+            m_Runing = true;
+            m_OnRun?.Invoke();
         }
 
         /// <summary>
@@ -151,7 +159,7 @@ namespace XFrame.Core
             {
                 if (handType == typeof(IEntryHandler))
                     continue;
-                m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
+                m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
             }
         }
 
@@ -216,7 +224,7 @@ namespace XFrame.Core
                 {
                     if (handType == typeof(IEntryHandler))
                         continue;
-                    m_Handlers.Add(handType, (IEntryHandler)Activator.CreateInstance(type));
+                    m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
                 }
             }
         }

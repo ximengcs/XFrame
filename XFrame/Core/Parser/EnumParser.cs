@@ -1,33 +1,43 @@
 ﻿using System;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
     public class EnumParser<T> : IParser<T> where T : Enum
     {
-        public T Value { get; private set; }
+        private T m_Value;
+        public T Value => m_Value;
+        public LogLevel LogLv { get; set; }
 
-        object IParser.Value => Value;
+        object IParser.Value => m_Value;
+
+        int IPoolObject.PoolKey => default;
 
         public T Parse(string pattern)
         {
-            if (!string.IsNullOrEmpty(pattern))
+            if (!string.IsNullOrEmpty(pattern) && Enum.TryParse(typeof(T), pattern, out object value))
             {
-                if (Enum.TryParse(typeof(T), pattern, out object result))
-                {
-                    Value = (T)result;
-                    return Value;
-                }
+                m_Value = (T)value;
+            }
+            else
+            {
+                InnerSetDefault();
+                Log.Print(LogLv, "XFrame", $"EnumParser {typeof(T).Name} parse failure. {pattern}");
             }
 
+            return m_Value;
+        }
+
+        private void InnerSetDefault()
+        {
             DefaultValueAttribute attr = TypeModule.Inst.GetAttribute<DefaultValueAttribute>(typeof(T));
             if (attr != null)
-                Value = (T)attr.Value;
+                m_Value = (T)attr.Value;
             else
-                Value = default;
-            return Value;
+                m_Value = default;
         }
 
         object IParser.Parse(string pattern)
@@ -37,18 +47,39 @@ namespace XFrame.Core
 
         public override string ToString()
         {
-            return Value.ToString();
+            return m_Value.ToString();
         }
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return m_Value.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
-            return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+            return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            LogLv = LogLevel.Warning;
+            InnerSetDefault();
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(EnumParser<T> src, object tar)
@@ -64,13 +95,13 @@ namespace XFrame.Core
         public static implicit operator EnumParser<T>(T value)
         {
             EnumParser<T> parser = new EnumParser<T>();
-            parser.Value = value;
+            parser.m_Value = value;
             return parser;
         }
 
         public static implicit operator T(EnumParser<T> value)
         {
-            return value.Value;
+            return value.m_Value;
         }
     }
 }

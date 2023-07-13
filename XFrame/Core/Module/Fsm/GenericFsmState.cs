@@ -6,13 +6,13 @@ namespace XFrame.Modules.StateMachine
     /// </summary>
     public abstract class FsmState<T>
     {
-        protected IGenericFsm<T> m_Fsm;
+        protected IFsm<T> m_Fsm;
 
         /// <summary>
         /// 初始化生命周期
         /// </summary>
         /// <param name="fsm">状态机</param>
-        protected internal virtual void OnInit(IGenericFsm<T> fsm)
+        protected internal virtual void OnInit(IFsm<T> fsm)
         {
             m_Fsm = fsm;
         }
@@ -56,7 +56,7 @@ namespace XFrame.Modules.StateMachine
         /// <typeparam name="State">状态机类型</typeparam>
         protected internal void ChangeState<State>() where State : FsmState<T>
         {
-            GenericFsm<T> realFsm = m_Fsm as GenericFsm<T>;
+            Fsm<T> realFsm = m_Fsm as Fsm<T>;
             realFsm.ChangeState<State>();
         }
     }

@@ -47,7 +47,7 @@ namespace XFrame.Modules.Plots
             TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<DirectorAttribute>();
             foreach (Type type in typeSys)
             {
-                IDirector director = (IDirector)Activator.CreateInstance(type);
+                IDirector director = (IDirector)TypeModule.Inst.CreateInstance(type);
                 DirectorAttribute attr = TypeModule.Inst.GetAttribute<DirectorAttribute>(type);
                 if (attr.Default)
                     m_DefaultDirector = director;
@@ -60,7 +60,7 @@ namespace XFrame.Modules.Plots
                 Type type = TypeModule.Inst.GetType(XConfig.DefaultPlotHelper);
                 if (type != null)
                 {
-                    m_Helper = (IPlotHelper)Activator.CreateInstance(type);
+                    m_Helper = (IPlotHelper)TypeModule.Inst.CreateInstance(type);
                 }
             }
 

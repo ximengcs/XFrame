@@ -1,24 +1,34 @@
-﻿
-using XFrame.Modules.Diagnotics;
+﻿using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
     public class BoolParser : IParser<bool>
     {
-        public bool Value { get; private set; }
+        private bool m_Value;
+        public bool Value => m_Value;
+        public LogLevel LogLv { get; set; }
 
-        object IParser.Value => Value;
+        object IParser.Value => m_Value;
+
+        int IPoolObject.PoolKey => default;
 
         public bool Parse(string pattern)
         {
-            if (string.IsNullOrEmpty(pattern))
-                return default;
-            if (bool.TryParse(pattern, out bool result))
-                Value = result;
-            else if (int.TryParse(pattern, out int intResult))
-                Value = intResult != 0 ? true : false;
+            if (string.IsNullOrEmpty(pattern) || !bool.TryParse(pattern, out m_Value))
+            {
+                if (int.TryParse(pattern, out int intResult))
+                {
+                    m_Value = intResult != 0 ? true : false;
+                }
+                else
+                {
+                    m_Value = default;
+                    Log.Print(LogLv, "XFrame", $"BoolParser parse failure. {pattern}");
+                }
+            }
 
-            return Value;
+            return m_Value;
         }
 
         object IParser.Parse(string pattern)
@@ -28,18 +38,39 @@ namespace XFrame.Core
 
         public override string ToString()
         {
-            return Value.ToString();
+            return m_Value.ToString();
         }
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return m_Value.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
-            return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+            return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            LogLv = LogLevel.Warning;
+            m_Value = default;
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(BoolParser src, object tar)
@@ -54,13 +85,13 @@ namespace XFrame.Core
 
         public static implicit operator bool(BoolParser parser)
         {
-            return parser.Value;
+            return parser.m_Value;
         }
 
         public static implicit operator BoolParser(bool value)
         {
             BoolParser parser = new BoolParser();
-            parser.Value = value;
+            parser.m_Value = value;
             return parser;
         }
     }

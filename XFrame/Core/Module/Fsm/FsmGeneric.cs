@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.StateMachine
 {
-    internal class GenericFsm<T> : DataProvider, IGenericFsm<T>
+    internal class Fsm<T> : DataProvider, IFsm<T>
     {
         private T m_Owner;
         private string m_Name;
@@ -16,7 +16,7 @@ namespace XFrame.Modules.StateMachine
         public string Name => m_Name;
         public FsmState<T> Current => m_Current;
 
-        public GenericFsm(string name, List<FsmState<T>> states, T owner)
+        public Fsm(string name, List<FsmState<T>> states, T owner)
         {
             m_Name = name;
             m_Owner = owner;

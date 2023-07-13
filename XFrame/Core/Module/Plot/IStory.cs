@@ -24,6 +24,8 @@ namespace XFrame.Modules.Plots
         /// <returns>故事</returns>
         IStory AddSection(Type type);
 
+        Type[] GetSections();
+
         /// <summary>
         /// 初始化生命周期
         /// </summary>

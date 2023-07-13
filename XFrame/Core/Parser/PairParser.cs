@@ -1,4 +1,6 @@
 ﻿using System;
+using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -8,6 +10,12 @@ namespace XFrame.Core
         private char m_Split;
         private IParser m_KParser;
         private IParser m_VParser;
+
+        public char Split
+        {
+            get => m_Split;
+            set => m_Split = value;
+        }
 
         public PairParser()
         {
@@ -23,14 +31,16 @@ namespace XFrame.Core
 
         private void InnerInitParser()
         {
-            m_KParser = (IParser)Activator.CreateInstance(typeof(K));
-            m_VParser = (IParser)Activator.CreateInstance(typeof(V));
+            m_KParser = (IParser)TypeModule.Inst.CreateInstance(typeof(K));
+            m_VParser = (IParser)TypeModule.Inst.CreateInstance(typeof(V));
             Value = new Pair<K, V>((K)m_KParser, (V)m_VParser);
         }
 
         public Pair<K, V> Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public Pair<K, V> Parse(string pattern)
         {
@@ -66,6 +76,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            m_Split = SPLIT;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(PairParser<K, V> src, object tar)

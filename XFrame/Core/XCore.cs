@@ -1,6 +1,9 @@
 ﻿using System;
 using XFrame.Collections;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
+using System.Diagnostics;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
@@ -62,6 +65,11 @@ namespace XFrame.Core
             m_Modules = null;
         }
 
+        public IModule Register(IModule module)
+        {
+            return InnerInitModule(module, null);
+        }
+
         /// <summary>
         /// 注册模块
         /// </summary>
@@ -107,7 +115,7 @@ namespace XFrame.Core
                 helpers = new List<IModuleHelper>();
                 m_Helpers.Add(mType, helpers);
             }
-            T helper = Activator.CreateInstance<T>();
+            T helper = TypeModule.Inst.CreateInstance<T>();
             helpers.Add(helper);
 
             if (!m_MainHelper.ContainsKey(typeof(T)))
@@ -171,7 +179,21 @@ namespace XFrame.Core
 
         private IModule InnerAddModule(Type moduleType, object data)
         {
-            IModule module = (IModule)Activator.CreateInstance(moduleType);
+            Stopwatch sw = Stopwatch.StartNew();
+            IModule module;
+            if (TypeModule.Inst != null)
+                module = (IModule)TypeModule.Inst.CreateInstance(moduleType);
+            else
+                module = (IModule)Activator.CreateInstance(moduleType);
+
+            InnerInitModule(module, data);
+            sw.Stop();
+            Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            return module;
+        }
+
+        private IModule InnerInitModule(IModule module, object data)
+        {
             module.OnInit(data);
             m_Modules.Add(module);
             return module;

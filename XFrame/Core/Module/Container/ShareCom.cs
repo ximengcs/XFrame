@@ -10,8 +10,9 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ContainerBase, ICom
+    public abstract class ShareCom : PoolObjectBase, ICom
     {
+        private State m_Status;
         private IContainer m_Owner;
         private bool m_Active;
 
@@ -32,40 +33,52 @@ namespace XFrame.Modules.Containers
         }
 
         public int Id { get; private set; }
+
         public IContainer Master { get; private set; }
-        IContainer ICom.Owner { get; set; }
+
+        IContainer ICom.Owner
+        {
+            get => m_Owner;
+            set => m_Owner = value;
+        }
+
         protected IContainer Owner => m_Owner;
 
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
-            if (Status == State.Using)
+            if (m_Status == State.Using)
             {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {Status}, but enter OnInit.");
+                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnInit.");
                 return;
             }
+
             Id = id;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else
                 Master = master;
-            m_Owner = ((ICom)this).Owner;
-            Status = State.Using;
+
+            m_Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
+
+        protected internal virtual void OnInit() { }
 
         void IContainer.OnUpdate(float elapseTime)
         {
             OnUpdate(elapseTime);
         }
 
+        protected internal virtual void OnUpdate(float elapseTime) { }
+
         void IContainer.OnDestroy()
         {
             OnDestroy();
-            Status = State.Disposed;
+            m_Status = State.Disposed;
         }
 
-        int IPoolObject.PoolKey => 0;
+        protected internal virtual void OnDestroy() { }
 
         void IPoolObject.OnCreate()
         {
@@ -75,7 +88,7 @@ namespace XFrame.Modules.Containers
         void IPoolObject.OnRequest()
         {
             OnRequestFromPool();
-            Status = State.NotInit;
+            m_Status = State.NotInit;
         }
 
         void IPoolObject.OnRelease()
@@ -106,9 +119,9 @@ namespace XFrame.Modules.Containers
             return m_Owner.AddCom<T>(onReady);
         }
 
-        public ICom AddCom(ICom com, int id = 0, OnDataProviderReady onReady = null)
+        public ICom AddCom(ICom com)
         {
-            return m_Owner.AddCom(com, id, onReady);
+            return m_Owner.AddCom(com);
         }
 
         public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom

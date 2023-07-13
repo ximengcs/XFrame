@@ -29,6 +29,11 @@ namespace XFrameTest
                 m_System.Listen(eventId, handler);
             }
 
+            public static void Listen(int eventId, XEventHandler2 handler)
+            {
+                m_System.Listen(eventId, handler);
+            }
+
             public static void Trigger(int eventId)
             {
                 m_System.Trigger(eventId);
@@ -54,6 +59,11 @@ namespace XFrameTest
                 m_System.Unlisten(eventId, handler);
             }
 
+            public static void Unlisten(int eventId, XEventHandler2 handler)
+            {
+                m_System.Unlisten(eventId, handler);
+            }
+
             public static void Unlisten(int eventId)
             {
                 m_System.Unlisten(eventId);
@@ -70,6 +80,8 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
+                Log.ConsumeWaitQueue();
+                Log.ToQueue = false;
                 IEventSystem evtSys = EventModule.Inst.NewSys();
                 evtSys.Listen(TestEvent.EventId, (e) =>
                 {
@@ -102,6 +114,32 @@ namespace XFrameTest
                 GlobalEvent.Unlisten();
                 GlobalEvent.TriggerNow(0);
                 GlobalEvent.TriggerNow(1);
+            });
+        }
+
+        [TestMethod]
+        public void Test3()
+        {
+            EntryTest.Exec(() =>
+            {
+                GlobalEvent.Init();
+                XEventHandler handler = (e) => Log.Debug("h1 " + e.Id);
+                XEventHandler2 handler2 = (e) =>
+                {
+                    Log.Debug("h2 " + e.Id);
+                    return false;
+                }; XEventHandler2 handler3 = (e) =>
+                {
+                    Log.Debug("h3 " + e.Id);
+                    return true;
+                };
+                GlobalEvent.Listen(0, handler);
+                GlobalEvent.Listen(0, handler2);
+                GlobalEvent.Listen(0, handler3);
+                GlobalEvent.TriggerNow(0);
+                GlobalEvent.Trigger(0);
+                GlobalEvent.Trigger(0);
+                GlobalEvent.Trigger(0);
             });
         }
     }

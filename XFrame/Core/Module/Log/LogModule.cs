@@ -93,7 +93,7 @@ namespace XFrame.Modules.Diagnotics
 
         private ILogger InnerAddLogger(Type type)
         {
-            ILogger logger = Activator.CreateInstance(type) as ILogger;
+            ILogger logger = TypeModule.Inst.CreateInstance(type) as ILogger;
             m_Loggers.Add(logger);
             return logger;
         }

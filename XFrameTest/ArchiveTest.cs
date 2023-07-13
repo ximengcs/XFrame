@@ -6,6 +6,17 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrameTest
 {
+    public class D1
+    {
+        public int Index = 222;
+        public string Name = "111";
+
+        public override string ToString()
+        {
+            return $"{Index} {Name}";
+        }
+    }
+
     [TestClass]
     public class ArchiveTest
     {
@@ -16,6 +27,32 @@ namespace XFrameTest
             {
                 JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>("archive_test");
                 archive.Set("name", "simon");
+
+                IJsonArchive a1 = archive.SpwanDataProvider("a1");
+                a1.SetData(1);
+                a1.SetData(1.2);
+
+                IJsonArchive a2 = archive.SpwanDataProvider("a2");
+                a2.SetData("1");
+                a2.SetData(new D1());
+            });
+        }
+
+        [TestMethod]
+        public void Test3()
+        {
+            EntryTest.Exec(() =>
+            {
+                JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>("archive_test");
+                Console.WriteLine(archive.Get<string>("name"));
+
+                IJsonArchive a1 = archive.SpwanDataProvider("a1");
+                Console.WriteLine(a1.GetData<int>());
+                Console.WriteLine(a1.GetData<double>());
+
+                IJsonArchive a2 = archive.SpwanDataProvider("a2");
+                Console.WriteLine(a2.GetData<string>());
+                Console.WriteLine(a2.GetData<D1>());
             });
         }
 
@@ -30,7 +67,7 @@ namespace XFrameTest
         }
 
         [TestMethod]
-        public void Test3()
+        public void Test11()
         {
             EntryTest.Exec(() =>
             {

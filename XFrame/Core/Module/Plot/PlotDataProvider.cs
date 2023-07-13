@@ -12,7 +12,6 @@ namespace XFrame.Modules.Plots
     internal class PlotDataProvider : IDataProvider
     {
         private JsonArchive m_Persist;
-        private JSONObject m_SectionData;
         private JSONObject m_Sections;
 
         public ValueBinder<bool> Finish { get; set; }
@@ -21,7 +20,6 @@ namespace XFrame.Modules.Plots
         {
             m_Persist = data;
             m_Sections = m_Persist.GetOrNewObject(nameof(m_Persist));
-            m_SectionData = m_Persist.GetOrNewObject(nameof(m_SectionData));
             Finish = new ValueBinder<bool>(
                 () => m_Persist.GetBool(nameof(Finish)),
                 (v) => m_Persist.SetBool(nameof(Finish), v));
@@ -44,7 +42,9 @@ namespace XFrame.Modules.Plots
 
         public void ClearData()
         {
-
+            ArchiveModule.Inst.Delete(m_Persist);
+            m_Persist = null;
+            m_Sections = null;
         }
 
         public T GetData<T>()

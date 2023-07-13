@@ -43,6 +43,8 @@ namespace XFrame.Modules.Procedure
         #endregion
 
         #region Interface
+        public IFsm Fsm => m_Fsm;
+
         /// <summary>
         /// 重定向启动流程
         /// </summary>
@@ -95,7 +97,7 @@ namespace XFrame.Modules.Procedure
         {
             if (!m_Fsm.HasState(type))
             {
-                ProcedureBase proc = (ProcedureBase)Activator.CreateInstance(type);
+                ProcedureBase proc = (ProcedureBase)TypeModule.Inst.CreateInstance(type);
                 m_Fsm.InnerAddState(proc);
             }
             else

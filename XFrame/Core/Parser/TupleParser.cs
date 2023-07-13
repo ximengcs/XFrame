@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Modules.Pools;
 using XFrame.Modules.Serialize;
 
 namespace XFrame.Core
@@ -12,6 +13,8 @@ namespace XFrame.Core
         public ValueTuple<T1> Value => m_Value;
 
         object IParser.Value => m_Value;
+
+        int IPoolObject.PoolKey => default;
 
         public ValueTuple<T1> Parse(string pattern)
         {
@@ -43,6 +46,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(TupleParser<T1> src, object tar)
@@ -78,6 +101,8 @@ namespace XFrame.Core
 
         object IParser.Value => m_Value;
 
+        int IPoolObject.PoolKey => default;
+
         public ValueTuple<T1, T2> Parse(string pattern)
         {
             pattern = pattern.Substring(1, pattern.Length - 2);
@@ -108,6 +133,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(TupleParser<T1, T2> src, object tar)

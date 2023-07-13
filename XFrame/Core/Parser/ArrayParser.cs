@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 using XFrame.Collections;
+using XFrame.Modules.Pools;
+using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -12,6 +14,8 @@ namespace XFrame.Core
         public XLinkList<T> Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public ArrayParser()
         {
@@ -25,14 +29,17 @@ namespace XFrame.Core
 
         public XLinkList<T> Parse(string pattern)
         {
-            string[] pArray = pattern.Split(m_Split);
-            Value = new XLinkList<T>(false);
-            Type type = typeof(T);
-            for (int i = 0; i < pArray.Length; i++)
+            Value = new XLinkList<T>();
+            if (!string.IsNullOrEmpty(pattern))
             {
-                T parser = (T)Activator.CreateInstance(type);
-                parser.Parse(pArray[i]);
-                Value.AddLast(parser);
+                string[] pArray = pattern.Split(m_Split);
+                Type type = typeof(T);
+                for (int i = 0; i < pArray.Length; i++)
+                {
+                    T parser = (T)TypeModule.Inst.CreateInstance(type);
+                    parser.Parse(pArray[i]);
+                    Value.AddLast(parser);
+                }
             }
 
             return Value;
@@ -54,6 +61,18 @@ namespace XFrame.Core
         public bool Has(object value)
         {
             return IndexOf(value) != -1;
+        }
+
+        public T Get(int index)
+        {
+            int current = 0;
+            foreach (XLinkNode<T> node in Value)
+            {
+                if (index == current)
+                    return node.Value;
+                current++;
+            }
+            return default;
         }
 
         public int IndexOf(object value, Func<object, object, bool> action)
@@ -104,6 +123,27 @@ namespace XFrame.Core
                     return false;
             }
             return true;
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            m_Split = SPLIT;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            Value.Clear();
+        }
+
+        void IPoolObject.OnDelete()
+        {
+            Value.Clear();
+            Value = null;
         }
     }
 }

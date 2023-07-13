@@ -2,6 +2,7 @@
 using XFrame.Core;
 using System.Collections.Generic;
 using XFrame.Module.Rand;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.StateMachine
 {
@@ -69,7 +70,7 @@ namespace XFrame.Modules.StateMachine
         /// <param name="owner">状态机拥有者</param>
         /// <param name="states">状态机状态集合</param>
         /// <returns>获取到的状态机</returns>
-        public IGenericFsm<T> GetOrNew<T>(string name, T owner, params Type[] states)
+        public IFsm<T> GetOrNew<T>(string name, T owner, params Type[] states)
         {
             return InnerCreateFsm(name, owner, states);
         }
@@ -81,7 +82,7 @@ namespace XFrame.Modules.StateMachine
         /// <param name="owner">状态机拥有者</param>
         /// <param name="states">状态机状态集合</param>
         /// <returns>获取到的状态机</returns>
-        public IGenericFsm<T> GetOrNew<T>(T owner, params Type[] states)
+        public IFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
             return GetOrNew(RandModule.Inst.RandString(), owner, states);
         }
@@ -106,16 +107,16 @@ namespace XFrame.Modules.StateMachine
         #endregion
 
         #region Inner Implement
-        private IGenericFsm<T> InnerCreateFsm<T>(string name, T owner, Type[] types)
+        private IFsm<T> InnerCreateFsm<T>(string name, T owner, Type[] types)
         {
             List<FsmState<T>> states = new List<FsmState<T>>(types.Length);
             foreach (Type type in types)
             {
-                FsmState<T> state = (FsmState<T>)Activator.CreateInstance(type);
+                FsmState<T> state = (FsmState<T>)TypeModule.Inst.CreateInstance(type);
                 states.Add(state);
             }
 
-            IGenericFsm<T> fsm = new GenericFsm<T>(name, states, owner);
+            IFsm<T> fsm = new Fsm<T>(name, states, owner);
             fsm.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);
@@ -127,7 +128,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState> states = new List<FsmState>(types.Length);
             foreach (Type type in types)
             {
-                FsmState state = (FsmState)Activator.CreateInstance(type);
+                FsmState state = (FsmState)TypeModule.Inst.CreateInstance(type);
                 states.Add(state);
             }
 
@@ -148,5 +149,5 @@ namespace XFrame.Modules.StateMachine
             }
         }
         #endregion
-    }
-}
+    } 
+} 

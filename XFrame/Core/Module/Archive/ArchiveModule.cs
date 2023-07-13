@@ -31,7 +31,7 @@ namespace XFrame.Modules.Archives
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Timer = new CDTimer();
+            m_Timer = CDTimer.Create();
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
@@ -115,6 +115,24 @@ namespace XFrame.Modules.Archives
                 m_Archives.Remove(name);
             }
         }
+
+        public void Delete(IArchive archive)
+        {
+            if (m_Archives.ContainsKey(archive.Name))
+            {
+                archive.Delete();
+                m_Archives.Remove(archive.Name);
+            }
+        }
+
+        public void DeleteAll()
+        {
+            foreach (IArchive archive in m_Archives.Values)
+            {
+                archive.Delete();
+            }
+            m_Archives.Clear();
+        }
         #endregion
 
         #region Inner Implement
@@ -149,8 +167,8 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)Activator.CreateInstance(archiveType);
-                source.OnInit(InnerGetPath(archiveType, name), param);
+                IArchive source = (IArchive)TypeModule.Inst.CreateInstance(archiveType);
+                source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;
             }

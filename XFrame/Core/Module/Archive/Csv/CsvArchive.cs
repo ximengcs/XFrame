@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using XFrame.Core;
 using XFrame.Collections;
+using System.Xml.Linq;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Archives
 {
@@ -14,11 +16,14 @@ namespace XFrame.Modules.Archives
 
         #region Interface
         public Csv<string> Data => m_Csv;
+
+        public string Name { get; private set; }
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, object param)
+        void IArchive.OnInit(string path, string name, object param)
         {
+            Name = name;
             m_Path = path;
             int column = 0;
             if (param != null)
@@ -26,7 +31,7 @@ namespace XFrame.Modules.Archives
             if (File.Exists(m_Path))
             {
                 string text = ArchiveUtility.ReadText(m_Path);
-                m_Csv = new Csv<string>(text, ParserModule.Inst.STRING);
+                m_Csv = new Csv<string>(text, References.Require<StringParser>());
             }
             else
             {

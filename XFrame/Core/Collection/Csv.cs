@@ -7,6 +7,7 @@ using XFrame.Modules.Pools;
 using System.IO;
 using System.Globalization;
 using CsvHelper;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace XFrame.Collections
 {
@@ -184,41 +185,23 @@ namespace XFrame.Collections
 
         private void InnerInit(string raw, IParser<T> parser)
         {
-            string[] lines = raw.Split('\n');
-            m_Row = lines.Length;
-
-            List<Line> rows = new List<Line>(m_Row);
-            for (int i = 0; i < m_Row; i++)
+            m_Row = 0;
+            CsvReader csvReader = new CsvReader(new StringReader(raw), CultureInfo.CurrentCulture);
+            while (csvReader.Read())
             {
-                string content = lines[i];
-                if (string.IsNullOrEmpty(content))
-                {
-                    m_Row--;
-                    continue;
-                }
-
-                CsvReader csvReader = new CsvReader(new StringReader(content), CultureInfo.CurrentCulture);
-                CsvDataReader csvDataReader = new CsvDataReader(csvReader);
-                m_Column = csvDataReader.FieldCount;
+                m_Column = csvReader.Parser.Count;
 
                 Line line = new Line(m_Column);
                 for (int j = 0; j < m_Column; j++)
                 {
-                    string value = csvDataReader[j].ToString();
+                    string value = csvReader[j].ToString();
                     line[j] = parser.Parse(value);
                 }
-                rows.Add(line);
-
-                csvDataReader.Dispose();
-                csvReader.Dispose();
-            }
-
-            for (int i = 0; i < rows.Count; i++)
-            {
-                Line line = rows[i];
                 XLinkNode<Line> node = m_Lines.AddLast(line);
-                m_LinesWithIndex.Add(i + 1, node);
+                m_LinesWithIndex.Add(++m_Row, node);
             }
+            References.Release(parser);
+            csvReader.Dispose();
         }
         #endregion
 

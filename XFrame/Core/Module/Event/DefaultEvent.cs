@@ -4,11 +4,11 @@ namespace XFrame.Modules.Event
 {
     internal class DefaultEvent : XEvent
     {
-        public DefaultEvent() : base(default) { }
-
-        public void SetId(int eventId)
+        public static DefaultEvent Create(int eventId)
         {
-            Id = eventId;
+            DefaultEvent evt = References.Require<DefaultEvent>();
+            evt.Id = eventId;
+            return evt;
         }
     }
 }

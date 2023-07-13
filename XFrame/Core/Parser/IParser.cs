@@ -1,10 +1,12 @@
 ﻿
+using XFrame.Modules.Pools;
+
 namespace XFrame.Core
 {
     /// <summary>
     /// 解析器
     /// </summary>
-    public interface IParser
+    public interface IParser : IPoolObject
     {
         /// <summary>
         /// 值

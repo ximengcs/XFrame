@@ -9,11 +9,15 @@ namespace XFrame.Modules.Plots
     [Director]
     public class NonBlockDirector : IDirector
     {
+        private const string NAME = "nonblock_director";
+        private JsonArchive m_Archive;
         private XLinkList<StoryInfo> m_Stories;
 
         void IDirector.OnInit()
         {
             m_Stories = new XLinkList<StoryInfo>();
+            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(NAME);
+            InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
         void IDirector.OnUpdate()
@@ -41,6 +45,7 @@ namespace XFrame.Modules.Plots
                     case StoryState.Complete:
                         item.Story.OnDestroy();
                         story.Delete();
+                        Remove(item.Story);
                         break;
                 }
             }
@@ -53,10 +58,8 @@ namespace XFrame.Modules.Plots
 
         public void Play(IStory story)
         {
-            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(story.Name);
-            PlotDataProvider binder = new PlotDataProvider(archive);
-            m_Stories.AddLast(new StoryInfo(story, binder));
-            story.OnInit(binder);
+            PlotUtility.InnerRecordStoryState(m_Archive, story);
+            InnerPlay(story);
         }
 
         public void Play(IStory[] stories)
@@ -65,16 +68,24 @@ namespace XFrame.Modules.Plots
                 Play(story);
         }
 
+        private void InnerPlay(IStory story)
+        {
+            string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
+            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(saveName);
+            PlotDataProvider binder = new PlotDataProvider(archive);
+            m_Stories.AddLast(new StoryInfo(story, binder));
+            story.OnInit(binder);
+        }
+
+        private void InnerPlay(IStory[] stories)
+        {
+            foreach (IStory story in stories)
+                InnerPlay(story);
+        }
+
         public void Remove(IStory story)
         {
-            foreach (XLinkNode<StoryInfo> info in m_Stories)
-            {
-                if (info.Value.Story == story)
-                {
-                    info.Delete();
-                    break;
-                }
-            }
+            Remove(story.Name);
         }
 
         public void Remove(string storyName)
@@ -87,6 +98,7 @@ namespace XFrame.Modules.Plots
                     break;
                 }
             }
+            PlotUtility.InnerRemoveStoryState(m_Archive, storyName);
         }
     }
 }

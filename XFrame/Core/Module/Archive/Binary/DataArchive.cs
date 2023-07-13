@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Xml.Linq;
 
 namespace XFrame.Modules.Archives
 {
@@ -17,8 +18,9 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, object param)
+        void IArchive.OnInit(string path, string name, object param)
         {
+            Name = name;
             m_Path = path;
             m_Builder = new BytesBuilder(FILE_CODE);
 
@@ -48,6 +50,8 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
+        public string Name { get; private set; }
+
         /// <summary>
         /// 向存档写入字节数据
         /// </summary>

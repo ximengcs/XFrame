@@ -1,4 +1,6 @@
 ﻿
+using XFrame.Modules.Pools;
+
 namespace XFrame.Core
 {
     public class StringParser : IParser<string>
@@ -6,6 +8,8 @@ namespace XFrame.Core
         public string Value { get; private set; }
 
         object IParser.Value => Value;
+
+        int IPoolObject.PoolKey => default;
 
         public string Parse(string pattern)
         {
@@ -32,6 +36,26 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+            Value = null;
+        }
+
+        void IPoolObject.OnRelease()
+        {
+
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
         }
 
         public static bool operator ==(StringParser src, object tar)

@@ -21,11 +21,10 @@ namespace XFrame.Module.Rand
         {
             base.OnInit(data);
             m_Random = new Random(DateTime.Now.Millisecond);
-            m_InValidChars = new HashSet<char>();
 
             char[] fChs = Path.GetInvalidFileNameChars();
             char[] pChs = Path.GetInvalidPathChars();
-            m_InValidChars = new HashSet<char>(fChs.Length + pChs.Length);
+            m_InValidChars = new HashSet<char>((fChs.Length + pChs.Length) * 2);
             foreach (char ch in fChs)
                 m_InValidChars.Add(ch);
             foreach (char ch in pChs)

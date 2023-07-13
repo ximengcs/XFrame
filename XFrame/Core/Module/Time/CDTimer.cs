@@ -1,32 +1,71 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Linq;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Times
 {
     /// <summary>
     /// CD计时器
     /// </summary>
-    public partial class CDTimer
+    public partial class CDTimer : IPoolObject
     {
+        private string m_Name;
         private IUpdater m_Updater;
         private Dictionary<int, CDInfo> m_Times;
+
+        public string Name => m_Name;
+
+        int IPoolObject.PoolKey => default;
 
         /// <summary>
         /// 构造CD计时器
         /// </summary>
-        /// <param name="updater">时间更新器</param>
-        public CDTimer(IUpdater updater)
+        private CDTimer()
         {
-            m_Updater = updater;
+            m_Updater = Default;
             m_Times = new Dictionary<int, CDInfo>();
         }
 
         /// <summary>
         /// 构造CD计时器
         /// </summary>
-        public CDTimer()
+        /// <param name="updater">时间更新器</param>
+        public static CDTimer Create(IUpdater updater)
         {
-            m_Updater = Default;
-            m_Times = new Dictionary<int, CDInfo>();
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Updater = updater;
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            return timer;
+        }
+
+        public static CDTimer Create()
+        {
+            CDTimer timer = References.Require<CDTimer>();
+            TimeModule.Inst.InnerAddTimer(timer);
+            return timer;
+        }
+
+        public static CDTimer Create(string name)
+        {
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Name = name;
+            TimeModule.Inst.InnerAddTimer(timer);
+            return timer;
+        }
+
+        public static CDTimer Create(string name, IUpdater updater)
+        {
+            CDTimer timer = References.Require<CDTimer>();
+            timer.m_Name = name;
+            timer.m_Updater = updater;
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            TimeModule.Inst.InnerAddTimer(timer);
+            return timer;
+        }
+
+        public void SetUpdater(IUpdater updater)
+        {
+            m_Updater = updater;
         }
 
         /// <summary>
@@ -42,6 +81,11 @@ namespace XFrame.Modules.Times
             m_Times[key] = info;
         }
 
+        public void Record(float cd)
+        {
+            Record(default, cd);
+        }
+
         /// <summary>
         /// 重置一个cd, 调用后重置CD时间
         /// </summary>
@@ -50,6 +94,11 @@ namespace XFrame.Modules.Times
         {
             if (m_Times.TryGetValue(key, out CDInfo info))
                 info.Reset();
+        }
+
+        public void Reset()
+        {
+            Reset(default);
         }
 
         /// <summary>
@@ -73,6 +122,49 @@ namespace XFrame.Modules.Times
             return false;
         }
 
+        public bool Check(bool reset = false)
+        {
+            return Check(default, reset);
+        }
+
+        public float CheckTime(int key)
+        {
+            if (m_Times.TryGetValue(key, out CDInfo info))
+            {
+                return info.Suplus;
+            }
+
+            return -1;
+        }
+
+        public float CheckTime()
+        {
+            return CheckTime(default);
+        }
+
+        void IPoolObject.OnCreate()
+        {
+
+        }
+
+        void IPoolObject.OnRequest()
+        {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
+            TimeModule.Inst.InnerRemove(this);
+            m_Name = null;
+            m_Times.Clear();
+            m_Updater = null;
+        }
+
+        void IPoolObject.OnDelete()
+        {
+
+        }
+
         private class CDInfo
         {
             private IUpdater m_Updater;
@@ -82,6 +174,11 @@ namespace XFrame.Modules.Times
             public CDInfo(IUpdater updater)
             {
                 m_Updater = updater;
+            }
+
+            public float Suplus
+            {
+                get { return EndTime - m_Updater.Time; }
             }
 
             public bool Due

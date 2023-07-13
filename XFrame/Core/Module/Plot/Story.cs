@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Module.Rand;
 using System.Collections.Generic;
-using XFrame.Modules.Archives;
+using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Plots
 {
@@ -90,7 +90,7 @@ namespace XFrame.Modules.Plots
                 }
                 else
                 {
-                    ISection section = (ISection)Activator.CreateInstance(type);
+                    ISection section = (ISection)TypeModule.Inst.CreateInstance(type);
                     m_Current = new SectionInfo(section, SectionState.WaitInit);
                 }
             }
@@ -103,7 +103,11 @@ namespace XFrame.Modules.Plots
         void IStory.OnDestroy()
         {
             m_Data.ClearData();
-            ArchiveModule.Inst.Delete(Name);
+        }
+
+        public Type[] GetSections()
+        {
+            return m_SectionTypes.ToArray();
         }
     }
 }

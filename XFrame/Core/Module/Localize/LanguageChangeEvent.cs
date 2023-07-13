@@ -1,18 +1,31 @@
 ﻿using XFrame.Modules.Event;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Local
 {
     public class LanguageChangeEvent : XEvent
     {
-        public static int EventId => typeof(LanguageChangeEvent).GetHashCode();
-
-        public Language Old { get; }
-        public Language New { get; }
-
-        internal LanguageChangeEvent(Language oldLang, Language newLang) : base(EventId)
+        private static int s_EventId;
+        public static int EventId
         {
-            Old = oldLang;
-            New = newLang;
+            get
+            {
+                if (s_EventId == default)
+                    s_EventId = typeof(LanguageChangeEvent).GetHashCode();
+                return s_EventId;
+            }
+        }
+
+        public Language Old { get; private set; }
+        public Language New { get; private set; }
+
+        public static LanguageChangeEvent Create(Language oldLang, Language newLang)
+        {
+            LanguageChangeEvent evt = References.Require<LanguageChangeEvent>();
+            evt.Id = EventId;
+            evt.Old = oldLang;
+            evt.New = newLang;
+            return evt;
         }
     }
 }
