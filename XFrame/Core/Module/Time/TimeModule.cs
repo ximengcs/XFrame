@@ -1,6 +1,5 @@
 ﻿using XFrame.Core;
 using System.Collections.Generic;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Times
 {
@@ -39,35 +38,25 @@ namespace XFrame.Modules.Times
             return timers;
         }
 
-        public CDTimer NewTimer()
+        internal void InnerAddTimer(CDTimer timer)
         {
-            CDTimer timer = CDTimer.Create();
-            m_AnonymousTimers.Add(timer);
-            return timer;
+            if (string.IsNullOrEmpty(timer.Name))
+                m_AnonymousTimers.Add(timer);
+            else
+                m_Timers.Add(timer.Name, timer);
         }
 
-        public void Remove(CDTimer timer)
+        internal void InnerRemove(CDTimer timer)
         {
-            if (m_AnonymousTimers.Contains(timer))
+            if (string.IsNullOrEmpty(timer.Name))
             {
-                m_AnonymousTimers.Remove(timer);
-                References.Release(timer);
+                if (m_AnonymousTimers.Contains(timer))
+                    m_AnonymousTimers.Remove(timer);
             }
-        }
-
-        public CDTimer NewTimer(string name)
-        {
-            CDTimer timer = CDTimer.Create(name);
-            m_Timers.Add(name, timer);
-            return timer;
-        }
-
-        public void RemoveTimer(string name)
-        {
-            if (m_Timers.TryGetValue(name, out CDTimer timer))
+            else
             {
-                m_Timers.Remove(name);
-                References.Release(timer);
+                if (m_Timers.ContainsKey(timer.Name))
+                    m_Timers.Remove(timer.Name);
             }
         }
 

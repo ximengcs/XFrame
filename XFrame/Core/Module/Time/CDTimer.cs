@@ -40,13 +40,16 @@ namespace XFrame.Modules.Times
 
         public static CDTimer Create()
         {
-            return References.Require<CDTimer>();
+            CDTimer timer = References.Require<CDTimer>();
+            TimeModule.Inst.InnerAddTimer(timer);
+            return timer;
         }
 
         public static CDTimer Create(string name)
         {
             CDTimer timer = References.Require<CDTimer>();
             timer.m_Name = name;
+            TimeModule.Inst.InnerAddTimer(timer);
             return timer;
         }
 
@@ -56,6 +59,7 @@ namespace XFrame.Modules.Times
             timer.m_Name = name;
             timer.m_Updater = updater;
             timer.m_Times = new Dictionary<int, CDInfo>();
+            TimeModule.Inst.InnerAddTimer(timer);
             return timer;
         }
 
@@ -150,6 +154,7 @@ namespace XFrame.Modules.Times
 
         void IPoolObject.OnRelease()
         {
+            TimeModule.Inst.InnerRemove(this);
             m_Name = null;
             m_Times.Clear();
             m_Updater = null;
