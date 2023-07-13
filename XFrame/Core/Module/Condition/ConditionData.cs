@@ -9,6 +9,12 @@ namespace XFrame.Modules.Conditions
 
         public ArrayParser<PairParser<IntParser, UniversalParser>> Parser;
 
+        public ConditionData(ArrayParser<PairParser<IntParser, UniversalParser>> parser)
+        {
+            m_First = null;
+            Parser = parser;
+        }
+
         public PairParser<IntParser, UniversalParser> First
         {
             get
