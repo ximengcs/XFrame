@@ -60,5 +60,10 @@ namespace XFrame.Modules.Conditions
             }
             return result;
         }
+
+        public override string ToString()
+        {
+            return Parser.ToString();
+        }
     }
 }
