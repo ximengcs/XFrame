@@ -60,20 +60,46 @@ namespace XFrameTest
         [TestMethod]
         public void Test4()
         {
-            string text = File.ReadAllText("C:\\Users\\XM\\Desktop\\1.csv");
-            CsvReader csvReader = new CsvReader(new StringReader(text), CultureInfo.CurrentCulture);
-            int row = 0;
-            while (csvReader.Read())
+            string text = File.ReadAllText("C:\\Users\\XM\\Desktop\\debug.txt");
+            CultureInfo[] infos = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            CultureInfo german = null;
+            int count1 = 0;
+            foreach (CultureInfo info in infos)
             {
-                Console.WriteLine("row " + row++);
-                int count = csvReader.Parser.Count;
-                for (int i = 0; i < count; i++)
+                bool exc = false;
+                try
                 {
-                    Console.WriteLine("=============");
-                    Console.Write($"[{csvReader[i]}]");
-                    Console.WriteLine("\n=============");
+                    CsvReader csvReader = new CsvReader(new StringReader(text), CultureInfo.InvariantCulture);
+                    int row = 0;
+                    while (csvReader.Read())
+                    {
+                        //Console.WriteLine("row " + row++);
+                        int count = csvReader.Parser.Count;
+                        for (int i = 0; i < count; i++)
+                        {
+                            //Console.WriteLine("=============");
+                            //Console.Write($"[{csvReader[i]}]");
+                            //Console.WriteLine("\n=============");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    count1++;
+                    Console.WriteLine(info.EnglishName);
+                    exc = true;
+                }
+                if (exc)
+                {
+                    //Console.WriteLine("normal " + info.EnglishName);
                 }
             }
+        }
+
+        [TestMethod]
+        public void Test5()
+        {
+
         }
     }
 }

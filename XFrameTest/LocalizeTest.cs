@@ -48,6 +48,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
+                Log.ToQueue = false;
                 LocalizeModule.Inst.SetFormater(new IdFormatter());
                 LocalizeModule.Inst.Lang = Language.ChineseSimplified;
                 Log.Debug($"{LocalizeModule.Inst.GetValueParam(3, 0, 1, 2)}");

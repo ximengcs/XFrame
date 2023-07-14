@@ -186,7 +186,7 @@ namespace XFrame.Collections
         private void InnerInit(string raw, IParser<T> parser)
         {
             m_Row = 0;
-            CsvReader csvReader = new CsvReader(new StringReader(raw), CultureInfo.CurrentCulture);
+            CsvReader csvReader = new CsvReader(new StringReader(raw), CultureInfo.InvariantCulture);
             while (csvReader.Read())
             {
                 m_Column = csvReader.Parser.Count;
