@@ -1,5 +1,7 @@
 ﻿
 using System.Reflection;
+using System.Text;
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.XType;
 
@@ -57,6 +59,12 @@ namespace XFrameTest
             Console.WriteLine(t1.IsAssignableFrom(t2));
             Console.WriteLine(t2.IsAssignableFrom(t1));
             Console.WriteLine(t1 == t2);
+        }
+
+        [TestMethod]
+        public void Test3()
+        {
+            Console.WriteLine(string.Format("{a} {0} {1} ", 9, 9));
         }
     }
 }

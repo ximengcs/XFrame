@@ -147,6 +147,33 @@ namespace XFrame.Modules.Local
             return InnerGetValue(m_Index, key, values);
         }
 
+        public string GetValue(Language language, LanguageParam param)
+        {
+            int index = InnerGetLangIndex(language);
+            return InnerGetValue(index, param.Id, param.Params);
+        }
+
+        public string GetValue(LanguageParam param)
+        {
+            return InnerGetValue(m_Index, param.Id, param.Params);
+        }
+
+        public string[] GetValues(int[] idList)
+        {
+            string[] result = new string[idList.Length];
+            for (int i = 0; i < idList.Length; i++)
+                result[i] = GetValue(idList[i]);
+            return result;
+        }
+
+        public string[] GetValues(Language language, int[] idList)
+        {
+            string[] result = new string[idList.Length];
+            for (int i = 0; i < idList.Length; i++)
+                result[i] = GetValue(language, idList[i]);
+            return result;
+        }
+
         /// <summary>
         /// 获取本地化值
         /// </summary>
@@ -170,6 +197,17 @@ namespace XFrame.Modules.Local
             int index = InnerGetLangIndex(language);
             return InnerGetValueParam(index, key, args);
         }
+
+        public string GetValueParam(LanguageIdParam param)
+        {
+            return InnerGetValueParam(m_Index, param.Id, param.Params);
+        }
+
+        public string GetValueParam(Language language, LanguageIdParam param)
+        {
+            int index = InnerGetLangIndex(language);
+            return InnerGetValueParam(index, param.Id, param.Params);
+        }
         #endregion
 
         #region Inner Imeplement
@@ -185,6 +223,8 @@ namespace XFrame.Modules.Local
             {
                 Csv<string>.Line line = m_Data.Get(contentIndex);
                 string content = line[index];
+                if (values == null || values.Length == 0)
+                    return content;
                 return string.Format(m_Formatter, content, values);
             }
             else
@@ -209,6 +249,8 @@ namespace XFrame.Modules.Local
                 for (int i = 0; i < args.Length; i++)
                     param[i] = GetValue(args[i]);
 
+                if (args == null || args.Length == 0)
+                    return content;
                 return string.Format(m_Formatter, content, param);
             }
             else

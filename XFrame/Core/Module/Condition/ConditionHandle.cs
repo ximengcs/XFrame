@@ -18,7 +18,7 @@ namespace XFrame.Modules.Conditions
     /// 需要实现类<see cref="IConditionCompare"/>去执行<see cref="Trigger(object, object)"/>来触发更新<see cref="OnComplete(Action{ConditionHandle})"/>事件
     /// </para>
     /// </summary>
-    internal partial class ConditionHandle : DataProvider, IConditionHandle
+    internal partial class ConditionHandle : IConditionHandle
     {
         private int m_Target;
         private UniversalParser m_Param;
@@ -30,7 +30,6 @@ namespace XFrame.Modules.Conditions
         private object m_Value;
 
         private ConditionHelperSetting m_Setting;
-        private CompareInfo m_Helper;
         private CompareInfo m_HandleInfo;
 
         /// <summary>
@@ -59,6 +58,8 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public IDataProvider Data => m_Data;
 
+        public int InstanceId => m_Setting.UseInstance;
+
         internal ConditionHandle(ConditionGroupHandle group, PairParser<IntParser, UniversalParser> parser)
         {
             m_Group = group;
@@ -71,15 +72,17 @@ namespace XFrame.Modules.Conditions
         internal void OnInit(ConditionHelperSetting setting, CompareInfo helper, IDataProvider dataProvider)
         {
             m_Setting = setting;
-            m_Helper = helper;
+            m_HandleInfo = helper;
             m_Data = dataProvider;
         }
 
         internal void Dispose()
         {
             if (m_Setting.IsUseInstance)
-                References.Release(m_Helper.m_Inst);
-            m_Helper = default;
+            {
+                References.Release(m_HandleInfo.Inst);
+                m_HandleInfo = default;
+            }
         }
 
         internal void MarkComplete()
@@ -91,18 +94,18 @@ namespace XFrame.Modules.Conditions
 
         internal bool InnerCheckComplete()
         {
-            if (!m_Helper.Valid)
+            if (!m_HandleInfo.Valid)
             {
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
             }
 
-            return m_Helper.CheckFinish(this);
+            return m_HandleInfo.CheckFinish(this);
         }
 
         internal bool InnerCheckComplete(object param)
         {
-            if (!m_Helper.Valid)
+            if (!m_HandleInfo.Valid)
             {
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
@@ -149,6 +152,31 @@ namespace XFrame.Modules.Conditions
             {
                 m_OnComplete += callback;
             }
+        }
+
+        public void SetData<T>(T value)
+        {
+            m_Data.SetData(value);
+        }
+
+        public T GetData<T>()
+        {
+            return m_Data.GetData<T>();
+        }
+
+        public void SetData<T>(string name, T value)
+        {
+            m_Data.SetData(name, value);
+        }
+
+        public T GetData<T>(string name)
+        {
+            return m_Data.GetData<T>(name);
+        }
+
+        public void ClearData()
+        {
+            m_Data.ClearData();
         }
     }
 }

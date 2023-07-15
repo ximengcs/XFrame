@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using XFrame.Core;
 using XFrame.Modules.Archives;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
@@ -14,6 +15,7 @@ namespace XFrame.Modules.Conditions
     /// </summary>
     internal class ConditionGroupHandle : IConditionGroupHandle
     {
+        private bool m_Disposed;
         private bool m_Complete;
         private IDataProvider m_Data;
         private JsonArchive m_Archive;
@@ -28,10 +30,14 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public string Name => m_Setting.Name;
 
+        public bool IsDisposed => m_Disposed;
+
         /// <summary>
         /// 条件是否完成
         /// </summary>
         public bool Complete => m_Complete;
+
+        public int InstanceId => m_Setting.HelperSetting.UseInstance;
 
         /// <summary>
         /// 条件配置
@@ -167,7 +173,7 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
-                m_Helper?.MarkFinish(this);
+                m_Helper.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
@@ -178,6 +184,8 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         internal void Dispose()
         {
+            if (m_Disposed)
+                return;
             if (m_Setting.HelperSetting.IsUseInstance)
                 References.Release(m_Helper);
 
@@ -187,12 +195,8 @@ namespace XFrame.Modules.Conditions
                 handle.Dispose();
             }
 
-            if (m_Data is JsonArchive archvie)
-                archvie.Delete();
-
-            m_Data = null;
-            m_AllInfos = null;
-            m_NotInfos = null;
+            m_Disposed = true;
+            m_Helper = null;
         }
 
         /// <summary>

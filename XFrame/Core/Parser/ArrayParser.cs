@@ -11,8 +11,8 @@ namespace XFrame.Core
         private const char SPLIT = ',';
         private char m_Split;
 
-        public int Count => Value.Count;
-        public bool Empty => Value.Count == 0;
+        public int Count => Value != null ? Value.Count : 0;
+        public bool Empty => Value != null ? Value.Count == 0 : true;
         public XLinkList<T> Value { get; private set; }
 
         object IParser.Value => Value;
@@ -49,6 +49,8 @@ namespace XFrame.Core
 
         public int IndexOf(object value)
         {
+            if (Value == null)
+                return -1;
             int index = 0;
             foreach (XLinkNode<T> node in Value)
             {
@@ -67,6 +69,8 @@ namespace XFrame.Core
 
         public T Get(int index)
         {
+            if (Value == null)
+                return default;
             int current = 0;
             foreach (XLinkNode<T> node in Value)
             {
@@ -79,6 +83,8 @@ namespace XFrame.Core
 
         public int IndexOf(object value, Func<object, object, bool> action)
         {
+            if (Value == null)
+                return -1;
             int index = 0;
             foreach (XLinkNode<T> node in Value)
             {
@@ -102,6 +108,8 @@ namespace XFrame.Core
 
         public override string ToString()
         {
+            if (Value == null)
+                return string.Empty;
             StringBuilder sb = new StringBuilder();
             foreach (XLinkNode<T> v in Value)
             {
@@ -119,6 +127,13 @@ namespace XFrame.Core
 
         public override bool Equals(object obj)
         {
+            if (Value == null)
+            {
+                if (obj != null)
+                    return false;
+                else
+                    return true;
+            }
             foreach (XLinkNode<T> v in Value)
             {
                 if (!v.Equals(obj))

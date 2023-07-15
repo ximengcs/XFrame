@@ -6,6 +6,8 @@ namespace XFrame.Modules.Conditions
 {
     public interface IConditionGroupHandle : IDataProvider
     {
+        int InstanceId { get; }
+
         string Name { get; }
 
         /// <summary>

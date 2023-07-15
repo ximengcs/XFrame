@@ -5,6 +5,8 @@ using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Modules.XType;
 using XFrame.Modules.Pools;
+using XFrame.Collections;
+using System.Diagnostics;
 
 namespace XFrame.Modules.Conditions
 {
@@ -19,6 +21,8 @@ namespace XFrame.Modules.Conditions
         private Dictionary<int, Dictionary<int, CompareInfo>> m_Compares;
         private Dictionary<int, Type> m_HelpersType;
         private Dictionary<int, Type> m_ComparesType;
+
+        private List<ConditionGroupHandle> m_GroupList;
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
         /// <summary>
@@ -39,6 +43,7 @@ namespace XFrame.Modules.Conditions
             m_Groups = new Dictionary<string, ConditionGroupHandle>();
             m_HelpersType = new Dictionary<int, Type>();
             m_ComparesType = new Dictionary<int, Type>();
+            m_GroupList = new List<ConditionGroupHandle>();
 
             TypeSystem typeSys = TypeModule.Inst.GetOrNew<IConditionCompare>();
             foreach (Type type in typeSys)
@@ -119,7 +124,11 @@ namespace XFrame.Modules.Conditions
                 return group;
             Log.Debug("Condition", $"Register {setting.Name} : {setting.Data}");
             group = new ConditionGroupHandle(setting, InnerGroupCompleteHandler);
-            m_Groups.Add(setting.Name, group);
+            if (!group.IsDisposed)
+            {
+                m_Groups.Add(setting.Name, group);
+                m_GroupList.Add(group);
+            }
             return group;
         }
 
@@ -131,9 +140,14 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
             {
-                Log.Debug("Condition", $"UnRegister {name} : {handle.Setting.Data}");
+                Log.Debug("Condition", $"UnRegister {name}");
                 m_Groups.Remove(handle.Name);
+                m_GroupList.Remove(handle);
                 handle.Dispose();
+            }
+            else
+            {
+                Log.Debug("Condition", $"UnRegister {name}, but has not exist.");
             }
         }
 
@@ -150,21 +164,27 @@ namespace XFrame.Modules.Conditions
         {
             Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Data}");
             ConditionSetting setting = group.Setting;
+            ConditionGroupHandle realGroup = (ConditionGroupHandle)group;
             if (setting.AutoRemove)
-                m_Groups.Remove(group.Name);
-            ConditionGroupHandle g = (ConditionGroupHandle)group;
-            g.Dispose();
+            {
+                if (m_Groups.ContainsKey(group.Name))
+                {
+                    m_Groups.Remove(group.Name);
+                    m_GroupList.Remove(realGroup);
+                }
+                realGroup.Dispose();
+            }
         }
 
         private void InnerConditionTouchHandler(XEvent e)
         {
             ConditionEvent evt = (ConditionEvent)e;
             InnerTriggerCompare(evt.Target, evt.Param);
-            foreach (var item in m_Groups)
+            for (int i = m_GroupList.Count - 1; i >= 0; i--)
             {
-                ConditionGroupHandle group = item.Value;
+                ConditionGroupHandle group = m_GroupList[i];
                 if (!group.Complete)
-                    item.Value.InnerTrigger(evt.Target, evt.Param);
+                    group.InnerTrigger(evt.Target, evt.Param);
             }
         }
 
