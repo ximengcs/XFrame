@@ -1,7 +1,8 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Diagnotics;
+using System.Globalization;
 
 namespace XFrame.Modules.Conditions
 {
@@ -17,7 +18,7 @@ namespace XFrame.Modules.Conditions
     /// 需要实现类<see cref="IConditionCompare"/>去执行<see cref="Trigger(object, object)"/>来触发更新<see cref="OnComplete(Action{ConditionHandle})"/>事件
     /// </para>
     /// </summary>
-    internal class ConditionHandle : DataProvider, IConditionHandle
+    internal partial class ConditionHandle : DataProvider, IConditionHandle
     {
         private int m_Target;
         private UniversalParser m_Param;
@@ -29,7 +30,8 @@ namespace XFrame.Modules.Conditions
         private object m_Value;
 
         private ConditionHelperSetting m_Setting;
-        private IConditionCompare m_Helper;
+        private CompareInfo m_Helper;
+        private CompareInfo m_HandleInfo;
 
         /// <summary>
         /// 条件目标
@@ -66,7 +68,7 @@ namespace XFrame.Modules.Conditions
             m_Complete = false;
         }
 
-        internal void OnInit(ConditionHelperSetting setting, IConditionCompare helper, IDataProvider dataProvider)
+        internal void OnInit(ConditionHelperSetting setting, CompareInfo helper, IDataProvider dataProvider)
         {
             m_Setting = setting;
             m_Helper = helper;
@@ -76,8 +78,8 @@ namespace XFrame.Modules.Conditions
         internal void Dispose()
         {
             if (m_Setting.IsUseInstance)
-                References.Release(m_Helper);
-            m_Helper = null;
+                References.Release(m_Helper.m_Inst);
+            m_Helper = default;
         }
 
         internal void MarkComplete()
@@ -89,7 +91,7 @@ namespace XFrame.Modules.Conditions
 
         internal bool InnerCheckComplete()
         {
-            if (m_Helper == null)
+            if (!m_Helper.Valid)
             {
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
@@ -100,14 +102,14 @@ namespace XFrame.Modules.Conditions
 
         internal bool InnerCheckComplete(object param)
         {
-            if (m_Helper == null)
+            if (!m_Helper.Valid)
             {
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
             }
             if (m_Setting.IsUseInstance)
-                m_Helper.OnEventTrigger(param);
-            return m_Helper.Check(this, param);
+                m_HandleInfo.OnEventTrigger(param);
+            return m_HandleInfo.Check(this, param);
         }
 
         /// <summary>

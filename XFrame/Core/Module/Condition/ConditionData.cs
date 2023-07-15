@@ -1,33 +1,48 @@
 ﻿using XFrame.Core;
+using XFrame.Collections;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
-    public struct ConditionData
+    public partial struct ConditionData : IXEnumerable<PairParser<IntParser, UniversalParser>>
     {
         private PairParser<IntParser, UniversalParser> m_First;
+        private PairParser<IntParser, UniversalParser> m_Last;
+        private ArrayParser<PairParser<IntParser, UniversalParser>> m_Parser;
 
-        public ArrayParser<PairParser<IntParser, UniversalParser>> Parser;
+        public ArrayParser<PairParser<IntParser, UniversalParser>> Parser => m_Parser;
+        public PairParser<IntParser, UniversalParser> First => m_First;
+        public PairParser<IntParser, UniversalParser> Last => m_Last;
+
+        public ConditionData(string originData)
+        {
+            m_Parser = new ArrayParser<PairParser<IntParser, UniversalParser>>();
+            m_Parser.Parse(originData);
+
+            if (!m_Parser.Empty)
+            {
+                m_First = m_Parser.Value.First.Value;
+                m_Last = m_Parser.Value.Last.Value;
+            }
+            else
+            {
+                m_First = null;
+                m_Last = null;
+            }
+        }
 
         public ConditionData(ArrayParser<PairParser<IntParser, UniversalParser>> parser)
         {
-            m_First = null;
-            Parser = parser;
-        }
-
-        public PairParser<IntParser, UniversalParser> First
-        {
-            get
+            m_Parser = parser;
+            if (!m_Parser.Empty)
             {
-                if (m_First == null)
-                {
-                    foreach (var itemNode in Parser.Value)
-                    {
-                        m_First = itemNode.Value;
-                        break;
-                    }
-                }
-                return m_First;
+                m_First = m_Parser.Value.First.Value;
+                m_Last = m_Parser.Value.Last.Value;
+            }
+            else
+            {
+                m_First = null;
+                m_Last = null;
             }
         }
 
@@ -64,6 +79,16 @@ namespace XFrame.Modules.Conditions
         public override string ToString()
         {
             return Parser.ToString();
+        }
+
+        public IEnumerator<PairParser<IntParser, UniversalParser>> GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        public void SetIt(XItType type)
+        {
+            Parser.Value.SetIt(type);
         }
     }
 }

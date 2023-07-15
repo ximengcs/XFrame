@@ -11,6 +11,8 @@ namespace XFrame.Core
         private const char SPLIT = ',';
         private char m_Split;
 
+        public int Count => Value.Count;
+        public bool Empty => Value.Count == 0;
         public XLinkList<T> Value { get; private set; }
 
         object IParser.Value => Value;

@@ -74,7 +74,7 @@ namespace XFrame.Modules.Conditions
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
                 int target = handle.Target;
                 ConditionHelperSetting conditionSetting = setting.GetConditionHelperSettting(target);
-                IConditionCompare compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
+                CompareInfo compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
                 IDataProvider dataProvider;
                 if (conditionSetting.UsePersistData)
                 {
