@@ -144,7 +144,7 @@ namespace XFrame.Modules.Archives
             string objStr = m_Root[key].ToString();
             if (string.IsNullOrEmpty(objStr))
                 return defaultValue;
-            return SerializeModule.Inst.DeserializeToObject<T>(objStr);
+            return (T)SerializeModule.Inst.DeserializeToObject(objStr, typeof(T));
         }
 
         /// <summary>
