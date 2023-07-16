@@ -182,6 +182,8 @@ namespace XFrame.Modules.Conditions
             InnerTriggerCompare(evt.Target, evt.Param);
             for (int i = m_GroupList.Count - 1; i >= 0; i--)
             {
+                if (i >= m_GroupList.Count)
+                    continue;
                 ConditionGroupHandle group = m_GroupList[i];
                 if (!group.Complete)
                     group.InnerTrigger(evt.Target, evt.Param);

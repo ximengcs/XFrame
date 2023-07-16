@@ -6,10 +6,10 @@ namespace XFrame.Modules.Conditions
 {
     internal struct CompareDelegateInfo
     {
-        public Delegate Check;
-        public Delegate OnEventTrigger;
+        public MethodInfo Check;
+        public MethodInfo OnEventTrigger;
 
-        public CompareDelegateInfo(Delegate check, Delegate onEventTrigger)
+        public CompareDelegateInfo(MethodInfo check, MethodInfo onEventTrigger)
         {
             Check = check;
             OnEventTrigger = onEventTrigger;
@@ -19,6 +19,8 @@ namespace XFrame.Modules.Conditions
     internal struct CompareInfo
     {
         private CompareDelegateInfo m_DeleInfo;
+        private object[] m_CheckParam;
+        private object[] m_OnTriggerParam;
         private static Dictionary<Type, CompareDelegateInfo> m_DeleCache;
         public IConditionCompare Inst { get; }
         public CompareDelegateInfo DeleInfo => m_DeleInfo;
@@ -33,12 +35,15 @@ namespace XFrame.Modules.Conditions
 
         public bool Check(IConditionHandle info, object param)
         {
-            return (bool)DeleInfo.Check.DynamicInvoke(info, param);
+            m_CheckParam[0] = info;
+            m_CheckParam[1] = param;
+            return (bool)DeleInfo.Check.Invoke(Inst, m_CheckParam);
         }
 
         public void OnEventTrigger(object param)
         {
-            DeleInfo.OnEventTrigger.DynamicInvoke(param);
+            m_OnTriggerParam[0] = param;
+            DeleInfo.OnEventTrigger.Invoke(Inst, m_OnTriggerParam);
         }
 
         public CompareInfo(IConditionCompare compare)
@@ -47,6 +52,9 @@ namespace XFrame.Modules.Conditions
             Type type = compare.GetType();
             if (m_DeleCache == null)
                 m_DeleCache = new Dictionary<Type, CompareDelegateInfo>();
+
+            m_CheckParam = new object[2];
+            m_OnTriggerParam = new object[1];
             if (!m_DeleCache.TryGetValue(type, out m_DeleInfo))
             {
                 m_DeleInfo = new CompareDelegateInfo();
@@ -54,16 +62,8 @@ namespace XFrame.Modules.Conditions
                 Console.WriteLine(type.Name);
                 Type geneType = interfaceType.GetGenericArguments()[0];
                 Console.WriteLine(geneType.FullName);
-                MethodInfo methodInfo = interfaceType.GetMethod(nameof(Check));
-                Type deleType = typeof(Func<,,>);
-                deleType = deleType.MakeGenericType(typeof(IConditionHandle), geneType, typeof(bool));
-                m_DeleInfo.Check = methodInfo.CreateDelegate(deleType, Inst);
-
-                methodInfo = interfaceType.GetMethod(nameof(OnEventTrigger));
-                deleType = typeof(Action<>);
-                deleType = deleType.MakeGenericType(geneType);
-                m_DeleInfo.OnEventTrigger = methodInfo.CreateDelegate(deleType, Inst);
-
+                m_DeleInfo.Check = interfaceType.GetMethod(nameof(Check));
+                m_DeleInfo.OnEventTrigger = interfaceType.GetMethod(nameof(OnEventTrigger));
                 m_DeleCache.Add(type, DeleInfo);
             }
         }
