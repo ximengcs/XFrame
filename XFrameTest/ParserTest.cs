@@ -1,4 +1,6 @@
-﻿using XFrame.Core;
+﻿using Newtonsoft.Json;
+using System.Globalization;
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Serialize;
 
@@ -156,6 +158,13 @@ namespace XFrameTest
             Console.WriteLine(parser.Has(kv1));
             Console.WriteLine(parser.Has(kv2));
             Console.WriteLine(parser.Has(kv3));
+        }
+
+        [TestMethod]
+        public void Test10()
+        {
+            float value = JsonConvert.DeserializeObject<float>("0.001");
+            Console.WriteLine(value);
         }
 
         class Test4Data
