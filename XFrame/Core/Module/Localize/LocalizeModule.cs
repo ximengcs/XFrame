@@ -269,7 +269,7 @@ namespace XFrame.Modules.Local
             for (int i = 1; i <= m_Data.Row; i++)
             {
                 string idStr = m_Data.Get(i)[0];
-                if (!string.IsNullOrEmpty(idStr) && int.TryParse(idStr, out int id))
+                if (!string.IsNullOrEmpty(idStr) && IntParser.TryParse(idStr, out int id))
                     m_IdMap.Add(id, i);
             }
         }

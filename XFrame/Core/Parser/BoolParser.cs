@@ -1,5 +1,5 @@
-﻿using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Pools;
+﻿using XFrame.Modules.Pools;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
@@ -15,20 +15,28 @@ namespace XFrame.Core
 
         public bool Parse(string pattern)
         {
-            if (string.IsNullOrEmpty(pattern) || !bool.TryParse(pattern, out m_Value))
+            if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
             {
-                if (int.TryParse(pattern, out int intResult))
-                {
-                    m_Value = intResult != 0 ? true : false;
-                }
-                else
-                {
-                    m_Value = default;
-                    Log.Print(LogLv, "XFrame", $"BoolParser parse failure. {pattern}");
-                }
+                m_Value = default;
+                Log.Print(LogLv, "XFrame", $"BoolParser parse failure. {pattern}");
             }
 
             return m_Value;
+        }
+
+        public static bool TryParse(string pattern, out bool value)
+        {
+            if (!bool.TryParse(pattern, out value))
+            {
+                if (IntParser.TryParse(pattern, out int intResult))
+                    return intResult != 0 ? true : false;
+                else
+                    return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         object IParser.Parse(string pattern)

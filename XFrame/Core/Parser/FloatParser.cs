@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Diagnotics;
+﻿using System.Globalization;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Core
@@ -15,13 +16,18 @@ namespace XFrame.Core
 
         public float Parse(string pattern)
         {
-            if (string.IsNullOrEmpty(pattern) || !float.TryParse(pattern, out m_Value))
+            if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
             {
                 m_Value = default;
                 Log.Print(LogLv, "XFrame", $"FloatParser parse failure. {pattern}");
             }
 
             return m_Value;
+        }
+
+        public static bool TryParse(string pattern, out float value)
+        {
+            return float.TryParse(pattern, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out value);
         }
 
         object IParser.Parse(string pattern)
