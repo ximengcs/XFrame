@@ -41,7 +41,7 @@ namespace XFrame.Collections
 
             public void Reset()
             {
-                m_Index = 0;
+                m_Index = -1;
             }
         }
 
@@ -81,7 +81,7 @@ namespace XFrame.Collections
 
             public void Reset()
             {
-                m_Index = 0;
+                m_Index = m_Cache.Length;
             }
         }
     }
