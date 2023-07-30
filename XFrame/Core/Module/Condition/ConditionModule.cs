@@ -162,7 +162,7 @@ namespace XFrame.Modules.Conditions
 
         private void InnerGroupCompleteHandler(IConditionGroupHandle group)
         {
-            Log.Debug("Condition", $"{group.Name} has complete => {group.Setting.Data}");
+            Log.Debug("Condition", $"{group.Name} has complete => [{group.Setting.Data}]");
             ConditionSetting setting = group.Setting;
             ConditionGroupHandle realGroup = (ConditionGroupHandle)group;
             if (setting.AutoRemove)
