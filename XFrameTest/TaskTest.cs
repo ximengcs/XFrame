@@ -63,14 +63,14 @@ namespace XFrameTest
                     repeatTimes++;
                     return repeatTimes > 5;
                 });
-                task.AddNext(() =>
+                task.Add(() =>
                 {
                     Log.Debug($"[{TimeModule.Inst.Frame}] Exec7");
-                });
-                task.AddNext(() =>
+                }, true);
+                task.Add(() =>
                 {
                     Log.Debug($"[{TimeModule.Inst.Frame}] Exec8");
-                });
+                }, true);
                 task.OnComplete(() =>
                 {
                     Log.Debug($"[{TimeModule.Inst.Frame}] Complete {task.GetHashCode()}");

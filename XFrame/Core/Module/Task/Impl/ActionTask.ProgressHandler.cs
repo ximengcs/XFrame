@@ -6,11 +6,14 @@ namespace XFrame.Modules.Tasks
     {
         public class ProgressHandler : ITaskHandler
         {
+            public bool NextFrameExec;
+            public long Frame;
             public Func<float> Act;
 
-            public ProgressHandler(Func<float> act)
+            public ProgressHandler(Func<float> act, bool nextFrame)
             {
                 Act = act;
+                NextFrameExec = nextFrame;
             }
         }
     }

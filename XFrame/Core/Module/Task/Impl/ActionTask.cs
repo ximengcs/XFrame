@@ -9,39 +9,33 @@ namespace XFrame.Modules.Tasks
             AddStrategy(new Strategy());
             AddStrategy(new BoolStrategy());
             AddStrategy(new DelayStrategy());
-            AddStrategy(new NextFrameStrategy());
             AddStrategy(new ProgressStrategy());
             AddStrategy(new RepeatStrategy());
         }
 
-        public ActionTask Add(Action handler)
+        public ActionTask Add(Action handler, bool nextFrame = false)
         {
-            return (ActionTask)Add(new Handler(handler));
+            return (ActionTask)Add(new Handler(handler, nextFrame));
         }
 
-        public ActionTask AddNext(Action handler)
+        public ActionTask Add(Func<bool> handler, bool nextFrame = false)
         {
-            return (ActionTask)Add(new NextFrameHandler(handler));
+            return (ActionTask)Add(new BoolHandler(handler, nextFrame));
         }
 
-        public ActionTask Add(Func<bool> handler)
+        public ActionTask Add(float delayTime, Action callback, bool nextFrame = false)
         {
-            return (ActionTask)Add(new BoolHandler(handler));
+            return (ActionTask)Add(new DelayHandler(delayTime, callback, nextFrame));
         }
 
-        public ActionTask Add(float delayTime, Action callback)
+        public ActionTask Add(Func<float> handler, bool nextFrame = false)
         {
-            return (ActionTask)Add(new DelayHandler(delayTime, callback));
+            return (ActionTask)Add(new ProgressHandler(handler, nextFrame));
         }
 
-        public ActionTask Add(Func<float> handler)
+        public ActionTask Add(float timeGap, Func<bool> handler, bool nextFrame = false)
         {
-            return (ActionTask)Add(new ProgressHandler(handler));
-        }
-
-        public ActionTask Add(float timeGap, Func<bool> handler)
-        {
-            return (ActionTask)Add(new RepeatHandler(timeGap, handler));
+            return (ActionTask)Add(new RepeatHandler(timeGap, handler, nextFrame));
         }
     }
 }

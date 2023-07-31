@@ -14,10 +14,18 @@ namespace XFrame.Modules.Tasks
             {
                 m_Time = 0;
                 m_Handler = handler;
+                if (m_Handler.NextFrameExec)
+                    m_Handler.Frame = TimeModule.Inst.Frame;
             }
 
             public float OnHandle(ITask from)
             {
+                if (m_Handler.NextFrameExec)
+                {
+                    if (TimeModule.Inst.Frame <= m_Handler.Frame)
+                        return 0;
+                }
+
                 m_Time += TimeModule.Inst.EscapeTime;
 
                 if (m_Handler.Time <= m_Time)

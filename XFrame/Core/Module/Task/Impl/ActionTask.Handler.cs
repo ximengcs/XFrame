@@ -6,11 +6,14 @@ namespace XFrame.Modules.Tasks
     {
         public class Handler : ITaskHandler
         {
+            public bool NextFrameExec;
+            public long Frame;
             public Action Act;
 
-            public Handler(Action act)
+            public Handler(Action act, bool nextFrameExec)
             {
                 Act = act;
+                NextFrameExec = nextFrameExec;
             }
         }
     }

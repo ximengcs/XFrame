@@ -4,7 +4,6 @@ using XFrame.Collections;
 using XFrame.Modules.Event;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using System.Reflection;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Local

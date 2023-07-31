@@ -1,5 +1,6 @@
 ﻿
 using System;
+using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
 {
@@ -12,10 +13,18 @@ namespace XFrame.Modules.Tasks
             public void OnUse(BoolHandler handler)
             {
                 m_Handler = handler;
+                if (m_Handler.NextFrameExec)
+                    m_Handler.Frame = TimeModule.Inst.Frame;
             }
 
             public float OnHandle(ITask from)
             {
+                if (m_Handler.NextFrameExec)
+                {
+                    if (TimeModule.Inst.Frame <= m_Handler.Frame)
+                        return 0;
+                }
+
                 Func<bool> func = m_Handler.Act;
                 if (func != null)
                 {
