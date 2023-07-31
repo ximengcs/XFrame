@@ -11,7 +11,7 @@ namespace XFrame.Modules.Times
     {
         private float m_Time;
         private float m_EscapeTime;
-        private int m_Frame;
+        private long m_Frame;
         private List<CDTimer> m_AnonymousTimers;
         private Dictionary<string, CDTimer> m_Timers;
 
@@ -26,7 +26,7 @@ namespace XFrame.Modules.Times
         /// </summary>
         public float EscapeTime => m_EscapeTime;
 
-        public int Frame => m_Frame;
+        public long Frame => m_Frame;
         #endregion
 
         public CDTimer[] GetTimers()

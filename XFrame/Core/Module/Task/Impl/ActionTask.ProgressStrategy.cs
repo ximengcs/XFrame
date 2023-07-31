@@ -2,13 +2,13 @@
 
 namespace XFrame.Modules.Tasks
 {
-    public partial class ProActionTask
+    public partial class ActionTask
     {
-        private class Strategy : ITaskStrategy<Handler>
+        private class ProgressStrategy : ITaskStrategy<ProgressHandler>
         {
-            private Handler m_Handler;
+            private ProgressHandler m_Handler;
 
-            public void OnUse(Handler handler)
+            public void OnUse(ProgressHandler handler)
             {
                 m_Handler = handler;
             }

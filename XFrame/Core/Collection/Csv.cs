@@ -7,7 +7,6 @@ using XFrame.Modules.Pools;
 using System.IO;
 using System.Globalization;
 using CsvHelper;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace XFrame.Collections
 {

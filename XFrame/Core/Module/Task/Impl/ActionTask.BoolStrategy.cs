@@ -1,27 +1,26 @@
-﻿using System;
+﻿
+using System;
 
 namespace XFrame.Modules.Tasks
 {
-    public partial class ProActionTask
+    public partial class ActionTask
     {
-        private class Strategy : ITaskStrategy<Handler>
+        private class BoolStrategy : ITaskStrategy<BoolHandler>
         {
-            private Handler m_Handler;
+            private BoolHandler m_Handler;
 
-            public void OnUse(Handler handler)
+            public void OnUse(BoolHandler handler)
             {
                 m_Handler = handler;
             }
 
             public float OnHandle(ITask from)
             {
-                Func<float> func = m_Handler.Act;
+                Func<bool> func = m_Handler.Act;
                 if (func != null)
                 {
-                    float pro = func.Invoke();
-                    if (pro > MAX_PRO)
-                        pro = MAX_PRO;
-                    return pro;
+                    bool finish = func.Invoke();
+                    return finish ? MAX_PRO : 0;
                 }
                 else
                 {
