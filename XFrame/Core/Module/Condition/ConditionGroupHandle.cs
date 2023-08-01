@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
 using XFrame.Core;
-using XFrame.Modules.Archives;
-using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Archives;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
-    /// <summary>
-    /// 条件组句柄，一个实例的条件控制句柄，一个实例可以有多个条件。
-    /// <para>
-    /// </para>
-    /// </summary>
     internal class ConditionGroupHandle : IConditionGroupHandle
     {
         private bool m_Disposed;

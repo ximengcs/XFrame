@@ -5,6 +5,9 @@ namespace XFrame.Modules.Conditions
 {
     /// <summary>
     /// 条件事件
+    /// <para>
+    /// 此事件会影响所有条件组
+    /// </para>
     /// </summary>
     public class ConditionEvent : XEvent
     {
@@ -25,9 +28,11 @@ namespace XFrame.Modules.Conditions
         public int Target { get; private set; }
 
         /// <summary>
-        /// 触发参数，可为数量等，触发时会执行<see cref="IConditionCompare.Check(ConditionHandle, object)"/>生命周期方法，
-        /// 其中<see cref="ConditionHandle.Target"/>句柄参数即和<see cref="Target"/>条件目标匹配的句柄，第二个参数传入此参数<see cref="Param"/>，
-        /// 可由<see cref="IConditionCompare"/>的具体实现类解析判断。
+        /// 触发参数
+        /// <para>
+        /// 可为数量等, 定义为<see cref="IConditionCompare{}.OnEventTrigger"/>和
+        /// <see cref="IConditionCompare{}.Check"/>的接受参数, 由<see cref="IConditionCompare"/>的具体实现类解析判断。
+        /// </para>
         /// </summary>
         public object Param { get; private set; }
 

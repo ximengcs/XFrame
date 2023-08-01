@@ -59,9 +59,7 @@ namespace XFrame.Modules.Conditions
             {
                 m_DeleInfo = new CompareDelegateInfo();
                 Type interfaceType = type.GetInterface(typeof(IConditionCompare<>).FullName);
-                Console.WriteLine(type.Name);
                 Type geneType = interfaceType.GetGenericArguments()[0];
-                Console.WriteLine(geneType.FullName);
                 m_DeleInfo.Check = interfaceType.GetMethod(nameof(Check));
                 m_DeleInfo.OnEventTrigger = interfaceType.GetMethod(nameof(OnEventTrigger));
                 m_DeleCache.Add(type, DeleInfo);
