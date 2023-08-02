@@ -3,6 +3,7 @@ using XFrame.Core;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Archives;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Conditions
 {
@@ -18,33 +19,18 @@ namespace XFrame.Modules.Conditions
         private Action<IConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<IConditionHandle>> m_NotInfos;
 
-        /// <summary>
-        /// 条件组名称
-        /// </summary>
         public string Name => m_Setting.Name;
 
         public bool IsDisposed => m_Disposed;
 
-        /// <summary>
-        /// 条件是否完成
-        /// </summary>
         public bool Complete => m_Complete;
 
         public int InstanceId => m_Setting.HelperSetting.UseInstance;
 
-        /// <summary>
-        /// 条件配置
-        /// </summary>
         public ConditionSetting Setting => m_Setting;
 
-        /// <summary>
-        /// 组内所有的条件
-        /// </summary>
         public List<IConditionHandle> AllInfo => m_AllInfos;
 
-        /// <summary>
-        /// 组内还未达成的条件
-        /// </summary>
         public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
         internal ConditionGroupHandle(ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
@@ -97,6 +83,9 @@ namespace XFrame.Modules.Conditions
                     conds.Add(handle);
                 }
             }
+
+            if (m_Helper == null)
+                Log.Debug("Condition", $"warning -> condition {Name} helper is null");
 
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {
@@ -166,15 +155,12 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
-                m_Helper.MarkFinish(this);
+                m_Helper?.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
         }
 
-        /// <summary>
-        /// 释放条件实例
-        /// </summary>
         internal void Dispose()
         {
             if (m_Disposed)
@@ -192,10 +178,6 @@ namespace XFrame.Modules.Conditions
             m_Helper = null;
         }
 
-        /// <summary>
-        /// 注册完成回调
-        /// </summary>
-        /// <param name="callback">回调</param>
         public void OnComplete(Action<IConditionGroupHandle> callback)
         {
             if (m_Complete)

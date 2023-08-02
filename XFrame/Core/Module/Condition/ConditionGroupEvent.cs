@@ -4,7 +4,8 @@ using XFrame.Modules.Pools;
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
-    /// 条件组时间触发
+    /// 条件组时间触发, 此条件仅会影响目标条件组句柄中的条件，
+    /// 但当触发的条件是全局条件时，则会触发全局<see cref="IConditionCompare{}.OnEventTrigger"/>
     /// <para>
     /// 当条件为全局条件时，首先会触发<see cref="IConditionCompare{}.OnEventTrigger"/>，接着触发条件组事件,
     /// 当条件为组内条件时，仅仅发某个条件组中的事件，不对其他组产生影响

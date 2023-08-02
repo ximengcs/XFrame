@@ -14,7 +14,6 @@ namespace XFrameTest
         {
             XConfig.ArchiveEncrypt = false;
             XConfig.UseClassModule = new string[] { "XFrameTest" };
-            XConfig.DefaultSerializer = typeof(TestJsonSerializer).FullName;
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "D:\\TestXFrame";
             XConfig.DefaultDownloadHelper = typeof(TestDownloadHelper).FullName;

@@ -4,6 +4,9 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
+    /// <summary>
+    /// 条件转换器
+    /// </summary>
     public class ConditionParser : IParser<ConditionData>
     {
         private ConditionData m_Value;

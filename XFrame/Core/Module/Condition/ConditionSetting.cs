@@ -4,13 +4,29 @@ using XFrame.Core;
 
 namespace XFrame.Modules.Conditions
 {
+    /// <summary>
+    /// 条件辅助器配置
+    /// </summary>
     public struct ConditionHelperSetting
     {
+        /// <summary>
+        /// 全局辅助器实例Id
+        /// </summary>
         public const int DEFAULT_INSTANCE = 0;
 
+        /// <summary>
+        /// 使用的辅助器实例
+        /// </summary>
         public int UseInstance { get; }
+
+        /// <summary>
+        /// 是否使用持久化的数据
+        /// </summary>
         public bool UsePersistData { get; }
 
+        /// <summary>
+        /// 是否使用非全局辅助器
+        /// </summary>
         public bool IsUseInstance => UseInstance != DEFAULT_INSTANCE;
 
         private ConditionHelperSetting(int useInstance, bool usePersistData)
@@ -64,15 +80,13 @@ namespace XFrame.Modules.Conditions
         public string Name { get; }
 
         /// <summary>
-        /// 使用的辅助器 <see cref="IConditionHelper"/>, 
-        /// 当注册条件时，若指定的辅助器存在(此字段匹配<see cref="IConditionHelper.Type"/>),
-        /// 条件组初始化时会调用 <see cref="IConditionHelper.CheckFinish(string)"/>检查条件是否是完成状态，若为完成状态，则此条件组会进入完成状态，
-        /// 若未完成，会开始监听组内所有未达成的条件，当所有条件达成时，条件组进入完成状态，同时调用<see cref="IConditionHelper.MarkFinish(string)"/>
-        /// 标记条件组完成。调用者可根据实际需求实现定制的条件组辅助器，如需要持久化状态的辅助器。
-        /// 当指定的辅助器不存在时会自动忽略 <see cref="IConditionHelper.CheckFinish"/> 和 <see cref="IConditionHelper.MarkFinish(string)"/> 操作
+        /// 条件组使用的辅助器 <see cref="IConditionHelper"/> 类型，与<see cref="IConditionHelper.Type"/>相匹配
         /// </summary>
         public int UseGroupHelper { get; }
 
+        /// <summary>
+        /// 条件组辅助器配置
+        /// </summary>
         public ConditionHelperSetting HelperSetting { get; }
 
         /// <summary>
@@ -94,6 +108,11 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public ConditionData Data;
 
+        /// <summary>
+        /// 设置条件项辅助器配置
+        /// </summary>
+        /// <param name="target">条件项目标类型</param>
+        /// <param name="settting">辅助器配置</param>
         public void SetConditionHelperSetting(int target, ConditionHelperSetting settting)
         {
             if (m_ConditionHelperInstance == null)
@@ -104,6 +123,11 @@ namespace XFrame.Modules.Conditions
                 m_ConditionHelperInstance.Add(target, settting);
         }
 
+        /// <summary>
+        /// 获取条件项辅助器配置
+        /// </summary>
+        /// <param name="target">条件项目标类型</param>
+        /// <returns>辅助器配置</returns>
         public ConditionHelperSetting GetConditionHelperSettting(int target)
         {
             if (m_ConditionHelperInstance == null)
