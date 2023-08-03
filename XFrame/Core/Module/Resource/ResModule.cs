@@ -1,12 +1,11 @@
 ﻿using System;
 using XFrame.Core;
+using System.Collections;
+using XFrame.Collections;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.XType;
 using XFrame.Modules.Config;
-using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using System.Collections;
-using XFrame.Collections;
 
 namespace XFrame.Modules.Resource
 {
@@ -27,14 +26,14 @@ namespace XFrame.Modules.Resource
         {
             base.OnInit(data);
             InnerEnsurePreload();
-            if (!string.IsNullOrEmpty(XConfig.DefaultRes))
+            if (IsDefaultModule && !string.IsNullOrEmpty(XConfig.DefaultRes))
             {
                 Type type = TypeModule.Inst.GetType(XConfig.DefaultRes);
-                InnerSetHelper(type);
+                SetHelper(type);
             }
         }
 
-        protected IResourceHelper InnerSetHelper(Type type)
+        public IResourceHelper SetHelper(Type type)
         {
             m_ResHelper = TypeModule.Inst.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);

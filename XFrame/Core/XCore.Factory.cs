@@ -16,7 +16,7 @@ namespace XFrame.Core
             XCore core = new XCore();
             core.Init();
             foreach (Type moduleType in modules)
-                core.InnerAddModule(moduleType, default);
+                core.InnerAddModule(moduleType, default, default);
             return core;
         }
 
@@ -28,7 +28,7 @@ namespace XFrame.Core
             {
                 Type moduleType = modules[i];
                 object data = i < datas.Length ? datas[i] : default;
-                core.InnerAddModule(moduleType, data);
+                core.InnerAddModule(moduleType, default, data);
             }
             return core;
         }

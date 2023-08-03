@@ -177,9 +177,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块</returns>
-        public static T AddModule<T>() where T : IModule
+        public static T AddModule<T>(int moduleId = default) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), m_Custom);
+            return (T)InnerAddModule(typeof(T), moduleId, m_Custom);
         }
 
         /// <summary>
@@ -187,9 +187,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块实例</returns>
-        public static T GetModule<T>() where T : IModule
+        public static T GetModule<T>(int moduleId = default) where T : IModule
         {
-            return (T)InnerGetModule(typeof(T));
+            return (T)InnerGetModule(typeof(T), moduleId);
         }
 
         /// <summary>
@@ -233,36 +233,39 @@ namespace XFrame.Core
         {
             TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<T>();
             foreach (Type type in typeSys)
-                InnerAddModule(type, target);
+                InnerAddModule(type, default, target);
         }
 
-        private static IModule InnerAddModule(Type moduleType, XCore target)
+        private static IModule InnerAddModule(Type moduleType, int moduleId, XCore target)
         {
-            IModule module = InnerGetModule(moduleType);
+            IModule module = InnerGetModule(moduleType, moduleId);
             if (module != null)
                 return module;
 
-            Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
-            if (requires != null && requires.Length > 0)
+            if (moduleId == default)
             {
-                for (int i = 0; i < requires.Length; i++)
+                Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
+                if (requires != null && requires.Length > 0)
                 {
-                    RequireModuleAttribute attr = (RequireModuleAttribute)requires[i];
-                    InnerAddModule(attr.ModuleType, target);
+                    for (int i = 0; i < requires.Length; i++)
+                    {
+                        RequireModuleAttribute attr = (RequireModuleAttribute)requires[i];
+                        InnerAddModule(attr.ModuleType, default, target);
+                    }
                 }
             }
-
-            return target.Register(moduleType);
+            
+            return target.Register(moduleType, moduleId);
         }
 
-        private static IModule InnerGetModule(Type moduleType)
+        private static IModule InnerGetModule(Type moduleType, int moduleId)
         {
             IModule module;
-            module = m_Base.GetModule(moduleType);
+            module = m_Base.GetModule(moduleType, moduleId);
             if (module == null)
-                module = m_Core.GetModule(moduleType);
+                module = m_Core.GetModule(moduleType, moduleId);
             if (module == null)
-                module = m_Custom.GetModule(moduleType);
+                module = m_Custom.GetModule(moduleType, moduleId);
             return module;
         }
 

@@ -65,9 +65,9 @@ namespace XFrame.Core
             m_Modules = null;
         }
 
-        public IModule Register(IModule module)
+        public IModule Register(IModule module, int moduleId)
         {
-            return InnerInitModule(module, null);
+            return InnerInitModule(module, moduleId, null);
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块实例</returns>
-        public T Register<T>() where T : IModule
+        public T Register<T>(int moduleId = default) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), default);
+            return (T)InnerAddModule(typeof(T), moduleId, default);
         }
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace XFrame.Core
         /// </summary>
         /// <param name="moduleType">模块类型</param>
         /// <returns>模块实例</returns>
-        public IModule Register(Type moduleType)
+        public IModule Register(Type moduleType, int moduleId = default)
         {
-            return InnerAddModule(moduleType, default);
+            return InnerAddModule(moduleType, moduleId, default);
         }
 
         /// <summary>
@@ -96,9 +96,9 @@ namespace XFrame.Core
         /// <typeparam name="T">模块类型</typeparam>
         /// <param name="data">模块初始化数据</param>
         /// <returns>模块实例</returns>
-        public T Register<T>(object data) where T : IModule
+        public T Register<T>(int moduleId, object data) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), data);
+            return (T)InnerAddModule(typeof(T), moduleId, data);
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块实例</returns>
-        public T GetModule<T>() where T : IModule
+        public T GetModule<T>(int moduleId = default) where T : IModule
         {
-            return (T)InnerGetModule(typeof(T));
+            return (T)InnerGetModule(typeof(T), moduleId);
         }
 
         /// <summary>
@@ -139,14 +139,14 @@ namespace XFrame.Core
         /// </summary>
         /// <param name="moduleType">模块类型</param>
         /// <returns>模块实例</returns>
-        public IModule GetModule(Type moduleType)
+        public IModule GetModule(Type moduleType, int moduleId = default)
         {
-            return m_Modules.Get(moduleType);
+            return InnerGetModule(moduleType, moduleId);
         }
 
-        public bool HasModule(Type moduleType)
+        public bool HasModule(Type moduleType, int moduleId = default)
         {
-            return GetModule(moduleType) != null;
+            return InnerGetModule(moduleType, moduleId) != null;
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace XFrame.Core
         #region Inner Implement
         private XCore() { }
 
-        private IModule InnerAddModule(Type moduleType, object data)
+        private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
             IModule module;
@@ -186,22 +186,25 @@ namespace XFrame.Core
             else
                 module = (IModule)Activator.CreateInstance(moduleType);
 
-            InnerInitModule(module, data);
+            InnerInitModule(module, moduleId, data);
             sw.Stop();
             Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
             return module;
         }
 
-        private IModule InnerInitModule(IModule module, object data)
+        private IModule InnerInitModule(IModule module, int moduleId, object data)
         {
+            ModuleBase baseClass = module as ModuleBase;
+            if (baseClass != null)
+                baseClass.Id = moduleId;
             module.OnInit(data);
             m_Modules.Add(module);
             return module;
         }
 
-        private IModule InnerGetModule(Type moduleType)
+        private IModule InnerGetModule(Type moduleType, int moduleId)
         {
-            return m_Modules.Get(moduleType);
+            return m_Modules.Get(moduleType, moduleId);
         }
         #endregion
     }

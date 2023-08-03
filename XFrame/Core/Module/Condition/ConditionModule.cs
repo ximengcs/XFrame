@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
-    /// 条件监听模块
+    /// 条件监听模块 
     /// </summary>
     [XModule]
     public class ConditionModule : SingletonModule<ConditionModule>

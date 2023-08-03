@@ -23,7 +23,7 @@ namespace XFrame.Core
             }
             else
             {
-                Log.Debug("XFrame", $"SingletonModule add multi instance.");
+                Log.Debug("XFrame", $"SingletonModule {typeof(T).FullName} add multi instance.");
             }
         }
     }

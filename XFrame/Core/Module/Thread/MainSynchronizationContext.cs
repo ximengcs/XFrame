@@ -27,7 +27,7 @@ namespace XFrame.Modules.Threads
         #region IModule Life Fun
         public int Id => default;
 
-        void IModule.OnInit(object data)
+        void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
             m_ActQueue = new Queue<Action>();
