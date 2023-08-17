@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
+using XFrame.Module.Rand;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Times
@@ -149,7 +150,9 @@ namespace XFrame.Modules.Times
 
         void IPoolObject.OnRequest()
         {
-
+            m_Name = RandModule.Inst.RandString();
+            m_Updater = Default;
+            TimeModule.Inst.InnerAddTimer(this);
         }
 
         void IPoolObject.OnRelease()

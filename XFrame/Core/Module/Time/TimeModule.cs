@@ -43,7 +43,10 @@ namespace XFrame.Modules.Times
             if (string.IsNullOrEmpty(timer.Name))
                 m_AnonymousTimers.Add(timer);
             else
-                m_Timers.Add(timer.Name, timer);
+            {
+                if (!m_Timers.ContainsKey(timer.Name))
+                    m_Timers.Add(timer.Name, timer);
+            }
         }
 
         internal void InnerRemove(CDTimer timer)
