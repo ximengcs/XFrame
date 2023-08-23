@@ -13,7 +13,7 @@ namespace XFrame.Modules.Plots
     /// </summary>
     [XModule]
     [RequireModule(typeof(EventModule))]
-    public class PlotModule : SingletonModule<PlotModule>
+    public class PlotModule : SingletonModule<PlotModule>, IUpdater
     {
         #region Inner Fields
         private IPlotHelper m_Helper;
@@ -69,9 +69,8 @@ namespace XFrame.Modules.Plots
             m_Helper.Event.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
             foreach (IDirector director in m_Directors.Values)
                 director.OnUpdate();
         }

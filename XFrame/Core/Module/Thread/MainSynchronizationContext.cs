@@ -9,7 +9,7 @@ namespace XFrame.Modules.Threads
     /// <summary>
     /// 主线程上下文处理
     /// </summary>
-    public class MainSynchronizationContext : SynchronizationContext, IModule
+    public class MainSynchronizationContext : SynchronizationContext, IModule, IUpdater
     {
         #region Inner Fields
         private int m_MainThread;
@@ -40,7 +40,7 @@ namespace XFrame.Modules.Threads
 
         }
 
-        void IModule.OnUpdate(float escapeTime)
+        void IUpdater.OnUpdate(float escapeTime)
         {
             if (m_ActQueue.Count <= 0)
                 return;

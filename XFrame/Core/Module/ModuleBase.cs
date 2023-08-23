@@ -44,11 +44,6 @@ namespace XFrame.Core
             OnStart();
         }
 
-        void IModule.OnUpdate(float escapeTime)
-        {
-            OnUpdate(escapeTime);
-        }
-
         void IModule.OnDestroy()
         {
             OnDestroy();
@@ -56,7 +51,6 @@ namespace XFrame.Core
 
         protected virtual void OnInit(object data) { }
         protected virtual void OnStart() { }
-        protected virtual void OnUpdate(float escapeTime) { }
         protected virtual void OnDestroy() { }
     }
 }

@@ -7,6 +7,18 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
+    internal struct ModuleHandle
+    {
+        public IModuleHandler Handler;
+        public List<IModule> Modules;
+
+        public ModuleHandle(IModuleHandler handler, List<IModule> modules)
+        {
+            Handler = handler;
+            Modules = modules;
+        }
+    }
+
     /// <summary>
     /// 核心
     /// </summary>
@@ -15,6 +27,7 @@ namespace XFrame.Core
         #region Inner Filed
         private bool m_IsStart;
         private XCollection<IModule> m_Modules;
+        private Dictionary<Type, ModuleHandle> m_ModulesWithEvents;
         private Dictionary<Type, IModuleHelper> m_MainHelper;
         private Dictionary<Type, List<IModuleHelper>> m_Helpers;
         #endregion
@@ -29,6 +42,27 @@ namespace XFrame.Core
             m_Modules = new XCollection<IModule>();
             m_MainHelper = new Dictionary<Type, IModuleHelper>();
             m_Helpers = new Dictionary<Type, List<IModuleHelper>>();
+            m_ModulesWithEvents = new Dictionary<Type, ModuleHandle>();
+        }
+
+        public void AddHandle(Type handleType, IModuleHandler handler)
+        {
+            if (!m_ModulesWithEvents.ContainsKey(handleType))
+            {
+                ModuleHandle handle = new ModuleHandle(handler, new List<IModule>());
+                m_ModulesWithEvents[handleType] = handle;
+            }
+        }
+
+        public void Trigger(Type handlerType, object data)
+        {
+            if (m_ModulesWithEvents.TryGetValue(handlerType, out ModuleHandle handle))
+            {
+                foreach (IModule module in handle.Modules)
+                {
+                    handle.Handler.Handle(module, data);
+                }
+            }
         }
 
         /// <summary>
@@ -41,16 +75,6 @@ namespace XFrame.Core
             m_IsStart = true;
             foreach (IModule manager in m_Modules)
                 manager.OnStart();
-        }
-
-        /// <summary>
-        /// 更新核心
-        /// </summary>
-        /// <param name="escapeTime">逃逸时间</param>
-        public void Update(float escapeTime)
-        {
-            foreach (IModule manager in m_Modules)
-                manager.OnUpdate(escapeTime);
         }
 
         /// <summary>
@@ -199,6 +223,16 @@ namespace XFrame.Core
                 baseClass.Id = moduleId;
             module.OnInit(data);
             m_Modules.Add(module);
+
+            Type moduleType = module.GetType();
+            foreach (var entry in m_ModulesWithEvents)
+            {
+                if (entry.Key.IsAssignableFrom(moduleType))
+                {
+                    entry.Value.Modules.Add(module);
+                }
+            }
+
             return module;
         }
 

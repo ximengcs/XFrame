@@ -15,7 +15,7 @@ namespace XFrame.Modules.Tasks
     [RequireModule(typeof(RandModule))]
     [RequireModule(typeof(PoolModule))]
     [RequireModule(typeof(TimeModule))]
-    public class TaskModule : SingletonModule<TaskModule>
+    public class TaskModule : SingletonModule<TaskModule>, IUpdater
     {
         #region Const Fields
         private const long DEFAULT_TIMEOUT = 10;
@@ -38,10 +38,8 @@ namespace XFrame.Modules.Tasks
             m_TaskWithName = new Dictionary<string, ITask>();
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
-
             m_ThisFrameTime = 0;
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
             {

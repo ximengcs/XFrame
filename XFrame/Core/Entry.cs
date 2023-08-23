@@ -118,18 +118,19 @@ namespace XFrame.Core
             m_OnRun?.Invoke();
         }
 
-        /// <summary>
-        /// 更新
-        /// </summary>
-        /// <param name="escapeTime">逃逸时间</param>
-        public static void Update(float escapeTime)
+        public static void Trigger(Type type, object data)
         {
-            m_Base.Update(escapeTime);
+            m_Base.Trigger(type, data);
             if (m_Runing)
             {
-                m_Core.Update(escapeTime);
-                m_Custom.Update(escapeTime);
+                m_Core.Trigger(type, data);
+                m_Custom.Trigger(type, data);
             }
+        }
+
+        public static void Trigger<T>(object data)
+        {
+            Trigger(typeof(T), data);
         }
 
         /// <summary>
@@ -227,6 +228,15 @@ namespace XFrame.Core
                     m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
                 }
             }
+
+            typeSys = TypeModule.Inst.GetOrNew<IModuleHandler>();
+            foreach (Type type in typeSys)
+            {
+                IModuleHandler handler = (IModuleHandler)TypeModule.Inst.CreateInstance(type);
+                m_Base.AddHandle(handler.Target, handler);
+                m_Core.AddHandle(handler.Target, handler);
+                m_Custom.AddHandle(handler.Target, handler);
+            }
         }
 
         private static void InnerInit<T>(XCore target) where T : Attribute
@@ -254,7 +264,7 @@ namespace XFrame.Core
                     }
                 }
             }
-            
+
             return target.Register(moduleType, moduleId);
         }
 

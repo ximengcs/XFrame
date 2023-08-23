@@ -11,7 +11,7 @@ namespace XFrame.Modules.Containers
     /// 容器类模块
     /// </summary>
     [XModule]
-    public partial class ContainerModule : SingletonModule<ContainerModule>
+    public partial class ContainerModule : SingletonModule<ContainerModule>, IUpdater
     {
         private IContainerHelper m_Helper;
         private XCollection<IContainer> m_Containers;
@@ -80,9 +80,8 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
             foreach (IContainer container in m_Containers)
                 container.OnUpdate(escapeTime);
         }

@@ -20,12 +20,6 @@ namespace XFrame.Core
         protected internal void OnStart();
 
         /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        /// <param name="escapeTime">逃逸时间</param>
-        protected internal void OnUpdate(float escapeTime);
-
-        /// <summary>
         /// 销毁生命周期
         /// </summary>
         protected internal void OnDestroy();

@@ -7,7 +7,7 @@ namespace XFrame.Modules.Times
     /// 时间模块
     /// </summary>
     [BaseModule]
-    public class TimeModule : SingletonModule<TimeModule>
+    public class TimeModule : SingletonModule<TimeModule>, IUpdater
     {
         private float m_Time;
         private float m_EscapeTime;
@@ -71,9 +71,8 @@ namespace XFrame.Modules.Times
             m_Timers = new Dictionary<string, CDTimer>();
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
             m_Time += escapeTime;
             m_EscapeTime = escapeTime;
             m_Frame++;

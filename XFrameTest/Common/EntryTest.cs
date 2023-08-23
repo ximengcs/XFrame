@@ -22,7 +22,7 @@ namespace XFrameTest
             Entry.OnRun += runCallback;
             Entry.Start();
             for (int i = 0; i < times; i++)
-                Entry.Update(0.16f);
+                Entry.Trigger<IUpdater>(0.16f);
             Entry.ShutDown();
         }
     }

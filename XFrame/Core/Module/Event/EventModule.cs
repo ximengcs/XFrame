@@ -7,7 +7,7 @@ namespace XFrame.Modules.Event
     /// 事件模块
     /// </summary>
     [CoreModule]
-    public class EventModule : SingletonModule<EventModule>
+    public class EventModule : SingletonModule<EventModule>, IUpdater
     {
         private List<XEventSystem> m_List;
          
@@ -17,10 +17,8 @@ namespace XFrame.Modules.Event
             m_List = new List<XEventSystem>();
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
-
             for (int i = m_List.Count - 1; i >= 0; i--)
                 m_List[i].OnUpdate();
         }

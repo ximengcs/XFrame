@@ -15,7 +15,7 @@ namespace XFrame.Modules.Archives
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(CryptoModule))]
-    public class ArchiveModule : SingletonModule<ArchiveModule>
+    public class ArchiveModule : SingletonModule<ArchiveModule>, IUpdater
     {
         #region Inner Field
         private const int SAVE_KEY = 0;
@@ -69,9 +69,8 @@ namespace XFrame.Modules.Archives
             }
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
-            base.OnUpdate(escapeTime);
             if (m_Timer.Check(SAVE_KEY, true))
                 InnerSaveAll();
         }

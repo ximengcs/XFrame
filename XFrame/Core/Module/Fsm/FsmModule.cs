@@ -27,7 +27,7 @@ namespace XFrame.Modules.StateMachine
             m_Fsms = new Dictionary<string, IFsmBase>();
         }
 
-        protected override void OnUpdate(float escapeTime)
+        public void OnUpdate(float escapeTime)
         {
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnUpdate();
