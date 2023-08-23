@@ -118,7 +118,7 @@ namespace XFrame.Core
             m_OnRun?.Invoke();
         }
 
-        public static void Trigger(Type type, object data)
+        public static void Trigger(Type type, object data = null)
         {
             m_Base.Trigger(type, data);
             if (m_Runing)
@@ -128,7 +128,7 @@ namespace XFrame.Core
             }
         }
 
-        public static void Trigger<T>(object data)
+        public static void Trigger<T>(object data = null)
         {
             Trigger(typeof(T), data);
         }

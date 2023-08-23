@@ -15,7 +15,7 @@ namespace XFrame.Modules.Archives
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(CryptoModule))]
-    public class ArchiveModule : SingletonModule<ArchiveModule>, IUpdater
+    public class ArchiveModule : SingletonModule<ArchiveModule>, IUpdater, ISaveable
     {
         #region Inner Field
         private const int SAVE_KEY = 0;
