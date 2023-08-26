@@ -7,6 +7,7 @@ using XFrame.Modules.Times;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 using System.Collections.Generic;
+using XFrame.Core.Module.Archive;
 
 namespace XFrame.Modules.Archives
 {

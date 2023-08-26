@@ -1,5 +1,4 @@
-﻿
-namespace XFrame.Core
+﻿namespace XFrame.Modules.Archives
 {
     public interface ISaveable
     {
