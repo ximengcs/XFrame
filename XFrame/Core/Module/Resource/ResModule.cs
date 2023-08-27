@@ -14,7 +14,7 @@ namespace XFrame.Modules.Resource
     /// </summary>
     [BaseModule]
     [RequireModule(typeof(TaskModule))]
-    public class ResModule : SingletonModule<ResModule>, IResModule
+    public class ResModule : SingletonModule<ResModule>
     {
         #region Inner Fields
         private IResourceHelper m_ResHelper;
