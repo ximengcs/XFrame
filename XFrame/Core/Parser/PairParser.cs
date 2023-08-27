@@ -8,13 +8,21 @@ namespace XFrame.Core
     {
         private const char SPLIT = '|';
         private char m_Split;
+        private string m_Origin;
         private IParser m_KParser;
         private IParser m_VParser;
 
         public char Split
         {
             get => m_Split;
-            set => m_Split = value;
+            set
+            {
+                if (m_Split != value)
+                {
+                    m_Split = value;
+                    Parse(m_Origin);
+                }
+            }
         }
 
         public PairParser()
@@ -44,6 +52,7 @@ namespace XFrame.Core
 
         public Pair<K, V> Parse(string pattern)
         {
+            m_Origin = pattern;
             string[] values = pattern.Split(m_Split);
             if (values.Length == 1)
             {
