@@ -10,6 +10,7 @@ namespace XFrame.Core
     {
         private const char SPLIT = ',';
         private char m_Split;
+        private string m_Origin;
 
         public int Count => Value != null ? Value.Count : 0;
         public bool Empty => Value != null ? Value.Count == 0 : true;
@@ -18,6 +19,19 @@ namespace XFrame.Core
         object IParser.Value => Value;
 
         int IPoolObject.PoolKey => default;
+
+        public char Split
+        {
+            get => m_Split;
+            set
+            {
+                if (m_Split != value)
+                {
+                    m_Split = value;
+                    Parse(m_Origin);
+                }
+            }
+        }
 
         public ArrayParser()
         {
@@ -31,6 +45,7 @@ namespace XFrame.Core
 
         public XLinkList<T> Parse(string pattern)
         {
+            m_Origin = pattern;
             Value = new XLinkList<T>();
             if (!string.IsNullOrEmpty(pattern))
             {
