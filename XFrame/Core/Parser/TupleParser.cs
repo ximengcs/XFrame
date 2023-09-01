@@ -70,12 +70,26 @@ namespace XFrame.Core
 
         public static bool operator ==(TupleParser<T1> src, object tar)
         {
-            return src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return src.Equals(tar);
+            }
         }
 
         public static bool operator !=(TupleParser<T1> src, object tar)
         {
-            return !src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return !ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return !src.Equals(tar);
+            }
         }
 
         public static implicit operator TupleParser<T1>(T1 value)
@@ -87,6 +101,8 @@ namespace XFrame.Core
 
         public static implicit operator T1(TupleParser<T1> value)
         {
+            if (value == null)
+                return default;
             return value.m_Value.Item1;
         }
     }

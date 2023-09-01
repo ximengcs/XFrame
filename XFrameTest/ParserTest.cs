@@ -15,6 +15,13 @@ namespace XFrameTest
         }
 
         [TestMethod]
+        public void NullTest()
+        {
+            IntParser parser = null;
+            int value = parser;
+        }
+
+        [TestMethod]
         public void EnumTest()
         {
             var test = new EnumParser<Enum1>();

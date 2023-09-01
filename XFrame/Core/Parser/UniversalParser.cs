@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
 
 namespace XFrame.Core
 {
@@ -221,7 +220,7 @@ namespace XFrame.Core
 
         public static implicit operator string(UniversalParser parser)
         {
-            return parser.Value;
+            return parser != null ? parser.m_Value : default;
         }
 
         public static implicit operator UniversalParser(string value)

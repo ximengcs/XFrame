@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
@@ -84,12 +85,26 @@ namespace XFrame.Core
 
         public static bool operator ==(EnumParser<T> src, object tar)
         {
-            return src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return src.Equals(tar);
+            }
         }
 
         public static bool operator !=(EnumParser<T> src, object tar)
         {
-            return !src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return !ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return !src.Equals(tar);
+            }
         }
 
         public static implicit operator EnumParser<T>(T value)
@@ -101,7 +116,7 @@ namespace XFrame.Core
 
         public static implicit operator T(EnumParser<T> value)
         {
-            return value.m_Value;
+            return value != null ? value.m_Value : default;
         }
     }
 }

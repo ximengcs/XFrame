@@ -83,17 +83,31 @@ namespace XFrame.Core
 
         public static bool operator ==(BoolParser src, object tar)
         {
-            return src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return src.Equals(tar);
+            }
         }
 
         public static bool operator !=(BoolParser src, object tar)
         {
-            return !src.Equals(tar);
+            if (ReferenceEquals(src, null))
+            {
+                return !ReferenceEquals(tar, null);
+            }
+            else
+            {
+                return !src.Equals(tar);
+            }
         }
 
         public static implicit operator bool(BoolParser parser)
         {
-            return parser.m_Value;
+            return parser != null ? parser.m_Value : default;
         }
 
         public static implicit operator BoolParser(bool value)
