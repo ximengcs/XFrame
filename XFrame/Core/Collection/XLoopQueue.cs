@@ -51,7 +51,7 @@ namespace XFrame.Collections
                 if (gap > 0)
                     return gap;
                 else
-                    return m_Capacity - gap;
+                    return m_Capacity + gap;
             }
         }
 
