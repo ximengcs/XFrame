@@ -13,7 +13,18 @@ namespace XFrame.Core.Caches
 
         public static IEventSystem Event => m_EvtSys;
 
-        public static ICollection<ObjectCollection> Collections => m_Factorys.Values;
+        public static ICollection<ObjectCollection> Collections
+        {
+            get
+            {
+                if (m_Factorys == null)
+                {
+                    return new List<ObjectCollection>();
+                }
+
+                return m_Factorys.Values;
+            }
+        }
 
         public static void Initialize()
         {
