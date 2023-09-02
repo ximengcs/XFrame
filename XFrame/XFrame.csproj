@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Core\Cache\" />
     <Folder Include="Plugins\CsvHelper\" />
   </ItemGroup>
 

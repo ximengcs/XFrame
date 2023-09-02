@@ -3,6 +3,7 @@ using XFrame.Modules.XType;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
+using XFrame.Core.Caches;
 
 namespace XFrame.Core
 {
@@ -25,8 +26,18 @@ namespace XFrame.Core
         #region Event
         public static event Action OnRun
         {
-            add { m_OnRun += value; }
-            remove { m_OnRun += value; }
+            add
+            {
+                if (m_Runing)
+                {
+                    value?.Invoke();
+                }
+                else
+                {
+                    m_OnRun += value;
+                }
+            }
+            remove { m_OnRun -= value; }
         }
         #endregion
 
@@ -116,6 +127,7 @@ namespace XFrame.Core
             m_Sw = null;
             m_Runing = true;
             m_OnRun?.Invoke();
+            XCache.InitInit();
         }
 
         public static void Trigger(Type type, object data = null)

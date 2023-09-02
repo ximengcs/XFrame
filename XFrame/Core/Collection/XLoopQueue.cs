@@ -26,7 +26,7 @@ namespace XFrame.Collections
         {
             m_L = 0;
             m_R = 0;
-            m_Capacity = capacity;
+            m_Capacity = capacity + 1;
             m_Objects = new T[m_Capacity];
         }
         #endregion
@@ -36,6 +36,24 @@ namespace XFrame.Collections
         /// 容量
         /// </summary>
         public int Capacity => m_Capacity;
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                if (Empty)
+                    return 0;
+
+                int gap = m_R - m_L;
+                if (gap > 0)
+                    return gap;
+                else
+                    return m_Capacity - gap;
+            }
+        }
 
         /// <summary>
         /// 队列是否空
