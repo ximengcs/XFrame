@@ -31,6 +31,8 @@ namespace XFrame.Core.Caches
 
             public void OnFinish()
             {
+                if (m_Handler.Result != null)
+                    XCache.Event.Trigger(CacheObjectFactoryEvent.Create(m_Handler.Result.GetType()));
                 m_Handler.OnFinish();
                 m_Handler = null;
             }

@@ -127,7 +127,6 @@ namespace XFrame.Core
             m_Sw = null;
             m_Runing = true;
             m_OnRun?.Invoke();
-            XCache.InitInit();
         }
 
         public static void Trigger(Type type, object data = null)

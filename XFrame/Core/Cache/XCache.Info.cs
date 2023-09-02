@@ -13,6 +13,7 @@ namespace XFrame.Core.Caches
             private XLoopQueue<ICacheObject> Items;
             private ICacheObjectFactory m_Factory;
 
+            public ICacheObjectFactory Factory => m_Factory;
             public Type TargetType { get; }
 
             public int Count => Items.Count;
@@ -58,7 +59,8 @@ namespace XFrame.Core.Caches
 
             private void InnerNewObject(ICacheObject obj)
             {
-                Items.AddLast(obj);
+                if (obj != null)
+                    Items.AddLast(obj);
             }
         }
     }

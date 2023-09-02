@@ -15,7 +15,7 @@ namespace XFrame.Core.Caches
 
         public static ICollection<ObjectCollection> Collections => m_Factorys.Values;
 
-        internal static void InitInit()
+        public static void Initialize()
         {
             Entry.OnRun += InnerInitFactory;
         }
@@ -40,6 +40,20 @@ namespace XFrame.Core.Caches
                     m_Factorys.Add(attr.Target, new ObjectCollection(attr.Target, factory, attr.CacheCount));
                 }
             }
+        }
+
+        public static T GetFactory<T>() where T : class, ICacheObjectFactory
+        {
+            return GetFactory(typeof(T)) as T;
+        }
+
+        public static ICacheObjectFactory GetFactory(Type type)
+        {
+            if (m_Factorys.TryGetValue(type, out ObjectCollection collection))
+            {
+                return collection.Factory;
+            }
+            return default;
         }
 
         public static bool Check<T>() where T : ICacheObject
