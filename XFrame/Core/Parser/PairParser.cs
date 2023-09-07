@@ -57,6 +57,7 @@ namespace XFrame.Core
             if (values.Length == 1)
             {
                 m_KParser.Parse(values[0]);
+                m_VParser.Parse(null);
             }
             else if (values.Length == 2)
             {
@@ -99,7 +100,8 @@ namespace XFrame.Core
 
         void IPoolObject.OnRelease()
         {
-
+            m_KParser.OnRelease();
+            m_VParser.OnRelease();
         }
 
         void IPoolObject.OnDelete()

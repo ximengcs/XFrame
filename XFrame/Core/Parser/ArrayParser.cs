@@ -169,6 +169,8 @@ namespace XFrame.Core
 
         void IPoolObject.OnRelease()
         {
+            foreach (XLinkNode<T> v in Value)
+                References.Release(v.Value);
             Value.Clear();
         }
 
