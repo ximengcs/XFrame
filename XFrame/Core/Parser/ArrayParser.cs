@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
 using XFrame.Modules.XType;
@@ -46,14 +45,18 @@ namespace XFrame.Core
         public XLinkList<T> Parse(string pattern)
         {
             m_Origin = pattern;
-            Value = new XLinkList<T>();
+            if (Value == null)
+                Value = new XLinkList<T>();
+            else
+                Value.Clear();
+
             if (!string.IsNullOrEmpty(pattern))
             {
                 string[] pArray = pattern.Split(m_Split);
                 Type type = typeof(T);
                 for (int i = 0; i < pArray.Length; i++)
                 {
-                    T parser = (T)TypeModule.Inst.CreateInstance(type);
+                    T parser = (T)References.Require(type);
                     parser.Parse(pArray[i]);
                     Value.AddLast(parser);
                 }
@@ -123,16 +126,7 @@ namespace XFrame.Core
 
         public override string ToString()
         {
-            if (Value == null)
-                return string.Empty;
-            StringBuilder sb = new StringBuilder();
-            foreach (XLinkNode<T> v in Value)
-            {
-                sb.Append(v.Value);
-                if (v.Next != null)
-                    sb.Append(SPLIT);
-            }
-            return sb.ToString();
+            return m_Origin;
         }
 
         public override int GetHashCode()

@@ -39,8 +39,8 @@ namespace XFrame.Core
 
         private void InnerInitParser()
         {
-            m_KParser = (IParser)TypeModule.Inst.CreateInstance(typeof(K));
-            m_VParser = (IParser)TypeModule.Inst.CreateInstance(typeof(V));
+            m_KParser = (IParser)References.Require(typeof(K));
+            m_VParser = (IParser)References.Require(typeof(V));
             Value = new Pair<K, V>((K)m_KParser, (V)m_VParser);
         }
 

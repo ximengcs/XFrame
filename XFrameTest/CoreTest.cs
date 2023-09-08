@@ -11,7 +11,6 @@ namespace XFrameTest
         {
             public void OnUpdate(float escapeTime)
             {
-                Log.Debug("A Update");
             }
         }
 
@@ -20,7 +19,6 @@ namespace XFrameTest
         {
             public void OnUpdate(float escapeTime)
             {
-                Log.Debug("B Update");
             }
         }
 
