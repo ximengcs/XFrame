@@ -17,7 +17,7 @@ namespace XFrame.Core
 
         public int PoolKey => default;
 
-        private string m_Origin;
+        protected string m_Origin;
         private char m_Split;
         private char m_Split2;
 
@@ -104,8 +104,6 @@ namespace XFrame.Core
                     {
                         kParser = (K)References.Require(kType);
                         vParser = (V)References.Require(vType);
-                        kParser.Parse(null);
-                        vParser.Parse(null);
                     }
                     if (m_Value.ContainsKey(kParser))
                         References.Release(kParser);
@@ -128,8 +126,6 @@ namespace XFrame.Core
             kParser.Parse(pItem[0]);
             if (pItem.Length > 1)
                 vParser.Parse(pItem[1]);
-            else
-                vParser.Parse(null);
         }
 
         object IParser.Parse(string pattern)

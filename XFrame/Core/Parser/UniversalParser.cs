@@ -154,18 +154,31 @@ namespace XFrame.Core
 
         public override string ToString()
         {
-            return Value;
+            return m_Value;
         }
 
         public override int GetHashCode()
         {
-            return Value.GetHashCode();
+            return m_Value.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
-            return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+            if (parser != null)
+            {
+                if (m_Value != null)
+                    return m_Value.Equals(parser.Value);
+                else
+                    return parser.Value == null;
+            }
+            else
+            {
+                if (m_Value != null)
+                    return m_Value.Equals(obj);
+                else
+                    return obj == null;
+            }
         }
 
         public void Release()
