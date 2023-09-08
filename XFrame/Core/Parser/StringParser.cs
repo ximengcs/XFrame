@@ -13,7 +13,7 @@ namespace XFrame.Core
 
         public string Parse(string pattern)
         {
-            Value = pattern;
+            Value = string.IsNullOrEmpty(pattern) ? string.Empty : pattern;
             return Value;
         }
 
@@ -36,6 +36,11 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
+        }
+
+        public void Release()
+        {
+            References.Release(this);
         }
 
         void IPoolObject.OnCreate()
@@ -89,8 +94,8 @@ namespace XFrame.Core
 
         public static implicit operator StringParser(string value)
         {
-            StringParser parser = new StringParser();
-            parser.Value = value;
+            StringParser parser = References.Require<StringParser>();
+            parser.Value = string.IsNullOrEmpty(value) ? string.Empty : value;
             return parser;
         }
     }

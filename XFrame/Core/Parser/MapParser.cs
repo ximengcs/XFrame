@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
 using System.Collections.Generic;
+using System.Data;
 
 namespace XFrame.Core
 {
@@ -68,7 +68,7 @@ namespace XFrame.Core
             return default;
         }
 
-        public bool Contains(K key)
+        public bool Has(K key)
         {
             return m_Value.ContainsKey(key);
         }
@@ -93,19 +93,17 @@ namespace XFrame.Core
                 for (int i = 0; i < pMap.Length; i++)
                 {
                     string pItemStr = pMap[i];
-                    K kParser = (K)References.Require(kType);
-                    V vParser = (V)References.Require(vType);
+                    K kParser;
+                    V vParser;
                     if (!string.IsNullOrEmpty(pItemStr))
                     {
                         string[] pItem = pItemStr.Split(m_Split2);
-                        kParser.Parse(pItem[0]);
-                        if (pItem.Length > 1)
-                            vParser.Parse(pItem[1]);
-                        else
-                            vParser.Parse(null);
+                        InnerParseItem(out kParser, out vParser, pItem);
                     }
                     else
                     {
+                        kParser = (K)References.Require(kType);
+                        vParser = (V)References.Require(vType);
                         kParser.Parse(null);
                         vParser.Parse(null);
                     }
@@ -116,6 +114,22 @@ namespace XFrame.Core
             }
 
             return m_Value;
+        }
+
+        public void Release()
+        {
+            References.Release(this);
+        }
+
+        protected virtual void InnerParseItem(out K kParser, out V vParser, string[] pItem)
+        {
+            kParser = References.Require<K>();
+            vParser = References.Require<V>();
+            kParser.Parse(pItem[0]);
+            if (pItem.Length > 1)
+                vParser.Parse(pItem[1]);
+            else
+                vParser.Parse(null);
         }
 
         object IParser.Parse(string pattern)

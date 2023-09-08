@@ -1,7 +1,7 @@
 ﻿using XFrame.Core;
 using XFrame.Collections;
 using System.Collections.Generic;
-using ItemParser = XFrame.Core.PairParser<XFrame.Core.IntParser, XFrame.Core.UniversalParser>;
+using ItemParser = XFrame.Core.PairParser<XFrame.Core.IntOrHashParser, XFrame.Core.UniversalParser>;
 
 namespace XFrame.Modules.Conditions
 {

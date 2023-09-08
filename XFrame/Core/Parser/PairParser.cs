@@ -88,6 +88,11 @@ namespace XFrame.Core
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         void IPoolObject.OnCreate()
         {
 
@@ -135,7 +140,7 @@ namespace XFrame.Core
 
         public static implicit operator PairParser<K, V>(Pair<K, V> value)
         {
-            PairParser<K, V> parser = new PairParser<K, V>();
+            PairParser<K, V> parser = References.Require<PairParser<K, V>>();
             parser.Value = value;
             return parser;
         }

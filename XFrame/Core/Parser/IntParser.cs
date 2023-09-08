@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
 
@@ -7,7 +6,7 @@ namespace XFrame.Core
 {
     public class IntParser : IParser<int>
     {
-        private int m_Value;
+        protected int m_Value;
         public int Value => m_Value;
         public LogLevel LogLv { get; set; }
 
@@ -15,7 +14,7 @@ namespace XFrame.Core
 
         int IPoolObject.PoolKey => default;
 
-        public int Parse(string pattern)
+        public virtual int Parse(string pattern)
         {
             if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
             {
@@ -50,6 +49,11 @@ namespace XFrame.Core
         {
             IParser parser = obj as IParser;
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
+        }
+
+        public void Release()
+        {
+            References.Release(this);
         }
 
         void IPoolObject.OnCreate()
@@ -104,7 +108,7 @@ namespace XFrame.Core
 
         public static implicit operator IntParser(int value)
         {
-            IntParser parser = new IntParser();
+            IntParser parser = References.Require<IntParser>();
             parser.m_Value = value;
             return parser;
         }

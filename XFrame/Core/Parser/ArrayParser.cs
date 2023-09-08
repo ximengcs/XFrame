@@ -42,6 +42,11 @@ namespace XFrame.Core
             m_Split = splitchar;
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         public XLinkList<T> Parse(string pattern)
         {
             m_Origin = pattern;

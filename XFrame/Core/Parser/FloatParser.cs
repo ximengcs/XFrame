@@ -61,6 +61,11 @@ namespace XFrame.Core
             }
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         void IPoolObject.OnCreate()
         {
 
@@ -113,7 +118,7 @@ namespace XFrame.Core
 
         public static implicit operator FloatParser(int value)
         {
-            FloatParser parser = new FloatParser();
+            FloatParser parser = References.Require<FloatParser>();
             parser.m_Value = value;
             return parser;
         }

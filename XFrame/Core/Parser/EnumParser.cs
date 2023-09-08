@@ -46,6 +46,11 @@ namespace XFrame.Core
             return Parse(pattern);
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         public override string ToString()
         {
             return m_Value.ToString();
@@ -109,7 +114,7 @@ namespace XFrame.Core
 
         public static implicit operator EnumParser<T>(T value)
         {
-            EnumParser<T> parser = new EnumParser<T>();
+            EnumParser<T> parser = References.Require<EnumParser<T>>();
             parser.m_Value = value;
             return parser;
         }

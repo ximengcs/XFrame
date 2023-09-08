@@ -8,11 +8,11 @@ namespace XFrame.Modules.Conditions
 {
     public partial struct ConditionData
     {
-        private struct Enumerator : IEnumerator<PairParser<IntParser, UniversalParser>>
+        private struct Enumerator : IEnumerator<PairParser<IntOrHashParser, UniversalParser>>
         {
-            private IEnumerator<XLinkNode<PairParser<IntParser, UniversalParser>>> m_It;
+            private IEnumerator<XLinkNode<PairParser<IntOrHashParser, UniversalParser>>> m_It;
 
-            public PairParser<IntParser, UniversalParser> Current => m_It.Current.Value;
+            public PairParser<IntOrHashParser, UniversalParser> Current => m_It.Current.Value;
 
             object IEnumerator.Current => Current;
 

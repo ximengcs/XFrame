@@ -168,6 +168,11 @@ namespace XFrame.Core
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         void IPoolObject.OnCreate()
         {
 
@@ -225,7 +230,7 @@ namespace XFrame.Core
 
         public static implicit operator UniversalParser(string value)
         {
-            UniversalParser parser = new UniversalParser();
+            UniversalParser parser = References.Require<UniversalParser>();
             parser.Parse(value);
             return parser;
         }

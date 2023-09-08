@@ -27,10 +27,10 @@ namespace XFrame.Modules.Conditions
 
         public int InstanceId => m_Setting.UseInstance;
 
-        internal ConditionHandle(ConditionGroupHandle group, PairParser<IntParser, UniversalParser> parser)
+        internal ConditionHandle(ConditionGroupHandle group, PairParser<IntOrHashParser, UniversalParser> parser)
         {
             m_Group = group;
-            Pair<IntParser, UniversalParser> pair = parser;
+            Pair<IntOrHashParser, UniversalParser> pair = parser;
             m_Target = pair.Key;
             m_Param = pair.Value;
             m_Complete = false;

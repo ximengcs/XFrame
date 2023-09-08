@@ -145,6 +145,11 @@ namespace XFrame.Core
             return m_Value.GetHashCode();
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
@@ -183,7 +188,7 @@ namespace XFrame.Core
 
         public static implicit operator TupleParser<T1, T2>((T1, T2) value)
         {
-            TupleParser<T1, T2> parser = new TupleParser<T1, T2>();
+            TupleParser<T1, T2> parser = References.Require<TupleParser<T1, T2>>();
             parser.m_Value.Item1 = value.Item1;
             parser.m_Value.Item2 = value.Item2;
             return parser;

@@ -44,6 +44,11 @@ namespace XFrame.Core
             return Parse(pattern);
         }
 
+        public void Release()
+        {
+            References.Release(this);
+        }
+
         public override string ToString()
         {
             return m_Value.ToString();
@@ -112,7 +117,7 @@ namespace XFrame.Core
 
         public static implicit operator BoolParser(bool value)
         {
-            BoolParser parser = new BoolParser();
+            BoolParser parser = References.Require<BoolParser>();
             parser.m_Value = value;
             return parser;
         }
