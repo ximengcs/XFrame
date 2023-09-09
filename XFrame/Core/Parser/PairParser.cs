@@ -53,16 +53,19 @@ namespace XFrame.Core
         public Pair<K, V> Parse(string pattern)
         {
             m_Origin = pattern;
-            string[] values = pattern.Split(m_Split);
-            if (values.Length == 1)
+            if (!string.IsNullOrEmpty(pattern))
             {
-                m_KParser.Parse(values[0]);
-                m_VParser.Parse(null);
-            }
-            else if (values.Length == 2)
-            {
-                m_KParser.Parse(values[0]);
-                m_VParser.Parse(values[1]);
+                string[] values = pattern.Split(m_Split);
+                if (values.Length == 1)
+                {
+                    m_KParser.Parse(values[0]);
+                    m_VParser.Parse(null);
+                }
+                else if (values.Length == 2)
+                {
+                    m_KParser.Parse(values[0]);
+                    m_VParser.Parse(values[1]);
+                }
             }
             return Value;
         }
