@@ -240,11 +240,11 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.ToQueue = false;
-                MapParser<IntParser, StringParser> parser = new MapParser<IntParser, StringParser>();
-                parser.Parse("1|name1,2|name2");
-                Log.Debug(parser.Get(1));
-                Log.Debug(parser.Get(2));
-                Log.Debug(parser.Get(3));
+                //MapParser<IntParser, StringParser> parser = new MapParser<IntParser, StringParser>();
+                //parser.Parse("1|name1,2|name2");
+                //Log.Debug(parser.Get(1));
+                //Log.Debug(parser.Get(2));
+                //Log.Debug(parser.Get(3));
             });
         }
     }

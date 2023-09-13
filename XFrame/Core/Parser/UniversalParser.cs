@@ -86,41 +86,37 @@ namespace XFrame.Core
             return (T)AddParser(typeof(T));
         }
 
-        public UniversalParser()
+        private UniversalParser()
         {
             m_Parsers = new Dictionary<Type, IParser>();
         }
 
-        public UniversalParser(int value)
+        private void InnerInitIntValue(int value)
         {
-            m_Parsers = new Dictionary<Type, IParser>();
             m_IntValue = value;
             m_Value = value.ToString();
             m_FloatValue = value;
             m_BoolValue = value == 0 ? false : true;
         }
 
-        public UniversalParser(float value)
+        private void InnerInitFloatValue(float value)
         {
-            m_Parsers = new Dictionary<Type, IParser>();
             m_IntValue = (int)value;
             m_Value = value.ToString();
             m_FloatValue = value;
             m_BoolValue = value == 0 ? false : true;
         }
 
-        public UniversalParser(bool value)
+        private void InnerInitBoolValue(bool value)
         {
-            m_Parsers = new Dictionary<Type, IParser>();
             m_IntValue = value ? 1 : 0;
             m_Value = value.ToString();
             m_FloatValue = m_IntValue;
             m_BoolValue = value;
         }
 
-        public UniversalParser(string value)
+        private void InnerInitStringValue(string value)
         {
-            m_Parsers = new Dictionary<Type, IParser>();
             Parse(value);
         }
 
@@ -193,6 +189,11 @@ namespace XFrame.Core
 
         void IPoolObject.OnRequest()
         {
+
+        }
+
+        void IPoolObject.OnRelease()
+        {
             foreach (var item in m_Parsers)
                 References.Release(item.Value);
             m_Parsers.Clear();
@@ -200,11 +201,6 @@ namespace XFrame.Core
             m_IntValue = default;
             m_FloatValue = default;
             m_BoolValue = default;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
         }
 
         void IPoolObject.OnDelete()
@@ -244,7 +240,43 @@ namespace XFrame.Core
         public static implicit operator UniversalParser(string value)
         {
             UniversalParser parser = References.Require<UniversalParser>();
-            parser.Parse(value);
+            parser.InnerInitStringValue(value);
+            return parser;
+        }
+
+        public static implicit operator int(UniversalParser parser)
+        {
+            return parser != null ? parser.m_IntValue : default;
+        }
+
+        public static implicit operator UniversalParser(int value)
+        {
+            UniversalParser parser = References.Require<UniversalParser>();
+            parser.InnerInitIntValue(value);
+            return parser;
+        }
+
+        public static implicit operator float(UniversalParser parser)
+        {
+            return parser != null ? parser.m_FloatValue : default;
+        }
+
+        public static implicit operator UniversalParser(float value)
+        {
+            UniversalParser parser = References.Require<UniversalParser>();
+            parser.InnerInitFloatValue(value);
+            return parser;
+        }
+
+        public static implicit operator bool(UniversalParser parser)
+        {
+            return parser != null ? parser.m_BoolValue : default;
+        }
+
+        public static implicit operator UniversalParser(bool value)
+        {
+            UniversalParser parser = References.Require<UniversalParser>();
+            parser.InnerInitBoolValue(value);
             return parser;
         }
     }

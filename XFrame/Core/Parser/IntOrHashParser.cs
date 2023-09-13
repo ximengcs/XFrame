@@ -26,12 +26,19 @@ namespace XFrame.Core
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            IParser parser = obj as IParser;
+            object value = parser != null ? parser.Value : obj;
+            if (value is int intValue)
+                return m_Value.Equals(intValue);
+            else if (value is string strValue)
+                return m_Origin.Equals(strValue);
+            else
+                return false;
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return m_Origin.GetHashCode();
         }
 
         public static bool operator ==(IntOrHashParser src, object tar)
@@ -67,6 +74,7 @@ namespace XFrame.Core
         {
             IntOrHashParser parser = References.Require<IntOrHashParser>();
             parser.m_Value = value;
+            parser.m_Origin = value.ToString();
             return parser;
         }
 

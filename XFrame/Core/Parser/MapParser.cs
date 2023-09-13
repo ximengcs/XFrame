@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Modules.Pools;
 using System.Collections.Generic;
-using System.Data;
 
 namespace XFrame.Core
 {
@@ -47,18 +46,23 @@ namespace XFrame.Core
             }
         }
 
+        public V this[K key] => m_Value[key];
+
         public int Count => m_Value.Count;
 
-        public MapParser()
+        protected MapParser()
         {
             m_Split = SPLIT;
             m_Split2 = SPLIT2;
+            m_Value = new Dictionary<K, V>();
         }
 
-        public MapParser(char splitchar, char splitchar2)
+        public static MapParser<K, V> Create(char splitchar, char splitchar2)
         {
-            m_Split = splitchar;
-            m_Split2 = splitchar2;
+            MapParser<K, V> parser = References.Require<MapParser<K, V>>();
+            parser.m_Split = splitchar;
+            parser.m_Split2 = splitchar2;
+            return parser;
         }
 
         public V Get(K key)
@@ -81,8 +85,6 @@ namespace XFrame.Core
         public Dictionary<K, V> Parse(string pattern)
         {
             m_Origin = pattern;
-            if (m_Value == null)
-                m_Value = new Dictionary<K, V>();
 
             if (!string.IsNullOrEmpty(pattern))
             {
