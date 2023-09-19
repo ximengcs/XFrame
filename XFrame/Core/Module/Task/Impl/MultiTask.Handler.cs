@@ -18,7 +18,6 @@ namespace XFrame.Modules.Tasks
 
             public void Add(ITask task)
             {
-                task.Start();
                 m_Tasks.Add(task);
             }
 

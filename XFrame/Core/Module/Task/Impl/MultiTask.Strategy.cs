@@ -10,6 +10,8 @@ namespace XFrame.Modules.Tasks
             public void OnUse(Handler handler)
             {
                 m_Handler = handler;
+                foreach (ITask task in m_Handler.Tasks)
+                    task.Start();
             }
 
             public float OnHandle(ITask from)
