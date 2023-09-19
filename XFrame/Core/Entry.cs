@@ -56,7 +56,7 @@ namespace XFrame.Core
             m_Base = XCore.Create();
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
-            m_Base.Register(typeof(TypeModule));
+            m_Base.Register(typeof(TypeModule), default);
 
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
@@ -189,9 +189,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块</returns>
-        public static T AddModule<T>(int moduleId = default) where T : IModule
+        public static T AddModule<T>(int moduleId = default, object userData = null) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), moduleId, m_Custom);
+            return (T)InnerAddModule(typeof(T), moduleId, m_Custom, userData);
         }
 
         /// <summary>
@@ -254,10 +254,10 @@ namespace XFrame.Core
         {
             TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<T>();
             foreach (Type type in typeSys)
-                InnerAddModule(type, default, target);
+                InnerAddModule(type, default, target, default);
         }
 
-        private static IModule InnerAddModule(Type moduleType, int moduleId, XCore target)
+        private static IModule InnerAddModule(Type moduleType, int moduleId, XCore target, object userData)
         {
             IModule module = InnerGetModule(moduleType, moduleId);
             if (module != null)
@@ -271,12 +271,12 @@ namespace XFrame.Core
                     for (int i = 0; i < requires.Length; i++)
                     {
                         RequireModuleAttribute attr = (RequireModuleAttribute)requires[i];
-                        InnerAddModule(attr.ModuleType, default, target);
+                        InnerAddModule(attr.ModuleType, default, target, userData);
                     }
                 }
             }
 
-            return target.Register(moduleType, moduleId);
+            return target.Register(moduleType, moduleId, userData);
         }
 
         private static IModule InnerGetModule(Type moduleType, int moduleId)

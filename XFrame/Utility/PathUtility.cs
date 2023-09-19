@@ -12,7 +12,6 @@ namespace XFrame.Utility
         public static int CheckFileName(string fullPath, out string thisName, out string suplusName)
         {
             fullPath = fullPath.Replace("/", "\\");
-            fullPath = fullPath.Replace("_", "\\");
             string[] paths = fullPath.Split('\\');
             if (paths.Length == 0)
             {

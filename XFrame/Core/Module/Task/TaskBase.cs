@@ -3,8 +3,6 @@ using XFrame.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
 {
@@ -16,6 +14,7 @@ namespace XFrame.Modules.Tasks
         public const float MAX_PRO = 1;
         private StrategyInfo m_Current;
         private Action m_OnComplete;
+        private Action<ITask> m_OnComplete2;
         private Action<float> m_OnUpdate;
         private Queue<ITaskHandler> m_Targets;
         private float m_PerProRate;
@@ -39,7 +38,7 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        public ITask Add(ITaskHandler data)
+        public virtual ITask Add(ITaskHandler data)
         {
             m_Targets.Enqueue(data);
             m_PerProRate = MAX_PRO / m_Targets.Count;
@@ -49,6 +48,12 @@ namespace XFrame.Modules.Tasks
         public ITask OnComplete(Action complete)
         {
             m_OnComplete += complete;
+            return this;
+        }
+
+        public ITask OnComplete(Action<ITask> complete)
+        {
+            m_OnComplete2 += complete;
             return this;
         }
 
@@ -146,6 +151,7 @@ namespace XFrame.Modules.Tasks
         {
             Name = name;
             m_OnComplete = null;
+            m_OnComplete2 = null;
             OnInit();
         }
 
@@ -183,6 +189,7 @@ namespace XFrame.Modules.Tasks
             m_Targets.Clear();
             m_CorTasks.Clear();
             m_OnComplete = null;
+            m_OnComplete2 = null;
             m_OnUpdate = null;
             m_Current = null;
             m_PerProRate = 0;
@@ -227,6 +234,8 @@ namespace XFrame.Modules.Tasks
             IsComplete = true;
             m_OnComplete?.Invoke();
             m_OnComplete = null;
+            m_OnComplete2?.Invoke(this);
+            m_OnComplete2 = null;
         }
 
         public virtual Task Coroutine()

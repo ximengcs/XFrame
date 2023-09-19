@@ -89,9 +89,9 @@ namespace XFrame.Core
             m_Modules = null;
         }
 
-        public IModule Register(IModule module, int moduleId)
+        public IModule Register(IModule module, int moduleId, object userData)
         {
-            return InnerInitModule(module, moduleId, null);
+            return InnerInitModule(module, moduleId, userData);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
         /// <returns>模块实例</returns>
-        public T Register<T>(int moduleId = default) where T : IModule
+        public T Register<T>(int moduleId) where T : IModule
         {
             return (T)InnerAddModule(typeof(T), moduleId, default);
         }
@@ -109,9 +109,19 @@ namespace XFrame.Core
         /// </summary>
         /// <param name="moduleType">模块类型</param>
         /// <returns>模块实例</returns>
-        public IModule Register(Type moduleType, int moduleId = default)
+        public IModule Register(Type moduleType, int moduleId)
         {
             return InnerAddModule(moduleType, moduleId, default);
+        }
+
+        /// <summary>
+        /// 注册模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <returns>模块实例</returns>
+        public IModule Register(Type moduleType, int moduleId, object userData)
+        {
+            return InnerAddModule(moduleType, moduleId, userData);
         }
 
         /// <summary>
@@ -120,9 +130,9 @@ namespace XFrame.Core
         /// <typeparam name="T">模块类型</typeparam>
         /// <param name="data">模块初始化数据</param>
         /// <returns>模块实例</returns>
-        public T Register<T>(int moduleId, object data) where T : IModule
+        public T Register<T>(int moduleId, object userData) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), moduleId, data);
+            return (T)InnerAddModule(typeof(T), moduleId, userData);
         }
 
         /// <summary>
