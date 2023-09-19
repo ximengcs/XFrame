@@ -48,11 +48,12 @@ namespace XFrame.Modules.Download
         /// 下载文件或数据
         /// </summary>
         /// <param name="url">url</param>
-        public DownTask Down(string url)
+        public DownTask Down(string url, params string[] reserveUrls)
         {
             DownTask task = TaskModule.Inst.GetOrNew<DownTask>();
             IDownloadHelper helper = (IDownloadHelper)TypeModule.Inst.CreateInstance(m_Helper);
             helper.Url = url;
+            helper.ReserveUrl = reserveUrls;
             helper.OnInit();
             task.Add(helper);
             return task;

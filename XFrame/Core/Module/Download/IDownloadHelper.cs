@@ -1,5 +1,4 @@
-﻿
-using XFrame.Modules.Tasks;
+﻿using XFrame.Modules.Tasks;
 
 namespace XFrame.Modules.Download
 {
@@ -22,6 +21,11 @@ namespace XFrame.Modules.Download
         /// 下载任务url
         /// </summary>
         string Url { get; set; }
+
+        /// <summary>
+        /// 备用地址
+        /// </summary>
+        string[] ReserveUrl { get; set; }
 
         /// <summary>
         /// 请求下载

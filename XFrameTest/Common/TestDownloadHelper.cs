@@ -12,6 +12,8 @@ namespace XFrameTest
         private HttpClient m_Request;
         private HttpResponseMessage m_Response;
 
+        public string[] ReserveUrl { get; set; }
+
         bool IDownloadHelper.IsDone => m_IsDone;
 
         DownloadResult IDownloadHelper.Result => m_Result;

@@ -1,6 +1,6 @@
-﻿using XFrame.Modules.Tasks;
+﻿using System;
+using XFrame.Modules.Tasks;
 using XFrame.Modules.Diagnotics;
-using System;
 
 namespace XFrame.Modules.Download
 {
@@ -62,6 +62,8 @@ namespace XFrame.Modules.Download
         {
             private const int TRY_TIMES = 8;
             private IDownloadHelper m_Handler;
+            private int m_ReserveTryIndex;
+            private int m_ReserveUrlCount;
             private int m_Times;
             private float m_Pro;
             private bool m_IsComplete;
@@ -69,9 +71,11 @@ namespace XFrame.Modules.Download
             public void OnUse(IDownloadHelper handler)
             {
                 m_Pro = 0;
+                m_ReserveTryIndex = 0;
                 m_Times = TRY_TIMES;
                 m_IsComplete = false;
                 m_Handler = handler;
+                m_ReserveUrlCount = handler.ReserveUrl != null ? handler.ReserveUrl.Length : 0;
                 InnerRequest();
             }
 
@@ -88,6 +92,7 @@ namespace XFrame.Modules.Download
                 DownTask task = (DownTask)from;
                 if (result.IsSuccess)
                 {
+                    Log.Debug("XFrame", $"Download {m_Handler.Url} Successfully.");
                     task.Data = result.Data;
                     task.Text = result.Text;
                     task.Success = true;
@@ -100,9 +105,20 @@ namespace XFrame.Modules.Download
                     if (m_Times <= 0)
                     {
                         Log.Debug("XFrame", $"Download {m_Handler.Url} Error, stop download. reason: {result.ErrorReason}");
-                        task.Success = false;
-                        m_IsComplete = true;
-                        m_Pro = MAX_PRO;
+
+                        if (m_ReserveTryIndex < m_ReserveUrlCount)
+                        {
+                            m_Handler.Url = m_Handler.ReserveUrl[m_ReserveTryIndex++];
+                            Log.Debug("XFrame", $"Ready Download Reserve Url {m_Handler.Url}");
+                            InnerRequest();
+                        }
+                        else
+                        {
+                            Log.Debug("XFrame", $"Download Failure {m_Handler.Url}");
+                            task.Success = false;
+                            m_IsComplete = true;
+                            m_Pro = MAX_PRO;
+                        }
                     }
                     else
                     {
