@@ -163,11 +163,11 @@ namespace XFrameTest
             {
                 Console.WriteLine("New");
                 Container container = ContainerModule.Inst.New();
-                TaskModule.Inst.GetOrNew<DelayTask>()
-                .Add(0, () =>
+                TaskModule.Inst.GetOrNew<ActionTask>()
+                .Add(() =>
                 {
                     ContainerModule.Inst.Remove(container);
-                }).Start();
+                }, true).Start();
             });
         }
     }

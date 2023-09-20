@@ -23,7 +23,7 @@ namespace XFrameTest
                 });
                 Log.Debug("-------------Create E1 End-------------");
 
-                TaskModule.Inst.GetOrNew<DelayTask>()
+                TaskModule.Inst.GetOrNew<ActionTask>()
                     .Add(1f, () =>
                     {
                         Log.Debug("-------------Destroy E1 Start-------------");

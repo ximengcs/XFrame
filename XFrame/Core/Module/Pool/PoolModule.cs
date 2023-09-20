@@ -46,6 +46,11 @@ namespace XFrame.Modules.Pools
 
         #region Interface
         /// <summary>
+        /// 获取所有对象池的集合
+        /// </summary>
+        public IEnumerable<IPool> AllPool => m_PoolContainers.Values;
+
+        /// <summary>
         /// 创建或获取一个对象池
         /// </summary>
         /// <typeparam name="T">对象池持有类型</typeparam>

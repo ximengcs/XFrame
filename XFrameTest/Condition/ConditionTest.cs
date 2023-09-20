@@ -24,14 +24,14 @@ namespace XFrameTest.Condition
                     Log.Debug($"{handle.Name} complete");
                 });
 
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(100, () =>
+                TaskModule.Inst.GetOrNew<ActionTask>().Add(100, () =>
                 {
                     Log.Debug("Exec");
                     CondConst.Coin.Value += 200;
                     CondConst.Gem.Value += 200;
                 }).Start();
 
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(1000, () =>
+                TaskModule.Inst.GetOrNew<ActionTask>().Add(1000, () =>
                 {
                     Log.Debug("Exec2");
                     ConditionModule.Inst.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));

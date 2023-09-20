@@ -261,7 +261,7 @@ namespace XFrameTest
                 Log.Debug("Start");
                 IContainer c1 = ContainerModule.Inst.New<Container1>();
 
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(1, () =>
+                TaskModule.Inst.GetOrNew<ActionTask>().Add(1, () =>
                 {
                     ContainerModule.Inst.Remove(c1);
                     Log.Debug("Complete");

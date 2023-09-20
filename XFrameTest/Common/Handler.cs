@@ -17,7 +17,7 @@ namespace XFrameTest
 
         public ITask AfterHandle()
         {
-            DelayTask task = TaskModule.Inst.GetOrNew<DelayTask>();
+            ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
             task.Add(3.0f, () => Log.Debug("IInitHandler AfterHandle " + TimeModule.Inst.Time));
             return task;
         }

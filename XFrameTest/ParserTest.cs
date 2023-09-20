@@ -2,7 +2,9 @@
 using System.Globalization;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Local;
 using XFrame.Modules.Serialize;
+using XFrame.Utility;
 
 namespace XFrameTest
 {
@@ -246,6 +248,13 @@ namespace XFrameTest
                 //Log.Debug(parser.Get(2));
                 //Log.Debug(parser.Get(3));
             });
+        }
+
+        [TestMethod]
+        public void UtilityTest()
+        {
+            Console.WriteLine(TypeUtility.GetSimpleName(typeof(EnumParser<Language>)));
+            Console.WriteLine(TypeUtility.GetSimpleName(typeof(Action<Language, XCore>)));
         }
     }
 }

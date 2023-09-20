@@ -13,6 +13,19 @@ namespace XFrame.Modules.Pools
         /// </summary>
         Type ObjectType { get; }
 
+        /// <summary>
+        /// 当前池中对象数量
+        /// </summary>
+        int ObjectCount { get; }
+
+        /// <summary>
+        /// 使用中数量
+        /// </summary>
+        int UseCount { get; }
+
+        /// <summary>
+        /// 对象池辅助器
+        /// </summary>
         IPoolHelper Helper { get; }
 
         /// <summary>
@@ -31,7 +44,7 @@ namespace XFrame.Modules.Pools
         /// 生成池对象
         /// </summary>
         /// <param name="count">生成数量</param>
-        XLinkList<IPoolObject> Spawn(int poolKey = default, int count = 1, object userData = default);
+        void Spawn(int poolKey = default, int count = 1, object userData = default, XLinkList<IPoolObject> toList = null);
 
         /// <summary>
         /// 清除所有池化对象

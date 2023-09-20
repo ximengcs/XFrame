@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
+using XFrame.Utility;
 
 namespace XFrame.Modules.Pools
 {
@@ -10,13 +11,19 @@ namespace XFrame.Modules.Pools
         private IPoolHelper m_Helper;
         private XLinkList<IPoolObject> m_Objects;
         private XLoopQueue<XLinkNode<IPoolObject>> m_NodeCache;
+        private int m_UseCount;
 
         public Type ObjectType => m_Type;
+
+        public int ObjectCount => m_Objects.Count;
+
+        public int UseCount => m_UseCount;
 
         public IPoolHelper Helper => m_Helper;
 
         public ObjectPool(IPoolHelper helper)
         {
+            m_UseCount = 0;
             m_Type = typeof(T);
             m_Helper = helper;
             m_Objects = new XLinkList<IPoolObject>(false);
@@ -25,34 +32,39 @@ namespace XFrame.Modules.Pools
 
         public T Require(int poolKey, object userData = default)
         {
-            return (T)InnerRequire(poolKey, userData);
+            T obj = (T)InnerRequire(poolKey, userData);
+            m_UseCount++;
+            return obj;
         }
 
         IPoolObject IPool.Require(int poolKey, object userData)
         {
-            return InnerRequire(poolKey, userData);
+            IPoolObject obj = InnerRequire(poolKey, userData);
+            m_UseCount++;
+            return obj;
         }
 
         public void Release(T obj)
         {
             InnerRelease(obj);
+            m_UseCount--;
         }
 
         public void Release(IPoolObject obj)
         {
             InnerRelease(obj);
+            m_UseCount--;
         }
 
-        public XLinkList<IPoolObject> Spawn(int poolKey, int count, object userData = default)
+        public void Spawn(int poolKey, int count, object userData = default, XLinkList<IPoolObject> toList = null)
         {
-            XLinkList<IPoolObject> result = References.Require<XLinkList<IPoolObject>>();
             for (int i = 0; i < count; i++)
             {
                 IPoolObject obj = InnerCreate(poolKey, userData);
                 InnerRelease(obj);
-                result.AddLast(obj);
+                if (toList != null)
+                    toList.AddLast(obj);
             }
-            return result;
         }
 
         private IPoolObject InnerCreate(int poolKey, object userData)
@@ -127,6 +139,7 @@ namespace XFrame.Modules.Pools
                 obj.Value.OnDelete();
             }
             m_Objects.Clear();
+            m_UseCount = 0;
         }
     }
 }
