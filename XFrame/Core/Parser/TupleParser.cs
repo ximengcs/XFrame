@@ -16,6 +16,8 @@ namespace XFrame.Core
 
         int IPoolObject.PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         public ValueTuple<T1> Parse(string pattern)
         {
             pattern = pattern.Substring(1, pattern.Length - 2);
@@ -118,6 +120,8 @@ namespace XFrame.Core
         object IParser.Value => m_Value;
 
         int IPoolObject.PoolKey => default;
+
+        IPool IPoolObject.InPool { get; set; }
 
         public ValueTuple<T1, T2> Parse(string pattern)
         {

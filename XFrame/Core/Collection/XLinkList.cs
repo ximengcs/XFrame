@@ -325,6 +325,8 @@ namespace XFrame.Collections
         #endregion
 
         #region Pool Life Fun
+        IPool IPoolObject.InPool { get; set; }
+
         int IPoolObject.PoolKey => 0;
 
         void IPoolObject.OnCreate()

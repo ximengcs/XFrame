@@ -11,6 +11,8 @@ namespace XFrame.Core
 
         int IPoolObject.PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         public string Parse(string pattern)
         {
             Value = string.IsNullOrEmpty(pattern) ? string.Empty : pattern;

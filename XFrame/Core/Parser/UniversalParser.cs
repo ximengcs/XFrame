@@ -22,6 +22,8 @@ namespace XFrame.Core
 
         int IPoolObject.PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         public T GetOrAddParser<T>() where T : IParser
         {
             T parser = GetParser<T>();

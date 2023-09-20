@@ -18,6 +18,7 @@ namespace XFrame.Core
         object IParser.Value => Value;
 
         int IPoolObject.PoolKey => default;
+        IPool IPoolObject.InPool { get; set; }
 
         public char Split
         {

@@ -50,6 +50,8 @@ namespace XFrame.Core
 
         int IPoolObject.PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         public Pair<K, V> Parse(string pattern)
         {
             m_Origin = pattern;

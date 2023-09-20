@@ -5,7 +5,7 @@ namespace XFrame.Modules.Event
     /// <summary>
     /// 事件
     /// </summary>
-    public abstract class XEvent : IPoolObject
+    public abstract class XEvent : PoolObjectBase, IPoolObject
     {
         /// <summary>
         /// 事件Id 
@@ -21,30 +21,10 @@ namespace XFrame.Modules.Event
 
         int IPoolObject.PoolKey => 0;
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnReleaseFromPool()
         {
-            OnCreateFromPool();
-        }
-
-        void IPoolObject.OnRequest()
-        {
-            OnRequestFromPool();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-            OnDestroyFromPool();
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            OnReleaseFromPool();
+            base.OnReleaseFromPool();
             Id = default;
         }
-
-        protected internal virtual void OnCreateFromPool() { }
-        protected internal virtual void OnRequestFromPool() { }
-        protected internal virtual void OnDestroyFromPool() { }
-        protected internal virtual void OnReleaseFromPool() { }
     }
 }

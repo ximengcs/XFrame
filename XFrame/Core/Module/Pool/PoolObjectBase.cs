@@ -5,6 +5,8 @@ namespace XFrame.Modules.Pools
     {
         public int PoolKey { get; protected set; }
 
+        IPool IPoolObject.InPool { get; set; }
+
         void IPoolObject.OnCreate()
         {
             OnCreateFromPool();

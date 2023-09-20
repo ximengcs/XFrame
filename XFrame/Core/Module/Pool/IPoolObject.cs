@@ -8,6 +8,8 @@ namespace XFrame.Modules.Pools
     {
         int PoolKey { get; }
 
+        IPool InPool { get; protected internal set; }
+
         /// <summary>
         /// 从对象池中创建时被调用
         /// </summary>

@@ -13,6 +13,9 @@ namespace XFrame.Modules.Tasks
     {
         private Action m_Complete;
         private Action<float> m_Update;
+
+        IPool IPoolObject.InPool { get; set; }
+
         public bool IsComplete => true;
 
         public bool IsStart { get; private set; }

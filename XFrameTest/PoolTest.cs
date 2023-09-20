@@ -35,6 +35,8 @@ namespace XFrameTest
 
         int IPoolObject.PoolKey => 0;
 
+        IPool IPoolObject.InPool { get; set; }
+
         void IPoolObject.OnCreate()
         {
             Log.Debug($"OnCreate{Name}");

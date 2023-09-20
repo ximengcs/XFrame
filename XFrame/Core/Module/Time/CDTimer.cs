@@ -18,6 +18,8 @@ namespace XFrame.Modules.Times
 
         int IPoolObject.PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         /// <summary>
         /// 构造CD计时器
         /// </summary>

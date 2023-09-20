@@ -13,6 +13,7 @@ namespace XFrame.Core
         public Dictionary<K, V> Value => m_Value;
 
         object IParser.Value => m_Value;
+        IPool IPoolObject.InPool { get; set; }
 
         public int PoolKey => default;
 

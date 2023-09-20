@@ -15,6 +15,8 @@ namespace XFrame.Modules.Conditions
 
         public int PoolKey => default;
 
+        IPool IPoolObject.InPool { get; set; }
+
         object IParser.Value => m_Value;
 
         public ConditionData Parse(string pattern)

@@ -18,6 +18,8 @@ namespace XFrame.Modules.Event
 
             int IPoolObject.PoolKey => default;
 
+            IPool IPoolObject.InPool { get; set; }
+
             public void Do(XEvent e)
             {
                 Handler1?.Invoke(e);

@@ -46,14 +46,14 @@ namespace XFrame.Modules.Pools
 
         public void Release(T obj)
         {
-            InnerRelease(obj);
-            m_UseCount--;
+            if (InnerRelease(obj, true))
+                m_UseCount--;
         }
 
         public void Release(IPoolObject obj)
         {
-            InnerRelease(obj);
-            m_UseCount--;
+            if (InnerRelease(obj, true))
+                m_UseCount--;
         }
 
         public void Spawn(int poolKey, int count, object userData = default, XLinkList<IPoolObject> toList = null)
@@ -61,7 +61,7 @@ namespace XFrame.Modules.Pools
             for (int i = 0; i < count; i++)
             {
                 IPoolObject obj = InnerCreate(poolKey, userData);
-                InnerRelease(obj);
+                InnerRelease(obj, false);
                 if (toList != null)
                     toList.AddLast(obj);
             }
@@ -112,13 +112,21 @@ namespace XFrame.Modules.Pools
 
             m_Helper.OnObjectRequest(obj);
             obj.OnRequest();
+            obj.InPool = this;
             return obj;
         }
 
-        private void InnerRelease(IPoolObject obj)
+        private bool InnerRelease(IPoolObject obj, bool check)
         {
+            if (check && obj.InPool == null)
+            {
+                Log.Debug("XFrame", $"Pool Object {obj.GetType().Name} May Be Released, Release Failed");
+                return false;
+            }
+
             m_Helper.OnObjectRelease(obj);
             obj.OnRelease();
+            obj.InPool = null;
             if (m_NodeCache.Empty)
             {
                 m_Objects.AddLast(obj);
@@ -129,6 +137,7 @@ namespace XFrame.Modules.Pools
                 node.Value = obj;
                 m_Objects.AddLast(node);
             }
+            return true;
         }
 
         public void ClearObject()

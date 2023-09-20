@@ -31,6 +31,8 @@ namespace XFrame.Modules.Tasks
         public bool IsStart { get; protected set; }
         public float Pro => m_Pro + m_CurPro;
 
+        IPool IPoolObject.InPool { get; set; }
+
         public ITask AddStrategy(ITaskStrategy strategy)
         {
             StrategyInfo info = new StrategyInfo(strategy, HandlerTypeBase);

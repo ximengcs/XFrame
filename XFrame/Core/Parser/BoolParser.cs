@@ -12,6 +12,7 @@ namespace XFrame.Core
         object IParser.Value => m_Value;
 
         int IPoolObject.PoolKey => default;
+        IPool IPoolObject.InPool { get; set; }
 
         public bool Parse(string pattern)
         {
