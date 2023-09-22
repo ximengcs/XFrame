@@ -4,6 +4,7 @@ using XFrame.Collections;
 using XFrame.Modules.XType;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Containers;
+using XFrame.Modules.Download;
 
 namespace XFrame.Modules.Entities
 {
@@ -12,7 +13,8 @@ namespace XFrame.Modules.Entities
     /// 只有根实体才会接受实体模块的更新生命周期
     /// </summary>
     [CoreModule]
-    public class EntityModule : SingletonModule<EntityModule>
+    [XType(typeof(IEntityModule))]
+    public class EntityModule : ModuleBase, IEntityModule
     {
         #region Inner Field
         private XCollection<IEntity> m_Entities;
@@ -39,13 +41,13 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体基类或实体类</typeparam>
         public void RegisterEntity<T>() where T : class, IEntity
         {
-            TypeSystem module = TypeModule.Inst
+            TypeSystem module = ModuleUtility.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub<T>();
 
             foreach (Type type in module)
             {
-                EntityPropAttribute atr = TypeModule.Inst.GetAttribute<EntityPropAttribute>(type);
+                EntityPropAttribute atr = ModuleUtility.Type.GetAttribute<EntityPropAttribute>(type);
                 if (atr != null)
                     module.AddKey(atr.Type, type);
             }
@@ -95,7 +97,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = TypeModule.Inst
+            Type type = ModuleUtility.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -121,7 +123,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, IEntity parent, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = TypeModule.Inst
+            Type type = ModuleUtility.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -137,7 +139,7 @@ namespace XFrame.Modules.Entities
             if (entity == null)
                 return;
 
-            ContainerModule.Inst.Remove(entity);
+            ModuleUtility.Container.Remove(entity);
             m_Entities.Remove(entity);
         }
         #endregion
@@ -145,7 +147,7 @@ namespace XFrame.Modules.Entities
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            return (IEntity)ContainerModule.Inst.New(entityType, true, parent, onReady);
+            return (IEntity)ModuleUtility.Container.New(entityType, true, parent, onReady);
         }
         #endregion
     }

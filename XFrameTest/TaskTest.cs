@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Download;
 using XFrame.Modules.Tasks;
@@ -22,24 +23,24 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.ToQueue = false;
-                Log.Debug($"[{TimeModule.Inst.Frame}]");
-                ActionTask task = TaskModule.Inst.GetOrNew<ActionTask>();
+                Log.Debug($"[{ModuleUtility.Time.Frame}]");
+                ActionTask task = ModuleUtility.Task.GetOrNew<ActionTask>();
                 task.Add(0, () =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec0");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec0");
                 });
                 task.Add(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec1");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec1");
                 });
                 task.Add(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec2");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec2");
                 });
                 bool first = false;
                 task.Add(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec3");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec3");
                     bool value = first;
                     first = true;
                     return value;
@@ -48,32 +49,32 @@ namespace XFrameTest
                 task.Add(() =>
                 {
                     //if (pro % 10 == 0)
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec4 {pro}");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec4 {pro}");
                     pro++;
                     return pro / 10;
                 });
                 task.Add(0, () =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec5");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec5");
                 });
                 int repeatTimes = 0;
                 task.Add(0.1f, () =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec6 repeat {repeatTimes}");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec6 repeat {repeatTimes}");
                     repeatTimes++;
                     return repeatTimes > 5;
                 });
                 task.Add(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec7");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec7");
                 }, true);
                 task.Add(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Exec8");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Exec8");
                 }, true);
                 task.OnComplete(() =>
                 {
-                    Log.Debug($"[{TimeModule.Inst.Frame}] Complete {task.GetHashCode()}");
+                    Log.Debug($"[{ModuleUtility.Time.Frame}] Complete {task.GetHashCode()}");
                 }).Start();
 
                 /*
@@ -98,7 +99,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 string url = "https://c1b.tapque.com/Innovate/ASMRMakeOver/Production/iOS/V1.0.8/ASMRMakeOverConfig.json";
-                DownloadModule.Inst.Down(url).OnComplete((string text) =>
+                ModuleUtility.Download.Down(url).OnComplete((string text) =>
                 {
                     Console.WriteLine("Download Complete");
                     Console.WriteLine(text);

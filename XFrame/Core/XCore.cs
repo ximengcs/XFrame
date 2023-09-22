@@ -149,7 +149,7 @@ namespace XFrame.Core
                 helpers = new List<IModuleHelper>();
                 m_Helpers.Add(mType, helpers);
             }
-            T helper = TypeModule.Inst.CreateInstance<T>();
+            T helper = ModuleUtility.Type.CreateInstance<T>();
             helpers.Add(helper);
 
             if (!m_MainHelper.ContainsKey(typeof(T)))
@@ -214,12 +214,17 @@ namespace XFrame.Core
         private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            IModule module;
-            if (TypeModule.Inst != null)
-                module = (IModule)TypeModule.Inst.CreateInstance(moduleType);
-            else
-                module = (IModule)Activator.CreateInstance(moduleType);
+            IModule module = (IModule)ModuleUtility.Type.CreateInstance(moduleType);
+            InnerInitModule(module, moduleId, data);
+            sw.Stop();
+            Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            return module;
+        }
 
+        private IModule InnerAddModuleFromSystem(Type moduleType, int moduleId, object data)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            IModule module = (IModule)Activator.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
             Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");

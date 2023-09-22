@@ -80,17 +80,17 @@ namespace XFrameTest
             {
                 IStory[] stories = new IStory[]
                 {
-                    PlotModule.Inst.NewStory("story1").AddSection(typeof(Section1)),
-                    PlotModule.Inst.NewStory("story2").AddSection(typeof(Section1))
+                    ModuleUtility.Plot.NewStory("story1").AddSection(typeof(Section1)),
+                    ModuleUtility.Plot.NewStory("story2").AddSection(typeof(Section1))
                 };
-                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories));
+                ModuleUtility.Plot.Helper.Event.Trigger(NewStoryEvent.Create(stories));
 
                 stories = new IStory[]
                 {
-                    PlotModule.Inst.NewStory("story3").AddSection(typeof(Section2)),
-                    PlotModule.Inst.NewStory("story4").AddSection(typeof(Section2))
+                    ModuleUtility.Plot.NewStory("story3").AddSection(typeof(Section2)),
+                    ModuleUtility.Plot.NewStory("story4").AddSection(typeof(Section2))
                 };
-                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories, typeof(NonBlockDirector)));
+                ModuleUtility.Plot.Helper.Event.Trigger(NewStoryEvent.Create(stories, typeof(NonBlockDirector)));
             });
         }
 

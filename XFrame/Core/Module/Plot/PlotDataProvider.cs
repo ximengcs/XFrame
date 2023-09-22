@@ -42,7 +42,7 @@ namespace XFrame.Modules.Plots
 
         public void ClearData()
         {
-            ArchiveModule.Inst.Delete(m_Persist);
+            ModuleUtility.Archive.Delete(m_Persist);
             m_Persist = null;
             m_Sections = null;
         }
@@ -58,7 +58,7 @@ namespace XFrame.Modules.Plots
             if (m_Sections.HasKey(key))
             {
                 string content = m_Sections[key];
-                return SerializeModule.Inst.DeserializeToObject<T>(content);
+                return ModuleUtility.Serialize.DeserializeToObject<T>(content);
             }
 
             return default;
@@ -72,7 +72,7 @@ namespace XFrame.Modules.Plots
         public void SetData<T>(string name, T value)
         {
             string key = $"{name}_{typeof(T).Name}";
-            string content = SerializeModule.Inst.SerializeObjectToRaw(value);
+            string content = ModuleUtility.Serialize.SerializeObjectToRaw(value);
             m_Sections[key] = content;
         }
     }

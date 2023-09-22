@@ -1,9 +1,7 @@
 ﻿
-using System.Reflection;
 using System.Text;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.XType;
 
 namespace XFrameTest
 {
@@ -43,11 +41,11 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>() == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(9) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(9.9f) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(true) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance(typeof(C1).FullName, 1, 2) == null);
+                Log.Debug(ModuleUtility.Type.CreateInstance<C1>() == null);
+                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(9) == null);
+                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(9.9f) == null);
+                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(true) == null);
+                Log.Debug(ModuleUtility.Type.CreateInstance(typeof(C1).FullName, 1, 2) == null);
             });
         }
 

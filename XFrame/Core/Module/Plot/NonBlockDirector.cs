@@ -1,4 +1,5 @@
 ﻿using XFrame.Collections;
+using XFrame.Core;
 using XFrame.Modules.Archives;
 
 namespace XFrame.Modules.Plots
@@ -16,7 +17,7 @@ namespace XFrame.Modules.Plots
         void IDirector.OnInit()
         {
             m_Stories = new XLinkList<StoryInfo>();
-            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(NAME);
+            m_Archive = ModuleUtility.Archive.GetOrNew<JsonArchive>(NAME);
             InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
@@ -71,7 +72,7 @@ namespace XFrame.Modules.Plots
         private void InnerPlay(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
-            JsonArchive archive = ArchiveModule.Inst.GetOrNew<JsonArchive>(saveName);
+            JsonArchive archive = ModuleUtility.Archive.GetOrNew<JsonArchive>(saveName);
             PlotDataProvider binder = new PlotDataProvider(archive);
             m_Stories.AddLast(new StoryInfo(story, binder));
             story.OnInit(binder);

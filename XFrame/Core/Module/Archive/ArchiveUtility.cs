@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using XFrame.Core;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 
@@ -12,7 +13,7 @@ namespace XFrame.Modules.Archives
             if (XConfig.ArchiveEncrypt)
             {
                 byte[] data = File.ReadAllBytes(path);
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = ModuleUtility.Crypto.New();
                 cryptor.BeginDecrypty(data);
                 result = cryptor.EndDecrypty();
                 cryptor.Dispose();
@@ -28,7 +29,7 @@ namespace XFrame.Modules.Archives
         {
             if (XConfig.ArchiveEncrypt)
             {
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = ModuleUtility.Crypto.New();
                 cryptor.BeginEncrypt();
                 cryptor.Writer.BaseStream.Write(buffer, 0, buffer.Length);
                 byte[] data = cryptor.EndEncrypt();
@@ -47,7 +48,7 @@ namespace XFrame.Modules.Archives
             if (XConfig.ArchiveEncrypt)
             {
                 byte[] data = File.ReadAllBytes(path);
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = ModuleUtility.Crypto.New();
                 cryptor.BeginDecrypty(data);
                 cryptor.EndDecrypty();
                 result = cryptor.Reader.ReadToEnd();
@@ -64,7 +65,7 @@ namespace XFrame.Modules.Archives
         {
             if (XConfig.ArchiveEncrypt)
             {
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = ModuleUtility.Crypto.New();
                 cryptor.BeginEncrypt();
                 cryptor.Writer.Write(text);
                 byte[] data = cryptor.EndEncrypt();

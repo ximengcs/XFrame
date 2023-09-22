@@ -1,4 +1,5 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Times;
 
@@ -17,14 +18,14 @@ namespace XFrame.Modules.Tasks
                 m_Timer = CDTimer.Create();
                 m_Timer.Record(m_Handler.TimeGap);
                 if (m_Handler.NextFrameExec)
-                    m_Handler.Frame = TimeModule.Inst.Frame;
+                    m_Handler.Frame = ModuleUtility.Time.Frame;
             }
 
             public float OnHandle(ITask from)
             {
                 if (m_Handler.NextFrameExec)
                 {
-                    if (TimeModule.Inst.Frame <= m_Handler.Frame)
+                    if (ModuleUtility.Time.Frame <= m_Handler.Frame)
                         return 0;
                 }
 

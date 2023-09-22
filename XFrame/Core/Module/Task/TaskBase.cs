@@ -3,6 +3,7 @@ using XFrame.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
+using XFrame.Core;
 
 namespace XFrame.Modules.Tasks
 {
@@ -105,7 +106,8 @@ namespace XFrame.Modules.Tasks
 
                     if (m_Targets.Count > 0)
                     {
-                        if (TaskModule.Inst.InnerCanContinue())
+                        TaskModule taskModule = (TaskModule)ModuleUtility.Task;
+                        if (taskModule.InnerCanContinue())
                             InnerUpdate();
                     }
                     else

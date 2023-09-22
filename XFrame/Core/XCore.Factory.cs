@@ -11,19 +11,21 @@ namespace XFrame.Core
             return core;
         }
 
-        public static XCore Create(params Type[] modules)
+        public static XCore Create(Type coreType, params Type[] modules)
         {
             XCore core = new XCore();
             core.Init();
+            core.InnerAddModuleFromSystem(coreType, default, default);
             foreach (Type moduleType in modules)
                 core.InnerAddModule(moduleType, default, default);
             return core;
         }
 
-        public static XCore Create(Type[] modules, object[] datas = null)
+        public static XCore Create(Type coreType, Type[] modules, object[] datas = null)
         {
             XCore core = new XCore();
             core.Init();
+            core.InnerAddModuleFromSystem(coreType, default, default);
             for (int i = 0; i < modules.Length; i++)
             {
                 Type moduleType = modules[i];

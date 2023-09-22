@@ -1,5 +1,6 @@
 ﻿
 using NUnit.Framework.Internal;
+using XFrame.Core;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Tasks;
@@ -259,13 +260,13 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.Debug("Start");
-                IContainer c1 = ContainerModule.Inst.New<Container1>();
+                IContainer c1 = ModuleUtility.Container.New<Container1>();
 
-                TaskModule.Inst.GetOrNew<ActionTask>().Add(1, () =>
+                ModuleUtility.Task.GetOrNew<ActionTask>().Add(1, () =>
                 {
-                    ContainerModule.Inst.Remove(c1);
+                    ModuleUtility.Container.Remove(c1);
                     Log.Debug("Complete");
-                    IContainer c2 = ContainerModule.Inst.New<Container1>();
+                    IContainer c2 = ModuleUtility.Container.New<Container1>();
                 }).Start();
             });
         }

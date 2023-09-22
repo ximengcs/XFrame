@@ -1,5 +1,7 @@
 ﻿using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Collections;
+using XFrame.Modules.Tasks;
 
 namespace XFrame.Modules.Times
 {
@@ -7,7 +9,8 @@ namespace XFrame.Modules.Times
     /// 时间模块
     /// </summary>
     [BaseModule]
-    public class TimeModule : SingletonModule<TimeModule>, IUpdater
+    [XType(typeof(ITimeModule))]
+    public class TimeModule : ModuleBase, ITimeModule
     {
         private float m_Time;
         private float m_EscapeTime;

@@ -14,7 +14,7 @@ namespace XFrameTest
             EntryTest.Exec(100, () =>
             {
                 Log.Debug("-------------Create E1 Start-------------");
-                E1 e1 = EntityModule.Inst.Create<E1>((db) =>
+                E1 e1 = ModuleUtility.Entity.Create<E1>((db) =>
                 {
                     Log.Debug("DB OnReady");
                     db.SetData(Pair.Create("TestKey", "TestValue"));
@@ -23,15 +23,15 @@ namespace XFrameTest
                 });
                 Log.Debug("-------------Create E1 End-------------");
 
-                TaskModule.Inst.GetOrNew<ActionTask>()
+                ModuleUtility.Task.GetOrNew<ActionTask>()
                     .Add(1f, () =>
                     {
                         Log.Debug("-------------Destroy E1 Start-------------");
-                        EntityModule.Inst.Destroy(e1);
+                        ModuleUtility.Entity.Destroy(e1);
                         Log.Debug("-------------Destroy E1 End-------------");
 
                         Log.Debug("-------------Create E1 Start Again-------------");
-                        e1 = EntityModule.Inst.Create<E1>((db) =>
+                        e1 = ModuleUtility.Entity.Create<E1>((db) =>
                         {
                             Log.Debug("DB OnReady");
                             db.SetData(Pair.Create("TestKey 2", "TestValue 2"));
@@ -48,7 +48,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(100, () =>
             {
-                E1 e1 = EntityModule.Inst.Create<E1>((entity) =>
+                E1 e1 = ModuleUtility.Entity.Create<E1>((entity) =>
                 {
                     Log.Debug("OnEntityReady");
                     entity.SetData(Pair.Create("TestKey", "TestValue"));
@@ -63,7 +63,7 @@ namespace XFrameTest
                 });
 
                 e1.RemoveCom<C2>(2);
-                EntityModule.Inst.Destroy(e1);
+                ModuleUtility.Entity.Destroy(e1);
             });
         }
 
@@ -72,8 +72,8 @@ namespace XFrameTest
         {
             EntryTest.Exec(50, () =>
             {
-                EntityModule.Inst.RegisterEntity<EBase>();
-                EBase c3 = EntityModule.Inst.Create<EBase>(3);
+                ModuleUtility.Entity.RegisterEntity<EBase>();
+                EBase c3 = ModuleUtility.Entity.Create<EBase>(3);
             });
         }
 
@@ -82,7 +82,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(50, () =>
             {
-                EntityModule.Inst.Create<E3>();
+                ModuleUtility.Entity.Create<E3>();
             });
         }
     }

@@ -1,4 +1,6 @@
 ﻿
+using XFrame.Core;
+
 namespace XFrame.Modules.Event
 {
     public static class Global
@@ -9,7 +11,7 @@ namespace XFrame.Modules.Event
             get
             {
                 if (s_Inst == null)
-                    s_Inst = EventModule.Inst.NewSys();
+                    s_Inst = ModuleUtility.Event.NewSys();
                 return s_Inst;
             }
         }

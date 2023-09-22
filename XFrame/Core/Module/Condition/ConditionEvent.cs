@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Event;
+﻿using XFrame.Core;
+using XFrame.Modules.Event;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
@@ -44,7 +45,7 @@ namespace XFrame.Modules.Conditions
         /// <returns>事件实例</returns>
         public static ConditionEvent Create(int target, object param)
         {
-            ConditionEvent evt = PoolModule.Inst.GetOrNew<ConditionEvent>().Require();
+            ConditionEvent evt = ModuleUtility.Pool.GetOrNew<ConditionEvent>().Require();
             evt.Target = target;
             evt.Param = param;
             return evt;

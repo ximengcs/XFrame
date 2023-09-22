@@ -42,7 +42,7 @@ namespace XFrame.Modules.Conditions
             m_NotInfos = new Dictionary<int, List<IConditionHandle>>();
 
             ConditionHelperSetting helperSetting = setting.HelperSetting;
-            m_Helper = ConditionModule.Inst.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
+            m_Helper = ModuleUtility.Condition.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
             if (helperSetting.UsePersistData)
             {
                 InnerEnsureArchive();
@@ -59,7 +59,7 @@ namespace XFrame.Modules.Conditions
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
                 int target = handle.Target;
                 ConditionHelperSetting conditionSetting = setting.GetConditionHelperSettting(target);
-                CompareInfo compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
+                CompareInfo compare = ModuleUtility.Condition.GetOrNewCompare(target, conditionSetting.UseInstance);
                 IDataProvider dataProvider;
                 if (conditionSetting.UsePersistData)
                 {
@@ -103,7 +103,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Archive != null)
                 return;
-            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
+            m_Archive = ModuleUtility.Archive.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
         }
 
         internal void InnerTrigger(IConditionHandle handle, object param)

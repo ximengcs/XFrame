@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFrame.Core;
 using XFrame.Modules.Archives;
 using XFrame.Modules.XType;
 using XFrame.SimpleJSON;
@@ -39,11 +40,11 @@ namespace XFrame.Modules.Plots
             while (it.MoveNext())
             {
                 var item = it.Current;
-                IStory story = PlotModule.Inst.NewStory(item.Key);
+                IStory story = ModuleUtility.Plot.NewStory(item.Key);
                 JSONNode sections = item.Value["sections"];
                 foreach (JSONNode section in sections)
                 {
-                    Type type = TypeModule.Inst.GetType(section);
+                    Type type = ModuleUtility.Type.GetType(section);
                     story.AddSection(type);
                 }
                 stories.Add(story);

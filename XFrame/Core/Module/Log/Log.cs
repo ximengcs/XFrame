@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using XFrame.Core;
 
 namespace XFrame.Modules.Diagnotics
 {
@@ -85,7 +86,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Debug, content));
             else
-                LogModule.Inst.Debug(content);
+                ModuleUtility.Log.Debug(content);
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Warning, content));
             else
-                LogModule.Inst.Warning(content);
+                ModuleUtility.Log.Warning(content);
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Error, content));
             else
-                LogModule.Inst.Error(content);
+                ModuleUtility.Log.Error(content);
         }
 
         /// <summary>
@@ -127,7 +128,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, content));
             else
-                LogModule.Inst.Fatal(content);
+                ModuleUtility.Log.Fatal(content);
         }
     }
 }

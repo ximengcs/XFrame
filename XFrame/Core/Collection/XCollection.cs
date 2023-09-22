@@ -1,5 +1,8 @@
 ﻿using System;
+using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Modules.XType;
+using System.Reflection;
 
 namespace XFrame.Collections
 {
@@ -39,6 +42,20 @@ namespace XFrame.Collections
         /// </summary>
         public int Count => m_Elements.Count;
 
+        private Type InnerGetMapType(Type type)
+        {
+            if (type == typeof(ITypeModule))
+                return type;
+
+            XTypeAttribute attr;
+            ITypeModule typeModule = Core.ModuleUtility.Type;
+            if (typeModule != null)
+                attr = typeModule.GetAttribute<XTypeAttribute>(type);
+            else
+                attr = type.GetCustomAttribute<XTypeAttribute>();
+            return attr != null ? attr.Type : type;
+        }
+
         /// <summary>
         /// 添加一个元素 时间复杂度O(1)
         /// </summary>
@@ -46,19 +63,20 @@ namespace XFrame.Collections
         public void Add(T entity)
         {
             Type type = entity.GetType();
+            Type xType = InnerGetMapType(type);
             Dictionary<int, T> entities;
-            if (!m_WithTypes.TryGetValue(type, out entities))
+            if (!m_WithTypes.TryGetValue(xType, out entities))
             {
                 entities = new Dictionary<int, T>();
-                m_WithTypes.Add(type, entities);
+                m_WithTypes.Add(xType, entities);
             }
 
             XLinkNode<T> node = m_Elements.AddLast(entity);
             m_NodeMap.Add(node.GetHashCode(), node);
 
             entities.Add(entity.Id, entity);
-            if (!m_Mains.ContainsKey(type))
-                m_Mains.Add(type, entity);
+            if (!m_Mains.ContainsKey(xType))
+                m_Mains.Add(xType, entity);
         }
 
         /// <summary>
@@ -70,9 +88,10 @@ namespace XFrame.Collections
         {
             bool success = false;
             Type type = item.GetType();
-            if (m_WithTypes.TryGetValue(type, out Dictionary<int, T> entities))
+            Type xType = InnerGetMapType(type);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
                 success = entities.Remove(item.Id);
-            if (m_Mains.Remove(type))
+            if (m_Mains.Remove(xType))
             {
                 if (!success)
                     success = true;
@@ -108,9 +127,10 @@ namespace XFrame.Collections
         public bool Contains(T item)
         {
             Type type = item.GetType();
-            if (m_Mains.ContainsKey(type))
+            Type xType = InnerGetMapType(type);
+            if (m_Mains.ContainsKey(xType))
                 return true;
-            if (m_WithTypes.TryGetValue(type, out Dictionary<int, T> entities))
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
             {
                 if (entities.ContainsKey(item.Id))
                     return true;
@@ -125,7 +145,8 @@ namespace XFrame.Collections
         /// <returns>获取到的元素</returns>
         public TEntity Get<TEntity>() where TEntity : T
         {
-            if (m_Mains.TryGetValue(typeof(TEntity), out T entity))
+            Type xType = InnerGetMapType(typeof(TEntity));
+            if (m_Mains.TryGetValue(xType, out T entity))
                 return (TEntity)entity;
             else
                 return default;
@@ -138,7 +159,8 @@ namespace XFrame.Collections
         /// <returns>获取到的元素</returns>
         public T Get(Type elementType)
         {
-            if (m_Mains.TryGetValue(elementType, out T entity))
+            Type xType = InnerGetMapType(elementType);
+            if (m_Mains.TryGetValue(xType, out T entity))
                 return entity;
             else
                 return default;
@@ -152,7 +174,8 @@ namespace XFrame.Collections
         /// <returns>获取到的元素</returns>
         public TEntity Get<TEntity>(int entityId) where TEntity : T
         {
-            if (m_WithTypes.TryGetValue(typeof(TEntity), out Dictionary<int, T> entities))
+            Type xType = InnerGetMapType(typeof(TEntity));
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
                 if (entities.TryGetValue(entityId, out T entity))
                     return (TEntity)entity;
             return default;
@@ -160,7 +183,8 @@ namespace XFrame.Collections
 
         public T Get(Type elementType, int entityId)
         {
-            if (m_WithTypes.TryGetValue(elementType, out Dictionary<int, T> entities))
+            Type xType = InnerGetMapType(elementType);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
                 if (entities.TryGetValue(entityId, out T entity))
                     return entity;
             return default;

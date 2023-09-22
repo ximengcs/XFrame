@@ -1,7 +1,7 @@
 ﻿using System;
-using XFrame.Module.Rand;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
+using XFrame.Core;
+using XFrame.Modules.Rand;
 
 namespace XFrame.Modules.Plots
 {
@@ -25,7 +25,7 @@ namespace XFrame.Modules.Plots
         public Story(string name)
         {
             if (string.IsNullOrEmpty(name))
-                name = $"story_{RandModule.Inst.RandPath()}";
+                name = $"story_{ModuleUtility.Rand.RandPath()}";
             Name = name;
             m_SectionTypes = new Queue<Type>();
         }
@@ -90,7 +90,7 @@ namespace XFrame.Modules.Plots
                 }
                 else
                 {
-                    ISection section = (ISection)TypeModule.Inst.CreateInstance(type);
+                    ISection section = (ISection)ModuleUtility.Type.CreateInstance(type);
                     m_Current = new SectionInfo(section, SectionState.WaitInit);
                 }
             }

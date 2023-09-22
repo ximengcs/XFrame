@@ -2,6 +2,7 @@
 using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using XFrame.Core;
 
 namespace XFrame.Modules.XType
 {
@@ -117,7 +118,7 @@ namespace XFrame.Modules.XType
             {
                 if (type.IsAssignableFrom(subType))
                 {
-                    XAttribute xAttr = TypeModule.Inst.GetAttribute<XAttribute>(subType);
+                    XAttribute xAttr = ModuleUtility.Type.GetAttribute<XAttribute>(subType);
                     module.AddSubClass(subType);
                     if (xAttr != null)
                         module.AddKey(xAttr.Id, subType);

@@ -3,9 +3,9 @@ using XFrame.Core;
 using System.Collections;
 using XFrame.Collections;
 using XFrame.Modules.Tasks;
-using XFrame.Modules.XType;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
+using XFrame.Modules.Rand;
 
 namespace XFrame.Modules.Resource
 {
@@ -14,7 +14,8 @@ namespace XFrame.Modules.Resource
     /// </summary>
     [BaseModule]
     [RequireModule(typeof(TaskModule))]
-    public class ResModule : SingletonModule<ResModule>
+    [XType(typeof(IResModule))]
+    public class ResModule : ModuleBase, IResModule
     {
         #region Inner Fields
         private IResourceHelper m_ResHelper;
@@ -28,14 +29,14 @@ namespace XFrame.Modules.Resource
             InnerEnsurePreload();
             if (IsDefaultModule && !string.IsNullOrEmpty(XConfig.DefaultRes))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultRes);
+                Type type = ModuleUtility.Type.GetType(XConfig.DefaultRes);
                 SetHelper(type);
             }
         }
 
         public IResourceHelper SetHelper(Type type)
         {
-            m_ResHelper = TypeModule.Inst.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = ModuleUtility.Type.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }
@@ -46,7 +47,7 @@ namespace XFrame.Modules.Resource
         {
             InnerEnsurePreload();
 
-            XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
+            XTask allTask = ModuleUtility.Task.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
                 if (m_PreLoadRes.ContainsKey(path))
@@ -71,7 +72,7 @@ namespace XFrame.Modules.Resource
         public ITask Preload<T>(IEnumerable resPaths)
         {
             InnerEnsurePreload();
-            XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
+            XTask allTask = ModuleUtility.Task.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
                 if (m_PreLoadRes.ContainsKey(path))

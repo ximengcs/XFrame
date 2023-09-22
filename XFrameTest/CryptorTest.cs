@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using XFrame.Core;
 using XFrame.Modules.Crypto;
 using XFrame.Modules.Diagnotics;
 
@@ -12,7 +13,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                ICryptor cryptor = CryptoModule.Inst.New("x1df2eop", "3sfd2ds4");
+                ICryptor cryptor = ModuleUtility.Crypto.New("x1df2eop", "3sfd2ds4");
                 cryptor.BeginEncrypt();
                 StreamWriter writer = cryptor.Writer;
                 byte[] buffer1 = Encoding.UTF8.GetBytes("test");
@@ -24,7 +25,7 @@ namespace XFrameTest
                 cryptor.Dispose();
 
                 Log.Debug("encrypt count " + buffer.Length);
-                cryptor = CryptoModule.Inst.New("x1df2eop", "3sfd2ds4");
+                cryptor = ModuleUtility.Crypto.New("x1df2eop", "3sfd2ds4");
                 cryptor.BeginDecrypty(buffer);
                 byte[] buffer3 = cryptor.EndDecrypty();
                 StreamReader reader = cryptor.Reader;

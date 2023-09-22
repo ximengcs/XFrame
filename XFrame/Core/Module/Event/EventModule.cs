@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using XFrame.Collections;
 using XFrame.Core;
 
 namespace XFrame.Modules.Event
@@ -7,7 +8,8 @@ namespace XFrame.Modules.Event
     /// 事件模块
     /// </summary>
     [CoreModule]
-    public class EventModule : SingletonModule<EventModule>, IUpdater
+    [XType(typeof(IEventModule))]
+    public class EventModule : ModuleBase, IEventModule
     {
         private List<XEventSystem> m_List;
          

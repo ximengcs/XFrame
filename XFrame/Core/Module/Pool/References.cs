@@ -1,5 +1,6 @@
 ﻿
 using System;
+using XFrame.Core;
 
 namespace XFrame.Modules.Pools
 {
@@ -7,19 +8,19 @@ namespace XFrame.Modules.Pools
     {
         public static IPoolObject Require(Type type)
         {
-            IPool pool = PoolModule.Inst.GetOrNew(type);
+            IPool pool = ModuleUtility.Pool.GetOrNew(type);
             return pool.Require();
         }
 
         public static T Require<T>() where T : IPoolObject
         {
-            IPool<T> pool = PoolModule.Inst.GetOrNew<T>();
+            IPool<T> pool = ModuleUtility.Pool.GetOrNew<T>();
             return pool.Require();
         }
 
         public static void Release(IPoolObject obj)
         {
-            IPool pool = PoolModule.Inst.GetOrNew(obj.GetType());
+            IPool pool = ModuleUtility.Pool.GetOrNew(obj.GetType());
             pool.Release(obj);
         }
     }

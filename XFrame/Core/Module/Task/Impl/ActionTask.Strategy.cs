@@ -1,4 +1,5 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Times;
 
 namespace XFrame.Modules.Tasks
@@ -13,14 +14,14 @@ namespace XFrame.Modules.Tasks
             {
                 m_Handler = handler;
                 if (m_Handler.NextFrameExec)
-                    m_Handler.Frame = TimeModule.Inst.Frame;
+                    m_Handler.Frame = ModuleUtility.Time.Frame;
             }
 
             public float OnHandle(ITask from)
             {
                 if (m_Handler.NextFrameExec)
                 {
-                    if (TimeModule.Inst.Frame <= m_Handler.Frame)
+                    if (ModuleUtility.Time.Frame <= m_Handler.Frame)
                         return 0;
                 }
 

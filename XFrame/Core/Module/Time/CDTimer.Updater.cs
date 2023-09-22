@@ -1,4 +1,6 @@
 ﻿
+using XFrame.Core;
+
 namespace XFrame.Modules.Times
 {
     public partial class CDTimer
@@ -22,7 +24,7 @@ namespace XFrame.Modules.Times
 
         public class DefaultTimer : IUpdater
         {
-            float IUpdater.Time => TimeModule.Inst.Time;
+            float IUpdater.Time => ModuleUtility.Time.Time;
         }
         #endregion
     }

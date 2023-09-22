@@ -6,6 +6,7 @@ using XFrame.Modules.Times;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Archives
 {
@@ -14,7 +15,8 @@ namespace XFrame.Modules.Archives
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(CryptoModule))]
-    public class ArchiveModule : SingletonModule<ArchiveModule>, IUpdater, ISaveable
+    [XType(typeof(IArchiveModule))]
+    public class ArchiveModule : ModuleBase, IArchiveModule
     {
         #region Inner Field
         private const int SAVE_KEY = 0;
@@ -35,13 +37,12 @@ namespace XFrame.Modules.Archives
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
-
             InnerInit();
         }
 
         private void InnerInit()
         {
-            TypeSystem system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
+            TypeSystem system = ModuleUtility.Type.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
                 InnerAddType(type);
             InnerRefreshFiles();
@@ -49,7 +50,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerAddType(Type type)
         {
-            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = ModuleUtility.Type.GetAttribute<ArchiveAttribute>(type);
             if (attri != null)
             {
                 if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
@@ -137,7 +138,7 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = ModuleUtility.Type.GetAttribute<ArchiveAttribute>(type);
             return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 
@@ -166,7 +167,7 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)TypeModule.Inst.CreateInstance(archiveType);
+                IArchive source = (IArchive)ModuleUtility.Type.CreateInstance(archiveType);
                 source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;

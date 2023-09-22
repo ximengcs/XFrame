@@ -1,10 +1,11 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Utility;
 using XFrame.Modules.XType;
 using XFrame.Modules.Event;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
+using XFrame.Collections;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Plots
 {
@@ -13,7 +14,8 @@ namespace XFrame.Modules.Plots
     /// </summary>
     [XModule]
     [RequireModule(typeof(EventModule))]
-    public class PlotModule : SingletonModule<PlotModule>, IUpdater
+    [XType(typeof(IPlotModule))]
+    public class PlotModule : ModuleBase, IPlotModule
     {
         #region Inner Fields
         private IPlotHelper m_Helper;
@@ -44,11 +46,11 @@ namespace XFrame.Modules.Plots
             base.OnInit(data);
             m_Directors = new Dictionary<Type, IDirector>();
 
-            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<DirectorAttribute>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<DirectorAttribute>();
             foreach (Type type in typeSys)
             {
-                IDirector director = (IDirector)TypeModule.Inst.CreateInstance(type);
-                DirectorAttribute attr = TypeModule.Inst.GetAttribute<DirectorAttribute>(type);
+                IDirector director = (IDirector)ModuleUtility.Type.CreateInstance(type);
+                DirectorAttribute attr = ModuleUtility.Type.GetAttribute<DirectorAttribute>(type);
                 if (attr.Default)
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
@@ -57,10 +59,10 @@ namespace XFrame.Modules.Plots
 
             if (!string.IsNullOrEmpty(XConfig.DefaultPlotHelper))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultPlotHelper);
+                Type type = ModuleUtility.Type.GetType(XConfig.DefaultPlotHelper);
                 if (type != null)
                 {
-                    m_Helper = (IPlotHelper)TypeModule.Inst.CreateInstance(type);
+                    m_Helper = (IPlotHelper)ModuleUtility.Type.CreateInstance(type);
                 }
             }
 

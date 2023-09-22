@@ -1,6 +1,7 @@
 ﻿
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.XType;
 
 namespace XFrameTest
 {
@@ -30,6 +31,7 @@ namespace XFrameTest
                 Entry.AddModule<A>();
                 Log.ToQueue = false;
                 Log.Debug("Start");
+                Log.Debug(Entry.GetModule<ITypeModule>() == null);
             });
         }
     }

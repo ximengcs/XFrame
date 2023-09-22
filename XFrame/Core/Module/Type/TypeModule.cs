@@ -1,17 +1,18 @@
 ﻿using System;
 using XFrame.Core;
 using System.Reflection;
+using XFrame.Collections;
 using XFrame.Modules.Config;
-using System.Collections.Generic;
-using XFrame.Modules.ID;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.XType
 {
     /// <summary>
     /// 类型模块
     /// </summary>
-    public partial class TypeModule : SingletonModule<TypeModule>
+    [XType(typeof(ITypeModule))]
+    public partial class TypeModule : ModuleBase, ITypeModule
     {
         #region Inner Fields
         private Action m_OnTypeChange;
@@ -300,7 +301,7 @@ namespace XFrame.Modules.XType
                 if (baseType != type && baseType.IsAssignableFrom(type))
                 {
                     module.AddSubClass(type);
-                    XAttribute attr = TypeModule.Inst.GetAttribute<XAttribute>(type);
+                    XAttribute attr = GetAttribute<XAttribute>(type);
                     if (attr != null)
                         module.AddKey(attr.Id, type);
                 }

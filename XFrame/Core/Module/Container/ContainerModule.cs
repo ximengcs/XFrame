@@ -1,8 +1,8 @@
-﻿using XFrame.Core;
+﻿using System;
+using XFrame.Core;
 using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
-using System;
 using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Containers
@@ -11,7 +11,8 @@ namespace XFrame.Modules.Containers
     /// 容器类模块
     /// </summary>
     [XModule]
-    public partial class ContainerModule : SingletonModule<ContainerModule>, IUpdater
+    [XType(typeof(IContainerModule))]
+    public partial class ContainerModule : ModuleBase, IContainerModule
     {
         private IContainerHelper m_Helper;
         private XCollection<IContainer> m_Containers;
@@ -23,17 +24,17 @@ namespace XFrame.Modules.Containers
         /// <returns>容器实例</returns>
         public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
         {
-            return (T)InnerNew(typeof(T), IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            return (T)InnerNew(typeof(T), ModuleUtility.Id.Next(), updateTrusteeship, master, onReady);
         }
 
         public Container New(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
-            return (Container)InnerNew(typeof(Container), IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            return (Container)InnerNew(typeof(Container), ModuleUtility.Id.Next(), updateTrusteeship, master, onReady);
         }
 
         public IContainer New(Type type, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
-            return InnerNew(type, IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            return InnerNew(type, ModuleUtility.Id.Next(), updateTrusteeship, master, onReady);
         }
 
         public IContainer New(Type type, int id, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
@@ -43,7 +44,7 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
-            IPool pool = PoolModule.Inst.GetOrNew(type);
+            IPool pool = ModuleUtility.Pool.GetOrNew(type);
             int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
             IPoolObject obj = pool.Require(poolKey);
             IContainer container = obj as IContainer;
@@ -63,7 +64,7 @@ namespace XFrame.Modules.Containers
             {
                 m_Containers.Remove(container);
                 container.OnDestroy();
-                IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
+                IPool pool = ModuleUtility.Pool.GetOrNew(container.GetType());
                 pool.Release(container);
             }
         }
@@ -72,10 +73,10 @@ namespace XFrame.Modules.Containers
         {
             base.OnInit(data);
             m_Containers = new XCollection<IContainer>();
-            TypeSystem typeSys = TypeModule.Inst.GetOrNew<IContainerHelper>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<IContainerHelper>();
             foreach (Type type in typeSys)
             {
-                m_Helper = (IContainerHelper)TypeModule.Inst.CreateInstance(type);
+                m_Helper = (IContainerHelper)ModuleUtility.Type.CreateInstance(type);
                 break;
             }
         }
@@ -95,7 +96,7 @@ namespace XFrame.Modules.Containers
                     continue;
                 m_Containers.Remove(container);
                 container.OnDestroy();
-                IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
+                IPool pool = ModuleUtility.Pool.GetOrNew(container.GetType());
                 pool.Release(container);
             }
             m_Containers.Clear();

@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Core;
+using XFrame.Collections;
 using XFrame.Modules.XType;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Serialize
 {
@@ -9,7 +10,8 @@ namespace XFrame.Modules.Serialize
     /// 序列化模块
     /// </summary>
     [CoreModule]
-    public class SerializeModule : SingletonModule<SerializeModule>
+    [XType(typeof(ISerializeModule))]
+    public class SerializeModule : ModuleBase, ISerializeModule
     {
         private Dictionary<int, ISerializeHelper> m_Helpers;
 
@@ -18,7 +20,7 @@ namespace XFrame.Modules.Serialize
             base.OnInit(data);
 
             m_Helpers = new Dictionary<int, ISerializeHelper>();
-            TypeSystem typeSys = TypeModule.Inst.GetOrNew<ISerializeHelper>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<ISerializeHelper>();
             foreach (Type type in typeSys)
             {
                 InnerInit(type);
@@ -82,7 +84,7 @@ namespace XFrame.Modules.Serialize
 
         private void InnerInit(Type type)
         {
-            ISerializeHelper helper = TypeModule.Inst.CreateInstance(type) as ISerializeHelper;
+            ISerializeHelper helper = ModuleUtility.Type.CreateInstance(type) as ISerializeHelper;
             m_Helpers.Add(helper.HandleType, helper);
         }
     }

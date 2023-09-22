@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using XFrame.Core;
 using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Archives
@@ -40,7 +41,7 @@ namespace XFrame.Modules.Archives
 
         public override void ClearData()
         {
-            ArchiveModule.Inst.Delete(this);
+            ModuleUtility.Archive.Delete(this);
         }
     }
 }

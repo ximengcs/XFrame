@@ -1,10 +1,10 @@
 ﻿using XFrame.Core;
-using XFrame.Module.Rand;
 using System.Diagnostics;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Times;
+using XFrame.Modules.Rand;
 using System.Collections.Generic;
-using XFrame.Core.Caches;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Tasks
 {
@@ -15,7 +15,8 @@ namespace XFrame.Modules.Tasks
     [RequireModule(typeof(RandModule))]
     [RequireModule(typeof(PoolModule))]
     [RequireModule(typeof(TimeModule))]
-    public class TaskModule : SingletonModule<TaskModule>, IUpdater
+    [XType(typeof(ITaskModule))]
+    public class TaskModule : ModuleBase, ITaskModule
     {
         #region Const Fields
         private const long DEFAULT_TIMEOUT = 10;
@@ -90,7 +91,7 @@ namespace XFrame.Modules.Tasks
         /// <returns>获取到的任务</returns>
         public T GetOrNew<T>() where T : ITask
         {
-            return GetOrNew<T>(RandModule.Inst.RandString());
+            return GetOrNew<T>(ModuleUtility.Rand.RandString());
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_TaskWithName.TryGetValue(name, out ITask task))
             {
-                IPool<T> pool = PoolModule.Inst.GetOrNew<T>();
+                IPool<T> pool = ModuleUtility.Pool.GetOrNew<T>();
                 IPoolObject obj = pool.Require();
                 task = (ITask)obj;
                 m_TaskWithName[name] = task;

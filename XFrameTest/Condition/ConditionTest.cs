@@ -1,5 +1,4 @@
 ﻿
-using System.Reflection;
 using XFrame.Core;
 using XFrame.Modules.Conditions;
 using XFrame.Modules.Diagnotics;
@@ -19,22 +18,22 @@ namespace XFrameTest.Condition
                 ConditionData cond = new ConditionData("1|100,2|1.2,3|9;8,3|7;4");
                 ConditionSetting setting = new ConditionSetting("cond1", cond);
                 Log.Debug(cond);
-                ConditionModule.Inst.Register(setting).OnComplete((handle) =>
+                ModuleUtility.Condition.Register(setting).OnComplete((handle) =>
                 {
                     Log.Debug($"{handle.Name} complete");
                 });
 
-                TaskModule.Inst.GetOrNew<ActionTask>().Add(100, () =>
+                ModuleUtility.Task.GetOrNew<ActionTask>().Add(100, () =>
                 {
                     Log.Debug("Exec");
                     CondConst.Coin.Value += 200;
                     CondConst.Gem.Value += 200;
                 }).Start();
 
-                TaskModule.Inst.GetOrNew<ActionTask>().Add(1000, () =>
+                ModuleUtility.Task.GetOrNew<ActionTask>().Add(1000, () =>
                 {
                     Log.Debug("Exec2");
-                    ConditionModule.Inst.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));
+                    ModuleUtility.Condition.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));
                 }).Start();
             });
         }
@@ -79,15 +78,15 @@ namespace XFrameTest.Condition
                 Console.WriteLine(type.Name);
                 Type geneType = interfaceType.GetGenericArguments()[0];
                 Console.WriteLine(geneType.FullName);
-                MethodInfo methodInfo = interfaceType.GetMethod(nameof(Check));
-                Type deleType = typeof(Func<,,>);
-                deleType = deleType.MakeGenericType(typeof(IConditionHandle), geneType, typeof(bool));
-                m_CheckFun = methodInfo.CreateDelegate(deleType, m_Inst);
-
-                methodInfo = interfaceType.GetMethod(nameof(OnEventTrigger));
-                deleType = typeof(Action<>);
-                deleType = deleType.MakeGenericType(geneType);
-                m_OnEventTriggerFun = methodInfo.CreateDelegate(deleType, m_Inst);
+                //MethodInfo methodInfo = interfaceType.GetMethod(nameof(Check));
+                //Type deleType = typeof(Func<,,>);
+                //deleType = deleType.MakeGenericType(typeof(IConditionHandle), geneType, typeof(bool));
+                //m_CheckFun = methodInfo.CreateDelegate(deleType, m_Inst);
+                //
+                //methodInfo = interfaceType.GetMethod(nameof(OnEventTrigger));
+                //deleType = typeof(Action<>);
+                //deleType = deleType.MakeGenericType(geneType);
+                //m_OnEventTriggerFun = methodInfo.CreateDelegate(deleType, m_Inst);
             }
         }
     }

@@ -1,7 +1,9 @@
 ﻿using System;
 using XFrame.Core;
-using System.Collections.Generic;
 using XFrame.Modules.XType;
+using System.Collections.Generic;
+using XFrame.Collections;
+using XFrame.Modules.Plots;
 
 namespace XFrame.Modules.Pools
 {
@@ -9,7 +11,8 @@ namespace XFrame.Modules.Pools
     /// 对象池模块
     /// </summary>
     [BaseModule]
-    public class PoolModule : SingletonModule<PoolModule>
+    [XType(typeof(IPoolModule))]
+    public class PoolModule : ModuleBase, IPoolModule
     {
         private object[] m_ParamCache;
         private Dictionary<Type, IPool> m_PoolContainers;
@@ -22,13 +25,13 @@ namespace XFrame.Modules.Pools
             m_PoolContainers = new Dictionary<Type, IPool>();
 
             Type helperType = typeof(IPoolHelper);
-            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<PoolHelperAttribute>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<PoolHelperAttribute>();
             foreach (Type type in typeSys)
             {
                 if (helperType.IsAssignableFrom(type))
                 {
-                    PoolHelperAttribute attr = TypeModule.Inst.GetAttribute<PoolHelperAttribute>(type);
-                    IPoolHelper helper = TypeModule.Inst.CreateInstance(type) as IPoolHelper;
+                    PoolHelperAttribute attr = ModuleUtility.Type.GetAttribute<PoolHelperAttribute>(type);
+                    IPoolHelper helper = ModuleUtility.Type.CreateInstance(type) as IPoolHelper;
                     InnerGetOrNew(attr.Target, helper);
                 }
             }
@@ -80,7 +83,7 @@ namespace XFrame.Modules.Pools
                     helper = new DefaultPoolHelper();
                 Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
                 m_ParamCache[0] = helper;
-                pool = TypeModule.Inst.CreateInstance(poolType, m_ParamCache) as IPool;
+                pool = ModuleUtility.Type.CreateInstance(poolType, m_ParamCache) as IPool;
                 m_PoolContainers.Add(objType, pool);
             }
 

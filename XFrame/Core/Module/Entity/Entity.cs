@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
+using XFrame.Core;
 
 namespace XFrame.Modules.Entities
 {
@@ -12,7 +13,7 @@ namespace XFrame.Modules.Entities
         protected internal override void OnInit()
         {
             base.OnInit();
-            Event = EventModule.Inst.NewSys();
+            Event = ModuleUtility.Event.NewSys();
         }
         #endregion
 

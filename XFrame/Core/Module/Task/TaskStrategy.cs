@@ -1,4 +1,5 @@
 ﻿using System;
+using XFrame.Core;
 
 namespace XFrame.Modules.Tasks
 {
@@ -14,7 +15,8 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_Task.IsStart)
             {
-                TaskModule.Inst.InnerExecTask(m_Task);
+                TaskModule taskModule = (TaskModule)ModuleUtility.Task;
+                taskModule.InnerExecTask(m_Task);
             }
 
             if (m_Task.IsComplete)

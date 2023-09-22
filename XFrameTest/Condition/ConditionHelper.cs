@@ -1,4 +1,5 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Archives;
 using XFrame.Modules.Conditions;
 using XFrame.Modules.Pools;
@@ -11,7 +12,7 @@ namespace XFrameTest.Condition
 
         public ConditionHelper()
         {
-            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>("condition_persist");
+            m_Archive = ModuleUtility.Archive.GetOrNew<JsonArchive>("condition_persist");
         }
 
         public int Type => 0;

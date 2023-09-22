@@ -1,8 +1,9 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
-using XFrame.Module.Rand;
-using XFrame.Modules.XType;
+using XFrame.Modules.Rand;
+using XFrame.Collections;
+using XFrame.Modules.Event;
 
 namespace XFrame.Modules.StateMachine
 {
@@ -11,7 +12,8 @@ namespace XFrame.Modules.StateMachine
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(RandModule))]
-    public class FsmModule : SingletonModule<FsmModule>
+    [XType(typeof(IFsmModule))]
+    public class FsmModule : ModuleBase, IFsmModule
     {
         #region Inner Field
         private Dictionary<string, IFsmBase> m_Fsms;
@@ -59,7 +61,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IFsm GetOrNew(params Type[] states)
         {
-            return GetOrNew(RandModule.Inst.RandString(), states);
+            return GetOrNew(ModuleUtility.Rand.RandString(), states);
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
-            return GetOrNew(RandModule.Inst.RandString(), owner, states);
+            return GetOrNew(ModuleUtility.Rand.RandString(), owner, states);
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState<T>> states = new List<FsmState<T>>(types.Length);
             foreach (Type type in types)
             {
-                FsmState<T> state = (FsmState<T>)TypeModule.Inst.CreateInstance(type);
+                FsmState<T> state = (FsmState<T>)ModuleUtility.Type.CreateInstance(type);
                 states.Add(state);
             }
 
@@ -128,7 +130,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState> states = new List<FsmState>(types.Length);
             foreach (Type type in types)
             {
-                FsmState state = (FsmState)TypeModule.Inst.CreateInstance(type);
+                FsmState state = (FsmState)ModuleUtility.Type.CreateInstance(type);
                 states.Add(state);
             }
 

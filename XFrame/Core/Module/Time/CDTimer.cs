@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Linq;
-using XFrame.Module.Rand;
+using XFrame.Core;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Rand;
 
 namespace XFrame.Modules.Times
 {
@@ -45,7 +45,8 @@ namespace XFrame.Modules.Times
         public static CDTimer Create()
         {
             CDTimer timer = References.Require<CDTimer>();
-            TimeModule.Inst.InnerAddTimer(timer);
+            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            timeModule.InnerAddTimer(timer);
             return timer;
         }
 
@@ -53,7 +54,8 @@ namespace XFrame.Modules.Times
         {
             CDTimer timer = References.Require<CDTimer>();
             timer.m_Name = name;
-            TimeModule.Inst.InnerAddTimer(timer);
+            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            timeModule.InnerAddTimer(timer);
             return timer;
         }
 
@@ -63,7 +65,8 @@ namespace XFrame.Modules.Times
             timer.m_Name = name;
             timer.m_Updater = updater;
             timer.m_Times = new Dictionary<int, CDInfo>();
-            TimeModule.Inst.InnerAddTimer(timer);
+            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            timeModule.InnerAddTimer(timer);
             return timer;
         }
 
@@ -153,14 +156,16 @@ namespace XFrame.Modules.Times
 
         void IPoolObject.OnRequest()
         {
-            m_Name = RandModule.Inst.RandString();
+            m_Name = ModuleUtility.Rand.RandString();
             m_Updater = Default;
-            TimeModule.Inst.InnerAddTimer(this);
+            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            timeModule.InnerAddTimer(this);
         }
 
         void IPoolObject.OnRelease()
         {
-            TimeModule.Inst.InnerRemove(this);
+            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            timeModule.InnerRemove(this);
             m_Name = null;
             m_Times.Clear();
             m_Updater = null;

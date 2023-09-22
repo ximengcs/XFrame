@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Event;
+﻿using XFrame.Core;
+using XFrame.Modules.Event;
 
 namespace XFrame.Modules.Plots
 {
@@ -8,7 +9,7 @@ namespace XFrame.Modules.Plots
 
         public DefaultPlotHelper()
         {
-            Event = EventModule.Inst.NewSys();
+            Event = ModuleUtility.Event.NewSys();
         }
     }
 }

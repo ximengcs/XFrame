@@ -1,5 +1,6 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Collections;
 using XFrame.Modules.XType;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Event;
@@ -12,7 +13,8 @@ namespace XFrame.Modules.Conditions
     /// 条件监听模块 
     /// </summary>
     [XModule]
-    public class ConditionModule : SingletonModule<ConditionModule>
+    [XType(typeof(IConditionModule))]
+    public class ConditionModule : ModuleBase, IConditionModule
     {
         private IEventSystem m_Event;
         private Dictionary<int, Dictionary<int, IConditionHelper>> m_Helpers;
@@ -32,7 +34,7 @@ namespace XFrame.Modules.Conditions
         {
             base.OnInit(data);
 
-            m_Event = EventModule.Inst.NewSys();
+            m_Event = ModuleUtility.Event.NewSys();
             m_Event.Listen(ConditionEvent.EventId, InnerConditionTouchHandler);
             m_Event.Listen(ConditionGroupEvent.EventId, InnerConditionGroupTouchHandler);
             m_Event.Listen(SpecificConditionEvent.EventId, InnerSpecificCondition);
@@ -43,28 +45,28 @@ namespace XFrame.Modules.Conditions
             m_ComparesType = new Dictionary<int, Type>();
             m_GroupList = new List<ConditionGroupHandle>();
 
-            TypeSystem typeSys = TypeModule.Inst.GetOrNew<IConditionCompare>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<IConditionCompare>();
             foreach (Type type in typeSys)
             {
                 if (type.IsInterface || type.IsAbstract)
                     continue;
-                IConditionCompare compare = (IConditionCompare)TypeModule.Inst.CreateInstance(type);
+                IConditionCompare compare = (IConditionCompare)ModuleUtility.Type.CreateInstance(type);
                 m_Compares.Add(compare.Target, new Dictionary<int, CompareInfo>() { { ConditionHelperSetting.DEFAULT_INSTANCE, new CompareInfo(compare) } });
                 m_ComparesType.Add(compare.Target, compare.GetType());
             }
 
-            typeSys = TypeModule.Inst.GetOrNew<IConditionHelper>();
+            typeSys = ModuleUtility.Type.GetOrNew<IConditionHelper>();
             foreach (Type type in typeSys)
             {
                 if (type.IsInterface || type.IsAbstract)
                     continue;
-                IConditionHelper helper = (IConditionHelper)TypeModule.Inst.CreateInstance(type);
+                IConditionHelper helper = (IConditionHelper)ModuleUtility.Type.CreateInstance(type);
                 m_Helpers.Add(helper.Type, new Dictionary<int, IConditionHelper>() { { ConditionHelperSetting.DEFAULT_INSTANCE, helper } });
                 m_HelpersType.Add(helper.Type, helper.GetType());
             }
         }
 
-        internal CompareInfo GetOrNewCompare(int target, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
+        public CompareInfo GetOrNewCompare(int target, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
             if (m_Compares.TryGetValue(target, out Dictionary<int, CompareInfo> compares))
             {
@@ -82,7 +84,7 @@ namespace XFrame.Modules.Conditions
             return default;
         }
 
-        internal IConditionHelper GetOrNewHelper(int type, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
+        public IConditionHelper GetOrNewHelper(int type, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
             if (m_Helpers.TryGetValue(type, out Dictionary<int, IConditionHelper> helpers))
             {

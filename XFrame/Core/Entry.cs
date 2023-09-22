@@ -3,7 +3,6 @@ using XFrame.Modules.XType;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
-using XFrame.Core.Caches;
 using XFrame.Modules.Tasks;
 
 namespace XFrame.Core
@@ -54,10 +53,9 @@ namespace XFrame.Core
             m_Runing = false;
             m_DoStart = false;
             m_Handlers = new Dictionary<Type, IEntryHandler>();
-            m_Base = XCore.Create();
+            m_Base = XCore.Create(typeof(TypeModule));
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
-            m_Base.Register(typeof(TypeModule), default);
 
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
@@ -180,7 +178,7 @@ namespace XFrame.Core
             {
                 if (handType == typeof(IEntryHandler))
                     continue;
-                m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
+                m_Handlers.Add(handType, (IEntryHandler)ModuleUtility.Type.CreateInstance(type));
             }
         }
 
@@ -237,7 +235,7 @@ namespace XFrame.Core
         #region Inner Implement
         private static void InenrInitHandler()
         {
-            TypeSystem typeSys = TypeModule.Inst.GetOrNew<IEntryHandler>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<IEntryHandler>();
             foreach (Type type in typeSys)
             {
                 Type[] handTypes = type.GetInterfaces();
@@ -245,14 +243,14 @@ namespace XFrame.Core
                 {
                     if (handType == typeof(IEntryHandler))
                         continue;
-                    m_Handlers.Add(handType, (IEntryHandler)TypeModule.Inst.CreateInstance(type));
+                    m_Handlers.Add(handType, (IEntryHandler)ModuleUtility.Type.CreateInstance(type));
                 }
             }
 
-            typeSys = TypeModule.Inst.GetOrNew<IModuleHandler>();
+            typeSys = ModuleUtility.Type.GetOrNew<IModuleHandler>();
             foreach (Type type in typeSys)
             {
-                IModuleHandler handler = (IModuleHandler)TypeModule.Inst.CreateInstance(type);
+                IModuleHandler handler = (IModuleHandler)ModuleUtility.Type.CreateInstance(type);
                 m_Base.AddHandle(handler.Target, handler);
                 m_Core.AddHandle(handler.Target, handler);
                 m_Custom.AddHandle(handler.Target, handler);
@@ -261,9 +259,11 @@ namespace XFrame.Core
 
         private static void InnerInit<T>(XCore target) where T : Attribute
         {
-            TypeSystem typeSys = TypeModule.Inst.GetOrNewWithAttr<T>();
+            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<T>();
             foreach (Type type in typeSys)
+            {
                 InnerAddModule(type, default, target, default);
+            }
         }
 
         private static IModule InnerAddModule(Type moduleType, int moduleId, XCore target, object userData)
@@ -290,6 +290,9 @@ namespace XFrame.Core
 
         private static IModule InnerGetModule(Type moduleType, int moduleId)
         {
+            if (m_Base == null)
+                return default;
+
             IModule module;
             module = m_Base.GetModule(moduleType, moduleId);
             if (module == null)

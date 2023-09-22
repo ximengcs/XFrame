@@ -13,7 +13,8 @@ namespace XFrame.Modules.Local
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(EventModule))]
-    public partial class LocalizeModule : SingletonModule<LocalizeModule>
+    [XType(typeof(ILocalizeModule))]
+    public partial class LocalizeModule : ModuleBase, ILocalizeModule
     {
         #region Inner Fileds
         private int m_Index;
@@ -31,7 +32,7 @@ namespace XFrame.Modules.Local
             base.OnInit(data);
 
             m_Language = Language.None;
-            m_Event = EventModule.Inst.NewSys();
+            m_Event = ModuleUtility.Event.NewSys();
             m_Formatter = new FormatterProvider();
         }
         #endregion

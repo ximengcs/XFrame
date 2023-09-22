@@ -2,9 +2,10 @@
 using XFrame.Core;
 using XFrame.Modules.ID;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
+using XFrame.Collections;
+using XFrame.Modules.Datas;
 
 namespace XFrame.Modules.Download
 {
@@ -15,7 +16,8 @@ namespace XFrame.Modules.Download
     [RequireModule(typeof(PoolModule))]
     [RequireModule(typeof(IdModule))]
     [RequireModule(typeof(TaskModule))]
-    public partial class DownloadModule : SingletonModule<DownloadModule>
+    [XType(typeof(IDownloadModule))]
+    public partial class DownloadModule : ModuleBase, IDownloadModule
     {
         #region Inner Fileds
         private Type m_Helper;
@@ -28,7 +30,7 @@ namespace XFrame.Modules.Download
 
             if (!string.IsNullOrEmpty(XConfig.DefaultDownloadHelper))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultDownloadHelper);
+                Type type = ModuleUtility.Type.GetType(XConfig.DefaultDownloadHelper);
                 InnerSetHelperType(type);
             }
         }
@@ -50,8 +52,8 @@ namespace XFrame.Modules.Download
         /// <param name="url">url</param>
         public DownTask Down(string url, params string[] reserveUrls)
         {
-            DownTask task = TaskModule.Inst.GetOrNew<DownTask>();
-            IDownloadHelper helper = (IDownloadHelper)TypeModule.Inst.CreateInstance(m_Helper);
+            DownTask task = ModuleUtility.Task.GetOrNew<DownTask>();
+            IDownloadHelper helper = (IDownloadHelper)ModuleUtility.Type.CreateInstance(m_Helper);
             helper.Url = url;
             helper.ReserveUrl = reserveUrls;
             helper.OnInit();

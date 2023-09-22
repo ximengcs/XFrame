@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using XFrame.Core;
+using System.Collections.Generic;
+using XFrame.Collections;
+using XFrame.Modules.Procedure;
 
-namespace XFrame.Module.Rand
+namespace XFrame.Modules.Rand
 {
     /// <summary>
     /// 随机模块
     /// </summary>
     [BaseModule]
-    public class RandModule : SingletonModule<RandModule>
+    [XType(typeof(IRandModule))]
+    public class RandModule : ModuleBase, IRandModule
     {
         #region Inner Fields
         private HashSet<char> m_InValidChars;

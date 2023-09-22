@@ -50,7 +50,7 @@ namespace XFrame.Core.Caches
 
             private void InnerRequire()
             {
-                TaskModule.Inst.GetOrNew<CacheObjectTask>()
+                ModuleUtility.Task.GetOrNew<CacheObjectTask>()
                     .OnComplete(InnerNewObject)
                     .AutoDelete()
                     .Add(m_Factory)

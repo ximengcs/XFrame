@@ -1,6 +1,6 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.XType;
+using XFrame.Collections;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
 
@@ -10,7 +10,8 @@ namespace XFrame.Modules.Diagnotics
     /// Log模块
     /// </summary>
     [BaseModule]
-    public class LogModule : SingletonModule<LogModule>
+    [XType(typeof(ILogModule))]
+    public class LogModule : ModuleBase, ILogModule
     {
         private List<ILogger> m_Loggers;
 
@@ -20,7 +21,7 @@ namespace XFrame.Modules.Diagnotics
             m_Loggers = new List<ILogger>();
             if (!string.IsNullOrEmpty(XConfig.DefaultLogger))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultLogger);
+                Type type = ModuleUtility.Type.GetType(XConfig.DefaultLogger);
                 InnerAddLogger(type);
             }
         }
@@ -93,7 +94,7 @@ namespace XFrame.Modules.Diagnotics
 
         private ILogger InnerAddLogger(Type type)
         {
-            ILogger logger = TypeModule.Inst.CreateInstance(type) as ILogger;
+            ILogger logger = ModuleUtility.Type.CreateInstance(type) as ILogger;
             m_Loggers.Add(logger);
             return logger;
         }

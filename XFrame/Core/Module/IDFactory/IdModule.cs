@@ -1,5 +1,7 @@
 ﻿using System;
+using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Modules.StateMachine;
 
 namespace XFrame.Modules.ID
 {
@@ -7,7 +9,8 @@ namespace XFrame.Modules.ID
     /// Id模块
     /// </summary>
     [BaseModule]
-    public class IdModule : SingletonModule<IdModule>
+    [XType(typeof(IIdModule))]
+    public class IdModule : ModuleBase, IIdModule
     {
         private int m_Time;
         private int m_Count;

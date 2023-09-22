@@ -91,11 +91,11 @@ namespace XFrame.Modules.Conditions
 
         /// <summary>
         /// 在条件组完成时自动清理并从模块移除
-        /// 当为 true 时，在条件达成时自动从<see cref="ConditionModule"/>模块中移除此条件，会调用<see cref="ConditionGroupHandle.Dispose"/>清理监听，
-        /// 此时通过<see cref="ConditionModule.Get(string)"/>将获取不到条件实例。
-        /// 当为 false 时，在条件达成时不会自动从<see cref="ConditionModule"/>模块中移除此条件，但仍会调用<see cref="ConditionGroupHandle.Dispose"/>清理。
-        /// 置为false时，需要调用者在不使用条件句柄后手动调用<see cref="ConditionModule.UnRegister"/>移除条件的句柄，
-        /// 否则将一直存在于条件模块<see cref="ConditionModule"/>中
+        /// 当为 true 时，在条件达成时自动从<see cref="IConditionModule"/>模块中移除此条件，会调用<see cref="ConditionGroupHandle.Dispose"/>清理监听，
+        /// 此时通过<see cref="IConditionModule.Get(string)"/>将获取不到条件实例。
+        /// 当为 false 时，在条件达成时不会自动从<see cref="IConditionModule"/>模块中移除此条件，但仍会调用<see cref="ConditionGroupHandle.Dispose"/>清理。
+        /// 置为false时，需要调用者在不使用条件句柄后手动调用<see cref="IConditionModule.UnRegister"/>移除条件的句柄，
+        /// 否则将一直存在于条件模块<see cref="IConditionModule"/>中
         /// </summary>
         public bool AutoRemove { get; }
 
