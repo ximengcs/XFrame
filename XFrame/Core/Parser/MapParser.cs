@@ -14,6 +14,7 @@ namespace XFrame.Core
 
         object IParser.Value => m_Value;
         IPool IPoolObject.InPool { get; set; }
+        public string MarkName { get; set; }
 
         public int PoolKey => default;
 

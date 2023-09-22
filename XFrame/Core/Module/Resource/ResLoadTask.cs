@@ -50,12 +50,16 @@ namespace XFrame.Modules.Resource
         /// </summary>
         public object Res { get; private set; }
 
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        protected override void OnInit()
+        protected override void OnCreateFromPool()
         {
+            base.OnCreateFromPool();
             AddStrategy(new Strategy());
+        }
+
+        protected override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            Res = null;
         }
 
         /// <summary>
@@ -120,12 +124,16 @@ namespace XFrame.Modules.Resource
 
         private Action<T> m_Callback;
 
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        protected override void OnInit()
+        protected override void OnCreateFromPool()
         {
+            base.OnCreateFromPool();
             AddStrategy(new Strategy());
+        }
+
+        protected override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            Res = default;
         }
 
         /// <summary>

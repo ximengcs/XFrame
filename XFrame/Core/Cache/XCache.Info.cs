@@ -52,6 +52,7 @@ namespace XFrame.Core.Caches
             {
                 TaskModule.Inst.GetOrNew<CacheObjectTask>()
                     .OnComplete(InnerNewObject)
+                    .AutoDelete()
                     .Add(m_Factory)
                     .Start();
             }

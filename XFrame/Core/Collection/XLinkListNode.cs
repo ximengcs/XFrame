@@ -100,6 +100,7 @@ namespace XFrame.Collections
 
         #region Pool Life Fun
         IPool IPoolObject.InPool { get; set; }
+        public string MarkName { get; set; }
 
         int IPoolObject.PoolKey => 0;
 

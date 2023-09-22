@@ -8,6 +8,8 @@ namespace XFrame.Modules.Pools
     {
         int PoolKey { get; }
 
+        string MarkName { get; set; }
+
         IPool InPool { get; protected internal set; }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
-using XFrame.Utility;
 
 namespace XFrame.Modules.Pools
 {
@@ -20,6 +19,8 @@ namespace XFrame.Modules.Pools
         public int UseCount => m_UseCount;
 
         public IPoolHelper Helper => m_Helper;
+
+        public IXEnumerable<IPoolObject> AllObjects => m_Objects;
 
         public ObjectPool(IPoolHelper helper)
         {

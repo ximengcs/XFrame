@@ -27,12 +27,18 @@ namespace XFrame.Modules.Download
         /// </summary>
         public byte[] Data { get; private set; }
 
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        protected override void OnInit()
+        protected override void OnCreateFromPool()
         {
+            base.OnCreateFromPool();
             AddStrategy(new Strategy());
+        }
+
+        protected override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            Success = false;
+            Text = default;
+            Data = default;
         }
 
         public DownTask OnComplete(Action<byte[]> callback)

@@ -16,6 +16,7 @@ namespace XFrame.Modules.Conditions
         public int PoolKey => default;
 
         IPool IPoolObject.InPool { get; set; }
+        public string MarkName { get; set; }
 
         object IParser.Value => m_Value;
 

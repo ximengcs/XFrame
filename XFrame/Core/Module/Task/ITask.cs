@@ -45,11 +45,6 @@ namespace XFrame.Modules.Tasks
         void Start();
 
         /// <summary>
-        /// 删除任务
-        /// </summary>
-        void Delete();
-
-        /// <summary>
         /// 添加任务, 需要有对应处理策略
         /// </summary>
         /// <param name="target">需要添加的处理器</param>
@@ -69,6 +64,17 @@ namespace XFrame.Modules.Tasks
         /// <param name="complete">回调</param>
         /// <returns>当前任务，用于连续调用</returns>
         ITask OnComplete(Action complete);
+
+        /// <summary>
+        /// 设置完成回调 
+        /// </summary>
+        /// <param name="complete">回调</param>
+        /// <returns>当前任务，用于连续调用</returns>
+        ITask OnComplete(Action<ITask> complete);
+
+        ITask OnCompleteAfter(Action complete);
+
+        ITask OnCompleteAfter(Action<ITask> complete);
 
         /// <summary>
         /// 设置更新回调

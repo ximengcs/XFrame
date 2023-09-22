@@ -8,15 +8,16 @@ namespace XFrame.Modules.Tasks
 
         public T Data { get; set; }
 
-        protected override void OnInit()
-        {
-
-        }
-
         public XTask<T> OnComplete(Action<T> complete)
         {
             m_Complete += complete;
             return this;
+        }
+
+        protected override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            Data = default;
         }
 
         protected override void InnerComplete()

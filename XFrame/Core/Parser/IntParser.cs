@@ -13,6 +13,7 @@ namespace XFrame.Core
         object IParser.Value => m_Value;
 
         int IPoolObject.PoolKey => default;
+        public string MarkName { get; set; }
         IPool IPoolObject.InPool { get; set; }
 
         public virtual int Parse(string pattern)

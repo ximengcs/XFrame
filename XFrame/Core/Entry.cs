@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
 using XFrame.Core.Caches;
+using XFrame.Modules.Tasks;
 
 namespace XFrame.Core
 {
@@ -67,11 +68,13 @@ namespace XFrame.Core
             if (handler != null)
             {
                 handler.BeforeHandle()
+                       .AutoDelete()
                        .OnComplete(() =>
                        {
                            InnerInit<CoreModuleAttribute>(m_Core);
                            InnerInit<XModuleAttribute>(m_Custom);
                            handler.AfterHandle()
+                                  .AutoDelete()
                                   .OnComplete(() =>
                                   {
                                       m_Inited = true;
@@ -105,11 +108,17 @@ namespace XFrame.Core
             if (handler != null)
             {
                 handler.BeforeHandle()
+                       .AutoDelete()
                        .OnComplete(() =>
                        {
                            m_Core.Start();
                            m_Custom.Start();
-                           handler.AfterHandle().OnComplete(InnerStartRun).Start();
+                           handler.AfterHandle()
+                                  .AutoDelete()
+                                  .OnComplete(() =>
+                                  {
+                                      InnerStartRun();
+                                  }).Start();
                        }).Start();
             }
             else

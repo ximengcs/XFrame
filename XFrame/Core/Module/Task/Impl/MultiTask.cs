@@ -10,8 +10,9 @@ namespace XFrame.Modules.Tasks
 
         public List<ITask> Tasks => m_UseHandler.Tasks;
 
-        protected override void OnInit()
+        protected override void OnCreateFromPool()
         {
+            base.OnCreateFromPool();
             AddStrategy(new Strategy());
         }
 

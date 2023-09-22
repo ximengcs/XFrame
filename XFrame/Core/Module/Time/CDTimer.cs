@@ -17,6 +17,7 @@ namespace XFrame.Modules.Times
         public string Name => m_Name;
 
         int IPoolObject.PoolKey => default;
+        public string MarkName { get; set; }
 
         IPool IPoolObject.InPool { get; set; }
 

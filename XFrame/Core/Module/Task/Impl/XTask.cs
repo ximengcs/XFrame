@@ -6,9 +6,6 @@ namespace XFrame.Modules.Tasks
     /// </summary>
     public partial class XTask : TaskBase
     {
-        protected override void OnInit()
-        {
 
-        }
     }
 }

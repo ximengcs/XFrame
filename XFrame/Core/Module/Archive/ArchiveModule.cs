@@ -31,6 +31,7 @@ namespace XFrame.Modules.Archives
         {
             base.OnInit(data);
             m_Timer = CDTimer.Create();
+            m_Timer.MarkName = nameof(ArchiveModule);
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();

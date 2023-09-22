@@ -4,7 +4,7 @@ using System.Diagnostics;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Times;
 using System.Collections.Generic;
-using XFrame.Modules.Diagnotics;
+using XFrame.Core.Caches;
 
 namespace XFrame.Modules.Tasks
 {
@@ -33,7 +33,7 @@ namespace XFrame.Modules.Tasks
         {
             base.OnInit(data);
             TaskTimeout = DEFAULT_TIMEOUT;
-            m_Tasks = new List<ITask>();
+            m_Tasks = new List<ITask>(32);
             m_Watch = new Stopwatch();
             m_TaskWithName = new Dictionary<string, ITask>();
         }
@@ -49,8 +49,11 @@ namespace XFrame.Modules.Tasks
                     InnerExecTask(task);
                     if (task.IsComplete)
                     {
-                        m_Tasks.RemoveAt(i);
-                        m_TaskWithName.Remove(task.Name);
+                        if (m_TaskWithName.ContainsKey(task.Name))
+                        {
+                            m_Tasks.RemoveAt(i);
+                            m_TaskWithName.Remove(task.Name);
+                        }
                     }
                     if (!InnerCanContinue())
                         break;
@@ -73,6 +76,8 @@ namespace XFrame.Modules.Tasks
         }
 
         #region Interface
+        public int ExecCount => m_Tasks.Count;
+
         /// <summary>
         /// 任务模块最大超时
         /// </summary>
@@ -130,8 +135,20 @@ namespace XFrame.Modules.Tasks
         /// <summary>
         /// 移除一个任务
         /// </summary>
+        /// <param name="task">任务</param>
+        public bool Remove(ITask task)
+        {
+            bool success = Remove(task.Name);
+            if (!success)
+                References.Release(task);
+            return success;
+        }
+
+        /// <summary>
+        /// 移除一个任务
+        /// </summary>
         /// <param name="name">任务名</param>
-        public void Remove(string name)
+        public bool Remove(string name)
         {
             if (m_TaskWithName.ContainsKey(name))
             {
@@ -142,10 +159,12 @@ namespace XFrame.Modules.Tasks
                     if (task.Name == name)
                     {
                         m_Tasks.RemoveAt(i);
-                        break;
+                        References.Release(task);
+                        return true;
                     }
                 }
             }
+            return false;
         }
         #endregion
     }

@@ -14,7 +14,9 @@ namespace XFrame.Modules.Tasks
         public const float MAX_PRO = 1;
         private StrategyInfo m_Current;
         private Action m_OnComplete;
+        private Action m_OnCompleteAfter;
         private Action<ITask> m_OnComplete2;
+        private Action<ITask> m_OnCompleteAfter2;
         private Action<float> m_OnUpdate;
         private Queue<ITaskHandler> m_Targets;
         private float m_PerProRate;
@@ -32,6 +34,7 @@ namespace XFrame.Modules.Tasks
         public float Pro => m_Pro + m_CurPro;
 
         IPool IPoolObject.InPool { get; set; }
+        public string MarkName { get; set; }
 
         public ITask AddStrategy(ITaskStrategy strategy)
         {
@@ -53,9 +56,21 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
+        public ITask OnCompleteAfter(Action complete)
+        {
+            m_OnCompleteAfter += complete;
+            return this;
+        }
+
         public ITask OnComplete(Action<ITask> complete)
         {
             m_OnComplete2 += complete;
+            return this;
+        }
+
+        public ITask OnCompleteAfter(Action<ITask> complete)
+        {
+            m_OnCompleteAfter2 += complete;
             return this;
         }
 
@@ -154,6 +169,8 @@ namespace XFrame.Modules.Tasks
             Name = name;
             m_OnComplete = null;
             m_OnComplete2 = null;
+            m_OnCompleteAfter = null;
+            m_OnCompleteAfter2 = null;
             OnInit();
         }
 
@@ -188,10 +205,16 @@ namespace XFrame.Modules.Tasks
 
         private void InnerClearState()
         {
+            foreach (XLinkNode<Task> node in m_CorTasks)
+                node.Value.Dispose();
             m_Targets.Clear();
             m_CorTasks.Clear();
+            IsStart = false;
+            IsComplete = false;
             m_OnComplete = null;
+            m_OnCompleteAfter = null;
             m_OnComplete2 = null;
+            m_OnCompleteAfter2 = null;
             m_OnUpdate = null;
             m_Current = null;
             m_PerProRate = 0;
@@ -199,7 +222,7 @@ namespace XFrame.Modules.Tasks
             m_CurPro = 0;
         }
 
-        protected abstract void OnInit();
+        protected virtual void OnInit() { }
         protected virtual void OnCreateFromPool() { }
         protected virtual void OnRequestFromPool() { }
         protected virtual void OnDestroyFromPool() { }
@@ -212,12 +235,6 @@ namespace XFrame.Modules.Tasks
             IsStart = true;
         }
 
-        public void Delete()
-        {
-            foreach (XLinkNode<Task> node in m_CorTasks)
-                node.Value.Dispose();
-        }
-
         private void InnerCheckComplete()
         {
             if (IsComplete)
@@ -228,6 +245,7 @@ namespace XFrame.Modules.Tasks
                 m_CurPro = 0;
                 m_OnUpdate?.Invoke(Pro);
                 InnerComplete();
+                InnerCompleteAfter();
             }
         }
 
@@ -235,9 +253,17 @@ namespace XFrame.Modules.Tasks
         {
             IsComplete = true;
             m_OnComplete?.Invoke();
-            m_OnComplete = null;
             m_OnComplete2?.Invoke(this);
+            m_OnComplete = null;
             m_OnComplete2 = null;
+        }
+
+        protected virtual void InnerCompleteAfter()
+        {
+            m_OnCompleteAfter?.Invoke();
+            m_OnCompleteAfter2?.Invoke(this);
+            m_OnCompleteAfter = null;
+            m_OnCompleteAfter2 = null;
         }
 
         public virtual Task Coroutine()

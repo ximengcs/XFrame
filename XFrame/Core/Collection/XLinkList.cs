@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
+using static XFrame.SimpleJSON.JSONNode;
 
 namespace XFrame.Collections
 {
@@ -10,7 +11,7 @@ namespace XFrame.Collections
     ///	使用场景：需要顺序迭代，需要随时删除节点，不需要随机访问
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>
+    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>, IXEnumerable<T>
     {
         #region Inner Fields
         private XLinkNode<T> m_First;
@@ -322,9 +323,21 @@ namespace XFrame.Collections
                 default: return default;
             }
         }
+
+        IEnumerator<T> IXEnumerable<T>.GetEnumerator()
+        {
+            switch (m_ItType)
+            {
+                case XItType.Forward: return new ElementForwardIt(this);
+                case XItType.Backward: return new ElementBackwardIt(this);
+                default: return default;
+            }
+        }
         #endregion
 
         #region Pool Life Fun
+        public string MarkName { get; set; }
+
         IPool IPoolObject.InPool { get; set; }
 
         int IPoolObject.PoolKey => 0;
