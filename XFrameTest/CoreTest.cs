@@ -15,7 +15,7 @@ namespace XFrameTest
             }
         }
 
-        [XModule]
+        [CommonModule]
         public class B : SingletonModule<B>, IUpdater
         {
             public void OnUpdate(float escapeTime)

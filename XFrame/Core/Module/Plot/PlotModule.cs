@@ -12,7 +12,7 @@ namespace XFrame.Modules.Plots
     /// <summary>
     /// 故事模块
     /// </summary>
-    [XModule]
+    [CommonModule]
     [RequireModule(typeof(EventModule))]
     [XType(typeof(IPlotModule))]
     public class PlotModule : ModuleBase, IPlotModule

@@ -12,7 +12,7 @@ namespace XFrame.Modules.Conditions
     /// <summary>
     /// 条件监听模块 
     /// </summary>
-    [XModule]
+    [CommonModule]
     [XType(typeof(IConditionModule))]
     public class ConditionModule : ModuleBase, IConditionModule
     {

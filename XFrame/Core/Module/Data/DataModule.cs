@@ -11,7 +11,7 @@ namespace XFrame.Modules.Datas
     /// <summary>
     /// 数据模块
     /// </summary>
-    [XModule]
+    [CommonModule]
     [XType(typeof(IDataModule))]
     public class DataModule : ModuleBase, IDataModule
     {

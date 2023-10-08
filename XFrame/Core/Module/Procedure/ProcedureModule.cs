@@ -12,7 +12,7 @@ namespace XFrame.Modules.Procedure
     /// <summary>
     /// 流程模块
     /// </summary>
-    [XModule]
+    [CommonModule]
     [XType(typeof(IProcedureModule))]
     public class ProcedureModule : ModuleBase, IProcedureModule
     {

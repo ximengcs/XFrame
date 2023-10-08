@@ -70,7 +70,7 @@ namespace XFrame.Core
                        .OnComplete(() =>
                        {
                            InnerInit<CoreModuleAttribute>(m_Core);
-                           InnerInit<XModuleAttribute>(m_Custom);
+                           InnerInit<CommonModuleAttribute>(m_Custom);
                            handler.AfterHandle()
                                   .AutoDelete()
                                   .OnComplete(() =>
@@ -84,7 +84,7 @@ namespace XFrame.Core
             else
             {
                 InnerInit<CoreModuleAttribute>(m_Core);
-                InnerInit<XModuleAttribute>(m_Custom);
+                InnerInit<CommonModuleAttribute>(m_Custom);
                 m_Inited = true;
             }
         }

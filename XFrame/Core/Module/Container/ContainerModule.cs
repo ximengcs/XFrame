@@ -10,7 +10,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 容器类模块
     /// </summary>
-    [XModule]
+    [CommonModule]
     [XType(typeof(IContainerModule))]
     public partial class ContainerModule : ModuleBase, IContainerModule
     {

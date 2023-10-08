@@ -6,7 +6,7 @@ namespace XFrame.Core
     /// 其他模块
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class XModuleAttribute : Attribute
+    public class CommonModuleAttribute : Attribute
     {
     }
 }
