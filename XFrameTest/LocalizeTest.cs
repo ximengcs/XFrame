@@ -50,13 +50,13 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.ToQueue = false;
-                ModuleUtility.Local.SetFormater(new IdFormatter());
-                ModuleUtility.Local.Lang = Language.ChineseSimplified;
-                Log.Debug($"{ModuleUtility.Local.GetValueParam(3, 0, 1, 2)}");
-                Log.Debug($"{ModuleUtility.Local.GetValue(3, "q", "w", "e")}");
+                ModuleUtility.I18N.SetFormater(new IdFormatter());
+                ModuleUtility.I18N.Lang = Language.ChineseSimplified;
+                Log.Debug($"{ModuleUtility.I18N.GetValueParam(3, 0, 1, 2)}");
+                Log.Debug($"{ModuleUtility.I18N.GetValue(3, "q", "w", "e")}");
 
-                ModuleUtility.Local.Lang = Language.English;
-                Log.Debug($"{ModuleUtility.Local.GetValue(3, "q", "w", "e")}");
+                ModuleUtility.I18N.Lang = Language.English;
+                Log.Debug($"{ModuleUtility.I18N.GetValue(3, "q", "w", "e")}");
             });
         }
     }
