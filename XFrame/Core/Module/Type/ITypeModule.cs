@@ -16,7 +16,9 @@ namespace XFrame.Modules.XType
         TypeSystem GetOrNewWithAttr(Type pType);
         bool HasAttribute<T>(Type classType) where T : Attribute;
         bool HasAttribute(Type classType, Type pType);
+        T[] GetAttributes<T>(Type classType) where T : Attribute;
         T GetAttribute<T>(Type classType) where T : Attribute;
+        Attribute[] GetAttributes(Type classType, Type pType);
         Attribute GetAttribute(Type classType, Type pType);
         TypeSystem GetOrNew<T>() where T : class;
         TypeSystem GetOrNew(Type baseType);

@@ -301,7 +301,8 @@ namespace XFrame.Core
 
             if (moduleId == default)
             {
-                Attribute[] requires = Attribute.GetCustomAttributes(moduleType, typeof(RequireModuleAttribute), true);
+                ITypeModule typeModule = m_Base.GetModule<ITypeModule>();
+                Attribute[] requires = typeModule.GetAttributes(moduleType, typeof(RequireModuleAttribute));
                 if (requires != null && requires.Length > 0)
                 {
                     for (int i = 0; i < requires.Length; i++)

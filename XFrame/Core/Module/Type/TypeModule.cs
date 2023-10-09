@@ -5,6 +5,8 @@ using XFrame.Collections;
 using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using System.Data;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.XType
 {
@@ -257,6 +259,47 @@ namespace XFrame.Modules.XType
             return (T)GetAttribute(classType, typeof(T));
         }
 
+        public T[] GetAttributes<T>(Type classType) where T : Attribute
+        {
+            Type pType = typeof(T);
+            List<T> list;
+            CommonPoolObject<List<T>> container = null;
+            if (References.Available)
+            {
+                container = References.Require<CommonPoolObject<List<T>>>();
+                if (!container.Valid)
+                {
+                    list = new List<T>(8);
+                    container.Target = list;
+                }
+                else
+                {
+                    list = container.Target;
+                }
+            }
+            else
+            {
+                list = new List<T>(8);
+            }
+
+            if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
+            {
+                foreach (Attribute attr in values)
+                {
+                    Type attrType = attr.GetType();
+                    if (attrType.IsSubclassOf(pType) || attrType == pType)
+                        list.Add((T)attr);
+                }
+            }
+            T[] result = list.ToArray();
+            if (container != null)
+            {
+                list.Clear();
+                References.Release(container);
+            }
+            return result;
+        }
+
         public Attribute GetAttribute(Type classType, Type pType)
         {
             if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
@@ -269,6 +312,46 @@ namespace XFrame.Modules.XType
                 }
             }
             return default;
+        }
+
+        public Attribute[] GetAttributes(Type classType, Type pType)
+        {
+            List<Attribute> list;
+            CommonPoolObject<List<Attribute>> container = null;
+            if (References.Available)
+            {
+                container = References.Require<CommonPoolObject<List<Attribute>>>();
+                if (!container.Valid)
+                {
+                    list = new List<Attribute>(8);
+                    container.Target = list;
+                }
+                else
+                {
+                    list = container.Target;
+                }
+            }
+            else
+            {
+                list = new List<Attribute>(8);
+            }
+
+            if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
+            {
+                foreach (Attribute attr in values)
+                {
+                    Type attrType = attr.GetType();
+                    if (attrType.IsSubclassOf(pType) || attrType == pType)
+                        list.Add(attr);
+                }
+            }
+            Attribute[] result = list.ToArray();
+            if (container != null)
+            {
+                list.Clear();
+                References.Release(container);
+            }
+            return result;
         }
 
         /// <summary>

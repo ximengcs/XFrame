@@ -6,6 +6,8 @@ namespace XFrame.Modules.Pools
 {
     public static class References
     {
+        public static bool Available => ModuleUtility.Pool != null;
+
         public static IPoolObject Require(Type type)
         {
             IPool pool = ModuleUtility.Pool.GetOrNew(type);
