@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using System.Reflection;
 
 namespace XFrame.Collections

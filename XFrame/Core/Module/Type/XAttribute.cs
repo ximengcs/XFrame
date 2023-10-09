@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class XAttribute : Attribute

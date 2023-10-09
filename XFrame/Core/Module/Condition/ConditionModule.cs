@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Collections;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Event;
 using XFrame.Modules.Diagnotics;

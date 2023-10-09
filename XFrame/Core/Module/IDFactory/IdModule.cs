@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Core;
-using XFrame.Modules.StateMachine;
 
 namespace XFrame.Modules.ID
 {

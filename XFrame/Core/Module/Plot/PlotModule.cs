@@ -1,6 +1,6 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Event;
 using XFrame.Modules.Config;
 using System.Collections.Generic;

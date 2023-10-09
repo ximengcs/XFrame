@@ -1,7 +1,7 @@
 ﻿
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrameTest
 {
@@ -12,6 +12,7 @@ namespace XFrameTest
         {
             public void OnUpdate(float escapeTime)
             {
+                
             }
         }
 

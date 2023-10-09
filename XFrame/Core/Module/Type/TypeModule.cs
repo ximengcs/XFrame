@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using XFrame.Modules.Pools;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
     /// <summary>
     /// 类型模块
@@ -70,7 +70,10 @@ namespace XFrame.Modules.XType
                     foreach (string name in XConfig.UseClassModule)
                     {
                         if (assemblyName == name)
+                        {
                             find = true;
+                            break;
+                        }
                     }
                 }
 

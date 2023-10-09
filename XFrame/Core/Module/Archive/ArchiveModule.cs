@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using XFrame.Core;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Times;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;

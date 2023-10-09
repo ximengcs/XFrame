@@ -1,5 +1,5 @@
 ﻿using System;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;

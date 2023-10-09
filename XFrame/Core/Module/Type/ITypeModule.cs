@@ -2,7 +2,7 @@
 using System;
 using XFrame.Core;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
     public interface ITypeModule : IModule
     {

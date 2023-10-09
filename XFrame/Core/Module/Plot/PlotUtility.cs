@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using XFrame.Core;
 using XFrame.Modules.Archives;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Plots

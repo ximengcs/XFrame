@@ -4,7 +4,7 @@ using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Core;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
     /// <summary>
     /// 类型系统

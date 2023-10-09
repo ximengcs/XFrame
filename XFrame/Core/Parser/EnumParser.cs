@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {

@@ -3,7 +3,7 @@ using XFrame.Utility;
 using XFrame.Modules.Serialize;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Core;
 
 namespace XFrame.Modules.Datas

@@ -3,7 +3,7 @@ using XFrame.Core;
 using XFrame.Modules.ID;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Modules.Containers
 {

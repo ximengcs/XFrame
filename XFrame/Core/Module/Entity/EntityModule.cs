@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Collections;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Download;

@@ -1,7 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {

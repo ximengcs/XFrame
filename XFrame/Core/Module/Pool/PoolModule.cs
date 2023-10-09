@@ -1,6 +1,6 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using System.Collections.Generic;
 using XFrame.Collections;
 using XFrame.Modules.Plots;

@@ -18,7 +18,7 @@ using XFrame.Modules.Serialize;
 using XFrame.Modules.StateMachine;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Times;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {
