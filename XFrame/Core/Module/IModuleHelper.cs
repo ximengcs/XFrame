@@ -12,10 +12,7 @@ namespace XFrame.Core
         /// <param name="module">被创建的模块</param>
         protected internal void OnModuleCreate(IModule module);
 
-        /// <summary>
-        /// 模块更新生命周期
-        /// </summary>
-        protected internal void OnModuleUpdate();
+        protected internal void OnModuleHandle(IModule module, IModuleHandler handler);
 
         /// <summary>
         /// 模块销毁生命周期

@@ -34,5 +34,15 @@ namespace XFrameTest
                 Log.Debug(Entry.GetModule<ITypeModule>() == null);
             });
         }
+
+        [TestMethod]
+        public void Test2()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ConsumeWaitQueue();
+                Log.ToQueue = false;
+            });
+        }
     }
 }

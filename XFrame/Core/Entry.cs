@@ -57,6 +57,7 @@ namespace XFrame.Core
             m_Core = XCore.Create();
             m_Custom = XCore.Create();
 
+            InnerConfigHandler();
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
             handler.EnterHandle();
@@ -233,6 +234,32 @@ namespace XFrame.Core
         #endregion
 
         #region Inner Implement
+        private static void InnerConfigHandler()
+        {
+            ITypeModule typeModule = m_Base.GetModule<ITypeModule>();
+            TypeSystem typeSys = typeModule.GetOrNew<IConfigHandler>();
+            List<Pair<int, IConfigHandler>> handlers = new List<Pair<int, IConfigHandler>>(typeSys.Count);
+            foreach (Type type in typeSys)
+            {
+                IConfigHandler handler = (IConfigHandler)typeModule.CreateInstance(type);
+                XOrderAttribute attr = typeModule.GetAttribute<XOrderAttribute>(type);
+                if (attr != null)
+                {
+                    handlers.Add(Pair.Create(attr.Order, handler));
+                }
+                else
+                {
+                    handlers.Add(Pair.Create(0, handler));
+                }
+            }
+
+            handlers.Sort((pair1, pair2) => pair1.Key - pair2.Key);
+            foreach (Pair<int, IConfigHandler> handler in handlers)
+            {
+                handler.Value.OnHandle();
+            }
+        }
+
         private static void InenrInitHandler()
         {
             TypeSystem typeSys = ModuleUtility.Type.GetOrNew<IEntryHandler>();
