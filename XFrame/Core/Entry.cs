@@ -217,9 +217,9 @@ namespace XFrame.Core
         /// </summary>
         /// <typeparam name="T">辅助器类型</typeparam>
         /// <returns>辅助器实例</returns>
-        public static IModuleHelper GetHelper<T>() where T : IModule
+        public static T[] GetHelpers<T>() where T : IModule
         {
-            return m_Core.GetHelper<T>();
+            return m_Core.GetHelpers<T>();
         }
 
         /// <summary>

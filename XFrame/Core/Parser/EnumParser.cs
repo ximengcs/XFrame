@@ -1,9 +1,7 @@
-﻿using CsvHelper;
-using System;
+﻿using System;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Collections;
 using System.Collections.Generic;
-using XFrame.Modules.Reflection;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
 
@@ -28,7 +27,6 @@ namespace XFrame.Core
         private bool m_IsStart;
         private XCollection<IModule> m_Modules;
         private Dictionary<Type, ModuleHandle> m_ModulesWithEvents;
-        private Dictionary<Type, IModuleHelper> m_MainHelper;
         private Dictionary<Type, List<IModuleHelper>> m_Helpers;
         #endregion
 
@@ -40,7 +38,6 @@ namespace XFrame.Core
         {
             m_IsStart = false;
             m_Modules = new XCollection<IModule>();
-            m_MainHelper = new Dictionary<Type, IModuleHelper>();
             m_Helpers = new Dictionary<Type, List<IModuleHelper>>();
             m_ModulesWithEvents = new Dictionary<Type, ModuleHandle>();
         }
@@ -73,8 +70,17 @@ namespace XFrame.Core
             if (m_IsStart)
                 return;
             m_IsStart = true;
-            foreach (IModule manager in m_Modules)
-                manager.OnStart();
+            foreach (IModule module in m_Modules)
+            {
+                module.OnStart();
+                if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
+                {
+                    foreach (IModuleHelper helper in helpers)
+                    {
+                        helper.OnModuleStart(module);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -83,8 +89,27 @@ namespace XFrame.Core
         public void Destroy()
         {
             m_Modules.SetIt(XItType.Backward);
-            foreach (IModule manager in m_Modules)
-                manager.OnDestroy();
+            foreach (IModule module in m_Modules)
+            {
+                module.OnDestroy();
+                if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
+                {
+                    foreach (IModuleHelper helper in helpers)
+                    {
+                        helper.OnModuleDestroy(module);
+                    }
+                }
+            }
+
+            foreach (List<IModuleHelper> list in m_Helpers.Values)
+            {
+                foreach (IModuleHelper helper in list)
+                {
+                    helper.OnDestroy();
+                }
+            }
+            m_Helpers.Clear();
+            m_Helpers = null;
             m_Modules.Clear();
             m_Modules = null;
         }
@@ -136,29 +161,6 @@ namespace XFrame.Core
         }
 
         /// <summary>
-        /// 注册模块辅助器
-        /// </summary>
-        /// <typeparam name="T">辅助器类型</typeparam>
-        /// <typeparam name="ModuleT">模块类型</typeparam>
-        /// <returns>辅助器实例</returns>
-        public T RegisterHelper<T, ModuleT>() where T : IModuleHelper where ModuleT : IModule
-        {
-            Type mType = typeof(ModuleT);
-            if (!m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
-            {
-                helpers = new List<IModuleHelper>();
-                m_Helpers.Add(mType, helpers);
-            }
-            T helper = ModuleUtility.Type.CreateInstance<T>();
-            helpers.Add(helper);
-
-            if (!m_MainHelper.ContainsKey(typeof(T)))
-                m_MainHelper[typeof(T)] = helper;
-
-            return helper;
-        }
-
-        /// <summary>
         /// 获取模块
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
@@ -184,14 +186,51 @@ namespace XFrame.Core
         }
 
         /// <summary>
+        /// 注册模块辅助器
+        /// </summary>
+        /// <typeparam name="T">辅助器类型</typeparam>
+        /// <typeparam name="ModuleT">模块类型</typeparam>
+        /// <returns>辅助器实例</returns>
+        public T RegisterHelper<T, ModuleT>() where T : IModuleHelper where ModuleT : IModule
+        {
+            return (T)RegisterHelper(typeof(T), typeof(ModuleT));
+        }
+
+        public IModuleHelper RegisterHelper(Type helperType, Type mType)
+        {
+            if (!m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
+            {
+                helpers = new List<IModuleHelper>();
+                m_Helpers.Add(mType, helpers);
+            }
+            IModuleHelper helper = (IModuleHelper)ModuleUtility.Type.CreateInstance(helperType);
+            helper.OnInit();
+            helpers.Add(helper);
+
+            return helper;
+        }
+
+        /// <summary>
         /// 获取模块辅助器
         /// </summary>
         /// <typeparam name="T">辅助器类型</typeparam>
         /// <returns>辅助器实例</returns>
-        public IModuleHelper GetHelper<T>() where T : IModule
+        public T[] GetHelpers<T>() where T : IModule
         {
             if (m_Helpers.TryGetValue(typeof(T), out List<IModuleHelper> helpers))
-                return helpers[0];
+            {
+                T[] result = new T[helpers.Count];
+                for (int i = 0; i < result.Length; i++)
+                    result[i] = (T)helpers[i];
+                return result;
+            }
+            return default;
+        }
+
+        public IModuleHelper[] GetHelpers(Type mType)
+        {
+            if (m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
+                return helpers.ToArray();
             return default;
         }
 
@@ -202,8 +241,21 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public T GetMainHelper<T>() where T : IModuleHelper
         {
-            if (m_MainHelper.TryGetValue(typeof(T), out IModuleHelper helper))
-                return (T)helper;
+            if (m_Helpers.TryGetValue(typeof(T), out List<IModuleHelper> helpers))
+            {
+                if (helpers.Count > 0)
+                    return (T)helpers[0];
+            }
+            return default;
+        }
+
+        public IModuleHelper GetMainHelper(Type mType)
+        {
+            if (m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
+            {
+                if (helpers.Count > 0)
+                    return helpers[0];
+            }
             return default;
         }
         #endregion
@@ -233,10 +285,27 @@ namespace XFrame.Core
 
         private IModule InnerInitModule(IModule module, int moduleId, object data)
         {
+            if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
+            {
+                foreach (IModuleHelper helper in helpers)
+                {
+                    helper.OnModuleCreate(module);
+                }
+            }
+
             ModuleBase baseClass = module as ModuleBase;
             if (baseClass != null)
                 baseClass.Id = moduleId;
             module.OnInit(data);
+
+            if (helpers != null)
+            {
+                foreach (IModuleHelper helper in helpers)
+                {
+                    helper.OnModuleInit(module);
+                }
+            }
+
             m_Modules.Add(module);
 
             Type moduleType = module.GetType();
