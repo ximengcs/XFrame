@@ -30,7 +30,7 @@ namespace XFrame.Modules.Download
 
             if (!string.IsNullOrEmpty(XConfig.DefaultDownloadHelper))
             {
-                Type type = ModuleUtility.Type.GetType(XConfig.DefaultDownloadHelper);
+                Type type = XModule.Type.GetType(XConfig.DefaultDownloadHelper);
                 InnerSetHelperType(type);
             }
         }
@@ -52,8 +52,8 @@ namespace XFrame.Modules.Download
         /// <param name="url">url</param>
         public DownTask Down(string url, params string[] reserveUrls)
         {
-            DownTask task = ModuleUtility.Task.GetOrNew<DownTask>();
-            IDownloadHelper helper = (IDownloadHelper)ModuleUtility.Type.CreateInstance(m_Helper);
+            DownTask task = XModule.Task.GetOrNew<DownTask>();
+            IDownloadHelper helper = (IDownloadHelper)XModule.Type.CreateInstance(m_Helper);
             helper.Url = url;
             helper.ReserveUrl = reserveUrls;
             helper.OnInit();

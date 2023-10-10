@@ -41,11 +41,11 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                Log.Debug(ModuleUtility.Type.CreateInstance<C1>() == null);
-                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(9) == null);
-                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(9.9f) == null);
-                Log.Debug(ModuleUtility.Type.CreateInstance<C1>(true) == null);
-                Log.Debug(ModuleUtility.Type.CreateInstance(typeof(C1).FullName, 1, 2) == null);
+                Log.Debug(XModule.Type.CreateInstance<C1>() == null);
+                Log.Debug(XModule.Type.CreateInstance<C1>(9) == null);
+                Log.Debug(XModule.Type.CreateInstance<C1>(9.9f) == null);
+                Log.Debug(XModule.Type.CreateInstance<C1>(true) == null);
+                Log.Debug(XModule.Type.CreateInstance(typeof(C1).FullName, 1, 2) == null);
             });
         }
 

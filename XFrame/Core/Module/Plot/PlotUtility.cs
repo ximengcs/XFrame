@@ -40,11 +40,11 @@ namespace XFrame.Modules.Plots
             while (it.MoveNext())
             {
                 var item = it.Current;
-                IStory story = ModuleUtility.Plot.NewStory(item.Key);
+                IStory story = XModule.Plot.NewStory(item.Key);
                 JSONNode sections = item.Value["sections"];
                 foreach (JSONNode section in sections)
                 {
-                    Type type = ModuleUtility.Type.GetType(section);
+                    Type type = XModule.Type.GetType(section);
                     story.AddSection(type);
                 }
                 stories.Add(story);

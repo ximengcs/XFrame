@@ -29,14 +29,14 @@ namespace XFrame.Modules.Resource
             InnerEnsurePreload();
             if (IsDefaultModule && !string.IsNullOrEmpty(XConfig.DefaultRes))
             {
-                Type type = ModuleUtility.Type.GetType(XConfig.DefaultRes);
+                Type type = XModule.Type.GetType(XConfig.DefaultRes);
                 SetHelper(type);
             }
         }
 
         public IResourceHelper SetHelper(Type type)
         {
-            m_ResHelper = ModuleUtility.Type.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = XModule.Type.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }
@@ -47,7 +47,7 @@ namespace XFrame.Modules.Resource
         {
             InnerEnsurePreload();
 
-            XTask allTask = ModuleUtility.Task.GetOrNew<XTask>();
+            XTask allTask = XModule.Task.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
                 if (m_PreLoadRes.ContainsKey(path))
@@ -72,7 +72,7 @@ namespace XFrame.Modules.Resource
         public ITask Preload<T>(IEnumerable resPaths)
         {
             InnerEnsurePreload();
-            XTask allTask = ModuleUtility.Task.GetOrNew<XTask>();
+            XTask allTask = XModule.Task.GetOrNew<XTask>();
             foreach (string path in resPaths)
             {
                 if (m_PreLoadRes.ContainsKey(path))

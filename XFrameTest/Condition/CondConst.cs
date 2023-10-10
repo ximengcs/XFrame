@@ -19,7 +19,7 @@ namespace XFrameTest.Condition
                 if (v != s_Coin)
                 {
                     s_Coin = v;
-                    ModuleUtility.Condition.Event.Trigger(ConditionEvent.Create(COIN, s_Coin));
+                    XModule.Condition.Event.Trigger(ConditionEvent.Create(COIN, s_Coin));
                 }
             });
 
@@ -31,7 +31,7 @@ namespace XFrameTest.Condition
                 if (v != s_Gem)
                 {
                     s_Gem = v;
-                    ModuleUtility.Condition.Event.Trigger(ConditionEvent.Create(GEM, s_Gem));
+                    XModule.Condition.Event.Trigger(ConditionEvent.Create(GEM, s_Gem));
                 }
             });
     }

@@ -24,7 +24,7 @@ namespace XFrame.Modules.Times
 
         public class DefaultTimer : IUpdater
         {
-            float IUpdater.Time => ModuleUtility.Time.Time;
+            float IUpdater.Time => XModule.Time.Time;
         }
         #endregion
     }

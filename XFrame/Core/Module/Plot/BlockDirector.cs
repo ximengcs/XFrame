@@ -19,7 +19,7 @@ namespace XFrame.Modules.Plots
         {
             m_Current = null;
             m_StoryQueue = new Queue<StoryInfo>();
-            m_Archive = ModuleUtility.Archive.GetOrNew<JsonArchive>(NAME);
+            m_Archive = XModule.Archive.GetOrNew<JsonArchive>(NAME);
             InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
@@ -69,7 +69,7 @@ namespace XFrame.Modules.Plots
         private void InnerPlay(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
-            JsonArchive archive = ModuleUtility.Archive.GetOrNew<JsonArchive>(saveName);
+            JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);
             PlotDataProvider binder = new PlotDataProvider(archive);
             m_StoryQueue.Enqueue(new StoryInfo(story, binder));
             story.OnInit(binder);

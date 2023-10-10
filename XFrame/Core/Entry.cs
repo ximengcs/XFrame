@@ -179,7 +179,7 @@ namespace XFrame.Core
             {
                 if (handType == typeof(IEntryHandler))
                     continue;
-                m_Handlers.Add(handType, (IEntryHandler)ModuleUtility.Type.CreateInstance(type));
+                m_Handlers.Add(handType, (IEntryHandler)XModule.Type.CreateInstance(type));
             }
         }
 
@@ -262,7 +262,7 @@ namespace XFrame.Core
 
         private static void InenrInitHandler()
         {
-            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<IEntryHandler>();
+            TypeSystem typeSys = XModule.Type.GetOrNew<IEntryHandler>();
             foreach (Type type in typeSys)
             {
                 Type[] handTypes = type.GetInterfaces();
@@ -270,14 +270,14 @@ namespace XFrame.Core
                 {
                     if (handType == typeof(IEntryHandler))
                         continue;
-                    m_Handlers.Add(handType, (IEntryHandler)ModuleUtility.Type.CreateInstance(type));
+                    m_Handlers.Add(handType, (IEntryHandler)XModule.Type.CreateInstance(type));
                 }
             }
 
-            typeSys = ModuleUtility.Type.GetOrNew<IModuleHandler>();
+            typeSys = XModule.Type.GetOrNew<IModuleHandler>();
             foreach (Type type in typeSys)
             {
-                IModuleHandler handler = (IModuleHandler)ModuleUtility.Type.CreateInstance(type);
+                IModuleHandler handler = (IModuleHandler)XModule.Type.CreateInstance(type);
                 m_Base.AddHandle(handler.Target, handler);
                 m_Core.AddHandle(handler.Target, handler);
                 m_Custom.AddHandle(handler.Target, handler);
@@ -286,7 +286,7 @@ namespace XFrame.Core
 
         private static void InnerInit<T>(XCore target) where T : Attribute
         {
-            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<T>();
+            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<T>();
             foreach (Type type in typeSys)
             {
                 InnerAddModule(type, default, target, default);

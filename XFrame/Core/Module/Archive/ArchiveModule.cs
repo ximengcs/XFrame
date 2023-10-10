@@ -42,7 +42,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerInit()
         {
-            TypeSystem system = ModuleUtility.Type.GetOrNewWithAttr<ArchiveAttribute>();
+            TypeSystem system = XModule.Type.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
                 InnerAddType(type);
             InnerRefreshFiles();
@@ -50,7 +50,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerAddType(Type type)
         {
-            ArchiveAttribute attri = ModuleUtility.Type.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = XModule.Type.GetAttribute<ArchiveAttribute>(type);
             if (attri != null)
             {
                 if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
@@ -138,7 +138,7 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            ArchiveAttribute attri = ModuleUtility.Type.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = XModule.Type.GetAttribute<ArchiveAttribute>(type);
             return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 
@@ -167,7 +167,7 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)ModuleUtility.Type.CreateInstance(archiveType);
+                IArchive source = (IArchive)XModule.Type.CreateInstance(archiveType);
                 source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;

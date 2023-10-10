@@ -35,23 +35,23 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 string content = "{\"Name\":\"Simon\", \"Icon\":\"icon_simon\"}";
-                IDataTable<Data2> table = ModuleUtility.Data.Add<Data2>(content);
+                IDataTable<Data2> table = XModule.Data.Add<Data2>(content);
                 Console.WriteLine("Add");
                 Console.WriteLine(table);
 
-                table = ModuleUtility.Data.Get<Data2>();
+                table = XModule.Data.Get<Data2>();
                 Console.WriteLine("Get");
                 Console.WriteLine(table);
 
-                table = ModuleUtility.Data.Get<Data2>(0);
+                table = XModule.Data.Get<Data2>(0);
                 Console.WriteLine("Get2");
                 Console.WriteLine(table);
 
-                Data2 data1 = ModuleUtility.Data.GetOne<Data2>();
+                Data2 data1 = XModule.Data.GetOne<Data2>();
                 Console.WriteLine("Get One");
                 Console.WriteLine(data1);
 
-                data1 = ModuleUtility.Data.GetItem<Data2>(2);
+                data1 = XModule.Data.GetItem<Data2>(2);
                 Console.WriteLine("GetItem");
                 Console.WriteLine(data1);
             });
@@ -67,23 +67,23 @@ namespace XFrameTest
                 "{\"Id\":2, \"Name\":\"Simon2\"}," +
                 "{\"Id\":3, \"Name\":\"Simon2\"}" +
                 "]";
-                IDataTable<Data1> table = ModuleUtility.Data.Add<Data1>(content);
+                IDataTable<Data1> table = XModule.Data.Add<Data1>(content);
                 Console.WriteLine("Add");
                 Console.WriteLine(table);
 
-                table = ModuleUtility.Data.Get<Data1>();
+                table = XModule.Data.Get<Data1>();
                 Console.WriteLine("Get");
                 Console.WriteLine(table);
 
-                table = ModuleUtility.Data.Get<Data1>(0);
+                table = XModule.Data.Get<Data1>(0);
                 Console.WriteLine("Get2");
                 Console.WriteLine(table);
 
-                Data1 data1 = ModuleUtility.Data.GetOne<Data1>();
+                Data1 data1 = XModule.Data.GetOne<Data1>();
                 Console.WriteLine("Get One");
                 Console.WriteLine(data1);
 
-                data1 = ModuleUtility.Data.GetItem<Data1>(2);
+                data1 = XModule.Data.GetItem<Data1>(2);
                 Console.WriteLine("GetItem");
                 Console.WriteLine(data1);
 

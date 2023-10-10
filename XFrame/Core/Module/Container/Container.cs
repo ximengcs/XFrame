@@ -230,7 +230,7 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            ICom newCom = (ICom)ModuleUtility.Container.New(type, id, false, this, (db) =>
+            ICom newCom = (ICom)XModule.Container.New(type, id, false, this, (db) =>
             {
                 InnerInitCom((ICom)db);
                 onReady?.Invoke(db);
@@ -249,7 +249,7 @@ namespace XFrame.Modules.Containers
         private int InnerCheckId(Type type, int id)
         {
             if (m_Coms.Get(type, id) != null)
-                id = ModuleUtility.Id.Next();
+                id = XModule.Id.Next();
             return id;
         }
 

@@ -128,7 +128,7 @@ namespace XFrame.Modules.Archives
         /// <param name="v">此值将会被序列化并保存</param>
         public void Set(string key, object v)
         {
-            m_Root[key] = JSONNode.Parse(ModuleUtility.Serialize.SerializeObjectToRaw(v));
+            m_Root[key] = JSONNode.Parse(XModule.Serialize.SerializeObjectToRaw(v));
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace XFrame.Modules.Archives
             string objStr = m_Root[key].ToString();
             if (string.IsNullOrEmpty(objStr))
                 return defaultValue;
-            return (T)ModuleUtility.Serialize.DeserializeToObject(objStr, typeof(T));
+            return (T)XModule.Serialize.DeserializeToObject(objStr, typeof(T));
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace XFrame.Modules.Archives
 
         public IJsonArchive SpwanDataProvider()
         {
-            return SpwanDataProvider(ModuleUtility.Rand.RandString());
+            return SpwanDataProvider(XModule.Rand.RandString());
         }
 
         public abstract void ClearData();

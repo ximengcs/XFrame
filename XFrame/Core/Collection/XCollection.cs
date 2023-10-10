@@ -1,8 +1,8 @@
 ﻿using System;
-using XFrame.Core;
 using System.Collections.Generic;
 using XFrame.Modules.Reflection;
 using System.Reflection;
+using XFrame.Core;
 
 namespace XFrame.Collections
 {
@@ -48,7 +48,7 @@ namespace XFrame.Collections
                 return type;
 
             XTypeAttribute attr;
-            ITypeModule typeModule = Core.ModuleUtility.Type;
+            ITypeModule typeModule = XModule.Type;
             if (typeModule != null)
                 attr = typeModule.GetAttribute<XTypeAttribute>(type);
             else

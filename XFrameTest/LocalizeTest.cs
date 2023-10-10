@@ -17,8 +17,8 @@ namespace XFrameTest
             //测试前关闭加密
             EntryTest.Exec(() =>
             {
-                ModuleUtility.Archive.Delete("lang");
-                CsvArchive archive = ModuleUtility.Archive.GetOrNew<CsvArchive>("lang");
+                XModule.Archive.Delete("lang");
+                CsvArchive archive = XModule.Archive.GetOrNew<CsvArchive>("lang");
                 Csv<string>.Line line = archive.Data.Add();
                 line[0] = "1"; line[1] = "English"; line[2] = "ChineseSimplified";
 
@@ -50,13 +50,13 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.ToQueue = false;
-                ModuleUtility.I18N.SetFormater(new IdFormatter());
-                ModuleUtility.I18N.Lang = Language.ChineseSimplified;
-                Log.Debug($"{ModuleUtility.I18N.GetValueParam(3, 0, 1, 2)}");
-                Log.Debug($"{ModuleUtility.I18N.GetValue(3, "q", "w", "e")}");
+                XModule.I18N.SetFormater(new IdFormatter());
+                XModule.I18N.Lang = Language.ChineseSimplified;
+                Log.Debug($"{XModule.I18N.GetValueParam(3, 0, 1, 2)}");
+                Log.Debug($"{XModule.I18N.GetValue(3, "q", "w", "e")}");
 
-                ModuleUtility.I18N.Lang = Language.English;
-                Log.Debug($"{ModuleUtility.I18N.GetValue(3, "q", "w", "e")}");
+                XModule.I18N.Lang = Language.English;
+                Log.Debug($"{XModule.I18N.GetValue(3, "q", "w", "e")}");
             });
         }
     }

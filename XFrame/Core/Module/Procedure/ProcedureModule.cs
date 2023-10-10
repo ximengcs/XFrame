@@ -34,7 +34,7 @@ namespace XFrame.Modules.Procedure
             string entrance = XConfig.Entrance;
             if (!string.IsNullOrEmpty(entrance) && m_Procedures.TryGetByName(entrance, out Type type))
             {
-                m_Fsm = (Fsm)ModuleUtility.Fsm.GetOrNew(m_Procedures.ToArray());
+                m_Fsm = (Fsm)XModule.Fsm.GetOrNew(m_Procedures.ToArray());
                 m_Fsm.Start(type);
             }
             else
@@ -99,7 +99,7 @@ namespace XFrame.Modules.Procedure
         {
             if (!m_Fsm.HasState(type))
             {
-                ProcedureBase proc = (ProcedureBase)ModuleUtility.Type.CreateInstance(type);
+                ProcedureBase proc = (ProcedureBase)XModule.Type.CreateInstance(type);
                 m_Fsm.InnerAddState(proc);
             }
             else
@@ -110,7 +110,7 @@ namespace XFrame.Modules.Procedure
 
         private void InnerRefreshHandler()
         {
-            m_Procedures = ModuleUtility.Type.GetOrNew<ProcedureBase>();
+            m_Procedures = XModule.Type.GetOrNew<ProcedureBase>();
         }
         #endregion
     }

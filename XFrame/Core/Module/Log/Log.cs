@@ -86,7 +86,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Debug, content));
             else
-                ModuleUtility.Log.Debug(content);
+                XModule.Log.Debug(content);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Warning, content));
             else
-                ModuleUtility.Log.Warning(content);
+                XModule.Log.Warning(content);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Error, content));
             else
-                ModuleUtility.Log.Error(content);
+                XModule.Log.Error(content);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, content));
             else
-                ModuleUtility.Log.Fatal(content);
+                XModule.Log.Fatal(content);
         }
     }
 }

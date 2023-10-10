@@ -25,7 +25,7 @@ namespace XFrame.Modules.Plots
         public Story(string name)
         {
             if (string.IsNullOrEmpty(name))
-                name = $"story_{ModuleUtility.Rand.RandPath()}";
+                name = $"story_{XModule.Rand.RandPath()}";
             Name = name;
             m_SectionTypes = new Queue<Type>();
         }
@@ -90,7 +90,7 @@ namespace XFrame.Modules.Plots
                 }
                 else
                 {
-                    ISection section = (ISection)ModuleUtility.Type.CreateInstance(type);
+                    ISection section = (ISection)XModule.Type.CreateInstance(type);
                     m_Current = new SectionInfo(section, SectionState.WaitInit);
                 }
             }

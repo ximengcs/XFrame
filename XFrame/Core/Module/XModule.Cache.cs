@@ -22,7 +22,7 @@ using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {
-    public partial class ModuleUtility
+    public partial class XModule
     {
         private static ITypeModule m_Type;
         private static IArchiveModule m_Archive;

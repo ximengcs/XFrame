@@ -46,11 +46,11 @@ namespace XFrame.Modules.Plots
             base.OnInit(data);
             m_Directors = new Dictionary<Type, IDirector>();
 
-            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<DirectorAttribute>();
+            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<DirectorAttribute>();
             foreach (Type type in typeSys)
             {
-                IDirector director = (IDirector)ModuleUtility.Type.CreateInstance(type);
-                DirectorAttribute attr = ModuleUtility.Type.GetAttribute<DirectorAttribute>(type);
+                IDirector director = (IDirector)XModule.Type.CreateInstance(type);
+                DirectorAttribute attr = XModule.Type.GetAttribute<DirectorAttribute>(type);
                 if (attr.Default)
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
@@ -59,10 +59,10 @@ namespace XFrame.Modules.Plots
 
             if (!string.IsNullOrEmpty(XConfig.DefaultPlotHelper))
             {
-                Type type = ModuleUtility.Type.GetType(XConfig.DefaultPlotHelper);
+                Type type = XModule.Type.GetType(XConfig.DefaultPlotHelper);
                 if (type != null)
                 {
-                    m_Helper = (IPlotHelper)ModuleUtility.Type.CreateInstance(type);
+                    m_Helper = (IPlotHelper)XModule.Type.CreateInstance(type);
                 }
             }
 

@@ -41,7 +41,7 @@ namespace XFrame.Modules.Archives
 
         public override void ClearData()
         {
-            ModuleUtility.Archive.Delete(this);
+            XModule.Archive.Delete(this);
         }
     }
 }

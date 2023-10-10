@@ -18,22 +18,22 @@ namespace XFrameTest.Condition
                 ConditionData cond = new ConditionData("1|100,2|1.2,3|9;8,3|7;4");
                 ConditionSetting setting = new ConditionSetting("cond1", cond);
                 Log.Debug(cond);
-                ModuleUtility.Condition.Register(setting).OnComplete((handle) =>
+                XModule.Condition.Register(setting).OnComplete((handle) =>
                 {
                     Log.Debug($"{handle.Name} complete");
                 });
 
-                ModuleUtility.Task.GetOrNew<ActionTask>().Add(100, () =>
+                XModule.Task.GetOrNew<ActionTask>().Add(100, () =>
                 {
                     Log.Debug("Exec");
                     CondConst.Coin.Value += 200;
                     CondConst.Gem.Value += 200;
                 }).Start();
 
-                ModuleUtility.Task.GetOrNew<ActionTask>().Add(1000, () =>
+                XModule.Task.GetOrNew<ActionTask>().Add(1000, () =>
                 {
                     Log.Debug("Exec2");
-                    ModuleUtility.Condition.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));
+                    XModule.Condition.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));
                 }).Start();
             });
         }

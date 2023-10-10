@@ -10,15 +10,15 @@ namespace XFrameTest
     {
         public ITask BeforeHandle()
         {
-            ActionTask task = ModuleUtility.Task.GetOrNew<ActionTask>();
-            task.Add(() => Log.Debug("IInitHandler BeforeHandle " + ModuleUtility.Time.Time));
+            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
+            task.Add(() => Log.Debug("IInitHandler BeforeHandle " + XModule.Time.Time));
             return task;
         }
 
         public ITask AfterHandle()
         {
-            ActionTask task = ModuleUtility.Task.GetOrNew<ActionTask>();
-            task.Add(3.0f, () => Log.Debug("IInitHandler AfterHandle " + ModuleUtility.Time.Time));
+            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
+            task.Add(3.0f, () => Log.Debug("IInitHandler AfterHandle " + XModule.Time.Time));
             return task;
         }
 
@@ -32,15 +32,15 @@ namespace XFrameTest
     {
         public ITask BeforeHandle()
         {
-            ActionTask task = ModuleUtility.Task.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("IStartHandler BeforeHandle "  + ModuleUtility.Time.Time));
+            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
+            task.Add(() => Console.WriteLine("IStartHandler BeforeHandle "  + XModule.Time.Time));
             return task;
         }
 
         public ITask AfterHandle()
         {
-            ActionTask task = ModuleUtility.Task.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("IStartHandler AfterHandle " + ModuleUtility.Time.Time));
+            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
+            task.Add(() => Console.WriteLine("IStartHandler AfterHandle " + XModule.Time.Time));
             return task;
         }
     }

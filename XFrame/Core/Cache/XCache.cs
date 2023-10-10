@@ -34,12 +34,12 @@ namespace XFrame.Core.Caches
         private static void InnerInitFactory()
         {
             Entry.OnRun -= InnerInitFactory;
-            m_EvtSys = ModuleUtility.Event.NewSys();
+            m_EvtSys = XModule.Event.NewSys();
             m_Factorys = new Dictionary<Type, ObjectCollection>();
-            TypeSystem typeSys = ModuleUtility.Type.GetOrNew<ICacheObjectFactory>();
+            TypeSystem typeSys = XModule.Type.GetOrNew<ICacheObjectFactory>();
             foreach (Type type in typeSys)
             {
-                CacheObjectAttribute attr = ModuleUtility.Type.GetAttribute<CacheObjectAttribute>(type);
+                CacheObjectAttribute attr = XModule.Type.GetAttribute<CacheObjectAttribute>(type);
                 if (attr != null)
                 {
                     if (m_Factorys.ContainsKey(type))
@@ -47,7 +47,7 @@ namespace XFrame.Core.Caches
                         Log.Debug("XFrame", $"Cache object factory duplicate {type.FullName}, auto ignore");
                         continue;
                     }
-                    ICacheObjectFactory factory = (ICacheObjectFactory)ModuleUtility.Type.CreateInstance(type);
+                    ICacheObjectFactory factory = (ICacheObjectFactory)XModule.Type.CreateInstance(type);
                     m_Factorys.Add(attr.Target, new ObjectCollection(attr.Target, factory, attr.CacheCount));
                 }
             }

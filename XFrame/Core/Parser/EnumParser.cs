@@ -34,7 +34,7 @@ namespace XFrame.Core
 
         private void InnerSetDefault()
         {
-            DefaultValueAttribute attr = ModuleUtility.Type.GetAttribute<DefaultValueAttribute>(typeof(T));
+            DefaultValueAttribute attr = XModule.Type.GetAttribute<DefaultValueAttribute>(typeof(T));
             if (attr != null)
                 m_Value = (T)attr.Value;
             else

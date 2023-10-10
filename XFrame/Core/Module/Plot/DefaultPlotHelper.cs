@@ -9,7 +9,7 @@ namespace XFrame.Modules.Plots
 
         public DefaultPlotHelper()
         {
-            Event = ModuleUtility.Event.NewSys();
+            Event = XModule.Event.NewSys();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_Task.IsStart)
             {
-                TaskModule taskModule = (TaskModule)ModuleUtility.Task;
+                TaskModule taskModule = (TaskModule)XModule.Task;
                 taskModule.InnerExecTask(m_Task);
             }
 

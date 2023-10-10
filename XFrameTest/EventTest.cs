@@ -22,7 +22,7 @@ namespace XFrameTest
 
             public static void Init()
             {
-                m_System = ModuleUtility.Event.NewSys();
+                m_System = XModule.Event.NewSys();
             }
 
             public static void Listen(int eventId, XEventHandler handler)
@@ -83,7 +83,7 @@ namespace XFrameTest
             {
                 Log.ConsumeWaitQueue();
                 Log.ToQueue = false;
-                IEventSystem evtSys = ModuleUtility.Event.NewSys();
+                IEventSystem evtSys = XModule.Event.NewSys();
                 evtSys.Listen(TestEvent.EventId, (e) =>
                 {
                     Log.Debug(e.Id);

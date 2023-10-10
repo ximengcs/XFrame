@@ -91,7 +91,7 @@ namespace XFrame.Modules.Tasks
         /// <returns>获取到的任务</returns>
         public T GetOrNew<T>() where T : ITask
         {
-            return GetOrNew<T>(ModuleUtility.Rand.RandString());
+            return GetOrNew<T>(XModule.Rand.RandString());
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace XFrame.Modules.Tasks
         {
             if (!m_TaskWithName.TryGetValue(name, out ITask task))
             {
-                IPool<T> pool = ModuleUtility.Pool.GetOrNew<T>();
+                IPool<T> pool = XModule.Pool.GetOrNew<T>();
                 IPoolObject obj = pool.Require();
                 task = (ITask)obj;
                 m_TaskWithName[name] = task;

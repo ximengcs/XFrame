@@ -41,13 +41,13 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体基类或实体类</typeparam>
         public void RegisterEntity<T>() where T : class, IEntity
         {
-            TypeSystem module = ModuleUtility.Type
+            TypeSystem module = XModule.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub<T>();
 
             foreach (Type type in module)
             {
-                EntityPropAttribute atr = ModuleUtility.Type.GetAttribute<EntityPropAttribute>(type);
+                EntityPropAttribute atr = XModule.Type.GetAttribute<EntityPropAttribute>(type);
                 if (atr != null)
                     module.AddKey(atr.Type, type);
             }
@@ -97,7 +97,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = ModuleUtility.Type
+            Type type = XModule.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -123,7 +123,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, IEntity parent, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = ModuleUtility.Type
+            Type type = XModule.Type
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -139,7 +139,7 @@ namespace XFrame.Modules.Entities
             if (entity == null)
                 return;
 
-            ModuleUtility.Container.Remove(entity);
+            XModule.Container.Remove(entity);
             m_Entities.Remove(entity);
         }
         #endregion
@@ -147,7 +147,7 @@ namespace XFrame.Modules.Entities
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            return (IEntity)ModuleUtility.Container.New(entityType, true, parent, onReady);
+            return (IEntity)XModule.Container.New(entityType, true, parent, onReady);
         }
         #endregion
     }

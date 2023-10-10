@@ -24,7 +24,7 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1>(
-                ModuleUtility.Serialize.DeserializeToObject<T1>(contents[0]));
+                XModule.Serialize.DeserializeToObject<T1>(contents[0]));
 
             return m_Value;
         }
@@ -130,8 +130,8 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1, T2>(
-                ModuleUtility.Serialize.DeserializeToObject<T1>(contents[0]),
-                ModuleUtility.Serialize.DeserializeToObject<T2>(contents[1]));
+                XModule.Serialize.DeserializeToObject<T1>(contents[0]),
+                XModule.Serialize.DeserializeToObject<T2>(contents[1]));
 
             return m_Value;
         }

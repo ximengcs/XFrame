@@ -118,7 +118,7 @@ namespace XFrame.Modules.Reflection
             {
                 if (type.IsAssignableFrom(subType))
                 {
-                    XAttribute xAttr = ModuleUtility.Type.GetAttribute<XAttribute>(subType);
+                    XAttribute xAttr = XModule.Type.GetAttribute<XAttribute>(subType);
                     module.AddSubClass(subType);
                     if (xAttr != null)
                         module.AddKey(xAttr.Id, subType);

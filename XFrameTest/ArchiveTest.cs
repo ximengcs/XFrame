@@ -26,7 +26,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                JsonArchive archive = ModuleUtility.Archive.GetOrNew<JsonArchive>("archive_test");
+                JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>("archive_test");
                 archive.Set("name", "simon");
 
                 IJsonArchive a1 = archive.SpwanDataProvider("a1");
@@ -44,7 +44,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                JsonArchive archive = ModuleUtility.Archive.GetOrNew<JsonArchive>("archive_test");
+                JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>("archive_test");
                 Console.WriteLine(archive.Get<string>("name"));
 
                 IJsonArchive a1 = archive.SpwanDataProvider("a1");
@@ -62,7 +62,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                JsonArchive archive = ModuleUtility.Archive.GetOrNew<JsonArchive>("archive_test");
+                JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>("archive_test");
                 Log.Debug(archive.Get<string>("name"));
             });
         }
@@ -72,7 +72,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                CsvArchive csv = ModuleUtility.Archive.GetOrNew<CsvArchive>("archive_csv_test", 3);
+                CsvArchive csv = XModule.Archive.GetOrNew<CsvArchive>("archive_csv_test", 3);
                 Csv<string>.Line line = csv.Data.Add();
                 line[0] = "a";
                 line[2] = "b";
@@ -84,7 +84,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                CsvArchive csv = ModuleUtility.Archive.GetOrNew<CsvArchive>("archive_csv_test");
+                CsvArchive csv = XModule.Archive.GetOrNew<CsvArchive>("archive_csv_test");
                 Log.Debug(csv.Data);
             });
         }
@@ -94,7 +94,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                DataArchive archive = ModuleUtility.Archive.GetOrNew<DataArchive>("archive_bin_test");
+                DataArchive archive = XModule.Archive.GetOrNew<DataArchive>("archive_bin_test");
                 archive.Write("a1.txt", Encoding.UTF8.GetBytes("testa1"));
             });
         }
@@ -104,7 +104,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                DataArchive archive = ModuleUtility.Archive.GetOrNew<DataArchive>("archive_bin_test");
+                DataArchive archive = XModule.Archive.GetOrNew<DataArchive>("archive_bin_test");
                 archive.ExportDisk(XConfig.ArchivePath);
             });
         }

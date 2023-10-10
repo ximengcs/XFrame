@@ -21,7 +21,7 @@ namespace XFrame.Modules.Diagnotics
             m_Loggers = new List<ILogger>();
             if (!string.IsNullOrEmpty(XConfig.DefaultLogger))
             {
-                Type type = ModuleUtility.Type.GetType(XConfig.DefaultLogger);
+                Type type = XModule.Type.GetType(XConfig.DefaultLogger);
                 InnerAddLogger(type);
             }
         }
@@ -94,7 +94,7 @@ namespace XFrame.Modules.Diagnotics
 
         private ILogger InnerAddLogger(Type type)
         {
-            ILogger logger = ModuleUtility.Type.CreateInstance(type) as ILogger;
+            ILogger logger = XModule.Type.CreateInstance(type) as ILogger;
             m_Loggers.Add(logger);
             return logger;
         }

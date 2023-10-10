@@ -106,7 +106,7 @@ namespace XFrame.Modules.Tasks
 
                     if (m_Targets.Count > 0)
                     {
-                        TaskModule taskModule = (TaskModule)ModuleUtility.Task;
+                        TaskModule taskModule = (TaskModule)XModule.Task;
                         if (taskModule.InnerCanContinue())
                             InnerUpdate();
                     }

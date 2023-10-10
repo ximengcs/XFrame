@@ -9,7 +9,7 @@ namespace XFrame.Modules.Pools
 
         IPoolObject IPoolHelper.Factory(Type type, int poolKey, object userData)
         {
-            return (IPoolObject)ModuleUtility.Type.CreateInstance(type);
+            return (IPoolObject)XModule.Type.CreateInstance(type);
         }
 
         void IPoolHelper.OnObjectCreate(IPoolObject obj)

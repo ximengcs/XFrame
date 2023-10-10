@@ -22,19 +22,19 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 References.Require<XLinkList<int>>();
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandString());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
-                Log.Debug(ModuleUtility.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandString());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
+                Log.Debug(XModule.Rand.RandEnum<TestEnum>());
             });
         }
     }

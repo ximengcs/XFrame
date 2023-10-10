@@ -39,7 +39,7 @@ namespace XFrame.Modules.Datas
                 return;
             }
 
-            TableAttribute attr = ModuleUtility.Type.GetAttribute<TableAttribute>(type);
+            TableAttribute attr = XModule.Type.GetAttribute<TableAttribute>(type);
             if (attr != null)
             {
                 Type jsonType = attr != null ? attr.JsonType : null;
@@ -79,7 +79,7 @@ namespace XFrame.Modules.Datas
             tbType = null;
             jsonType = null;
 
-            DataAttribute attr = ModuleUtility.Type.GetAttribute<DataAttribute>(dataType);
+            DataAttribute attr = XModule.Type.GetAttribute<DataAttribute>(dataType);
             int tableType = attr != null ? attr.TableType : TableType.List;
             if (m_TableTypes.TryGetValue(tableType, out TypeInfo info))
             {
@@ -102,8 +102,8 @@ namespace XFrame.Modules.Datas
 
         private IDataTable InnerAdd(Type tbType, Type jsonType, string json, int textType)
         {
-            object data = ModuleUtility.Serialize.DeserializeToObject(json, textType, jsonType);
-            IDataTable table = (IDataTable)ModuleUtility.Type.CreateInstance(tbType);
+            object data = XModule.Serialize.DeserializeToObject(json, textType, jsonType);
+            IDataTable table = (IDataTable)XModule.Type.CreateInstance(tbType);
             table.OnInit(data);
 
             List<IDataTable> list;

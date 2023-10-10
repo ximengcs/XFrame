@@ -32,7 +32,7 @@ namespace XFrame.Modules.Local
             base.OnInit(data);
 
             m_Language = Language.None;
-            m_Event = ModuleUtility.Event.NewSys();
+            m_Event = XModule.Event.NewSys();
             m_Formatter = new FormatterProvider();
         }
         #endregion

@@ -45,7 +45,7 @@ namespace XFrame.Modules.Times
         public static CDTimer Create()
         {
             CDTimer timer = References.Require<CDTimer>();
-            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerAddTimer(timer);
             return timer;
         }
@@ -54,7 +54,7 @@ namespace XFrame.Modules.Times
         {
             CDTimer timer = References.Require<CDTimer>();
             timer.m_Name = name;
-            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerAddTimer(timer);
             return timer;
         }
@@ -65,7 +65,7 @@ namespace XFrame.Modules.Times
             timer.m_Name = name;
             timer.m_Updater = updater;
             timer.m_Times = new Dictionary<int, CDInfo>();
-            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerAddTimer(timer);
             return timer;
         }
@@ -156,15 +156,15 @@ namespace XFrame.Modules.Times
 
         void IPoolObject.OnRequest()
         {
-            m_Name = ModuleUtility.Rand.RandString();
+            m_Name = XModule.Rand.RandString();
             m_Updater = Default;
-            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerAddTimer(this);
         }
 
         void IPoolObject.OnRelease()
         {
-            TimeModule timeModule = (TimeModule)ModuleUtility.Time;
+            TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerRemove(this);
             m_Name = null;
             m_Times.Clear();

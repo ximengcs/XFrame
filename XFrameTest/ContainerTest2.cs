@@ -260,13 +260,13 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.Debug("Start");
-                IContainer c1 = ModuleUtility.Container.New<Container1>();
+                IContainer c1 = XModule.Container.New<Container1>();
 
-                ModuleUtility.Task.GetOrNew<ActionTask>().Add(1, () =>
+                XModule.Task.GetOrNew<ActionTask>().Add(1, () =>
                 {
-                    ModuleUtility.Container.Remove(c1);
+                    XModule.Container.Remove(c1);
                     Log.Debug("Complete");
-                    IContainer c2 = ModuleUtility.Container.New<Container1>();
+                    IContainer c2 = XModule.Container.New<Container1>();
                 }).Start();
             });
         }

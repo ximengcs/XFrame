@@ -7,7 +7,7 @@ namespace XFrame.Modules.Tasks
     {
         public static void Delete(this ITask task)
         {
-            ModuleUtility.Task.Remove(task);
+            XModule.Task.Remove(task);
         }
 
         public static ITask AutoDelete(this ITask task)

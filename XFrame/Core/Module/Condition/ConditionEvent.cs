@@ -45,7 +45,7 @@ namespace XFrame.Modules.Conditions
         /// <returns>事件实例</returns>
         public static ConditionEvent Create(int target, object param)
         {
-            ConditionEvent evt = ModuleUtility.Pool.GetOrNew<ConditionEvent>().Require();
+            ConditionEvent evt = XModule.Pool.GetOrNew<ConditionEvent>().Require();
             evt.Target = target;
             evt.Param = param;
             return evt;

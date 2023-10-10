@@ -25,13 +25,13 @@ namespace XFrame.Modules.Pools
             m_PoolContainers = new Dictionary<Type, IPool>();
 
             Type helperType = typeof(IPoolHelper);
-            TypeSystem typeSys = ModuleUtility.Type.GetOrNewWithAttr<PoolHelperAttribute>();
+            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<PoolHelperAttribute>();
             foreach (Type type in typeSys)
             {
                 if (helperType.IsAssignableFrom(type))
                 {
-                    PoolHelperAttribute attr = ModuleUtility.Type.GetAttribute<PoolHelperAttribute>(type);
-                    IPoolHelper helper = ModuleUtility.Type.CreateInstance(type) as IPoolHelper;
+                    PoolHelperAttribute attr = XModule.Type.GetAttribute<PoolHelperAttribute>(type);
+                    IPoolHelper helper = XModule.Type.CreateInstance(type) as IPoolHelper;
                     InnerGetOrNew(attr.Target, helper);
                 }
             }
@@ -83,7 +83,7 @@ namespace XFrame.Modules.Pools
                     helper = new DefaultPoolHelper();
                 Type poolType = typeof(ObjectPool<>).MakeGenericType(objType);
                 m_ParamCache[0] = helper;
-                pool = ModuleUtility.Type.CreateInstance(poolType, m_ParamCache) as IPool;
+                pool = XModule.Type.CreateInstance(poolType, m_ParamCache) as IPool;
                 m_PoolContainers.Add(objType, pool);
             }
 
