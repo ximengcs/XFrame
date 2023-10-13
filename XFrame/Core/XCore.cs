@@ -185,6 +185,21 @@ namespace XFrame.Core
             return InnerGetModule(moduleType, moduleId) != null;
         }
 
+        public bool RemoveModule(IModule module)
+        {
+            return m_Modules.Remove(module);
+        }
+
+        public bool RemoveModule<T>(int moduleId = default) where T : IModule
+        {
+            return InnerRemoveModule(typeof(T), moduleId);
+        }
+
+        public bool RemoveModule(Type moduleType, int moduleId = default)
+        {
+            return InnerRemoveModule(moduleType, moduleId);
+        }
+
         /// <summary>
         /// 注册模块辅助器
         /// </summary>
@@ -323,6 +338,12 @@ namespace XFrame.Core
         private IModule InnerGetModule(Type moduleType, int moduleId)
         {
             return m_Modules.Get(moduleType, moduleId);
+        }
+
+        private bool InnerRemoveModule(Type moduleType, int moduleId)
+        {
+            IModule module = m_Modules.Get(moduleType, moduleId);
+            return module != null ? m_Modules.Remove(module) : false;
         }
         #endregion
     }

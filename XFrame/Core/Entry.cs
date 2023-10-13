@@ -202,6 +202,21 @@ namespace XFrame.Core
             return (T)InnerAddModule(typeof(T), moduleId, m_Custom, userData);
         }
 
+        public static void RemoveModule(IModule module)
+        {
+            InnerRemoveModule(module);
+        }
+
+        public static void RemoveModule(Type moduleType, int moduleId = default)
+        {
+            InnerRemoveModule(moduleType, moduleId);
+        }
+
+        public static void RemoveModule<T>(int moduleId = default) where T : IModule
+        {
+            InnerRemoveModule(typeof(T), moduleId);
+        }
+
         /// <summary>
         /// 获取模块
         /// </summary>
@@ -314,6 +329,26 @@ namespace XFrame.Core
             }
 
             return target.Register(moduleType, moduleId, userData);
+        }
+
+        private static void InnerRemoveModule(Type moduleType, int moduleId)
+        {
+            if (m_Base == null)
+                return;
+
+            if (!m_Base.RemoveModule(moduleType, moduleId))
+                if (!m_Core.RemoveModule(moduleType, moduleId))
+                    m_Custom.RemoveModule(moduleType, moduleId);
+        }
+
+        private static void InnerRemoveModule(IModule module)
+        {
+            if (m_Base == null)
+                return;
+
+            if (!m_Base.RemoveModule(module))
+                if (!m_Core.RemoveModule(module))
+                    m_Custom.RemoveModule(module);
         }
 
         private static IModule InnerGetModule(Type moduleType, int moduleId)
