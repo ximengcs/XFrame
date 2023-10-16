@@ -312,6 +312,8 @@ namespace XFrame.Core
             if (baseClass != null)
                 baseClass.Id = moduleId;
             module.OnInit(data);
+            if (m_IsStart)
+                module.OnStart();
 
             if (helpers != null)
             {
