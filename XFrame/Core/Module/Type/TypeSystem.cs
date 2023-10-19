@@ -14,6 +14,7 @@ namespace XFrame.Modules.Reflection
         #region Inner Fields
         private XItType m_ItType;
         private Type m_MainType;
+        private ITypeModule m_TypeModule;
         private List<Type> m_AllTypes;
         private Dictionary<Type, TypeSystem> m_Classifyes;
         private Dictionary<int, Type> m_KeyTypes;
@@ -21,8 +22,9 @@ namespace XFrame.Modules.Reflection
         #endregion
 
         #region Inner Imeplement
-        internal TypeSystem(Type mainType)
+        internal TypeSystem(ITypeModule typeModule, Type mainType)
         {
+            m_TypeModule = typeModule;
             m_MainType = mainType;
             m_AllTypes = new List<Type>();
             m_Classifyes = new Dictionary<Type, TypeSystem>();
@@ -112,13 +114,13 @@ namespace XFrame.Modules.Reflection
             if (m_Classifyes.TryGetValue(type, out TypeSystem module))
                 return module;
 
-            module = new TypeSystem(type);
+            module = new TypeSystem(m_TypeModule, type);
             m_Classifyes.Add(type, module);
             foreach (Type subType in m_AllTypes)
             {
                 if (type.IsAssignableFrom(subType))
                 {
-                    XAttribute xAttr = XModule.Type.GetAttribute<XAttribute>(subType);
+                    XAttribute xAttr = m_TypeModule.GetAttribute<XAttribute>(subType);
                     module.AddSubClass(subType);
                     if (xAttr != null)
                         module.AddKey(xAttr.Id, subType);

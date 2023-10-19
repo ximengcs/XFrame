@@ -224,7 +224,7 @@ namespace XFrame.Modules.Reflection
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
 
-            module = new TypeSystem(pType);
+            module = new TypeSystem(this, pType);
             m_ClassRegister.Add(pType, module);
             foreach (var item in m_TypesWithAttrs)
             {
@@ -380,7 +380,7 @@ namespace XFrame.Modules.Reflection
             if (m_ClassRegister.TryGetValue(baseType, out module))
                 return module;
 
-            module = new TypeSystem(baseType);
+            module = new TypeSystem(this, baseType);
             m_ClassRegister.Add(baseType, module);
             foreach (Type type in m_Types)
             {
