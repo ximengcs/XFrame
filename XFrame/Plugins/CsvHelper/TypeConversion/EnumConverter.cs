@@ -86,7 +86,6 @@ namespace CsvHelper.TypeConversion
 				}
 			}
 
-#if NET45 || NET47 || NETSTANDARD2_0
 			try
 			{
 				return Enum.Parse(type, text, ignoreCase);
@@ -95,16 +94,6 @@ namespace CsvHelper.TypeConversion
 			{
 				return base.ConvertFromString(text, row, memberMapData);
 			}
-#else
-			if (Enum.TryParse(type, text, ignoreCase, out var value))
-			{
-				return value;
-			}
-			else
-			{
-				return base.ConvertFromString(text, row, memberMapData);
-			}
-#endif
 		}
 
 		/// <inheritdoc/>

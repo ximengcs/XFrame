@@ -726,44 +726,6 @@ namespace CsvHelper
 			disposed = true;
 		}
 
-#if !NET45 && !NET47 && !NETSTANDARD2_0
-		/// <inheritdoc/>
-		public async ValueTask DisposeAsync()
-		{
-			await DisposeAsync(true).ConfigureAwait(false);
-			GC.SuppressFinalize(this);
-		}
-
-		/// <inheritdoc/>
-		protected virtual async ValueTask DisposeAsync(bool disposing)
-		{
-			if (disposed)
-			{
-				return;
-			}
-
-			await FlushAsync().ConfigureAwait(false);
-
-			if (disposing)
-			{
-				// Dispose managed state (managed objects)
-
-				if (!leaveOpen)
-				{
-					await writer.DisposeAsync().ConfigureAwait(false);
-				}
-			}
-
-			// Free unmanaged resources (unmanaged objects) and override finalizer
-			// Set large fields to null
-
-			buffer = null;
-
-			disposed = true;
-		}
-#endif
-
-#if !NET45
 		private async Task<bool> WriteHeaderAsync<T>(IAsyncEnumerable<T> records)
 		{
 			if (!hasHeaderRecord || hasHeaderBeenWritten)
@@ -781,7 +743,6 @@ namespace CsvHelper
 
 			return WriteHeader(await records.FirstOrDefaultAsync());
 		}
-#endif
 
 		private bool WriteHeader<T>(IEnumerable<T> records)
 		{
