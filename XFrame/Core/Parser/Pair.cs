@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Text;
 
 namespace XFrame.Core
 {
@@ -14,8 +13,8 @@ namespace XFrame.Core
 
     public partial struct Pair<K, V>
     {
-        public K Key { get; private set; }
-        public V Value { get; private set; }
+        public K Key { get; set; }
+        public V Value { get; set; }
 
         public Pair(K key, V value)
         {
