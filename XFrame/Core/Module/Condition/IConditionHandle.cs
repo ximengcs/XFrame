@@ -29,6 +29,8 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         int Target { get; }
 
+        bool IsComplete { get; }
+
         /// <summary>
         /// 条件需要达成的目标参数，如数量等
         /// </summary>

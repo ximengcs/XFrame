@@ -1,4 +1,5 @@
 ﻿
+using System;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions

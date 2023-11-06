@@ -21,6 +21,8 @@ namespace XFrame.Modules.Conditions
 
         public int Target => m_Target;
 
+        public bool IsComplete => m_Complete;
+
         public UniversalParser Param => m_Param;
 
         public IConditionGroupHandle Group => m_Group;

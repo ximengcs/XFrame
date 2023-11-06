@@ -90,6 +90,7 @@ namespace XFrame.Modules.Conditions
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {
                 m_Complete = true;
+                m_Helper?.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
