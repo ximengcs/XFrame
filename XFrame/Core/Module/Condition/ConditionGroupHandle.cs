@@ -90,9 +90,17 @@ namespace XFrame.Modules.Conditions
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {
                 m_Complete = true;
-                m_Helper?.MarkFinish(this);
+
+                foreach (IConditionHandle tmp in m_AllInfos)
+                {
+                    ConditionHandle handle = (ConditionHandle)tmp;
+                    handle.MarkComplete();
+                }
+                m_Helper.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
+
+
             }
             else
             {
@@ -109,25 +117,7 @@ namespace XFrame.Modules.Conditions
 
         internal void InnerTrigger(IConditionHandle handle, object param)
         {
-            if (m_Complete)
-                return;
-            if (m_NotInfos.TryGetValue(handle.Target, out List<IConditionHandle> handles))
-            {
-                int index = handles.IndexOf(handle);
-                if (index != -1)
-                {
-                    ConditionHandle realHandle = (ConditionHandle)handle;
-                    if (realHandle.InnerCheckComplete(param))
-                    {
-                        realHandle.MarkComplete();
-                        handles.RemoveAt(index);
-                    }
-                }
-
-                if (handles.Count == 0)
-                    m_NotInfos.Remove(handle.Target);
-                InnerCheckComplete();
-            }
+            InnerTrigger(handle.Target, param);
         }
 
         internal void InnerTrigger(int target, object param)
@@ -156,7 +146,6 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
-                m_Helper?.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
