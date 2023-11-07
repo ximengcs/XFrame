@@ -90,17 +90,13 @@ namespace XFrame.Modules.Conditions
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {
                 m_Complete = true;
-
                 foreach (IConditionHandle tmp in m_AllInfos)
                 {
                     ConditionHandle handle = (ConditionHandle)tmp;
                     handle.MarkComplete();
                 }
-                m_Helper.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
-
-
             }
             else
             {
@@ -146,6 +142,7 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
+                m_Helper.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
