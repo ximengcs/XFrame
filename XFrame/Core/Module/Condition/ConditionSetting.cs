@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Core;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
     /// 条件辅助器配置
+    /// <para>
+    /// 用于配置条件组<see cref="IConditionHelper"/>辅助器或条件<see cref="IConditionCompare"/>辅助器
+    /// </para>
     /// </summary>
     public struct ConditionHelperSetting
     {
@@ -29,20 +32,16 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public bool IsUseInstance => UseInstance != DEFAULT_INSTANCE;
 
-        private ConditionHelperSetting(int useInstance, bool usePersistData)
+        public ConditionHelperSetting(int useInstance, bool usePersistData)
         {
             UseInstance = useInstance;
             UsePersistData = usePersistData;
         }
 
-        public static ConditionHelperSetting Create(int useInstance = DEFAULT_INSTANCE, bool usePersistData = false)
+        public ConditionHelperSetting(bool usePersistData)
         {
-            return new ConditionHelperSetting(useInstance, usePersistData);
-        }
-
-        public static ConditionHelperSetting Create(bool usePersistData)
-        {
-            return new ConditionHelperSetting(DEFAULT_INSTANCE, usePersistData);
+            UseInstance = DEFAULT_INSTANCE;
+            UsePersistData = usePersistData;
         }
 
         public override bool Equals(object obj)
@@ -131,10 +130,10 @@ namespace XFrame.Modules.Conditions
         public ConditionHelperSetting GetConditionHelperSettting(int target)
         {
             if (m_ConditionHelperInstance == null)
-                return ConditionHelperSetting.Create();
+                return new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false);
             if (m_ConditionHelperInstance.TryGetValue(target, out ConditionHelperSetting settting))
                 return settting;
-            return ConditionHelperSetting.Create();
+            return new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false);
         }
 
         /// <summary>
@@ -164,7 +163,7 @@ namespace XFrame.Modules.Conditions
             Data = data;
             AutoRemove = true;
             UseGroupHelper = useHelper;
-            HelperSetting = helper == default ? ConditionHelperSetting.Create() : helper;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
             m_ConditionHelperInstance = null;
         }
 
@@ -180,7 +179,7 @@ namespace XFrame.Modules.Conditions
             Data = data;
             AutoRemove = autoRemove;
             UseGroupHelper = 0;
-            HelperSetting = helper == default ? ConditionHelperSetting.Create() : helper;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
             m_ConditionHelperInstance = null;
         }
 
@@ -197,7 +196,7 @@ namespace XFrame.Modules.Conditions
             Data = data;
             AutoRemove = autoRemove;
             UseGroupHelper = useHelper;
-            HelperSetting = helper == default ? ConditionHelperSetting.Create() : helper;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
             m_ConditionHelperInstance = null;
         }
     }

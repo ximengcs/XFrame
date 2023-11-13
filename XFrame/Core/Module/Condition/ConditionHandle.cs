@@ -79,8 +79,7 @@ namespace XFrame.Modules.Conditions
                 Log.Error("Condition", $"Target {Target} compare is null");
                 return false;
             }
-            if (m_Setting.IsUseInstance)
-                m_HandleInfo.OnEventTrigger(param);
+
             return m_HandleInfo.Check(this, param);
         }
 

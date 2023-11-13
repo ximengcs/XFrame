@@ -26,7 +26,11 @@ namespace XFrame.Modules.Conditions
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
         /// <summary>
-        /// 当需要触发某个条件时，触发 <see cref="ConditionEvent"/> 事件到此事件系统
+        /// 当需要触发某个条件时 
+        /// 触发 <see cref="ConditionEvent"/> 
+        ///     <see cref="ConditionGroupEvent"/> 
+        ///     <see cref="SpecificConditionEvent"/> 
+        /// 事件到此事件系统
         /// </summary>
         public IEventSystem Event => m_Event;
 
@@ -198,9 +202,9 @@ namespace XFrame.Modules.Conditions
 
             if (m_Groups.TryGetValue(group.Name, out ConditionGroupHandle realGroup))
             {
-                InnerTriggerCompare(handle.Target, evt.Param);
+                InnerTriggerCompare(handle, evt.Param);
                 if (!group.Complete)
-                    realGroup.InnerTrigger(handle, evt.Param);
+                    realGroup.InnerTrigger(handle.Target, evt.Param);
             }
             else
             {
@@ -211,20 +215,23 @@ namespace XFrame.Modules.Conditions
         private void InnerConditionGroupTouchHandler(XEvent e)
         {
             ConditionGroupEvent evt = (ConditionGroupEvent)e;
-            InnerTriggerGroup(evt.Handle.Name, evt.Target, evt.Param);
-        }
-
-        private void InnerTriggerGroup(string name, int target, object param)
-        {
-            if (m_Groups.TryGetValue(name, out ConditionGroupHandle group))
+            if (m_Groups.TryGetValue(evt.Handle.Name, out ConditionGroupHandle group))
             {
-                InnerTriggerCompare(target, param);
+                int target = evt.Target;
+                if (group.NotInfo.TryGetValue(target, out List<IConditionHandle> handles))
+                {
+                    foreach (IConditionHandle handle in handles)
+                    {
+                        InnerTriggerCompare(handle, evt.Param);
+                    }
+                }
+
                 if (!group.Complete)
-                    group.InnerTrigger(target, param);
+                    group.InnerTrigger(target, evt.Param);
             }
             else
             {
-                Log.Error("Condition", $"Module do not has {name}");
+                Log.Error("Condition", $"Module do not has {evt.Handle.Name}");
             }
         }
 
@@ -236,6 +243,15 @@ namespace XFrame.Modules.Conditions
                 {
                     item.Value.OnEventTrigger(param);
                 }
+            }
+        }
+
+        private void InnerTriggerCompare(IConditionHandle handle, object param)
+        {
+            if (m_Compares.TryGetValue(handle.Target, out Dictionary<int, CompareInfo> compares))
+            {
+                if (compares.TryGetValue(handle.InstanceId, out CompareInfo info))
+                    info.OnEventTrigger(param);
             }
         }
     }

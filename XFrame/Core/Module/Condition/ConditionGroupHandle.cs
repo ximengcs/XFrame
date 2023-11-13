@@ -111,11 +111,6 @@ namespace XFrame.Modules.Conditions
             m_Archive = XModule.Archive.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
         }
 
-        internal void InnerTrigger(IConditionHandle handle, object param)
-        {
-            InnerTrigger(handle.Target, param);
-        }
-
         internal void InnerTrigger(int target, object param)
         {
             if (m_Complete)
