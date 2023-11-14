@@ -44,6 +44,20 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
+        public ITaskStrategy GetStrategy(Type handleType)
+        {
+            XNode<StrategyInfo> resultNode = m_Infos.Get((node) =>
+            {
+                if (node.Value.HandleType == handleType)
+                    return true;
+                return false;
+            });
+
+            if (resultNode != null)
+                return resultNode.Value.Inst;
+            return null;
+        }
+
         public virtual ITask Add(ITaskHandler data)
         {
             m_Targets.Enqueue(data);

@@ -58,6 +58,8 @@ namespace XFrame.Modules.Tasks
         /// <returns></returns>
         ITask AddStrategy(ITaskStrategy strategy);
 
+        ITaskStrategy GetStrategy(Type handleType);
+
         /// <summary>
         /// 设置完成回调 
         /// </summary>

@@ -39,6 +39,11 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
+        public ITaskStrategy GetStrategy(Type handleType)
+        {
+            return null;
+        }
+
         public ITask OnComplete(Action complete)
         {
             m_Complete += complete;

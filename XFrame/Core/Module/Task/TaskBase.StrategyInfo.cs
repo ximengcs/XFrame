@@ -13,6 +13,7 @@ namespace XFrame.Modules.Tasks
             private Action m_FinishMethod;
 
             public Type HandleType;
+            public ITaskStrategy Inst => m_Inst;
 
             public StrategyInfo(ITaskStrategy strategy, Type baseType)
             {
