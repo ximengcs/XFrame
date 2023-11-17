@@ -5,7 +5,6 @@ using XFrame.Collections;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
-using XFrame.Modules.Rand;
 
 namespace XFrame.Modules.Resource
 {
@@ -43,6 +42,8 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Interface
+        public IResourceHelper Helper => m_ResHelper;
+
         public ITask Preload(IEnumerable resPaths, Type type)
         {
             InnerEnsurePreload();

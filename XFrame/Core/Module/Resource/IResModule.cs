@@ -8,6 +8,7 @@ namespace XFrame.Modules.Resource
 {
     public interface IResModule : IModule
     {
+        IResourceHelper Helper { get; }
         ITask Preload(IEnumerable resPaths, Type type);
 
         ITask Preload(IXEnumerable<string> resPaths, Type type);

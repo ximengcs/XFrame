@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using XFrame.Core;
 using XFrame.Modules.Archives;
-using XFrame.Modules.Reflection;
 using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Plots
@@ -45,7 +44,8 @@ namespace XFrame.Modules.Plots
                 foreach (JSONNode section in sections)
                 {
                     Type type = XModule.Type.GetType(section);
-                    story.AddSection(type);
+                    if (type != null)
+                        story.AddSection(type);
                 }
                 stories.Add(story);
             }

@@ -9,6 +9,23 @@ namespace XFrame.Utility
     /// </summary>
     public class PathUtility
     {
+        public static string Format1(string path)
+        {
+            return path.Replace("\\", "/");
+        }
+
+        public static string Format2(string path)
+        {
+            return path.Replace("/", "\\");
+        }
+
+        public static string RemoveEnterChar(string path)
+        {
+            path = path.Replace("\n", "");
+            path = path.Replace("\r", "");
+            return path;
+        }
+
         public static int CheckFileName(string fullPath, out string thisName, out string suplusName)
         {
             fullPath = fullPath.Replace("/", "\\");

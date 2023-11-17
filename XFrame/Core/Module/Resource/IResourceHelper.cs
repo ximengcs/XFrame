@@ -14,6 +14,12 @@ namespace XFrame.Modules.Resource
         protected internal void OnInit(string rootPath);
 
         /// <summary>
+        /// 设置资源重定向辅助器
+        /// </summary>
+        /// <param name="helper">辅助器</param>
+        void SetResDirectHelper(IResRedirectHelper helper);
+
+        /// <summary>
         /// 加载资源
         /// </summary>
         /// <param name="resPath">资源路径</param>
