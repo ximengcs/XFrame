@@ -295,7 +295,7 @@ namespace XFrameTest
             {
                 Log.ToQueue = false;
                 Names names = References.Require<Names>();
-                names.Parse("shen_chushi^layer#~shen_chushi^series#add!5-10@add~18-32");
+                names.Parse("shen_chushi^layer#~shen_chushi^series#add!5-10@add!18-32");
                 foreach (string name in names)
                 {
                     Console.WriteLine(name);

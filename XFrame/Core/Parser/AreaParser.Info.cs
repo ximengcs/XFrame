@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
@@ -33,8 +34,10 @@ namespace XFrame.Core
                 else
                 {
                     IsNum = true;
-                    IntParser.TryParse(vList[0], out Min);
-                    IntParser.TryParse(vList[1], out Max);
+                    if (!IntParser.TryParse(vList[0], out Min))
+                        Log.Error("XFrame", $"AreaParser Error min {vList[0]} -> {Min}");
+                    if (!IntParser.TryParse(vList[1], out Max))
+                        Log.Error("XFrame", $"AreaParser Error max {vList[1]} -> {Max}");
                 }
             }
 
