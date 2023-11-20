@@ -5,6 +5,7 @@ namespace XFrame.Core
 {
     public class IntOrHashParser : IntParser
     {
+        private bool m_IsInt;
         private string m_Origin;
 
         public override int Parse(string pattern)
@@ -18,7 +19,14 @@ namespace XFrame.Core
             else
             {
                 if (!TryParse(pattern, out m_Value))
+                {
                     m_Value = pattern.GetHashCode();
+                    m_IsInt = false;
+                }
+                else
+                {
+                    m_IsInt = true;
+                }
             }
 
             return m_Value;
@@ -39,6 +47,11 @@ namespace XFrame.Core
         public override int GetHashCode()
         {
             return m_Origin.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return m_IsInt ? base.ToString() : m_Origin;
         }
 
         public static bool operator ==(IntOrHashParser src, object tar)

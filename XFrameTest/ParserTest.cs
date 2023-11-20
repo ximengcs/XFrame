@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System.Globalization;
+using UnityXFrame.Core.Parser;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Local;
+using XFrame.Modules.Pools;
 using XFrame.Modules.Serialize;
 using XFrame.Utility;
 
@@ -255,6 +257,32 @@ namespace XFrameTest
         {
             Console.WriteLine(TypeUtility.GetSimpleName(typeof(EnumParser<Language>)));
             Console.WriteLine(TypeUtility.GetSimpleName(typeof(Action<Language, XCore>)));
+        }
+
+        [TestMethod]
+        public void NumAreaTest1()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                AreaParser parser = References.Require<AreaParser>();
+                parser.Parse("add#1-10@remove#3@add#190-192");
+            });
+        }
+
+        [TestMethod]
+        public void NumAreaTest2()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                Names names = References.Require<Names>();
+                names.Parse("yanying_series#add~1-10@remove~3_layer#add~2-4_dir#add~l@add~r");
+                foreach (string name in names)
+                {
+                    Console.WriteLine(name);
+                }
+            });
         }
     }
 }

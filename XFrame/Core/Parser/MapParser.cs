@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Core
 {
-    public class MapParser<K, V> : IParser<Dictionary<K, V>> where K : IParser where V : IParser
+    public class MapParser<K, V> : PoolObjectBase, IParser<Dictionary<K, V>> where K : IParser where V : IParser
     {
         private const char SPLIT = ',';
         private const char SPLIT2 = '|';
@@ -14,9 +14,6 @@ namespace XFrame.Core
 
         object IParser.Value => m_Value;
         IPool IPoolObject.InPool { get; set; }
-        public string MarkName { get; set; }
-
-        public int PoolKey => default;
 
         protected string m_Origin;
         private char m_Split;
@@ -102,7 +99,7 @@ namespace XFrame.Core
                     if (!string.IsNullOrEmpty(pItemStr))
                     {
                         string[] pItem = pItemStr.Split(m_Split2);
-                        InnerParseItem(out kParser, out vParser, pItem);
+                         InnerParseItem(out kParser, out vParser, pItem);
                     }
                     else
                     {
@@ -137,26 +134,12 @@ namespace XFrame.Core
             return Parse(pattern);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnReleaseFromPool()
         {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
+            base.OnReleaseFromPool();
             foreach (IParser parser in m_Value.Values)
                 References.Release(parser);
             m_Value.Clear();
-        }
-
-        void IPoolObject.OnRequest()
-        {
-
         }
 
         public override string ToString()
