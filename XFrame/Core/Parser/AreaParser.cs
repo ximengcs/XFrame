@@ -7,7 +7,7 @@ namespace XFrame.Core
     public partial class AreaParser : PoolObjectBase, IParser<IEnumerable<string>>
     {
         public const char SPLIT = '@';
-        public const char SPLIT2 = '~';
+        public const char SPLIT2 = '!';
         public const char SPLIT3 = '-';
 
         public const string KEY1 = "add";

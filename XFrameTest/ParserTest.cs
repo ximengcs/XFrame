@@ -282,6 +282,24 @@ namespace XFrameTest
                 {
                     Console.WriteLine(name);
                 }
+                Console.WriteLine(names.Has("yanying_series#1_layer#2_dir#l"));
+                Console.WriteLine(names.Has("yanying_series#1_layer#2_dir#a"));
+                Console.WriteLine(names.Has(Name.Create("yanying_series#1_layer#2_dir#l")));
+            });
+        }
+
+        [TestMethod]
+        public void NameAreaTest3()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                Names names = References.Require<Names>();
+                names.Parse("shen_chushi^layer#~shen_chushi^series#add!5-10@add~18-32");
+                foreach (string name in names)
+                {
+                    Console.WriteLine(name);
+                }
             });
         }
     }

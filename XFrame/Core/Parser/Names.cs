@@ -29,6 +29,7 @@ namespace UnityXFrame.Core.Parser
             if (m_ValueDirty)
             {
                 m_Values.Clear();
+                m_ValueMap.Clear();
                 if (m_Compare != null)
                     m_Keys.Sort(m_Compare);
                 InnerCollectNumArea(string.Empty, 0);

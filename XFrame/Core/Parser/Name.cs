@@ -7,7 +7,7 @@ namespace UnityXFrame.Core.Parser
     public class Name : MapParser<IntOrHashParser, UniversalParser>
     {
         public static int AVATAR = 0;
-        public static char SPLIT = '_';
+        public static char SPLIT = '^';
         public static char SPLIT2 = '#';
 
         protected override void InnerParseItem(out IntOrHashParser kParser, out UniversalParser vParser, string[] pItem)
