@@ -1,9 +1,6 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.ID;
 using XFrame.Collections;
-using XFrame.Modules.Pools;
-using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
@@ -11,9 +8,8 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 通用容器
     /// </summary>
-    public partial class Container : PoolObjectBase, IContainer
+    public partial class Container : IContainer
     {
-        private State m_Status;
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
@@ -23,18 +19,14 @@ namespace XFrame.Modules.Containers
         #region Container Life Fun
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
-            if (m_Status == State.Using)
-            {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnInit. hash is {GetHashCode()}");
-                return;
-            }
+            m_Data = new DataProvider();
+            m_Coms = new XCollection<ICom>();
 
             Id = id;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else
                 Master = master;
-            m_Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
@@ -43,12 +35,6 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnUpdate(float elapseTime)
         {
-            if (m_Status != State.Using)
-            {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnUpdate. hash is {GetHashCode()}");
-                return;
-            }
-
             m_Coms.SetIt(XItType.Forward);
             foreach (ICom com in m_Coms)
             {
@@ -62,64 +48,11 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
-            if (m_Status == State.Disposed)
-            {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnDestroy again. hash is {GetHashCode()}");
-                return;
-            }
-
             ClearCom();
             OnDestroy();
-            m_Status = State.Disposed;
         }
 
-        protected internal virtual void OnDestroy() { }
-        #endregion
-
-        #region Pool Life Fun
-
-        void IPoolObject.OnCreate()
-        {
-            InnerOnCreate();
-            OnCreateFromPool();
-        }
-
-        protected virtual void InnerOnCreate()
-        {
-            m_Data = new DataProvider();
-            m_Coms = new XCollection<ICom>();
-        }
-
-        void IPoolObject.OnRequest()
-        {
-            InnerOnRequest();
-            OnRequestFromPool();
-        }
-
-        protected virtual void InnerOnRequest()
-        {
-            m_Status = State.NotInit;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            OnReleaseFromPool();
-            InnerOnRelease();
-        }
-
-        protected virtual void InnerOnRelease()
-        {
-            m_Coms.Clear();
-            m_Data.ClearData();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-            OnDestroyFromPool();
-            InnerOnDelete();
-        }
-
-        protected virtual void InnerOnDelete()
+        protected internal virtual void OnDestroy()
         {
             m_Coms = null;
             m_Data = null;
@@ -201,7 +134,6 @@ namespace XFrame.Modules.Containers
             foreach (ICom com in m_Coms)
             {
                 com.OnDestroy();
-                References.Release(com);
             }
             m_Coms.Clear();
         }
@@ -215,7 +147,6 @@ namespace XFrame.Modules.Containers
             {
                 m_Coms.Remove(com);
                 com.OnDestroy();
-                References.Release(com);
             }
         }
 

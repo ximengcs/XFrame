@@ -31,22 +31,5 @@ namespace XFrameTest
             Log.Debug("E3 OnDestroy");
         }
 
-        protected override void OnCreateFromPool()
-        {
-            base.OnCreateFromPool();
-            Log.Debug("E3 OnCreateFromPool");
-        }
-
-        protected override void OnDestroyFromPool()
-        {
-            base.OnDestroyFromPool();
-            Log.Debug("E3 OnDestroyFromPool");
-        }
-
-        protected override void OnReleaseFromPool()
-        {
-            base.OnReleaseFromPool();
-            Log.Debug("E3 OnReleaseFromPool");
-        }
     }
 }

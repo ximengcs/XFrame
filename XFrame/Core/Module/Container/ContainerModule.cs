@@ -1,8 +1,6 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.ID;
 using XFrame.Collections;
-using XFrame.Modules.Pools;
 using XFrame.Modules.Reflection;
 
 namespace XFrame.Modules.Containers
@@ -44,10 +42,8 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
-            IPool pool = XModule.Pool.GetOrNew(type);
             int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
-            IPoolObject obj = pool.Require(poolKey);
-            IContainer container = obj as IContainer;
+            IContainer container = XModule.Type.CreateInstance(type) as IContainer;
             container.OnInit(id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container);
@@ -64,8 +60,6 @@ namespace XFrame.Modules.Containers
             {
                 m_Containers.Remove(container);
                 container.OnDestroy();
-                IPool pool = XModule.Pool.GetOrNew(container.GetType());
-                pool.Release(container);
             }
         }
 
@@ -96,8 +90,6 @@ namespace XFrame.Modules.Containers
                     continue;
                 m_Containers.Remove(container);
                 container.OnDestroy();
-                IPool pool = XModule.Pool.GetOrNew(container.GetType());
-                pool.Release(container);
             }
             m_Containers.Clear();
         }

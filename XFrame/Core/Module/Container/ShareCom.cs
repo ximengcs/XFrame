@@ -1,18 +1,14 @@
 ﻿using System;
 using XFrame.Collections;
-using XFrame.Modules.Pools;
-using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using State = XFrame.Modules.Containers.Container.State;
 
 namespace XFrame.Modules.Containers
 {
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : PoolObjectBase, ICom
+    public abstract class ShareCom : ICom
     {
-        private State m_Status;
         private IContainer m_Owner;
         private bool m_Active;
 
@@ -46,19 +42,12 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
-            if (m_Status == State.Using)
-            {
-                Log.Warning("XFrame", $"container {GetType().Name} state is {m_Status}, but enter OnInit.");
-                return;
-            }
-
             Id = id;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else
                 Master = master;
 
-            m_Status = State.Using;
             onReady?.Invoke(this);
             OnInit();
         }
@@ -75,31 +64,9 @@ namespace XFrame.Modules.Containers
         void IContainer.OnDestroy()
         {
             OnDestroy();
-            m_Status = State.Disposed;
         }
 
         protected internal virtual void OnDestroy() { }
-
-        void IPoolObject.OnCreate()
-        {
-            OnCreateFromPool();
-        }
-
-        void IPoolObject.OnRequest()
-        {
-            OnRequestFromPool();
-            m_Status = State.NotInit;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            OnReleaseFromPool();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-            OnDestroyFromPool();
-        }
 
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }

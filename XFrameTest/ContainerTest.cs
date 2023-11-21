@@ -61,24 +61,6 @@ namespace XFrameTest
                 base.OnDestroy();
                 Log.Debug($"Com1 OnDestroy");
             }
-
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug($"Com1 OnCreateFromPool");
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug($"Com1 OnReleaseFromPool");
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug($"Com1 OnDestroyFromPool");
-            }
         }
 
         private class Com2 : Com

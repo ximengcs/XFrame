@@ -30,28 +30,5 @@ namespace XFrameTest
             Log.Debug(GetHashCode() + " " + "C1 OnDestroy");
         }
 
-        protected override void OnCreateFromPool()
-        {
-            base.OnCreateFromPool();
-            Log.Debug(GetHashCode() + " " + "C1 OnCreateFromPool");
-        }
-
-        protected override void OnRequestFromPool()
-        {
-            base.OnRequestFromPool();
-            Log.Debug(GetHashCode() + " " + "C1 OnRequestFromPool");
-        }
-
-        protected override void OnDestroyFromPool()
-        {
-            base.OnDestroyFromPool();
-            Log.Debug(GetHashCode() + " " + "C1 OnDestroyFromPool");
-        }
-
-        protected override void OnReleaseFromPool()
-        {
-            base.OnReleaseFromPool();
-            Log.Debug(GetHashCode() + " " + "C1 OnReleaseFromPool");
-        }
     }
 }

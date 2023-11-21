@@ -13,30 +13,6 @@ namespace XFrameTest
         #region Container1
         public class Container1 : Container
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Container1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Container1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Container1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Container1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -71,30 +47,6 @@ namespace XFrameTest
         #region Com1
         public class Com1 : Com
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Com1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Com1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Com1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Com1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -131,30 +83,6 @@ namespace XFrameTest
         #region Com2
         private class Com2 : Com
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Com2 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Com2 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Com2 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Com2 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -191,30 +119,6 @@ namespace XFrameTest
         #region 
         public class ShareCom1 : ShareCom
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("ShareCom1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("ShareCom1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("ShareCom1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("ShareCom1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
