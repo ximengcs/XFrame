@@ -24,21 +24,23 @@ namespace XFrame.Modules.Plots
         }
 
         /// <summary>
-        /// 目标导演类
-        /// </summary>
-        public Type TargetDirector { get; private set; }
-
-        /// <summary>
         /// 故事列表
         /// </summary>
         public IStory[] Stories { get; private set; }
 
-        public static NewStoryEvent Create(IStory[] stories, Type target = null)
+        public static NewStoryEvent Create(IStory[] stories)
         {
             NewStoryEvent evt = References.Require<NewStoryEvent>();
             evt.Id = EventId;
             evt.Stories = stories;
-            evt.TargetDirector = target;
+            return evt;
+        }
+
+        public static NewStoryEvent Create(IStory story)
+        {
+            NewStoryEvent evt = References.Require<NewStoryEvent>();
+            evt.Id = EventId;
+            evt.Stories = new IStory[] { story };
             return evt;
         }
     }

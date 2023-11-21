@@ -20,10 +20,13 @@ namespace XFrame.Modules.Plots
         #region Inner Fields
         private IPlotHelper m_Helper;
         private IDirector m_DefaultDirector;
+        private Dictionary<Type, IStoryHelper> m_StoryHelpers;
         private Dictionary<Type, IDirector> m_Directors;
         #endregion
 
         #region Interface
+        public IEventSystem Event { get; private set; }
+
         /// <summary>
         /// 故事处理辅助类
         /// </summary>
@@ -34,9 +37,22 @@ namespace XFrame.Modules.Plots
         /// </summary>
         /// <param name="name">故事名</param>
         /// <returns>故事</returns>
-        public IStory NewStory(string name = null)
+        public IStory NewStory(Type targetDirectorType, Type helperType, string name = null)
         {
-            return new Story(name);
+            Story story = null;
+            if (m_Directors.TryGetValue(targetDirectorType, out IDirector director))
+            {
+                IStoryHelper storyHelper = null;
+                if (helperType != null)
+                    m_StoryHelpers.TryGetValue(helperType, out storyHelper);
+                story = new Story(director, storyHelper, name);
+            }
+            return story;
+        }
+
+        public IStory NewStory(Type targetDirectorType, string name = null)
+        {
+            return NewStory(targetDirectorType, null, name);
         }
         #endregion
 
@@ -44,7 +60,9 @@ namespace XFrame.Modules.Plots
         protected override void OnInit(object data)
         {
             base.OnInit(data);
+            m_StoryHelpers = new Dictionary<Type, IStoryHelper>();
             m_Directors = new Dictionary<Type, IDirector>();
+            Event = XModule.Event.NewSys();
 
             TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<DirectorAttribute>();
             foreach (Type type in typeSys)
@@ -55,6 +73,13 @@ namespace XFrame.Modules.Plots
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
                 director.OnInit();
+            }
+
+            typeSys = XModule.Type.GetOrNew<IStoryHelper>();
+            foreach (Type type in typeSys)
+            {
+                IStoryHelper director = (IStoryHelper)XModule.Type.CreateInstance(type);
+                m_StoryHelpers.Add(type, director);
             }
 
             if (!string.IsNullOrEmpty(XConfig.DefaultPlotHelper))
@@ -68,7 +93,7 @@ namespace XFrame.Modules.Plots
 
             if (m_Helper == null)
                 m_Helper = new DefaultPlotHelper();
-            m_Helper.Event.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
+            Event.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
 
         public void OnUpdate(float escapeTime)
@@ -82,7 +107,7 @@ namespace XFrame.Modules.Plots
             base.OnDestroy();
             foreach (IDirector director in m_Directors.Values)
                 director.OnDestory();
-            m_Helper.Event.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
+            Event.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
         #endregion
 
@@ -90,10 +115,10 @@ namespace XFrame.Modules.Plots
         private void InnerNewStoryHandle(XEvent e)
         {
             NewStoryEvent evt = (NewStoryEvent)e;
-            IDirector director;
-            if (evt.TargetDirector == null || !m_Directors.TryGetValue(evt.TargetDirector, out director))
-                director = m_DefaultDirector;
-            director.Play(evt.Stories);
+            foreach (IStory story in evt.Stories)
+            {
+                story.Director.Play(story);
+            }
         }
         #endregion
     }

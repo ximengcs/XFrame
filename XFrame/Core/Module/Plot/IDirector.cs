@@ -30,6 +30,12 @@
         void Remove(string storyName);
 
         /// <summary>
+        /// 创建一个数据提供器
+        /// </summary>
+        /// <returns>数据提供器</returns>
+        internal IPlotDataProvider CreateDataProvider(IStory story);
+
+        /// <summary>
         /// 初始化生命周期
         /// </summary>
         internal void OnInit();

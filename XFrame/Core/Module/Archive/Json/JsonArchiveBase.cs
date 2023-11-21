@@ -193,6 +193,17 @@ namespace XFrame.Modules.Archives
             return node;
         }
 
+        public bool HasData<T>()
+        {
+            return HasData<T>("main_value");
+        }
+
+        public bool HasData<T>(string name)
+        {
+            string key = $"{name}_{typeof(T).Name}";
+            return m_Root.HasKey(key);
+        }
+
         public T GetData<T>()
         {
             return GetData<T>("main_value");

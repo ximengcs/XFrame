@@ -204,6 +204,16 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Data Interface
+        public bool HasData<T>()
+        {
+            return m_Data.HasData<T>();
+        }
+
+        public bool HasData<T>(string name)
+        {
+            return m_Data.HasData<T>(name);
+        }
+
         public void SetData<T>(T value)
         {
             m_Data.SetData<T>(value);

@@ -5,10 +5,10 @@ using XFrame.Core;
 namespace XFrame.Modules.Plots
 {
     /// <summary>
-    /// 故事导演类(阻塞式)
+    /// 故事导演类(阻塞式), 数据持久化
     /// </summary>
     [Director(true)]
-    public partial class BlockDirector : IDirector
+    public partial class PersistBlockDirector : IDirector
     {
         private const string NAME = "block_director";
         private JsonArchive m_Archive;
@@ -36,18 +36,21 @@ namespace XFrame.Modules.Plots
                     break;
 
                 case StoryState.WaitRunning:
-                    m_Current.Story.OnStart();
+                    m_Current.Start();
                     m_Current.State = StoryState.Running;
                     break;
 
                 case StoryState.Running:
-                    m_Current.Story.OnUpdate();
+                    m_Current.Update();
                     if (m_Current.Story.IsFinish)
+                    {
                         m_Current.State = StoryState.Complete;
+                        m_Current.Finish();
+                    }
                     break;
 
                 case StoryState.Complete:
-                    m_Current.Story.OnDestroy();
+                    m_Current.Destroy();
                     Remove(m_Current.Story);
                     m_Current = null;
                     break;
@@ -66,13 +69,16 @@ namespace XFrame.Modules.Plots
             InnerPlay(story);
         }
 
-        private void InnerPlay(IStory story)
+        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
             JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);
-            PlotDataProvider binder = new PlotDataProvider(archive);
-            m_StoryQueue.Enqueue(new StoryInfo(story, binder));
-            story.OnInit(binder);
+            return new PersistPlotDataProvider(archive);
+        }
+
+        private void InnerPlay(IStory story)
+        {
+            m_StoryQueue.Enqueue(new StoryInfo(story));
         }
 
         private void InnerPlay(IStory[] stories)

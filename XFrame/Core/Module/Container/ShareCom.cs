@@ -141,6 +141,16 @@ namespace XFrame.Modules.Containers
             m_Owner.ClearCom();
         }
 
+        public bool HasData<T>()
+        {
+            return m_Owner.HasData<T>();
+        }
+
+        public bool HasData<T>(string name)
+        {
+            return m_Owner.HasData<T>(name);
+        }
+
         public void SetData<T>(T value)
         {
             m_Owner.SetData(value);

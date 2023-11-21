@@ -5,10 +5,10 @@ using XFrame.Modules.Archives;
 namespace XFrame.Modules.Plots
 {
     /// <summary>
-    /// 故事导演类(非阻塞式)
+    /// 故事导演类(非阻塞式), 数据持久化
     /// </summary>
     [Director]
-    public class NonBlockDirector : IDirector
+    public class PersistNonBlockDirector : IDirector
     {
         private const string NAME = "nonblock_director";
         private JsonArchive m_Archive;
@@ -33,18 +33,21 @@ namespace XFrame.Modules.Plots
                         break;
 
                     case StoryState.WaitRunning:
-                        item.Story.OnStart();
+                        item.Start();
                         item.State = StoryState.Running;
                         break;
 
                     case StoryState.Running:
-                        item.Story.OnUpdate();
+                        item.Update();
                         if (item.Story.IsFinish)
+                        {
                             item.State = StoryState.Complete;
+                            item.Finish();
+                        }
                         break;
 
                     case StoryState.Complete:
-                        item.Story.OnDestroy();
+                        item.Destroy();
                         story.Delete();
                         Remove(item.Story);
                         break;
@@ -69,13 +72,16 @@ namespace XFrame.Modules.Plots
                 Play(story);
         }
 
-        private void InnerPlay(IStory story)
+        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
             JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);
-            PlotDataProvider binder = new PlotDataProvider(archive);
-            m_Stories.AddLast(new StoryInfo(story, binder));
-            story.OnInit(binder);
+            return new PersistPlotDataProvider(archive);
+        }
+
+        private void InnerPlay(IStory story)
+        {
+            m_Stories.AddLast(new StoryInfo(story));
         }
 
         private void InnerPlay(IStory[] stories)

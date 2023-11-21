@@ -25,6 +25,20 @@ namespace XFrame.Core
         #endregion
 
         #region IDataProvider Interface
+        public bool HasData<T>()
+        {
+            return m_MainDatas.ContainsKey(typeof(T));
+        }
+
+        public bool HasData<T>(string name)
+        {
+            if (m_Datas.TryGetValue(typeof(T), out Dictionary<string, object> values))
+            {
+                return values.ContainsKey(name);
+            }
+            return false;
+        }
+
         public T GetData<T>()
         {
             if (m_MainDatas.TryGetValue(typeof(T), out object value))

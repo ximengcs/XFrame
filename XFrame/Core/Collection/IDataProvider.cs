@@ -7,6 +7,10 @@ namespace XFrame.Core
     /// </summary>
     public interface IDataProvider
     {
+        bool HasData<T>();
+
+        bool HasData<T>(string name);
+
         /// <summary>
         /// 设置数据
         /// </summary>
