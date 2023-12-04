@@ -57,6 +57,15 @@ namespace XFrame.Core
             Split3 = SPLIT3;
         }
 
+        protected internal override void OnReleaseFromPool()
+        {
+            base.OnReleaseFromPool();
+            m_Values.Clear();
+            m_MapValues.Clear();
+            m_AddInfos.Clear();
+            m_RemoveInfos.Clear();
+        }
+
         public IEnumerable<string> Parse(string pattern)
         {
             m_RawValue = pattern;

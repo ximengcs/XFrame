@@ -113,7 +113,7 @@ namespace XFrame.Modules.Tasks
 
                 if (finish)
                 {
-                    m_Current.Finish();
+                    m_Current?.Finish();
                     m_Current = null;
                     m_Pro += m_CurPro;
                     m_CurPro = 0;

@@ -18,6 +18,8 @@ namespace XFrame.Modules.Plots
 
         IEnumerable<ISection> Sections { get; }
 
+        int Count { get; }
+
         /// <summary>
         /// 故事名称
         /// </summary>
@@ -26,7 +28,7 @@ namespace XFrame.Modules.Plots
         /// <summary>
         /// 故事是否完成
         /// </summary>
-        bool IsFinish { get; }
+        bool IsFinish { get; set; }
 
         /// <summary>
         /// 添加一个故事情节

@@ -15,7 +15,13 @@ namespace XFrame.Modules.Plots
 
         public string Name { get; private set; }
 
-        public bool IsFinish => m_Data.Finish;
+        public int Count => m_SectionTypes.Count;
+
+        public bool IsFinish
+        {
+            get => m_Data.Finish;
+            set => m_Data.Finish.Value = value;
+        }
 
         public IDirector Director => m_Director;
 
@@ -95,6 +101,7 @@ namespace XFrame.Modules.Plots
                     if (m_Current.Section.OnFinish())
                     {
                         m_Current.SetFinishData();
+                        XModule.Plot.Event.TriggerNow(PlotSectionFinishEvent.Create(m_Current.Section));
                         m_Current = null;
                         InnerCreateNext();
                     }
@@ -104,7 +111,7 @@ namespace XFrame.Modules.Plots
 
         private void InnerCreateNext()
         {
-            if (m_SectionTypes.Count > 0)
+            if (m_Index < m_SectionTypes.Count)
             {
                 m_Current = m_SectionTypes[m_Index++];
                 if (m_Current.CheckFinishData())
