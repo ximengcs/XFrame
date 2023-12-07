@@ -82,6 +82,11 @@ namespace XFrame.Modules.Conditions
                     }
                     conds.Add(handle);
                 }
+                else
+                {
+                    ConditionHandle realHandle = handle as ConditionHandle;
+                    realHandle.MarkComplete();
+                }
             }
 
             if (m_Helper == null)

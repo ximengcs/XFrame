@@ -56,6 +56,8 @@ namespace XFrame.Modules.Conditions
 
         internal void MarkComplete()
         {
+            if (m_Complete)
+                return;
             m_Complete = true;
             m_OnComplete?.Invoke(this);
             m_OnComplete = null;
