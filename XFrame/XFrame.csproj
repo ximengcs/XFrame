@@ -11,6 +11,7 @@
   <ItemGroup>
     <Folder Include="Plugins\CsvHelper\" />
     <Folder Include="Plugins\CommandLine\" />
+    <Folder Include="Tools\" />
   </ItemGroup>
 
 </Project>
