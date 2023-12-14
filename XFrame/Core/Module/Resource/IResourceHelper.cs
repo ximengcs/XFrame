@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Resource
 {
@@ -61,5 +62,7 @@ namespace XFrame.Modules.Resource
         /// 卸载所有资源
         /// </summary>
         void UnloadAll();
+
+        List<object> DumpAll();
     }
 }

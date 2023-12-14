@@ -32,7 +32,7 @@ namespace XFrame.Modules.Plots
             get
             {
                 List<ISection> sections = new List<ISection>();
-                foreach (SectionInfo info in sections)
+                foreach (SectionInfo info in m_SectionTypes)
                 {
                     sections.Add(info.Section);
                 }
