@@ -46,8 +46,14 @@ namespace XFrame.Tools
 
         public static InitChecker Create()
         {
+
             InitChecker inst = References.Require<InitChecker>();
             return inst;
+        }
+
+        public static implicit operator bool(InitChecker checker)
+        {
+            return checker.m_Inited;
         }
     }
 }
