@@ -7,7 +7,7 @@ using XFrame.Modules.Pools;
 namespace XFrame.Modules.Archives
 {
     [Archive("csv")]
-    public class CsvArchive : IArchive
+    public class CsvArchive : ArchiveBase, IArchive
     {
         #region Inner Fields
         private string m_Path;
@@ -16,12 +16,10 @@ namespace XFrame.Modules.Archives
 
         #region Interface
         public Csv<string> Data => m_Csv;
-
-        public string Name { get; private set; }
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        protected internal override void OnInit(string path, string name, object param)
         {
             Name = name;
             m_Path = path;
@@ -42,13 +40,13 @@ namespace XFrame.Modules.Archives
             }
         }
 
-        public void Delete()
+        public override void Delete()
         {
             if (File.Exists(m_Path))
                 File.Delete(m_Path);
         }
 
-        public void Save()
+        public override void Save()
         {
             ArchiveUtility.WriteText(m_Path, m_Csv.ToString());
         }

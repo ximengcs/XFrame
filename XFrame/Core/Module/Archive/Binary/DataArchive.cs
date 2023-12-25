@@ -7,7 +7,7 @@ namespace XFrame.Modules.Archives
     /// 二进制存档
     /// </summary>
     [Archive("data")]
-    public partial class DataArchive : IArchive
+    public partial class DataArchive : ArchiveBase, IArchive
     {
         #region InnerField
         private const int FILE_CODE = default;
@@ -18,7 +18,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        protected internal override void OnInit(string path, string name, object param)
         {
             Name = name;
             m_Path = path;
@@ -35,7 +35,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
-        public void Save()
+        public override void Save()
         {
             string dir = Path.GetDirectoryName(m_Path);
             if (!Directory.Exists(dir))
@@ -43,15 +43,13 @@ namespace XFrame.Modules.Archives
             ArchiveUtility.WriteBytes(m_Path, ToBytes());
         }
 
-        public void Delete()
+        public override void Delete()
         {
             m_Root.Delete("_");
         }
         #endregion
 
         #region Interface
-        public string Name { get; private set; }
-
         /// <summary>
         /// 向存档写入字节数据
         /// </summary>

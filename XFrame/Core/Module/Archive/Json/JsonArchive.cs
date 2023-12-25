@@ -15,7 +15,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        protected internal override void OnInit(string path, string name, object data)
         {
             Name = name;
             m_Path = path;
@@ -27,12 +27,12 @@ namespace XFrame.Modules.Archives
                 m_Root = new JSONObject();
         }
 
-        public void Save()
+        public override void Save()
         {
             ArchiveUtility.WriteText(m_Path, m_Root.ToString(4));
         }
 
-        public void Delete()
+        public override void Delete()
         {
             if (File.Exists(m_Path))
                 File.Delete(m_Path);

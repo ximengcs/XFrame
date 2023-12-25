@@ -24,7 +24,7 @@ namespace XFrame.Modules.Archives
 
         private string m_RootPath;
         private CDTimer m_Timer;
-        private Dictionary<string, IArchive> m_Archives;
+        private Dictionary<string, ArchiveBase> m_Archives;
         private Dictionary<string, Type> m_ArchiveTypes;
         #endregion
 
@@ -35,7 +35,7 @@ namespace XFrame.Modules.Archives
             m_Timer = CDTimer.Create();
             m_Timer.MarkName = nameof(ArchiveModule);
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
-            m_Archives = new Dictionary<string, IArchive>();
+            m_Archives = new Dictionary<string, ArchiveBase>();
             m_ArchiveTypes = new Dictionary<string, Type>();
             InnerInit();
         }
@@ -98,7 +98,7 @@ namespace XFrame.Modules.Archives
         /// <summary>
         /// 保存
         /// </summary>
-        public void Save()
+        public void OnSave()
         {
             InnerSaveAll();
         }
@@ -109,7 +109,7 @@ namespace XFrame.Modules.Archives
         /// <param name="name"></param>
         public void Delete(string name)
         {
-            if (m_Archives.TryGetValue(name, out IArchive source))
+            if (m_Archives.TryGetValue(name, out ArchiveBase source))
             {
                 source.Delete();
                 m_Archives.Remove(name);
@@ -161,13 +161,13 @@ namespace XFrame.Modules.Archives
 
         private IArchive InnerGetOrNew(string name, Type archiveType, object param)
         {
-            if (m_Archives.TryGetValue(name, out IArchive archieve))
+            if (m_Archives.TryGetValue(name, out ArchiveBase archive))
             {
-                return archieve;
+                return archive;
             }
             else
             {
-                IArchive source = (IArchive)XModule.Type.CreateInstance(archiveType);
+                ArchiveBase source = (ArchiveBase)XModule.Type.CreateInstance(archiveType);
                 source.OnInit(InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;

@@ -10,7 +10,7 @@ namespace XFrame.Modules.Archives
         public void Handle(IModule module, object data)
         {
             ISaveable saver = module as ISaveable;
-            saver.Save();
+            saver.OnSave();
         }
     }
 }

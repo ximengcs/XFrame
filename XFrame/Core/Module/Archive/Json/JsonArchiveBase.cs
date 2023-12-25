@@ -1,15 +1,11 @@
 ﻿using XFrame.Core;
-using XFrame.Modules.Rand;
-using XFrame.Modules.Serialize;
 using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Archives
 {
-    public abstract class JsonArchiveBase : IJsonArchive
+    public abstract class JsonArchiveBase : ArchiveBase, IJsonArchive
     {
         protected JSONNode m_Root;
-
-        public string Name { get; protected set; }
 
         /// <summary>
         /// 设置int值
@@ -228,7 +224,9 @@ namespace XFrame.Modules.Archives
 
         public IJsonArchive SpwanDataProvider(string name)
         {
-            return new SubJsonArchive(this, name);
+            SubJsonArchive archive = new SubJsonArchive(this, name);
+            archive.OnInit(null, name, null);
+            return archive;
         }
 
         public IJsonArchive SpwanDataProvider()

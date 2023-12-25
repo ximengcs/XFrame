@@ -8,13 +8,27 @@ namespace XFrame.Modules.Archives
         internal SubJsonArchive(IJsonArchive archive, string name)
         {
             Parent = archive;
-            Name = $"{archive.Name}_{nameof(SubJsonArchive)}_{name}";
-            m_Root = archive.GetOrNewObject(Name);
         }
 
         public override void ClearData()
         {
             Parent.Remove(Name);
+        }
+
+        public override void Delete()
+        {
+            ClearData();
+        }
+
+        public override void Save()
+        {
+            
+        }
+
+        protected internal override void OnInit(string path, string name, object data)
+        {
+            Name = $"{Parent.Name}_{nameof(SubJsonArchive)}_{name}";
+            m_Root = Parent.GetOrNewObject(Name);
         }
     }
 }
