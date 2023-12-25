@@ -9,7 +9,7 @@ namespace XFrame.Modules.Threads
     /// <summary>
     /// 主线程上下文处理
     /// </summary>
-    public class MainSynchronizationContext : SynchronizationContext, IModule, IUpdater
+    public class MainSynchronizationContext : SynchronizationContext, IModule, IUpdater, ICanInitialize
     {
         #region Inner Fields
         private int m_MainThread;
@@ -27,17 +27,12 @@ namespace XFrame.Modules.Threads
         #region IModule Life Fun
         public int Id => default;
 
-        void IModule.OnInit(object data, ModuleConfigAction configCallback)
+        void ICanInitialize.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
             m_ActQueue = new Queue<Action>();
             ExecTimeout = DEFAULT_TIMEOUT;
             SetSynchronizationContext(this);
-        }
-
-        void IModule.OnStart()
-        {
-
         }
 
         void IUpdater.OnUpdate(float escapeTime)
@@ -59,11 +54,6 @@ namespace XFrame.Modules.Threads
                         break;
                 }
             }
-        }
-
-        void IModule.OnDestroy()
-        {
-
         }
         #endregion
 

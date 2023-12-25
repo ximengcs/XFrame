@@ -16,7 +16,7 @@ namespace XFrame.Modules.Archives
     [CoreModule]
     [RequireModule(typeof(CryptoModule))]
     [XType(typeof(IArchiveModule))]
-    public class ArchiveModule : ModuleBase, IArchiveModule
+    public class ArchiveModule : ModuleBase, IArchiveModule, IUpdater, ISaveable
     {
         #region Inner Field
         private const int SAVE_KEY = 0;

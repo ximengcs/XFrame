@@ -11,7 +11,7 @@ namespace XFrame.Modules.Entities
     {
         public IEventSystem Event { get; private set; }
 
-        protected internal override void OnInit()
+        protected override void OnInit()
         {
             base.OnInit();
             Event = XModule.Event.NewSys();

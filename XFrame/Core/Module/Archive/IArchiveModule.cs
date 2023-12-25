@@ -2,7 +2,7 @@
 
 namespace XFrame.Modules.Archives
 {
-    public interface IArchiveModule : IModule, IUpdater, ISaveable
+    public interface IArchiveModule : IModule
     {
         T GetOrNew<T>(string name, object param = null) where T : IArchive;
         void Delete(string name);

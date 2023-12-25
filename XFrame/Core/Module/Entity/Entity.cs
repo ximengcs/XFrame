@@ -10,7 +10,7 @@ namespace XFrame.Modules.Entities
     public abstract class Entity : Container, IEntity
     {
         #region Life Fun
-        protected internal override void OnInit()
+        protected override void OnInit()
         {
             base.OnInit();
             Event = XModule.Event.NewSys();

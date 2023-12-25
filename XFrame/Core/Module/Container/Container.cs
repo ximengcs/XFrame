@@ -8,7 +8,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 通用容器
     /// </summary>
-    public partial class Container : IContainer
+    public partial class Container : IContainer, ICanInitialize, IUpdater, ICanDestroy
     {
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
@@ -17,7 +17,13 @@ namespace XFrame.Modules.Containers
         public int Id { get; private set; }
 
         #region Container Life Fun
-        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        /// <param name="id">容器Id</param>
+        /// <param name="master">容器拥有者</param>
+        /// <param name="onReady">容器就绪事件</param>
+        void ICanInitialize.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
             m_Data = new DataProvider();
             m_Coms = new XCollection<ICom>();
@@ -31,22 +37,23 @@ namespace XFrame.Modules.Containers
             OnInit();
         }
 
-        protected internal virtual void OnInit() { }
+        protected virtual void OnInit() { }
 
-        void IContainer.OnUpdate(float elapseTime)
+        void IUpdater.OnUpdate(float elapseTime)
         {
             m_Coms.SetIt(XItType.Forward);
             foreach (ICom com in m_Coms)
             {
-                if (com.Active)
-                    com.OnUpdate(elapseTime);
+                IUpdater updater = com as IUpdater;
+                if (com.Active && updater != null)
+                    updater.OnUpdate(elapseTime);
             }
             OnUpdate(elapseTime);
         }
 
         protected internal virtual void OnUpdate(float elapseTime) { }
 
-        void IContainer.OnDestroy()
+        void ICanDestroy.OnDestroy()
         {
             ClearCom();
             OnDestroy();
@@ -133,7 +140,9 @@ namespace XFrame.Modules.Containers
             m_Coms.SetIt(XItType.Backward);
             foreach (ICom com in m_Coms)
             {
-                com.OnDestroy();
+                ICanDestroy destroyCom = com as ICanDestroy;
+                if (destroyCom != null)
+                    destroyCom.OnDestroy();
             }
             m_Coms.Clear();
         }
@@ -146,7 +155,9 @@ namespace XFrame.Modules.Containers
             if (com != null)
             {
                 m_Coms.Remove(com);
-                com.OnDestroy();
+                Com realCom = com as Com;
+                if (realCom != null)
+                    realCom.OnDestroy();
             }
         }
 

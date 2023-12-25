@@ -1,13 +1,14 @@
 ﻿using System;
 using XFrame.Collections;
 using System.Collections.Generic;
+using XFrame.Core;
 
 namespace XFrame.Modules.Containers
 {
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ICom, ICanSetOwner
+    public abstract class ShareCom : ICom, ICanSetOwner, ICanInitialize, IUpdater, ICanDestroy
     {
         private IContainer m_Owner;
         private bool m_Active;
@@ -34,12 +35,12 @@ namespace XFrame.Modules.Containers
 
         public IContainer Owner => m_Owner;
 
-        void ICanSetOwner.SetOwner(XFrame.Modules.Containers.IContainer owner)
+        void ICanSetOwner.SetOwner(IContainer owner)
         {
             m_Owner = owner;
         }
 
-        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
+        void ICanInitialize.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {
             Id = id;
             if (master != null && master.Master != null)
@@ -53,14 +54,14 @@ namespace XFrame.Modules.Containers
 
         protected internal virtual void OnInit() { }
 
-        void IContainer.OnUpdate(float elapseTime)
+        void IUpdater.OnUpdate(float elapseTime)
         {
             OnUpdate(elapseTime);
         }
 
         protected internal virtual void OnUpdate(float elapseTime) { }
 
-        void IContainer.OnDestroy()
+        void ICanDestroy.OnDestroy()
         {
             OnDestroy();
         }

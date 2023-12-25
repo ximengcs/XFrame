@@ -72,7 +72,8 @@ namespace XFrame.Core
             m_IsStart = true;
             foreach (IModule module in m_Modules)
             {
-                module.OnStart();
+                ICanStart startModule = module as ICanStart;
+                startModule.OnStart();
                 if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
                 {
                     foreach (IModuleHelper helper in helpers)
@@ -91,7 +92,8 @@ namespace XFrame.Core
             m_Modules.SetIt(XItType.Backward);
             foreach (IModule module in m_Modules)
             {
-                module.OnDestroy();
+                ICanDestroy destroy = module as ICanDestroy;
+                destroy.OnDestroy();
                 if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
                 {
                     foreach (IModuleHelper helper in helpers)
@@ -311,9 +313,13 @@ namespace XFrame.Core
             ModuleBase baseClass = module as ModuleBase;
             if (baseClass != null)
                 baseClass.Id = moduleId;
-            module.OnInit(data);
+            ICanInitialize initializer = module as ICanInitialize;
+            initializer.OnInit(data);
             if (m_IsStart)
-                module.OnStart();
+            {
+                ICanStart starter = module as ICanStart;
+                starter.OnStart();
+            }
 
             if (helpers != null)
             {

@@ -4,7 +4,7 @@ using XFrame.Core;
 
 namespace XFrame.Modules.Containers
 {
-    public interface IContainerModule : IModule, IUpdater
+    public interface IContainerModule : IModule
     {
         T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer;
 

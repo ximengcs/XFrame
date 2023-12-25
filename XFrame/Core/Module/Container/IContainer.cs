@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Collections;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Containers
 {
@@ -11,25 +10,6 @@ namespace XFrame.Modules.Containers
     public interface IContainer : IXItem, IDataProvider, IXEnumerable<ICom>
     {
         IContainer Master { get; }
-
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        /// <param name="id">容器Id</param>
-        /// <param name="master">容器拥有者</param>
-        /// <param name="onReady">容器就绪事件</param>
-        void OnInit(int id, IContainer master, OnDataProviderReady onReady);
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        /// <param name="elapseTime">逃逸时间</param>
-        void OnUpdate(float elapseTime);
-
-        /// <summary>
-        /// 销毁生命周期
-        /// </summary>
-        void OnDestroy();
 
         /// <summary>
         /// 获取一个组件(Id为默认Id)

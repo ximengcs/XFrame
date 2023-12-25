@@ -10,9 +10,8 @@ namespace XFrame.Modules.Containers
     /// </summary>
     [CommonModule]
     [XType(typeof(IContainerModule))]
-    public partial class ContainerModule : ModuleBase, IContainerModule
+    public partial class ContainerModule : ModuleBase, IContainerModule, IUpdater
     {
-        private IContainerHelper m_Helper;
         private XCollection<IContainer> m_Containers;
 
         /// <summary>
@@ -42,9 +41,10 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
-            int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
             IContainer container = XModule.Type.CreateInstance(type) as IContainer;
-            container.OnInit(id, master, onReady);
+            ICanInitialize initializer = container as ICanInitialize;
+            if (initializer != null)
+                initializer.OnInit(id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container);
             return container;
@@ -59,7 +59,8 @@ namespace XFrame.Modules.Containers
             if (m_Containers.Contains(container))
             {
                 m_Containers.Remove(container);
-                container.OnDestroy();
+                ICanDestroy destoryCom = container as ICanDestroy;
+                destoryCom.OnDestroy();
             }
         }
 
@@ -67,18 +68,15 @@ namespace XFrame.Modules.Containers
         {
             base.OnInit(data);
             m_Containers = new XCollection<IContainer>();
-            TypeSystem typeSys = XModule.Type.GetOrNew<IContainerHelper>();
-            foreach (Type type in typeSys)
-            {
-                m_Helper = (IContainerHelper)XModule.Type.CreateInstance(type);
-                break;
-            }
         }
 
         public void OnUpdate(float escapeTime)
         {
             foreach (IContainer container in m_Containers)
-                container.OnUpdate(escapeTime);
+            {
+                IUpdater updater = container as IUpdater;
+                updater.OnUpdate(escapeTime);
+            }
         }
 
         protected override void OnDestroy()
@@ -89,7 +87,9 @@ namespace XFrame.Modules.Containers
                 if (container == null)
                     continue;
                 m_Containers.Remove(container);
-                container.OnDestroy();
+                ICanDestroy destroyCom = container as ICanDestroy;
+                if (destroyCom != null)
+                    destroyCom.OnDestroy();
             }
             m_Containers.Clear();
         }
