@@ -5,9 +5,10 @@ namespace XFrame.Modules.Containers
     /// 组件基类
     /// 数据为组件所有
     /// </summary>
-    public abstract class Com : Container, ICom
+    public abstract class Com : Container, ICom, ICanSetOwner
     {
         private bool m_Active;
+        private IContainer m_Owner;
 
         public bool Active
         {
@@ -25,9 +26,14 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        IContainer ICom.Owner { get; set; }
-        protected IContainer Owner => ((ICom)this).Owner;
+        public IContainer Owner => m_Owner;
+
         protected virtual void OnActive() { }
         protected virtual void OnInactive() { }
+
+        void ICanSetOwner.SetOwner(IContainer owner)
+        {
+            m_Owner = owner;
+        }
     }
 }

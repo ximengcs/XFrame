@@ -7,7 +7,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ICom
+    public abstract class ShareCom : ICom, ICanSetOwner
     {
         private IContainer m_Owner;
         private bool m_Active;
@@ -32,13 +32,12 @@ namespace XFrame.Modules.Containers
 
         public IContainer Master { get; private set; }
 
-        IContainer ICom.Owner
-        {
-            get => m_Owner;
-            set => m_Owner = value;
-        }
+        public IContainer Owner => m_Owner;
 
-        protected IContainer Owner => m_Owner;
+        void ICanSetOwner.SetOwner(XFrame.Modules.Containers.IContainer owner)
+        {
+            m_Owner = owner;
+        }
 
         void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
         {

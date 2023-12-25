@@ -171,7 +171,9 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerInitCom(ICom com)
         {
-            com.Owner = this;
+            ICanSetOwner setCom = com as ICanSetOwner;
+            if (setCom != null)
+                setCom.SetOwner(this);
             com.Active = true;
             m_Coms.Add(com);
             return com;
