@@ -5,6 +5,7 @@ using XFrame.Collections;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Resource
 {
@@ -54,7 +55,17 @@ namespace XFrame.Modules.Resource
                 if (m_PreLoadRes.ContainsKey(path))
                     continue;
                 ResLoadTask loadTask = LoadAsync(path, type);
-                loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
+                loadTask.OnComplete((asset) =>
+                {
+                    if (asset != null)
+                    {
+                        m_PreLoadRes.Add(path, asset);
+                    }
+                    else
+                    {
+                        Log.Error("XFrame", $"Preload asset failure {path}");
+                    }
+                });
                 allTask.Add(loadTask);
             }
             return allTask;
@@ -79,7 +90,17 @@ namespace XFrame.Modules.Resource
                 if (m_PreLoadRes.ContainsKey(path))
                     continue;
                 ResLoadTask<T> loadTask = LoadAsync<T>(path);
-                loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
+                loadTask.OnComplete((asset) =>
+                {
+                    if (asset != null)
+                    {
+                        m_PreLoadRes.Add(path, asset);
+                    }
+                    else
+                    {
+                        Log.Error($"Preload asset failure {path}");
+                    }
+                });
                 allTask.Add(loadTask);
             }
 
@@ -109,9 +130,13 @@ namespace XFrame.Modules.Resource
         {
             InnerEnsurePreload();
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
+            {
                 return (T)asset;
+            }
             else
+            {
                 return m_ResHelper.Load<T>(resPath);
+            }
         }
 
         public ResLoadTask LoadAsync(string resPath, Type type)
