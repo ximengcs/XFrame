@@ -3,11 +3,11 @@ namespace XFrame.Modules.Plots
 {
     internal class StoryInfo
     {
-        public IStory Story;
+        public Story Story;
         public IStoryHelper Helper;
         public StoryState State;
 
-        public StoryInfo(IStory story)
+        public StoryInfo(Story story)
         {
             Story = story;
             Helper = story.Helper;

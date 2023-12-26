@@ -72,7 +72,8 @@ namespace XFrame.Modules.Plots
                 if (attr.Default)
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
-                director.OnInit();
+                ICanInitialize initializer = director as ICanInitialize;
+                initializer.OnInit();
             }
 
             typeSys = XModule.Type.GetOrNew<IStoryHelper>();
@@ -99,14 +100,20 @@ namespace XFrame.Modules.Plots
         public void OnUpdate(float escapeTime)
         {
             foreach (IDirector director in m_Directors.Values)
-                director.OnUpdate();
+            {
+                IUpdater updater = director as IUpdater;
+                updater.OnUpdate(escapeTime);
+            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             foreach (IDirector director in m_Directors.Values)
-                director.OnDestory();
+            {
+                ICanDestroy destroy = director as ICanDestroy;
+                destroy.OnDestroy();
+            }
             Event.Unlisten(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
         #endregion

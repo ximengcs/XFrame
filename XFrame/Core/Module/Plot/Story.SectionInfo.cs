@@ -8,11 +8,11 @@ namespace XFrame.Modules.Plots
         private class SectionInfo
         {
             public int Index;
-            public ISection Section;
+            public SectionBase Section;
             public SectionState State;
             public IPlotDataProvider Data;
 
-            public SectionInfo(int index, ISection section, SectionState state, IPlotDataProvider data)
+            public SectionInfo(int index, SectionBase section, SectionState state, IPlotDataProvider data)
             {
                 Index = index;
                 Section = section;

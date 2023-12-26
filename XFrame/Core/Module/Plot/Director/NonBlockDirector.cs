@@ -73,7 +73,7 @@ namespace XFrame.Modules.Plots
 
         private void InnerPlay(IStory story)
         {
-            m_Stories.AddLast(new StoryInfo(story));
+            m_Stories.AddLast(new StoryInfo((Story)story));
         }
 
         public void Remove(IStory story)

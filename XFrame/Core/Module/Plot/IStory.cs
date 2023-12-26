@@ -36,28 +36,5 @@ namespace XFrame.Modules.Plots
         /// <param name="type">故事情节实现类</param>
         /// <returns>故事</returns>
         ISection AddSection(Type type);
-
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        /// <param name="data">数据提供器</param>
-        internal void OnInit();
-
-        /// <summary>
-        /// 开始生命周期
-        /// </summary>
-        internal void OnStart();
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        internal void OnUpdate();
-
-        internal void OnFinish();
-
-        /// <summary>
-        /// 销毁生命周期
-        /// </summary>
-        internal void OnDestroy();
     }
 }

@@ -78,7 +78,7 @@ namespace XFrame.Modules.Plots
 
         private void InnerPlay(IStory story)
         {
-            m_StoryQueue.Enqueue(new StoryInfo(story));
+            m_StoryQueue.Enqueue(new StoryInfo((Story)story));
         }
 
         private void InnerPlay(IStory[] stories)

@@ -42,7 +42,7 @@ namespace XFrame.Modules.Plots
 
         ISection IStory.AddSection(Type type)
         {
-            ISection section = (ISection)XModule.Type.CreateInstance(type);
+            SectionBase section = (SectionBase)XModule.Type.CreateInstance(type);
             int index = m_SectionTypes.Count;
             SectionInfo info = new SectionInfo(index, section, SectionState.WaitInit, m_Data);
             info.Section.OnCreate(this, new SectionDataProvider(index, m_Data));
@@ -58,20 +58,21 @@ namespace XFrame.Modules.Plots
                 name = $"story_{XModule.Rand.RandPath()}";
             Name = name;
             m_SectionTypes = new List<SectionInfo>();
-            m_Data = director.CreateDataProvider(this);
+            ICanCreateData dataDirector = director as ICanCreateData;
+            m_Data = dataDirector.CreateDataProvider(this);
         }
 
-        void IStory.OnInit()
+        internal void OnInit()
         {
 
         }
 
-        void IStory.OnStart()
+        internal void OnStart()
         {
             InnerCreateNext();
         }
 
-        void IStory.OnUpdate()
+        internal void OnUpdate()
         {
             if (IsFinish)
                 return;
@@ -125,12 +126,12 @@ namespace XFrame.Modules.Plots
             }
         }
 
-        void IStory.OnFinish()
+        internal void OnFinish()
         {
 
         }
 
-        void IStory.OnDestroy()
+        internal void OnDestroy()
         {
             m_Data.ClearData();
         }
