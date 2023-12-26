@@ -1,4 +1,5 @@
 ﻿using XFrame.Collections;
+using XFrame.Core;
 
 namespace XFrame.Modules.Plots
 {
@@ -6,16 +7,16 @@ namespace XFrame.Modules.Plots
     /// 故事导演类(非阻塞式), 数据非持久化
     /// </summary>
     [Director]
-    public class NonBlockDirector : IDirector
+    public class NonBlockDirector : IDirector, ICanInitialize, IUpdater, ICanDestroy, ICanCreateData
     {
         private XLinkList<StoryInfo> m_Stories;
 
-        void IDirector.OnInit()
+        void ICanInitialize.OnInit()
         {
             m_Stories = new XLinkList<StoryInfo>();
         }
 
-        void IDirector.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
             foreach (XLinkNode<StoryInfo> story in m_Stories)
             {
@@ -49,12 +50,12 @@ namespace XFrame.Modules.Plots
             }
         }
 
-        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
+        IPlotDataProvider ICanCreateData.CreateDataProvider(IStory story)
         {
             return new PlotDataProvider();
         }
 
-        void IDirector.OnDestory()
+        void ICanDestroy.OnDestroy()
         {
             m_Stories.Clear();
         }

@@ -4,7 +4,7 @@ using XFrame.Modules.Download;
 
 namespace XFrameTest
 {
-    public class TestDownloadHelper : IDownloadHelper
+    public class TestDownloadHelper : DownloadHelperBase
     {
         private bool m_IsDone;
         private DownloadResult m_Result;
@@ -12,19 +12,7 @@ namespace XFrameTest
         private HttpClient m_Request;
         private HttpResponseMessage m_Response;
 
-        public string[] ReserveUrl { get; set; }
-
-        bool IDownloadHelper.IsDone => m_IsDone;
-
-        DownloadResult IDownloadHelper.Result => m_Result;
-
-        string IDownloadHelper.Url
-        {
-            get => m_Url;
-            set => m_Url = value;
-        }
-
-        void IDownloadHelper.OnDispose()
+        protected override void OnDispose()
         {
             m_Request?.Dispose();
             m_Response?.Dispose();
@@ -32,12 +20,13 @@ namespace XFrameTest
             m_Response = null;
         }
 
-        void IDownloadHelper.OnInit()
+        protected override void OnInit()
         {
             m_IsDone = false;
         }
 
-        void IDownloadHelper.OnUpdate()
+
+        protected override void OnUpdate()
         {
             if (m_Request == null)
                 return;
@@ -58,7 +47,7 @@ namespace XFrameTest
             m_IsDone = true;
         }
 
-        void IDownloadHelper.Request()
+        protected override void Request()
         {
             m_Request = new HttpClient();
             m_Response = m_Request.Send(new HttpRequestMessage(HttpMethod.Get, m_Url));

@@ -8,14 +8,14 @@ namespace XFrame.Modules.Plots
     /// 故事导演类(阻塞式), 数据持久化
     /// </summary>
     [Director(true)]
-    public partial class PersistBlockDirector : IDirector
+    public partial class PersistBlockDirector : IDirector, ICanInitialize, IUpdater, ICanDestroy, ICanCreateData
     {
         private const string NAME = "block_director";
         private JsonArchive m_Archive;
         private StoryInfo m_Current;
         private Queue<StoryInfo> m_StoryQueue;
 
-        void IDirector.OnInit()
+        void ICanInitialize.OnInit()
         {
             m_Current = null;
             m_StoryQueue = new Queue<StoryInfo>();
@@ -23,7 +23,7 @@ namespace XFrame.Modules.Plots
             InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
-        void IDirector.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
             if (m_Current == null && m_StoryQueue.Count > 0)
                 m_Current = m_StoryQueue.Dequeue();
@@ -57,7 +57,7 @@ namespace XFrame.Modules.Plots
             }
         }
 
-        void IDirector.OnDestory()
+        void ICanDestroy.OnDestroy()
         {
             m_Current = null;
             m_StoryQueue = null;
@@ -69,7 +69,7 @@ namespace XFrame.Modules.Plots
             InnerPlay(story);
         }
 
-        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
+        IPlotDataProvider ICanCreateData.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
             JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);

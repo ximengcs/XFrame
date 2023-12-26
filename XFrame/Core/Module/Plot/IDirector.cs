@@ -28,26 +28,5 @@
         /// </summary>
         /// <param name="storyName">故事名</param>
         void Remove(string storyName);
-
-        /// <summary>
-        /// 创建一个数据提供器
-        /// </summary>
-        /// <returns>数据提供器</returns>
-        internal IPlotDataProvider CreateDataProvider(IStory story);
-
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        internal void OnInit();
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        internal void OnUpdate();
-
-        /// <summary>
-        /// 销毁生命周期
-        /// </summary>
-        internal void OnDestory();
     }
 }

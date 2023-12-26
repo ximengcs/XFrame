@@ -32,13 +32,19 @@ namespace XFrame.Modules.StateMachine
         public void OnUpdate(float escapeTime)
         {
             foreach (IFsmBase fsm in m_FsmList)
-                fsm.OnUpdate();
+            {
+                IUpdater updater = fsm as IUpdater;
+                updater.OnUpdate(escapeTime);
+            }
         }
 
         protected override void OnDestroy()
         {
             foreach (IFsmBase fsm in m_FsmList)
-                fsm.OnDestroy();
+            {
+                ICanDestroy destory = fsm as ICanDestroy;
+                destory.OnDestroy();
+            }
         }
         #endregion
 
@@ -119,7 +125,8 @@ namespace XFrame.Modules.StateMachine
             }
 
             IFsm<T> fsm = new Fsm<T>(name, states, owner);
-            fsm.OnInit();
+            ICanInitialize initializer = fsm as ICanInitialize;
+            initializer.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);
             return fsm;
@@ -135,7 +142,8 @@ namespace XFrame.Modules.StateMachine
             }
 
             IFsm fsm = new Fsm(name, states);
-            fsm.OnInit();
+            ICanInitialize initializer = fsm as ICanInitialize;
+            initializer.OnInit();
             m_Fsms[name] = fsm;
             m_FsmList.Add(fsm);
             return fsm;
@@ -147,9 +155,10 @@ namespace XFrame.Modules.StateMachine
             {
                 m_Fsms.Remove(name);
                 m_FsmList.Remove(fsm);
-                fsm.OnDestroy();
+                ICanDestroy destory = fsm as ICanDestroy;
+                destory.OnDestroy();
             }
         }
         #endregion
-    } 
-} 
+    }
+}

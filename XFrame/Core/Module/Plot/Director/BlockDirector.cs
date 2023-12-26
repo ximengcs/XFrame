@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using XFrame.Core;
 
 namespace XFrame.Modules.Plots
 {
@@ -6,18 +7,18 @@ namespace XFrame.Modules.Plots
     /// 故事导演类(阻塞式), 数据非持久化
     /// </summary>
     [Director(true)]
-    public partial class BlockDirector : IDirector
+    public partial class BlockDirector : IDirector, ICanInitialize, IUpdater, ICanDestroy, ICanCreateData
     {
         private StoryInfo m_Current;
         private List<StoryInfo> m_StoryQueue;
 
-        void IDirector.OnInit()
+        void ICanInitialize.OnInit()
         {
             m_Current = null;
             m_StoryQueue = new List<StoryInfo>();
         }
 
-        void IDirector.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
             if (m_Current == null && m_StoryQueue.Count > 0)
             {
@@ -52,7 +53,7 @@ namespace XFrame.Modules.Plots
             }
         }
 
-        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
+        IPlotDataProvider ICanCreateData.CreateDataProvider(IStory story)
         {
             return new PlotDataProvider();
         }
@@ -64,7 +65,7 @@ namespace XFrame.Modules.Plots
             m_Current = null;
         }
 
-        void IDirector.OnDestory()
+        void ICanDestroy.OnDestroy()
         {
             m_Current = null;
             m_StoryQueue = null;

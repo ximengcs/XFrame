@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.StateMachine
 {
-    internal class Fsm<T> : DataProvider, IFsm<T>
+    internal class Fsm<T> : DataProvider, IFsm<T>, ICanInitialize, IUpdater, ICanDestroy
     {
         private T m_Owner;
         private string m_Name;
@@ -65,18 +65,18 @@ namespace XFrame.Modules.StateMachine
             }
         }
 
-        void IFsmBase.OnInit()
+        void ICanInitialize.OnInit()
         {
             foreach (FsmState<T> state in m_States.Values)
                 state.OnInit(this);
         }
 
-        void IFsmBase.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
             m_Current?.OnUpdate();
         }
 
-        void IFsmBase.OnDestroy()
+        void ICanDestroy.OnDestroy()
         {
             foreach (FsmState<T> state in m_States.Values)
                 state.OnDestroy();

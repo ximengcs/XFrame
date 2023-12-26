@@ -8,20 +8,20 @@ namespace XFrame.Modules.Plots
     /// 故事导演类(非阻塞式), 数据持久化
     /// </summary>
     [Director]
-    public class PersistNonBlockDirector : IDirector
+    public class PersistNonBlockDirector : IDirector, ICanInitialize, IUpdater, ICanDestroy, ICanCreateData
     {
         private const string NAME = "nonblock_director";
         private JsonArchive m_Archive;
         private XLinkList<StoryInfo> m_Stories;
 
-        void IDirector.OnInit()
+        void ICanInitialize.OnInit()
         {
             m_Stories = new XLinkList<StoryInfo>();
             m_Archive = XModule.Archive.GetOrNew<JsonArchive>(NAME);
             InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
         }
 
-        void IDirector.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
             foreach (XLinkNode<StoryInfo> story in m_Stories)
             {
@@ -55,7 +55,7 @@ namespace XFrame.Modules.Plots
             }
         }
 
-        void IDirector.OnDestory()
+        void ICanDestroy.OnDestroy()
         {
             m_Stories.Clear();
         }
@@ -72,7 +72,7 @@ namespace XFrame.Modules.Plots
                 Play(story);
         }
 
-        IPlotDataProvider IDirector.CreateDataProvider(IStory story)
+        IPlotDataProvider ICanCreateData.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
             JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);

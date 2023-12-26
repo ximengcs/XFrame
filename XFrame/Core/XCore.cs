@@ -313,7 +313,7 @@ namespace XFrame.Core
             ModuleBase baseClass = module as ModuleBase;
             if (baseClass != null)
                 baseClass.Id = moduleId;
-            ICanInitialize initializer = module as ICanInitialize;
+            IModuleCanInitialize initializer = module as IModuleCanInitialize;
             initializer.OnInit(data);
             if (m_IsStart)
             {

@@ -67,7 +67,7 @@ namespace XFrame.Modules.Download
         private class Strategy : ITaskStrategy<IDownloadHelper>
         {
             private const int TRY_TIMES = 8;
-            private IDownloadHelper m_Handler;
+            private DownloadHelperBase m_Handler;
             private int m_ReserveTryIndex;
             private int m_ReserveUrlCount;
             private int m_Times;
@@ -80,7 +80,7 @@ namespace XFrame.Modules.Download
                 m_ReserveTryIndex = 0;
                 m_Times = TRY_TIMES;
                 m_IsComplete = false;
-                m_Handler = handler;
+                m_Handler = handler as DownloadHelperBase;
                 m_ReserveUrlCount = handler.ReserveUrl != null ? handler.ReserveUrl.Length : 0;
                 InnerRequest();
             }

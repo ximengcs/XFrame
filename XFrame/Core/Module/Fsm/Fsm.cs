@@ -5,7 +5,7 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.StateMachine
 {
-    internal class Fsm : DataProvider, IFsm
+    internal class Fsm : DataProvider, IFsm, ICanInitialize, IUpdater, ICanDestroy
     {
         #region Inner Fields
         private string m_Name;
@@ -87,18 +87,18 @@ namespace XFrame.Modules.StateMachine
             }
         }
 
-        void IFsmBase.OnInit()
+        void ICanInitialize.OnInit()
         {
             foreach (FsmState state in m_States.Values)
                 state.OnInit(this);
         }
 
-        void IFsmBase.OnUpdate()
+        void IUpdater.OnUpdate(float escapeTime)
         {
-            m_Current?.OnUpdate();
+            m_Current?.OnUpdate(escapeTime);
         }
 
-        void IFsmBase.OnDestroy()
+        void ICanDestroy.OnDestroy()
         {
             foreach (FsmState state in m_States.Values)
                 state.OnDestroy();

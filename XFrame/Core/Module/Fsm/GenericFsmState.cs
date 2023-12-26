@@ -54,7 +54,7 @@ namespace XFrame.Modules.StateMachine
         /// 仅通过内部调用
         /// </summary>
         /// <typeparam name="State">状态机类型</typeparam>
-        protected internal void ChangeState<State>() where State : FsmState<T>
+        protected void ChangeState<State>() where State : FsmState<T>
         {
             Fsm<T> realFsm = m_Fsm as Fsm<T>;
             realFsm.ChangeState<State>();

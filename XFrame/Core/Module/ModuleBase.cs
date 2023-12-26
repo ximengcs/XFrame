@@ -6,7 +6,7 @@ namespace XFrame.Core
     /// <summary>
     /// 模块基类
     /// </summary>
-    public abstract class ModuleBase : IModule, ICanInitialize, ICanStart, ICanDestroy
+    public abstract class ModuleBase : IModule, IModuleCanInitialize, ICanStart, ICanDestroy
     {
         private Dictionary<Type, int> m_UseModules;
 
@@ -17,7 +17,7 @@ namespace XFrame.Core
         /// </summary>
         public int Id { get; internal set; }
 
-        void ICanInitialize.OnInit(object data, ModuleConfigAction configCallback)
+        void IModuleCanInitialize.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_UseModules = new Dictionary<Type, int>();
             configCallback?.Invoke(this);

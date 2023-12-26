@@ -28,7 +28,7 @@ namespace XFrame.Modules.StateMachine
         /// <summary>
         /// 更新生命周期
         /// </summary>
-        protected internal virtual void OnUpdate()
+        protected internal virtual void OnUpdate(float escapeTime)
         {
 
         }
@@ -54,7 +54,7 @@ namespace XFrame.Modules.StateMachine
         /// 仅通过内部调用
         /// </summary>
         /// <typeparam name="State">状态机类型</typeparam>
-        protected internal void ChangeState<State>() where State : FsmState
+        protected void ChangeState<State>() where State : FsmState
         {
             Fsm realFsm = m_Fsm as Fsm;
             realFsm.ChangeState(typeof(State));

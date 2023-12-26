@@ -9,7 +9,7 @@ namespace XFrame.Modules.Event
     /// </summary>
     [CoreModule]
     [XType(typeof(IEventModule))]
-    public class EventModule : ModuleBase, IEventModule
+    public class EventModule : ModuleBase, IEventModule, IUpdater
     {
         private List<XEventSystem> m_List;
          
