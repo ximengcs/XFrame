@@ -9,13 +9,6 @@ namespace XFrame.Modules.Crypto
     public interface ICryptor : IDisposable
     {
         /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        /// <param name="keyStr">密钥</param>
-        /// <param name="ivStr">密钥</param>
-        internal void OnInit(string keyStr, string ivStr);
-
-        /// <summary>
         /// 加密数据写入流
         /// </summary>
         StreamWriter Writer { get; }

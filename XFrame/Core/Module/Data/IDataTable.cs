@@ -8,11 +8,7 @@ namespace XFrame.Modules.Datas
     /// </summary>
     public interface IDataTable
     {
-        /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        /// <param name="data">数据</param>
-        internal void OnInit(object data);
+
     }
 
     /// <summary>

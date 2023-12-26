@@ -104,7 +104,9 @@ namespace XFrame.Modules.Datas
         {
             object data = XModule.Serialize.DeserializeToObject(json, textType, jsonType);
             IDataTable table = (IDataTable)XModule.Type.CreateInstance(tbType);
-            table.OnInit(data);
+            ICanInitialize initilaizer = table as ICanInitialize;
+            if (initilaizer != null)
+                initilaizer.OnInit(data);
 
             List<IDataTable> list;
             if (!m_Tables.TryGetValue(tbType, out list))

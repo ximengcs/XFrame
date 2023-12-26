@@ -11,13 +11,13 @@ namespace XFrame.Modules.Datas
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        internal void OnInit();
+        void OnInit();
 
         /// <summary>
         /// 添加可处理的数据表类型
         /// </summary>
         /// <param name="type">可以被处理的数据表类型</param>
-        internal void AddTableType(Type type);
+        void AddTableType(Type type);
 
         /// <summary>
         /// 添加数据表

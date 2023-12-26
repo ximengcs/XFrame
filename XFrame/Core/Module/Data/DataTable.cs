@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace XFrame.Modules.Datas
 {
     [Table(TableType.List, typeof(List<>))]
-    internal class DataTable<T> : IDataTable<T> where T : IDataRaw
+    internal class DataTable<T> : IDataTable, IDataTable<T>, ICanInitialize where T : IDataRaw
     {
         private Type m_Type;
         private List<T> m_List;
@@ -18,7 +18,7 @@ namespace XFrame.Modules.Datas
         private const string UNIQUE_KEY = "Id";
         private int m_MinId = -1;
 
-        void IDataTable.OnInit(object data)
+        void ICanInitialize.OnInit(object data)
         {
             m_Type = typeof(T);
             m_List = (List<T>)data;

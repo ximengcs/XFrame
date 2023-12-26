@@ -39,7 +39,9 @@ namespace XFrame.Modules.Crypto
         public ICryptor New(string keyStr, string ivStr)
         {
             ICryptor cryptor = (ICryptor)XModule.Type.CreateInstance(m_Type);
-            cryptor.OnInit(keyStr, ivStr);
+            ICanInitialize initializer = cryptor as ICanInitialize;
+            if (initializer != null)
+                initializer.OnInit(keyStr, ivStr);
             return cryptor;
         }
 
@@ -50,7 +52,9 @@ namespace XFrame.Modules.Crypto
         public ICryptor New()
         {
             ICryptor cryptor = (ICryptor)XModule.Type.CreateInstance(m_Type);
-            cryptor.OnInit(DEFAULT_KEY, DEFAULT_IV);
+            ICanInitialize initializer = cryptor as ICanInitialize;
+            if (initializer != null)
+                initializer.OnInit(DEFAULT_KEY, DEFAULT_IV);
             return cryptor;
         }
         #endregion

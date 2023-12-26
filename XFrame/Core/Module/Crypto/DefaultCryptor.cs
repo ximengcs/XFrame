@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace XFrame.Modules.Crypto
 {
-    internal class DefaultCryptor : ICryptor
+    internal class DefaultCryptor : ICryptor, ICanInitialize
     {
         private string m_KeyStr;
         private string m_IvStr;
@@ -20,7 +20,7 @@ namespace XFrame.Modules.Crypto
         public StreamWriter Writer => m_Wirter;
         public StreamReader Reader => m_Reader;
 
-        void ICryptor.OnInit(string keyStr, string ivStr)
+        void ICanInitialize.OnInit(string keyStr, string ivStr)
         {
             m_KeyStr = keyStr;
             m_IvStr = ivStr;

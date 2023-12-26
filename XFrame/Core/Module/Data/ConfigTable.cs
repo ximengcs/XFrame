@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace XFrame.Modules.Datas
 {
     [Table(TableType.Object)]
-    internal class ConfigTable<T> : IDataTable<T> where T : IDataRaw
+    internal class ConfigTable<T> : IDataTable, IDataTable<T>, ICanInitialize where T : IDataRaw
     {
         private T m_Data;
 
         public int Count => 1;
 
-        void IDataTable.OnInit(object data)
+        void ICanInitialize.OnInit(object data)
         {
             m_Data = (T)data;
         }
