@@ -4,7 +4,7 @@ using XFrame.Modules.Event;
 
 namespace XFrame.Modules.Plots
 {
-    public interface IPlotModule : IModule, IUpdater
+    public interface IPlotModule : IModule
     {
         IEventSystem Event { get; }
 

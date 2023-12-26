@@ -15,7 +15,7 @@ namespace XFrame.Modules.Plots
     [CommonModule]
     [RequireModule(typeof(EventModule))]
     [XType(typeof(IPlotModule))]
-    public class PlotModule : ModuleBase, IPlotModule
+    public class PlotModule : ModuleBase, IPlotModule, IUpdater
     {
         #region Inner Fields
         private IPlotHelper m_Helper;
