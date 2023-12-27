@@ -7,9 +7,9 @@ namespace XFrame.Modules.Pools
     internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {
         private Type m_Type;
-        private IPoolHelper m_Helper;
-        private XLinkList<IPoolObject> m_Objects;
-        private XLoopQueue<XLinkNode<IPoolObject>> m_NodeCache;
+        private PoolHelperBase m_Helper;
+        private XLinkList<PoolObjectBase> m_Objects;
+        private XLoopQueue<XLinkNode<PoolObjectBase>> m_NodeCache;
         private int m_UseCount;
 
         public Type ObjectType => m_Type;
@@ -20,15 +20,24 @@ namespace XFrame.Modules.Pools
 
         public IPoolHelper Helper => m_Helper;
 
-        public IXEnumerable<IPoolObject> AllObjects => m_Objects;
+        public IXEnumerable<IPoolObject> AllObjects
+        {
+            get
+            {
+                XLinkList<IPoolObject> list = new XLinkList<IPoolObject>();
+                foreach (var objNode in m_Objects)
+                    list.AddLast(objNode.Value);
+                return list;
+            }
+        }
 
-        public ObjectPool(IPoolHelper helper)
+        public ObjectPool(PoolHelperBase helper)
         {
             m_UseCount = 0;
             m_Type = typeof(T);
             m_Helper = helper;
-            m_Objects = new XLinkList<IPoolObject>(false);
-            m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
+            m_Objects = new XLinkList<PoolObjectBase>(false);
+            m_NodeCache = new XLoopQueue<XLinkNode<PoolObjectBase>>(m_Helper.CacheCount);
         }
 
         public T Require(int poolKey, object userData = default)
@@ -68,24 +77,24 @@ namespace XFrame.Modules.Pools
             }
         }
 
-        private IPoolObject InnerCreate(int poolKey, object userData)
+        private PoolObjectBase InnerCreate(int poolKey, object userData)
         {
-            IPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
+            PoolObjectBase obj = m_Helper.Factory(m_Type, poolKey, userData);
             m_Helper.OnObjectCreate(obj);
-            obj.OnCreate();
+            obj.OnCreateFromPool();
             return obj;
         }
 
         private IPoolObject InnerRequire(int poolKey, object userData)
         {
-            IPoolObject obj;
+            PoolObjectBase obj;
             if (m_Objects.Empty)
             {
                 obj = InnerCreate(poolKey, userData);
             }
             else
             {
-                XLinkNode<IPoolObject> node = m_Objects.First;
+                XLinkNode<PoolObjectBase> node = m_Objects.First;
                 while (node != null)
                 {
                     if (node.Value.PoolKey == poolKey)
@@ -112,7 +121,7 @@ namespace XFrame.Modules.Pools
             }
 
             m_Helper.OnObjectRequest(obj);
-            obj.OnRequest();
+            obj.OnRequestFromPool();
             obj.InPool = this;
             return obj;
         }

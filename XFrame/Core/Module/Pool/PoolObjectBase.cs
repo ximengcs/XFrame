@@ -7,31 +7,26 @@ namespace XFrame.Modules.Pools
 
         public int PoolKey { get; protected set; }
 
-        IPool IPoolObject.InPool { get; set; }
+        public IPool InPool { get; internal set; }
 
-        void IPoolObject.OnCreate()
-        {
-            OnCreateFromPool();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-            OnDestroyFromPool();
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            OnReleaseFromPool();
-        }
-
-        void IPoolObject.OnRequest()
-        {
-            OnRequestFromPool();
-        }
-
+        /// <summary>
+        /// 从对象池中创建时被调用
+        /// </summary>
         protected internal virtual void OnCreateFromPool() { }
+
+        /// <summary>
+        /// 从对象池中请求时被调用
+        /// </summary>
         protected internal virtual void OnRequestFromPool() { }
-        protected internal virtual void OnDestroyFromPool() { }
+
+        /// <summary>
+        /// 释放到对象池中时被调用
+        /// </summary>
         protected internal virtual void OnReleaseFromPool() { }
+
+        /// <summary>
+        /// 从对象池中销毁时被调用
+        /// </summary>
+        protected internal virtual void OnDestroyFromPool() { }
     }
 }
