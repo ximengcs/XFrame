@@ -30,16 +30,6 @@ namespace XFrame.Modules.Tasks
         float Pro { get; }
 
         /// <summary>
-        /// 初始化生命周期
-        /// </summary>
-        protected internal void OnInit(string name);
-
-        /// <summary>
-        /// 更新生命周期
-        /// </summary>
-        protected internal void OnUpdate();
-
-        /// <summary>
         /// 标记任务开始执行
         /// </summary>
         void Start();

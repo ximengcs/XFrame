@@ -1,10 +1,9 @@
 ﻿using System;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Serialize;
 
 namespace XFrame.Core
 {
-    public class TupleParser<T1> : IParser<ValueTuple<T1>>
+    public class TupleParser<T1> : PoolObjectBase, IParser<ValueTuple<T1>>
     {
         private readonly static char SPLIT = ';';
 
@@ -13,11 +12,6 @@ namespace XFrame.Core
         public ValueTuple<T1> Value => m_Value;
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-
-        IPool IPoolObject.InPool { get; set; }
 
         public ValueTuple<T1> Parse(string pattern)
         {
@@ -51,24 +45,10 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
+            base.OnRequestFromPool();
+            PoolKey = 0;
         }
 
         public static bool operator ==(TupleParser<T1> src, object tar)
@@ -110,7 +90,7 @@ namespace XFrame.Core
         }
     }
 
-    public class TupleParser<T1, T2> : IParser<ValueTuple<T1, T2>>
+    public class TupleParser<T1, T2> : PoolObjectBase, IParser<ValueTuple<T1, T2>>
     {
         private readonly static char SPLIT = ';';
 
@@ -119,11 +99,6 @@ namespace XFrame.Core
         public ValueTuple<T1, T2> Value => m_Value;
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-
-        IPool IPoolObject.InPool { get; set; }
 
         public ValueTuple<T1, T2> Parse(string pattern)
         {
@@ -162,24 +137,10 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
+            base.OnRequestFromPool();
+            PoolKey = 0;
         }
 
         public static bool operator ==(TupleParser<T1, T2> src, object tar)

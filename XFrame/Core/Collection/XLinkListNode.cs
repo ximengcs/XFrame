@@ -7,7 +7,7 @@ namespace XFrame.Collections
     /// 双向链表节点
     /// </summary>
     /// <typeparam name="T">存储数据类型</typeparam>
-    public class XLinkNode<T> : IPoolObject
+    public class XLinkNode<T> : PoolObjectBase, IPoolObject
     {
         #region Inner Fields
         internal XLinkList<T> m_List;
@@ -99,29 +99,16 @@ namespace XFrame.Collections
         #endregion
 
         #region Pool Life Fun
-        IPool IPoolObject.InPool { get; set; }
-        public string MarkName { get; set; }
-
-        int IPoolObject.PoolKey => 0;
-
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
             InnerInitState();
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
+            base.OnReleaseFromPool();
             InnerInitState();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
         #endregion
 
@@ -131,6 +118,7 @@ namespace XFrame.Collections
             Pre = null;
             Next = null;
             Value = default;
+            PoolKey = 0;
         }
     }
 }

@@ -29,33 +29,9 @@ namespace XFrameTest
         }
     }
 
-    public class PoolObj1 : IPoolObject
+    public class PoolObj1 : PoolObjectBase, IPoolObject
     {
         public int Name;
-
-        int IPoolObject.PoolKey => 0;
-        string IPoolObject.MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
-
-        void IPoolObject.OnCreate()
-        {
-            Log.Debug($"OnCreate{Name}");
-        }
-
-        void IPoolObject.OnRequest()
-        {
-            Log.Debug($"OnRequest{Name}");
-        }
-
-        void IPoolObject.OnRelease()
-        {
-            Log.Debug($"OnRelease{Name}");
-        }
-
-        void IPoolObject.OnDelete()
-        {
-            Log.Debug($"OnDelete{Name}");
-        }
     }
 
     [TestClass]

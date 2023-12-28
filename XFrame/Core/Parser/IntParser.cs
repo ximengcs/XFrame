@@ -4,17 +4,13 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class IntParser : IParser<int>
+    public class IntParser : PoolObjectBase, IParser<int>
     {
         protected int m_Value;
         public int Value => m_Value;
         public LogLevel LogLv { get; set; }
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public virtual int Parse(string pattern)
         {
@@ -58,25 +54,12 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             LogLv = LogLevel.Warning;
             m_Value = default;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(IntParser src, object tar)

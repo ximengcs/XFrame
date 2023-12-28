@@ -3,17 +3,13 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
-    public class BoolParser : IParser<bool>
+    public class BoolParser : PoolObjectBase, IParser<bool>
     {
         private bool m_Value;
         public bool Value => m_Value;
         public LogLevel LogLv { get; set; }
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public bool Parse(string pattern)
         {
@@ -67,25 +63,17 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
+            base.OnRequestFromPool();
+            PoolKey = 0;
         }
 
-        void IPoolObject.OnRequest()
+        protected internal override void OnReleaseFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
+            base.OnReleaseFromPool();
             LogLv = LogLevel.Warning;
             m_Value = default;
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(BoolParser src, object tar)

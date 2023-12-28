@@ -4,17 +4,13 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class FloatParser : IParser<float>
+    public class FloatParser : PoolObjectBase, IParser<float>
     {
         private float m_Value;
         public float Value => m_Value;
         public LogLevel LogLv { get; set; }
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public float Parse(string pattern)
         {
@@ -68,25 +64,12 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             m_Value = default;
             LogLv = LogLevel.Warning;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(FloatParser src, object tar)

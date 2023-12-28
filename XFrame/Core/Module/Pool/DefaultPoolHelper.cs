@@ -5,9 +5,9 @@ namespace XFrame.Modules.Pools
 {
     internal class DefaultPoolHelper : PoolHelperBase
     {
-        protected internal override IPoolObject Factory(Type type, int poolKey = 0, object userData = null)
+        protected internal override PoolObjectBase Factory(Type type, int poolKey = 0, object userData = null)
         {
-            return (IPoolObject)XModule.Type.CreateInstance(type);
+            return (PoolObjectBase)XModule.Type.CreateInstance(type);
         }
     }
 }

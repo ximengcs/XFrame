@@ -2,7 +2,7 @@
 
 namespace XFrame.Core
 {
-    public class PairParser<K, V> : IParser<Pair<K, V>> where K : IParser where V : IParser
+    public class PairParser<K, V> : PoolObjectBase, IParser<Pair<K, V>> where K : IParser where V : IParser
     {
         private const char SPLIT = '|';
         private char m_Split;
@@ -45,11 +45,6 @@ namespace XFrame.Core
         public Pair<K, V> Value { get; private set; }
 
         object IParser.Value => Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-
-        IPool IPoolObject.InPool { get; set; }
 
         public Pair<K, V> Parse(string pattern)
         {
@@ -97,25 +92,21 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             m_Split = SPLIT;
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
-            m_KParser.OnRelease();
-            m_VParser.OnRelease();
-        }
+            base.OnReleaseFromPool();
 
-        void IPoolObject.OnDelete()
-        {
-
+            PoolObjectBase objBase = m_KParser as PoolObjectBase;
+            objBase.OnReleaseFromPool();
+            objBase = m_VParser as PoolObjectBase;
+            objBase.OnReleaseFromPool();
         }
 
         public static bool operator ==(PairParser<K, V> src, object tar)

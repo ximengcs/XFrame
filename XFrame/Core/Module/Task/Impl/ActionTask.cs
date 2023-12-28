@@ -4,7 +4,7 @@ namespace XFrame.Modules.Tasks
 {
     public partial class ActionTask : TaskBase
     {
-        protected override void OnCreateFromPool()
+        protected internal override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());

@@ -14,7 +14,7 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        protected override void OnReleaseFromPool()
+        protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Data = default;

@@ -4,7 +4,7 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class ArrayParser<T> : IParser<XLinkList<T>> where T : IParser
+    public class ArrayParser<T> : PoolObjectBase, IParser<XLinkList<T>> where T : IParser
     {
         private const char SPLIT = ',';
         private char m_Split;
@@ -15,10 +15,6 @@ namespace XFrame.Core
         public XLinkList<T> Value { get; private set; }
 
         object IParser.Value => Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public char Split
         {
@@ -157,25 +153,24 @@ namespace XFrame.Core
             return true;
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
             m_Split = SPLIT;
+            PoolKey = 0;
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
+            base.OnReleaseFromPool();
             foreach (XLinkNode<T> v in Value)
                 References.Release(v.Value);
             Value.Clear();
         }
 
-        void IPoolObject.OnDelete()
+        protected internal override void OnDestroyFromPool()
         {
+            base.OnDestroyFromPool();
             Value.Clear();
             Value = null;
         }

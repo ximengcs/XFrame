@@ -9,12 +9,6 @@ namespace XFrame.Modules.Resource
     public interface IResourceHelper
     {
         /// <summary>
-        /// 资源加载初始化生命周期
-        /// </summary>
-        /// <param name="rootPath">资源根路径</param>
-        void OnInit(string rootPath);
-
-        /// <summary>
         /// 设置资源重定向辅助器
         /// </summary>
         /// <param name="helper">辅助器</param>

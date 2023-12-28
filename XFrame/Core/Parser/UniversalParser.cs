@@ -5,7 +5,7 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class UniversalParser : IParser<string>
+    public class UniversalParser : PoolObjectBase, IParser<string>
     {
         private string m_Value;
         private int m_IntValue;
@@ -19,10 +19,6 @@ namespace XFrame.Core
         public bool BoolValue => m_BoolValue;
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public T GetOrAddParser<T>() where T : IParser
         {
@@ -184,18 +180,9 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnReleaseFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
+            base.OnReleaseFromPool();
             foreach (var item in m_Parsers)
                 References.Release(item.Value);
             m_Parsers.Clear();
@@ -203,11 +190,6 @@ namespace XFrame.Core
             m_IntValue = default;
             m_FloatValue = default;
             m_BoolValue = default;
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(UniversalParser src, object tar)

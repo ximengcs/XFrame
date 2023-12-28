@@ -5,17 +5,13 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class EnumParser<T> : IParser<T> where T : Enum
+    public class EnumParser<T> : PoolObjectBase, IParser<T> where T : Enum
     {
         private T m_Value;
         public T Value => m_Value;
         public LogLevel LogLv { get; set; }
 
         object IParser.Value => m_Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public T Parse(string pattern)
         {
@@ -67,25 +63,12 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             LogLv = LogLevel.Warning;
             InnerSetDefault();
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(EnumParser<T> src, object tar)

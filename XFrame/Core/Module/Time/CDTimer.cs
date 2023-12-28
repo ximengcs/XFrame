@@ -8,18 +8,13 @@ namespace XFrame.Modules.Times
     /// <summary>
     /// CD计时器
     /// </summary>
-    public partial class CDTimer : IPoolObject
+    public partial class CDTimer : PoolObjectBase, IPoolObject
     {
         private string m_Name;
         private IUpdater m_Updater;
         private Dictionary<int, CDInfo> m_Times;
 
         public string Name => m_Name;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-
-        IPool IPoolObject.InPool { get; set; }
 
         /// <summary>
         /// 构造CD计时器
@@ -149,31 +144,24 @@ namespace XFrame.Modules.Times
             return CheckTime(default);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             m_Name = XModule.Rand.RandString();
             m_Updater = Default;
             TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerAddTimer(this);
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
+            base.OnReleaseFromPool();
             TimeModule timeModule = (TimeModule)XModule.Time;
             timeModule.InnerRemove(this);
             m_Name = null;
             m_Times.Clear();
             m_Updater = null;
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         private class CDInfo

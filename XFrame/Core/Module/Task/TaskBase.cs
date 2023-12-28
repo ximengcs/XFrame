@@ -10,7 +10,7 @@ namespace XFrame.Modules.Tasks
     /// <summary>
     /// 任务基类
     /// </summary>
-    public abstract partial class TaskBase : ITask
+    public abstract partial class TaskBase : PoolObjectBase, ITask, ICanUpdate, ICanInitialize
     {
         public const float MAX_PRO = 1;
         private StrategyInfo m_Current;
@@ -34,8 +34,26 @@ namespace XFrame.Modules.Tasks
         public bool IsStart { get; protected set; }
         public float Pro => m_Pro + m_CurPro;
 
-        IPool IPoolObject.InPool { get; set; }
-        public string MarkName { get; set; }
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        void ICanInitialize.OnInit(string name)
+        {
+            Name = name;
+            m_OnComplete = null;
+            m_OnComplete2 = null;
+            m_OnCompleteAfter = null;
+            m_OnCompleteAfter2 = null;
+            OnInit();
+        }
+
+        /// <summary>
+        /// 更新生命周期
+        /// </summary>
+        void ICanUpdate.OnUpdate()
+        {
+            InnerUpdate();
+        }
 
         public ITask AddStrategy(ITaskStrategy strategy)
         {
@@ -93,11 +111,6 @@ namespace XFrame.Modules.Tasks
         {
             m_OnUpdate += update;
             return this;
-        }
-
-        void ITask.OnUpdate()
-        {
-            InnerUpdate();
         }
 
         private void InnerUpdate()
@@ -180,20 +193,9 @@ namespace XFrame.Modules.Tasks
             return result;
         }
 
-        void ITask.OnInit(string name)
+        protected internal override void OnCreateFromPool()
         {
-            Name = name;
-            m_OnComplete = null;
-            m_OnComplete2 = null;
-            m_OnCompleteAfter = null;
-            m_OnCompleteAfter2 = null;
-            OnInit();
-        }
-
-        int IPoolObject.PoolKey => 0;
-
-        void IPoolObject.OnCreate()
-        {
+            base.OnCreateFromPool();
             m_CorTasks = new XLinkList<Task>();
             HandlerTypeBase = typeof(ITaskStrategy<>);
             m_Targets = new Queue<ITaskHandler>();
@@ -202,19 +204,23 @@ namespace XFrame.Modules.Tasks
             OnCreateFromPool();
         }
 
-        void IPoolObject.OnRequest()
+        protected internal override void OnRequestFromPool()
         {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             OnRequestFromPool();
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
+            base.OnReleaseFromPool();
             OnReleaseFromPool();
             InnerClearState();
         }
 
-        void IPoolObject.OnDelete()
+        protected internal override void OnDestroyFromPool()
         {
+            base.OnDestroyFromPool();
             OnDestroyFromPool();
             InnerClearState();
         }
@@ -239,10 +245,6 @@ namespace XFrame.Modules.Tasks
         }
 
         protected virtual void OnInit() { }
-        protected virtual void OnCreateFromPool() { }
-        protected virtual void OnRequestFromPool() { }
-        protected virtual void OnDestroyFromPool() { }
-        protected virtual void OnReleaseFromPool() { }
 
         public void Start()
         {

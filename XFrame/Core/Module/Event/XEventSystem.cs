@@ -9,17 +9,12 @@ namespace XFrame.Modules.Event
     /// </summary>
     internal class XEventSystem : IEventSystem
     {
-        private class HandlerInfo : IPoolObject
+        private class HandlerInfo : PoolObjectBase, IPoolObject
         {
             public XEventHandler Handler1;
             public XEventHandler2 Handler2;
 
             public bool Empty => Handler1 == null && Handler2 == null;
-
-            int IPoolObject.PoolKey => default;
-            public string MarkName { get; set; }
-
-            IPool IPoolObject.InPool { get; set; }
 
             public void Do(XEvent e)
             {
@@ -59,26 +54,19 @@ namespace XFrame.Modules.Event
                 Handler2 -= handler2;
             }
 
-            void IPoolObject.OnCreate()
+            protected internal override void OnRequestFromPool()
             {
-
-            }
-
-            void IPoolObject.OnRequest()
-            {
+                base.OnRequestFromPool();
                 Handler1 = null;
                 Handler2 = null;
+                PoolKey = 0;
             }
 
-            void IPoolObject.OnRelease()
+            protected internal override void OnReleaseFromPool()
             {
+                base.OnReleaseFromPool();
                 Handler1 = null;
                 Handler2 = null;
-            }
-
-            void IPoolObject.OnDelete()
-            {
-
             }
         }
 

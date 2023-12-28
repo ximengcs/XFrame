@@ -4,7 +4,7 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Pools
 {
-    internal class ObjectPool<T> : IPool<T> where T : IPoolObject
+    internal class ObjectPool<T> : PoolObjectBase, IPool<T> where T : IPoolObject
     {
         private Type m_Type;
         private PoolHelperBase m_Helper;
@@ -134,17 +134,18 @@ namespace XFrame.Modules.Pools
                 return false;
             }
 
-            m_Helper.OnObjectRelease(obj);
-            obj.OnRelease();
-            obj.InPool = null;
+            PoolObjectBase objBase = obj as PoolObjectBase;
+            m_Helper.OnObjectRelease(objBase);
+            objBase.OnReleaseFromPool();
+            objBase.InPool = null;
             if (m_NodeCache.Empty)
             {
-                m_Objects.AddLast(obj);
+                m_Objects.AddLast(objBase);
             }
             else
             {
-                XLinkNode<IPoolObject> node = m_NodeCache.RemoveFirst();
-                node.Value = obj;
+                XLinkNode<PoolObjectBase> node = m_NodeCache.RemoveFirst();
+                node.Value = objBase;
                 m_Objects.AddLast(node);
             }
             return true;
@@ -152,10 +153,10 @@ namespace XFrame.Modules.Pools
 
         public void ClearObject()
         {
-            foreach (XLinkNode<IPoolObject> obj in m_Objects)
+            foreach (XLinkNode<PoolObjectBase> obj in m_Objects)
             {
                 m_Helper.OnObjectDestroy(obj);
-                obj.Value.OnDelete();
+                obj.Value.OnDestroyFromPool();
             }
             m_Objects.Clear();
             m_UseCount = 0;

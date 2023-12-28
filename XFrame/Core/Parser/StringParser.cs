@@ -1,17 +1,12 @@
-﻿
-using XFrame.Modules.Pools;
+﻿using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class StringParser : IParser<string>
+    public class StringParser : PoolObjectBase, IParser<string>
     {
         public string Value { get; private set; }
 
         object IParser.Value => Value;
-
-        int IPoolObject.PoolKey => default;
-        public string MarkName { get; set; }
-        IPool IPoolObject.InPool { get; set; }
 
         public string Parse(string pattern)
         {
@@ -45,24 +40,11 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
             Value = null;
-        }
-
-        void IPoolObject.OnRelease()
-        {
-
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
 
         public static bool operator ==(StringParser src, object tar)

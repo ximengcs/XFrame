@@ -10,7 +10,7 @@ namespace XFrame.Modules.Tasks
 
         public List<ITask> Tasks => m_UseHandler.Tasks;
 
-        protected override void OnCreateFromPool()
+        protected internal override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());
@@ -46,7 +46,7 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        protected override void OnReleaseFromPool()
+        protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             References.Release(m_UseHandler);

@@ -11,7 +11,7 @@ namespace XFrame.Collections
     ///	使用场景：需要顺序迭代，需要随时删除节点，不需要随机访问
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>, IXEnumerable<T>
+    public partial class XLinkList<T> : PoolObjectBase, IPoolObject, IXEnumerable<XLinkNode<T>>, IXEnumerable<T>
     {
         #region Inner Fields
         private XLinkNode<T> m_First;
@@ -336,30 +336,17 @@ namespace XFrame.Collections
         #endregion
 
         #region Pool Life Fun
-        public string MarkName { get; set; }
 
-        IPool IPoolObject.InPool { get; set; }
-
-        int IPoolObject.PoolKey => 0;
-
-        void IPoolObject.OnCreate()
+        protected internal override void OnRequestFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
+            base.OnRequestFromPool();
             InnerInitState();
         }
 
-        void IPoolObject.OnRelease()
+        protected internal override void OnReleaseFromPool()
         {
+            base.OnReleaseFromPool();
             Clear();
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
         #endregion
 
@@ -369,6 +356,7 @@ namespace XFrame.Collections
             m_First = null;
             m_Last = null;
             m_Count = 0;
+            PoolKey = 0;
         }
     }
 

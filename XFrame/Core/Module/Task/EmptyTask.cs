@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using XFrame.Core;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Tasks
@@ -9,17 +8,13 @@ namespace XFrame.Modules.Tasks
     /// 空任务
     /// 这个任务总是处于完成状态
     /// </summary>
-    public class EmptyTask : Singleton<EmptyTask>, ITask
+    public class EmptyTask : PoolObjectBase, ITask, ICanInitialize
     {
         private Action m_Complete;
         private Action m_CompleteAfter;
         private Action<ITask> m_Complete2;
         private Action<ITask> m_CompleteAfter2;
         private Action<float> m_Update;
-
-        IPool IPoolObject.InPool { get; set; }
-
-        public string MarkName { get; set; }
 
         public bool IsComplete => true;
 
@@ -28,6 +23,11 @@ namespace XFrame.Modules.Tasks
         public float Pro => 1;
 
         public string Name { get; private set; }
+
+        void ICanInitialize.OnInit(string name)
+        {
+            Name = name;
+        }
 
         public ITask Add(ITaskHandler target)
         {
@@ -74,16 +74,6 @@ namespace XFrame.Modules.Tasks
             return this;
         }
 
-        void ITask.OnInit(string name)
-        {
-            Name = name;
-        }
-
-        void ITask.OnUpdate()
-        {
-
-        }
-
         public void Start()
         {
             IsStart = true;
@@ -103,30 +93,14 @@ namespace XFrame.Modules.Tasks
             return Task.CompletedTask;
         }
 
-        int IPoolObject.PoolKey => 0;
-
-        void IPoolObject.OnCreate()
+        protected internal override void OnReleaseFromPool()
         {
-
-        }
-
-        void IPoolObject.OnRequest()
-        {
-
-        }
-
-        void IPoolObject.OnRelease()
-        {
+            base.OnReleaseFromPool();
             m_Complete = null;
             m_Complete2 = null;
             m_CompleteAfter = null;
             m_CompleteAfter2 = null;
             m_Update = null;
-        }
-
-        void IPoolObject.OnDelete()
-        {
-
         }
     }
 }

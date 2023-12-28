@@ -13,7 +13,6 @@ namespace XFrame.Core
         public Dictionary<K, V> Value => m_Value;
 
         object IParser.Value => m_Value;
-        IPool IPoolObject.InPool { get; set; }
 
         protected string m_Origin;
         private char m_Split;
@@ -99,7 +98,7 @@ namespace XFrame.Core
                     if (!string.IsNullOrEmpty(pItemStr))
                     {
                         string[] pItem = pItemStr.Split(m_Split2);
-                         InnerParseItem(out kParser, out vParser, pItem);
+                        InnerParseItem(out kParser, out vParser, pItem);
                     }
                     else
                     {
@@ -132,6 +131,12 @@ namespace XFrame.Core
         object IParser.Parse(string pattern)
         {
             return Parse(pattern);
+        }
+
+        protected internal override void OnRequestFromPool()
+        {
+            base.OnRequestFromPool();
+            PoolKey = 0;
         }
 
         protected internal override void OnReleaseFromPool()

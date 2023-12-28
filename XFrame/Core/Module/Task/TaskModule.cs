@@ -66,7 +66,9 @@ namespace XFrame.Modules.Tasks
         internal void InnerExecTask(ITask task)
         {
             m_Watch.Restart();
-            task.OnUpdate();
+            ICanUpdate updater = task as ICanUpdate;
+            if (updater != null)
+                updater.OnUpdate();
             m_Watch.Stop();
             m_ThisFrameTime += m_Watch.ElapsedMilliseconds;
         }
@@ -128,7 +130,9 @@ namespace XFrame.Modules.Tasks
                 task = (ITask)obj;
                 m_TaskWithName[name] = task;
                 m_Tasks.Add(task);
-                task.OnInit(name);
+                ICanInitialize initializer = task as ICanInitialize;
+                if (initializer != null)
+                    initializer.OnInit(name);
             }
             return (T)task;
         }

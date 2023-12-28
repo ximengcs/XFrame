@@ -18,7 +18,7 @@ namespace XFrame.Modules.Resource
     public class ResModule : ModuleBase, IResModule
     {
         #region Inner Fields
-        private IResourceHelper m_ResHelper;
+        private ResourceHelperBase m_ResHelper;
         private Dictionary<string, object> m_PreLoadRes;
         #endregion
 
@@ -36,7 +36,7 @@ namespace XFrame.Modules.Resource
 
         public IResourceHelper SetHelper(Type type)
         {
-            m_ResHelper = XModule.Type.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = XModule.Type.CreateInstance(type) as ResourceHelperBase;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }
