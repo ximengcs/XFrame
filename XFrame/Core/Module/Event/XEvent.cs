@@ -5,7 +5,7 @@ namespace XFrame.Modules.Event
     /// <summary>
     /// 事件
     /// </summary>
-    public abstract class XEvent : PoolObjectBase, IPoolObject
+    public abstract class XEvent : PoolObjectBase
     {
         /// <summary>
         /// 事件Id 
@@ -19,9 +19,7 @@ namespace XFrame.Modules.Event
 
         public XEvent() { }
 
-        int IPoolObject.PoolKey => 0;
-
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Id = default;

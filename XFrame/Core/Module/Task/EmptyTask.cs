@@ -93,7 +93,7 @@ namespace XFrame.Modules.Tasks
             return Task.CompletedTask;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Complete = null;

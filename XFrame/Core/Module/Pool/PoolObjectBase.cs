@@ -1,32 +1,25 @@
 ﻿
 namespace XFrame.Modules.Pools
 {
-    public abstract class PoolObjectBase : IPoolObject
+    public abstract class PoolObjectBase : IXPoolObject
     {
-        public string MarkName { get; set; }    
+        public string MarkName { get; set; }
+
+        public IPool InPool { get; set; }
 
         public int PoolKey { get; protected set; }
 
-        public IPool InPool { get; internal set; }
+        void IXPoolObject.OnCreateFromPool() { OnCreateFromPool(); }
+        protected virtual void OnCreateFromPool() { }
 
-        /// <summary>
-        /// 从对象池中创建时被调用
-        /// </summary>
-        protected internal virtual void OnCreateFromPool() { }
+        void IXPoolObject.OnRequestFromPool() { OnRequestFromPool(); }
+        protected virtual void OnRequestFromPool() { }
 
-        /// <summary>
-        /// 从对象池中请求时被调用
-        /// </summary>
-        protected internal virtual void OnRequestFromPool() { }
+        void IXPoolObject.OnDestroyFromPool() { OnDestroyFromPool(); }
+        protected virtual void OnDestroyFromPool() { }
 
-        /// <summary>
-        /// 释放到对象池中时被调用
-        /// </summary>
-        protected internal virtual void OnReleaseFromPool() { }
+        void IXPoolObject.OnReleaseFromPool() { OnReleaseFromPool(); }
+        protected virtual void OnReleaseFromPool() { }
 
-        /// <summary>
-        /// 从对象池中销毁时被调用
-        /// </summary>
-        protected internal virtual void OnDestroyFromPool() { }
     }
 }

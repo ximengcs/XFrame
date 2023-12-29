@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using XFrame.Core;
+﻿using XFrame.Core;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Rand;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Times
 {
@@ -144,7 +143,7 @@ namespace XFrame.Modules.Times
             return CheckTime(default);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;
@@ -154,7 +153,7 @@ namespace XFrame.Modules.Times
             timeModule.InnerAddTimer(this);
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             TimeModule timeModule = (TimeModule)XModule.Time;

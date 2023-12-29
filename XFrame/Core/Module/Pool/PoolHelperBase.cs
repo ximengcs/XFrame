@@ -7,14 +7,14 @@ namespace XFrame.Modules.Pools
     {
         public int CacheCount { get; protected set; } = 64;
 
-        protected internal abstract PoolObjectBase Factory(Type type, int poolKey = default, object userData = default);
+        protected internal abstract IXPoolObject Factory(Type type, int poolKey = default, object userData = default);
 
-        protected internal virtual void OnObjectCreate(PoolObjectBase obj) { }
+        protected internal virtual void OnObjectCreate(IPoolObject obj) { }
 
-        protected internal virtual void OnObjectRequest(PoolObjectBase obj) { }
+        protected internal virtual void OnObjectRequest(IPoolObject obj) { }
 
-        protected internal virtual void OnObjectRelease(PoolObjectBase obj) { }
+        protected internal virtual void OnObjectRelease(IPoolObject obj) { }
 
-        protected internal virtual void OnObjectDestroy(PoolObjectBase obj) { }
+        protected internal virtual void OnObjectDestroy(IPoolObject obj) { }
     }
 }

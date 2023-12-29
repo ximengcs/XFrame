@@ -13,6 +13,7 @@ namespace XFrame.Core
         public const string KEY1 = "add";
         public const string KEY2 = "remove";
 
+        private int m_PoolKey;
         private string m_RawValue;
         private bool m_ValueDirty;
         private List<string> m_Values;
@@ -40,7 +41,7 @@ namespace XFrame.Core
             return content.StartsWith(KEY1) || content.StartsWith(KEY2);
         }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             m_MapValues = new HashSet<string>();
@@ -49,7 +50,7 @@ namespace XFrame.Core
             m_RemoveInfos = new List<Info>();
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             Split = SPLIT;
@@ -57,7 +58,7 @@ namespace XFrame.Core
             Split3 = SPLIT3;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Values.Clear();

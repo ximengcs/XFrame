@@ -193,7 +193,7 @@ namespace XFrame.Modules.Tasks
             return result;
         }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             m_CorTasks = new XLinkList<Task>();
@@ -201,27 +201,23 @@ namespace XFrame.Modules.Tasks
             m_Targets = new Queue<ITaskHandler>();
             m_Infos = new XNode<StrategyInfo>();
             AddStrategy(new TaskStrategy());
-            OnCreateFromPool();
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;
-            OnRequestFromPool();
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
-            OnReleaseFromPool();
             InnerClearState();
         }
 
-        protected internal override void OnDestroyFromPool()
+        protected override void OnDestroyFromPool()
         {
             base.OnDestroyFromPool();
-            OnDestroyFromPool();
             InnerClearState();
         }
 

@@ -36,20 +36,20 @@ namespace XFrame.Modules.Tasks
                 return finishCount;
             }
 
-            protected internal override void OnCreateFromPool()
+            protected override void OnCreateFromPool()
             {
                 base.OnCreateFromPool();
                 m_Tasks = new List<ITask>();
             }
 
-            protected internal override void OnRequestFromPool()
+            protected override void OnRequestFromPool()
             {
                 base.OnRequestFromPool();
                 m_LastCheck = 0;
                 CanContinue = true;
             }
 
-            protected internal override void OnReleaseFromPool()
+            protected override void OnReleaseFromPool()
             {
                 base.OnReleaseFromPool();
                 m_Tasks.Clear();

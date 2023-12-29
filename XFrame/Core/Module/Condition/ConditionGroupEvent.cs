@@ -60,7 +60,7 @@ namespace XFrame.Modules.Conditions
             return e;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Handle = null;

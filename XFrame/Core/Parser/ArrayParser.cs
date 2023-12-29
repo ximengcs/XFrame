@@ -153,14 +153,14 @@ namespace XFrame.Core
             return true;
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             m_Split = SPLIT;
             PoolKey = 0;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             foreach (XLinkNode<T> v in Value)
@@ -168,7 +168,7 @@ namespace XFrame.Core
             Value.Clear();
         }
 
-        protected internal override void OnDestroyFromPool()
+        protected override void OnDestroyFromPool()
         {
             base.OnDestroyFromPool();
             Value.Clear();

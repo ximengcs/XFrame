@@ -27,13 +27,13 @@ namespace XFrame.Modules.Download
         /// </summary>
         public byte[] Data { get; private set; }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
 

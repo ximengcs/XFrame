@@ -21,13 +21,13 @@ namespace XFrame.Modules.Conditions
             return m_Value;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Value = default;
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;

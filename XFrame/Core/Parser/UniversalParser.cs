@@ -180,7 +180,7 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             foreach (var item in m_Parsers)

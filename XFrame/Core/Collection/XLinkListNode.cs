@@ -99,13 +99,13 @@ namespace XFrame.Collections
         #endregion
 
         #region Pool Life Fun
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             InnerInitState();
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             InnerInitState();

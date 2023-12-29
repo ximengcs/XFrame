@@ -45,7 +45,7 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;
@@ -137,7 +137,7 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;

@@ -8,7 +8,7 @@ namespace XFrame.Core.Caches
         private Action<ICacheObject> m_Callback;
         public ICacheObject CacheObject { get; private set; }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());
@@ -27,7 +27,7 @@ namespace XFrame.Core.Caches
             m_Callback = null;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
 

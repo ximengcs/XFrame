@@ -4,12 +4,12 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Pools
 {
-    internal class ObjectPool<T> : PoolObjectBase, IPool<T> where T : IPoolObject
+    internal class ObjectPool<T> : IPool<T> where T : IPoolObject
     {
         private Type m_Type;
         private PoolHelperBase m_Helper;
-        private XLinkList<PoolObjectBase> m_Objects;
-        private XLoopQueue<XLinkNode<PoolObjectBase>> m_NodeCache;
+        private XLinkList<IXPoolObject> m_Objects;
+        private XLoopQueue<XLinkNode<IXPoolObject>> m_NodeCache;
         private int m_UseCount;
 
         public Type ObjectType => m_Type;
@@ -36,8 +36,8 @@ namespace XFrame.Modules.Pools
             m_UseCount = 0;
             m_Type = typeof(T);
             m_Helper = helper;
-            m_Objects = new XLinkList<PoolObjectBase>(false);
-            m_NodeCache = new XLoopQueue<XLinkNode<PoolObjectBase>>(m_Helper.CacheCount);
+            m_Objects = new XLinkList<IXPoolObject>(false);
+            m_NodeCache = new XLoopQueue<XLinkNode<IXPoolObject>>(m_Helper.CacheCount);
         }
 
         public T Require(int poolKey, object userData = default)
@@ -77,24 +77,24 @@ namespace XFrame.Modules.Pools
             }
         }
 
-        private PoolObjectBase InnerCreate(int poolKey, object userData)
+        private IXPoolObject InnerCreate(int poolKey, object userData)
         {
-            PoolObjectBase obj = m_Helper.Factory(m_Type, poolKey, userData);
+            IXPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
             m_Helper.OnObjectCreate(obj);
             obj.OnCreateFromPool();
             return obj;
         }
 
-        private IPoolObject InnerRequire(int poolKey, object userData)
+        private IXPoolObject InnerRequire(int poolKey, object userData)
         {
-            PoolObjectBase obj;
+            IXPoolObject obj;
             if (m_Objects.Empty)
             {
                 obj = InnerCreate(poolKey, userData);
             }
             else
             {
-                XLinkNode<PoolObjectBase> node = m_Objects.First;
+                XLinkNode<IXPoolObject> node = m_Objects.First;
                 while (node != null)
                 {
                     if (node.Value.PoolKey == poolKey)
@@ -134,18 +134,18 @@ namespace XFrame.Modules.Pools
                 return false;
             }
 
-            PoolObjectBase objBase = obj as PoolObjectBase;
-            m_Helper.OnObjectRelease(objBase);
-            objBase.OnReleaseFromPool();
-            objBase.InPool = null;
+            IXPoolObject xobj = obj as IXPoolObject;
+            m_Helper.OnObjectRelease(xobj);
+            xobj.OnReleaseFromPool();
+            xobj.InPool = null;
             if (m_NodeCache.Empty)
             {
-                m_Objects.AddLast(objBase);
+                m_Objects.AddLast(xobj);
             }
             else
             {
-                XLinkNode<PoolObjectBase> node = m_NodeCache.RemoveFirst();
-                node.Value = objBase;
+                XLinkNode<IXPoolObject> node = m_NodeCache.RemoveFirst();
+                node.Value = xobj;
                 m_Objects.AddLast(node);
             }
             return true;
@@ -153,7 +153,7 @@ namespace XFrame.Modules.Pools
 
         public void ClearObject()
         {
-            foreach (XLinkNode<PoolObjectBase> obj in m_Objects)
+            foreach (XLinkNode<IXPoolObject> obj in m_Objects)
             {
                 m_Helper.OnObjectDestroy(obj);
                 obj.Value.OnDestroyFromPool();

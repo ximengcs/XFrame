@@ -6,6 +6,7 @@ namespace XFrame.Core
     public class BoolParser : PoolObjectBase, IParser<bool>
     {
         private bool m_Value;
+
         public bool Value => m_Value;
         public LogLevel LogLv { get; set; }
 
@@ -63,13 +64,13 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             LogLv = LogLevel.Warning;

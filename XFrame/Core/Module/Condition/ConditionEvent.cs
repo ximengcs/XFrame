@@ -1,6 +1,5 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Event;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
@@ -51,13 +50,13 @@ namespace XFrame.Modules.Conditions
             return evt;
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             Id = EventId;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Param = default;

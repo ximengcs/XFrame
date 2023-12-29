@@ -1,7 +1,7 @@
 ﻿using System;
+using XFrame.Modules.Pools;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
@@ -63,7 +63,7 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;

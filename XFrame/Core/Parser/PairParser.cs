@@ -92,20 +92,20 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;
             m_Split = SPLIT;
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
 
-            PoolObjectBase objBase = m_KParser as PoolObjectBase;
+            IXPoolObject objBase = m_KParser as IXPoolObject;
             objBase.OnReleaseFromPool();
-            objBase = m_VParser as PoolObjectBase;
+            objBase = m_VParser as IXPoolObject;
             objBase.OnReleaseFromPool();
         }
 

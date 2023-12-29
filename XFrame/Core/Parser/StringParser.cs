@@ -40,7 +40,7 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             PoolKey = 0;

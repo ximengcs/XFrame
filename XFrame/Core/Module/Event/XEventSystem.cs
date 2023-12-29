@@ -1,6 +1,6 @@
-﻿using XFrame.Modules.Pools;
+﻿using System;
+using XFrame.Modules.Pools;
 using System.Collections.Generic;
-using System;
 
 namespace XFrame.Modules.Event
 {
@@ -54,7 +54,7 @@ namespace XFrame.Modules.Event
                 Handler2 -= handler2;
             }
 
-            protected internal override void OnRequestFromPool()
+            protected override void OnRequestFromPool()
             {
                 base.OnRequestFromPool();
                 Handler1 = null;
@@ -62,7 +62,7 @@ namespace XFrame.Modules.Event
                 PoolKey = 0;
             }
 
-            protected internal override void OnReleaseFromPool()
+            protected override void OnReleaseFromPool()
             {
                 base.OnReleaseFromPool();
                 Handler1 = null;

@@ -50,13 +50,13 @@ namespace XFrame.Modules.Resource
         /// </summary>
         public object Res { get; private set; }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Res = null;
@@ -124,13 +124,13 @@ namespace XFrame.Modules.Resource
 
         private Action<T> m_Callback;
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             AddStrategy(new Strategy());
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             Res = default;

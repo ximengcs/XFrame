@@ -61,7 +61,7 @@ namespace UnityXFrame.Core.Parser
             return true;
         }
 
-        protected internal override void OnCreateFromPool()
+        protected override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
             Split = Name.SPLIT;
@@ -71,7 +71,7 @@ namespace UnityXFrame.Core.Parser
             m_ValueMap = new HashSet<string>();
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Keys.Clear();

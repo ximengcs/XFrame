@@ -30,14 +30,14 @@ namespace XFrame.Tools
             }
         }
 
-        protected internal override void OnReleaseFromPool()
+        protected override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Inited = false;
             m_Callback = null;
         }
 
-        protected internal override void OnRequestFromPool()
+        protected override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             m_Inited = false;
