@@ -10,6 +10,6 @@ namespace XFrame.Core.Binder
         /// <summary>
         /// 更新事件，当数值有更新时需要触发此事件
         /// </summary>
-        protected internal event Action OnValueChange;
+        event Action OnValueChange;
     }
 }

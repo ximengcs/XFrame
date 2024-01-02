@@ -6,6 +6,9 @@ namespace XFrame.Core.Binder
 {
     /// <summary>
     /// 数值绑定器
+    /// <para>
+    /// <seealso cref="IChangeableValue"/>
+    /// </para>
     /// </summary>
     /// <typeparam name="T">持有的数值类型</typeparam>
     public class TriggerBinder<T> : IDisposable
