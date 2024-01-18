@@ -21,6 +21,9 @@ namespace XFrame.Modules.Resource
 
         ITask Preload<T>(IXEnumerable<string> resPaths);
 
+        ITask Preload(string resPath, Type type);
+        ITask Preload<T>(string resPath);
+
         object Load(string resPath, Type type);
 
         T Load<T>(string resPath);

@@ -26,7 +26,7 @@ namespace XFrame.Tools
             }
             else
             {
-                m_Callback = callback;
+                m_Callback += callback;
             }
         }
 

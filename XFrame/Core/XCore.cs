@@ -3,6 +3,7 @@ using XFrame.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
 {
@@ -281,7 +282,8 @@ namespace XFrame.Core
         private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            IModule module = (IModule)XModule.Type.CreateInstance(moduleType);
+            ITypeModule typeModule = (ITypeModule)InnerGetModule(typeof(ITypeModule), default);
+            IModule module = (IModule)typeModule.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
             Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");

@@ -6,6 +6,7 @@ using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using System.IO;
 
 namespace XFrame.Modules.Resource
 {
@@ -105,6 +106,46 @@ namespace XFrame.Modules.Resource
             }
 
             return allTask;
+        }
+
+        public ITask Preload<T>(string resPath)
+        {
+            InnerEnsurePreload();
+            if (m_PreLoadRes.ContainsKey(resPath))
+                return XModule.Task.GetOrNew<EmptyTask>();
+            ResLoadTask<T> loadTask = LoadAsync<T>(resPath);
+            loadTask.OnComplete((asset) =>
+            {
+                if (asset != null)
+                {
+                    m_PreLoadRes.Add(resPath, asset);
+                }
+                else
+                {
+                    Log.Error($"Preload asset failure {resPath}");
+                }
+            });
+            return loadTask;
+        }
+
+        public ITask Preload(string resPath, Type type)
+        {
+            InnerEnsurePreload();
+            if (m_PreLoadRes.ContainsKey(resPath))
+                return XModule.Task.GetOrNew<EmptyTask>();
+            ResLoadTask loadTask = LoadAsync(resPath, type);
+            loadTask.OnComplete((asset) =>
+            {
+                if (asset != null)
+                {
+                    m_PreLoadRes.Add(resPath, asset);
+                }
+                else
+                {
+                    Log.Error($"Preload asset failure {resPath}");
+                }
+            });
+            return loadTask;
         }
 
         public ITask Preload<T>(string[] resPaths)
