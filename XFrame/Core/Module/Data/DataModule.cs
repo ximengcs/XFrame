@@ -5,6 +5,7 @@ using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Collections;
+using XFrame.Utility;
 
 namespace XFrame.Modules.Datas
 {
@@ -31,7 +32,7 @@ namespace XFrame.Modules.Datas
 
             if (m_Helper == null)
             {
-                m_Helper = new DefaultDataHelper();
+                m_Helper = new DefaultDataHelper(this);
                 m_Helper.OnInit();
             }
 

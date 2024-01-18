@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Reflection;
+using XFrame.Utility;
 
 namespace XFrame.Core
 {
@@ -186,6 +187,11 @@ namespace XFrame.Core
             return InnerGetModule(moduleType, moduleId) != null;
         }
 
+        public IModule AddModule(Type moduleType, int moduleId = default, object userData = null)
+        {
+            return InnerAddModule(moduleType, moduleId, userData);
+        }
+
         public bool RemoveModule(IModule module)
         {
             return m_Modules.Remove(module);
@@ -282,7 +288,7 @@ namespace XFrame.Core
         private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            ITypeModule typeModule = (ITypeModule)InnerGetModule(typeof(ITypeModule), default);
+            ITypeModule typeModule = XModule.Type;
             IModule module = (IModule)typeModule.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
@@ -312,7 +318,10 @@ namespace XFrame.Core
 
             ModuleBase baseClass = module as ModuleBase;
             if (baseClass != null)
+            {
                 baseClass.Id = moduleId;
+                baseClass.Domain = this;
+            }
             module.OnInit(data);
             if (m_IsStart)
                 module.OnStart();

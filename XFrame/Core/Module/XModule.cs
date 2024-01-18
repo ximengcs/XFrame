@@ -24,7 +24,7 @@ namespace XFrame.Core
 {
     public partial class XModule
     {
-        public static ITypeModule Type =>  m_Type ??= Entry.GetModule<ITypeModule>();
+        public static ITypeModule Type => (m_Type ??= Entry.GetModule<ITypeModule>()) == null ? (m_Type ??= m_FallbackCore != null ? m_FallbackCore.GetModule<ITypeModule>() : null) : m_Type;
         public static IArchiveModule Archive => m_Archive ??= Entry.GetModule<IArchiveModule>();
         public static IConditionModule Condition => m_Condition ??= Entry.GetModule<IConditionModule>();
         public static IContainerModule Container => m_Container ??= Entry.GetModule<IContainerModule>();
@@ -38,7 +38,7 @@ namespace XFrame.Core
         public static ILocalizeModule I18N => m_I18N ??= Entry.GetModule<ILocalizeModule>();
         public static ILogModule Log => m_Log ??= Entry.GetModule<ILogModule>();
         public static IPlotModule Plot => m_Plot ??= Entry.GetModule<IPlotModule>();
-        public static IPoolModule Pool => m_Pool ??= Entry.GetModule<IPoolModule>();
+        public static IPoolModule Pool => (m_Pool ??= Entry.GetModule<IPoolModule>()) == null ? (m_Pool ??= m_FallbackCore != null ? m_FallbackCore.GetModule<IPoolModule>() : null) : m_Pool;
         public static IProcedureModule Procedure => m_Procedure ??= Entry.GetModule<IProcedureModule>();
         public static IRandModule Rand => m_Rand ??= Entry.GetModule<IRandModule>();
         public static IResModule Res => m_Res ??= Entry.GetModule<IResModule>();

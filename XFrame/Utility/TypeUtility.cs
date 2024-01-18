@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Text;
+using XFrame.Core;
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Utility
 {
     /// <summary>
     /// 类型常用方法
     /// </summary>
-    public class TypeUtility
+    public static class TypeUtility
     {
         /// <summary>
         /// 取得简易名称

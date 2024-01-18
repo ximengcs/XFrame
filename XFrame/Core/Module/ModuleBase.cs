@@ -17,6 +17,8 @@ namespace XFrame.Core
         /// </summary>
         public int Id { get; internal set; }
 
+        public XCore Domain { get; internal set; }
+
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_UseModules = new Dictionary<Type, int>();

@@ -24,6 +24,7 @@ namespace XFrame.Core
 {
     public partial class XModule
     {
+        private static XCore m_FallbackCore;
         private static ITypeModule m_Type;
         private static IArchiveModule m_Archive;
         private static IConditionModule m_Condition;
@@ -45,6 +46,11 @@ namespace XFrame.Core
         private static ISerializeModule m_Serialize;
         private static ITaskModule m_Task;
         private static ITimeModule m_Time;
+
+        public static void FallbackCore(XCore core)
+        {
+            m_FallbackCore = core;
+        }
 
         public static void Refresh()
         {

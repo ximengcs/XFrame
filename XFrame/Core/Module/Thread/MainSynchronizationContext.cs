@@ -27,6 +27,8 @@ namespace XFrame.Modules.Threads
         #region IModule Life Fun
         public int Id => default;
 
+        public XCore Domain => default;
+
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;

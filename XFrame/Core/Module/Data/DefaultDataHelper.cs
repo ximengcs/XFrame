@@ -22,8 +22,14 @@ namespace XFrame.Modules.Datas
             }
         }
 
+        private DataModule m_Module;
         private Dictionary<int, TypeInfo> m_TableTypes;
         private Dictionary<Type, List<IDataTable>> m_Tables;
+
+        public DefaultDataHelper(DataModule module)
+        {
+            m_Module = module;
+        }
 
         void IDataHelper.OnInit()
         {
@@ -102,7 +108,11 @@ namespace XFrame.Modules.Datas
 
         private IDataTable InnerAdd(Type tbType, Type jsonType, string json, int textType)
         {
-            object data = XModule.Serialize.DeserializeToObject(json, textType, jsonType);
+            ISerializeModule serializeModule = XModule.Serialize;
+            if (serializeModule == null)
+                serializeModule = m_Module.Domain.GetModule<ISerializeModule>(m_Module.Id);
+
+            object data = serializeModule.DeserializeToObject(json, textType, jsonType);
             IDataTable table = (IDataTable)XModule.Type.CreateInstance(tbType);
             table.OnInit(data);
 

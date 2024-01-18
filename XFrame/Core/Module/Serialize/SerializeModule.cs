@@ -3,6 +3,7 @@ using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Reflection;
 using System.Collections.Generic;
+using XFrame.Utility;
 
 namespace XFrame.Modules.Serialize
 {
