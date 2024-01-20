@@ -4,7 +4,7 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class FloatParser : IParser<float>
+    public class FloatParser : IParser<float>, ICanConfigLog
     {
         private float m_Value;
         public float Value => m_Value;

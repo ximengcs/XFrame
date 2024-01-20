@@ -1,14 +1,30 @@
-﻿using XFrame.Modules.Pools;
+﻿using System;
+using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class PairParser<K, V> : IParser<Pair<K, V>> where K : IParser where V : IParser
+    public class PairParser<K, V> : IParser<Pair<K, V>>, ICanConfigLog where K : IParser where V : IParser
     {
         private const char SPLIT = '|';
         private char m_Split;
         private string m_Origin;
         private IParser m_KParser;
         private IParser m_VParser;
+
+        public LogLevel LogLv
+        {
+            get => throw new NotSupportedException();
+            set
+            {
+                ICanConfigLog configer = m_KParser as ICanConfigLog;
+                if (configer != null)
+                    configer.LogLv = value;
+                configer = m_VParser as ICanConfigLog;
+                if (configer != null)
+                    configer.LogLv = value;
+            }
+        }
 
         public char Split
         {

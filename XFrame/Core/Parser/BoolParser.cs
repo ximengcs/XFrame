@@ -3,7 +3,7 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
-    public class BoolParser : IParser<bool>
+    public class BoolParser : IParser<bool>, ICanConfigLog
     {
         private bool m_Value;
         public bool Value => m_Value;

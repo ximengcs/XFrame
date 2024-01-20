@@ -5,7 +5,7 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
-    public class EnumParser<T> : IParser<T> where T : Enum
+    public class EnumParser<T> : IParser<T>, ICanConfigLog where T : Enum
     {
         private T m_Value;
         public T Value => m_Value;
