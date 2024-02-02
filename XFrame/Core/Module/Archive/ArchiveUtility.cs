@@ -4,9 +4,9 @@ using XFrame.Modules.Crypto;
 
 namespace XFrame.Modules.Archives
 {
-    public class ArchiveUtility
+    internal class ArchiveUtility
     {
-        public static IArchiveUtilityHelper Helper { get; set; } = new DefaultArchiveUtilityHelper();
+        public static IArchiveUtilityHelper Helper { get; set; }
 
         public static byte[] ReadBytes(string path)
         {

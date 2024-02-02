@@ -23,6 +23,11 @@ namespace XFrame.Modules.Config
         public static string ArchivePath;
 
         /// <summary>
+        /// 存档辅助器
+        /// </summary>
+        public static string ArchiveUtilityHelper;
+
+        /// <summary>
         /// 存档是否加密
         /// </summary>
         public static bool ArchiveEncrypt;
