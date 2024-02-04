@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System.Globalization;
-using UnityXFrame.Core.Parser;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Local;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Serialize;
 using XFrame.Utility;
 
 namespace XFrameTest
