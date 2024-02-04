@@ -1,4 +1,5 @@
-﻿using XFrame.Modules.Local;
+﻿
+using XFrame.Modules.Reflection;
 
 namespace XFrame.Modules.Config
 {
@@ -15,7 +16,7 @@ namespace XFrame.Modules.Config
         /// <summary>
         /// 类型系统使用类型
         /// </summary>
-        public static string[] UseClassModule;
+        public static ITypeCheckHelper TypeChecker;
 
         /// <summary>
         /// 存档路径

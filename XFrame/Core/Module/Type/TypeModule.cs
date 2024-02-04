@@ -65,9 +65,9 @@ namespace XFrame.Modules.Reflection
                 {
                     find = true;
                 }
-                else if (XConfig.UseClassModule != null)
+                else if (XConfig.TypeChecker.AssemblyList != null)
                 {
-                    foreach (string name in XConfig.UseClassModule)
+                    foreach (string name in XConfig.TypeChecker.AssemblyList)
                     {
                         if (assemblyName == name)
                         {
@@ -83,6 +83,8 @@ namespace XFrame.Modules.Reflection
                 foreach (TypeInfo typeInfo in assembly.DefinedTypes)
                 {
                     Type type = typeInfo.AsType();
+                    if (!XConfig.TypeChecker.CheckType(type))
+                        continue;
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
                     m_TypesAllAttrs.Add(type, attrs);
                     foreach (Attribute attr in attrs)

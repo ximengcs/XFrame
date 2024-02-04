@@ -5,7 +5,7 @@ using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace UnityXFrame.Core.Parser
+namespace XFrame.Core
 {
     public class Names : MapParser<IntOrHashParser, AreaParser>, IEnumerable<string>
     {
