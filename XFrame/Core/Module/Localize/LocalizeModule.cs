@@ -263,7 +263,7 @@ namespace XFrame.Modules.Local
         {
             m_IdMap = new Dictionary<int, int>();
             m_Data = new Csv<string>(csvText, References.Require<StringParser>());
-            ArrayParser<EnumParser<Language>> titleParser = new ArrayParser<EnumParser<Language>>();
+            ArrayParser<EnumParser<Language>> titleParser = References.Require<ArrayParser<EnumParser<Language>>>();
             titleParser.Parse(m_Data.Get(1));
             m_Title = new Language[titleParser.Count];
             int index = 0;
