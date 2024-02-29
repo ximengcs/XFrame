@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Reflection;
-using XFrame.Utility;
 
 namespace XFrame.Core
 {

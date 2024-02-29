@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Core\Task\" />
     <Folder Include="Plugins\CsvHelper\" />
     <Folder Include="Plugins\CommandLine\" />
   </ItemGroup>
