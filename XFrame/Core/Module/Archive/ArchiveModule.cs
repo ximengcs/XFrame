@@ -37,6 +37,13 @@ namespace XFrame.Modules.Archives
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
+
+            if (!string.IsNullOrEmpty(XConfig.ArchiveUtilityHelper))
+            {
+                Type type = XModule.Type.GetType(XConfig.ArchiveUtilityHelper);
+                IArchiveUtilityHelper helper = (IArchiveUtilityHelper)XModule.Type.CreateInstance(type);
+                ArchiveUtility.Helper = helper;
+            }
             InnerInit();
         }
 

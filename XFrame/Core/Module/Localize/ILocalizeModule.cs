@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using XFrame.Core;
 using XFrame.Modules.Event;
 
@@ -11,7 +10,7 @@ namespace XFrame.Modules.Local
 
         Language Lang { get; set; }
 
-        ArrayParser<EnumParser<Language>> ExistLangs { get; }
+        Language[] ExistLangs { get; }
 
         bool HasLanguage(Language language);
 

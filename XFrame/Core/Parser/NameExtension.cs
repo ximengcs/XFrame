@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnityXFrame.Core.Parser
+namespace XFrame.Core
 {
     public static class NameExtension
     {

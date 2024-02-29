@@ -2,7 +2,7 @@
 using XFrame.Modules.Pools;
 using XFrame.Modules.Diagnotics;
 
-namespace UnityXFrame.Core.Parser
+namespace XFrame.Core
 {
     public class Name : MapParser<IntOrHashParser, UniversalParser>
     {

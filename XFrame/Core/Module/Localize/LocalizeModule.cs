@@ -23,7 +23,7 @@ namespace XFrame.Modules.Local
         private IEventSystem m_Event;
         private Dictionary<int, int> m_IdMap;
         private FormatterProvider m_Formatter;
-        private ArrayParser<EnumParser<Language>> m_Title;
+        private Language[] m_Title;
         #endregion
 
         #region Life Fun
@@ -61,7 +61,7 @@ namespace XFrame.Modules.Local
             }
         }
 
-        public ArrayParser<EnumParser<Language>> ExistLangs => m_Title;
+        public Language[] ExistLangs => m_Title;
 
         /// <summary>
         /// 是否存在语言
@@ -263,8 +263,13 @@ namespace XFrame.Modules.Local
         {
             m_IdMap = new Dictionary<int, int>();
             m_Data = new Csv<string>(csvText, References.Require<StringParser>());
-            m_Title = new ArrayParser<EnumParser<Language>>();
-            m_Title.Parse(m_Data.Get(1));
+            ArrayParser<EnumParser<Language>> titleParser = References.Require<ArrayParser<EnumParser<Language>>>();
+            titleParser.Parse(m_Data.Get(1));
+            m_Title = new Language[titleParser.Count];
+            int index = 0;
+            foreach (var item in titleParser.Value)
+                m_Title[index++] = item.Value;
+            titleParser.Release();
 
             for (int i = 1; i <= m_Data.Row; i++)
             {
@@ -290,7 +295,7 @@ namespace XFrame.Modules.Local
         {
             if (m_Title == null)
                 return -1;
-            int index = m_Title.IndexOf(language);
+            int index = Array.IndexOf(m_Title, language);
             if (index == -1)
                 Log.Debug("XFrame", $"language map error. {language}");
             return index;

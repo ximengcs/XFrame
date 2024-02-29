@@ -1,5 +1,4 @@
-﻿using System.IO;
-using XFrame.Core;
+﻿using XFrame.Core;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 
@@ -7,12 +6,14 @@ namespace XFrame.Modules.Archives
 {
     internal class ArchiveUtility
     {
+        public static IArchiveUtilityHelper Helper { get; set; }
+
         public static byte[] ReadBytes(string path)
         {
             byte[] result;
             if (XConfig.ArchiveEncrypt)
             {
-                byte[] data = File.ReadAllBytes(path);
+                byte[] data = Helper.ReadAllBytes(path);
                 ICryptor cryptor = XModule.Crypto.New();
                 cryptor.BeginDecrypty(data);
                 result = cryptor.EndDecrypty();
@@ -20,7 +21,7 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                result = File.ReadAllBytes(path);
+                result = Helper.ReadAllBytes(path);
             }
             return result;
         }
@@ -33,12 +34,12 @@ namespace XFrame.Modules.Archives
                 cryptor.BeginEncrypt();
                 cryptor.Writer.BaseStream.Write(buffer, 0, buffer.Length);
                 byte[] data = cryptor.EndEncrypt();
-                File.WriteAllBytes(path, data);
+                Helper.WriteAllBytes(path, data);
                 cryptor.Dispose();
             }
             else
             {
-                File.WriteAllBytes(path, buffer);
+                Helper.WriteAllBytes(path, buffer);
             }
         }
 
@@ -47,7 +48,7 @@ namespace XFrame.Modules.Archives
             string result;
             if (XConfig.ArchiveEncrypt)
             {
-                byte[] data = File.ReadAllBytes(path);
+                byte[] data = Helper.ReadAllBytes(path);
                 ICryptor cryptor = XModule.Crypto.New();
                 cryptor.BeginDecrypty(data);
                 cryptor.EndDecrypty();
@@ -56,7 +57,7 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                result = File.ReadAllText(path);
+                result = Helper.ReadAllText(path);
             }
             return result;
         }
@@ -69,12 +70,12 @@ namespace XFrame.Modules.Archives
                 cryptor.BeginEncrypt();
                 cryptor.Writer.Write(text);
                 byte[] data = cryptor.EndEncrypt();
-                File.WriteAllBytes(path, data);
+                Helper.WriteAllBytes(path, data);
                 cryptor.Dispose();
             }
             else
             {
-                File.WriteAllText(path, text);
+                Helper.WriteAllText(path, text);
             }
         }
     }

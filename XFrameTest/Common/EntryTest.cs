@@ -1,5 +1,6 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Config;
+using XFrameTest.Common;
 
 namespace XFrameTest
 {
@@ -13,7 +14,7 @@ namespace XFrameTest
         public static void Exec(int times, Action runCallback)
         {
             XConfig.ArchiveEncrypt = false;
-            XConfig.UseClassModule = new string[] { "XFrameTest" };
+            XConfig.TypeChecker = new DefaultTypeChecker();
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "D:\\TestXFrame";
             XConfig.DefaultDownloadHelper = typeof(TestDownloadHelper).FullName;
