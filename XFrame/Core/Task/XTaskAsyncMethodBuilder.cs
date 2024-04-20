@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Tasks
 {
@@ -15,6 +16,7 @@ namespace XFrame.Tasks
             XTaskAsyncMethodBuilder builder = new XTaskAsyncMethodBuilder();
             builder.m_Task = new XTask();
             builder.m_CancelTask = builder.m_Task;
+            builder.m_Task.SetAction(XTaskHelper.UseAction);
             return builder;
         }
 
@@ -37,13 +39,17 @@ namespace XFrame.Tasks
         {
             InnerCheckCancel();
             StateMachineWraper<TStateMachine> wraper =
-                StateMachineWraper<TStateMachine>.Require(ref stateMachine, m_Task);
-            awaiter.OnCompleted(wraper.Run);
-
-            ICancelTask cancelTask = awaiter as ICancelTask;
-            if (cancelTask != null)
+                StateMachineWraper<TStateMachine>.Require(ref stateMachine, m_Task, SetResult);
+            ITask task = awaiter as ITask;
+            if (task == null)
             {
-                cancelTask.Token.AddHandler(stateMachine.MoveNext);
+                Log.Warning("XFrame", "Please use new task.");
+                awaiter.OnCompleted(wraper.RunNoState);
+            }
+            else
+            {
+                task.OnCompleted(wraper.Run);
+                m_Task.AddChild(task);
             }
         }
 
@@ -52,23 +58,14 @@ namespace XFrame.Tasks
             where TAwaiter : ICriticalNotifyCompletion
             where TStateMachine : IAsyncStateMachine
         {
-            InnerCheckCancel();
-            StateMachineWraper<TStateMachine> wraper =
-                StateMachineWraper<TStateMachine>.Require(ref stateMachine, m_Task);
-            awaiter.UnsafeOnCompleted(wraper.Run);
-
-            ICancelTask cancelTask = awaiter as ICancelTask;
-            if (cancelTask != null)
-            {
-                cancelTask.Token.AddHandler(stateMachine.MoveNext);
-            }
+            AwaitOnCompleted(ref awaiter, ref stateMachine);
         }
 
         public void SetException(Exception e)
         {
-            if (!(e is OperationCanceledException))
+            if (e is not OperationCanceledException)
             {
-                XTask.ExceptionHandler.Invoke(e);
+                XTask.ExceptionHandler?.Invoke(e);
             }
         }
 

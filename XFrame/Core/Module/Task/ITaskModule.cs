@@ -1,5 +1,5 @@
-﻿
-using XFrame.Core;
+﻿using XFrame.Core;
+using XFrame.Tasks;
 
 namespace XFrame.Modules.Tasks
 {
@@ -9,16 +9,8 @@ namespace XFrame.Modules.Tasks
 
         long TaskTimeout { get; set; }
 
-        T GetOrNew<T>() where T : ITask;
+        void Register(IUpdater task);
 
-        T Get<T>(string name) where T : ITask;
-
-        ITask Get(string name);
-
-        T GetOrNew<T>(string name) where T : ITask;
-
-        bool Remove(ITask task);
-
-        bool Remove(string name);
+        void UnRegister(IUpdater task);
     }
 }

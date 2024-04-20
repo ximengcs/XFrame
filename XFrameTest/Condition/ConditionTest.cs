@@ -23,6 +23,7 @@ namespace XFrameTest.Condition
                     Log.Debug($"{handle.Name} complete");
                 });
 
+                /*
                 XModule.Task.GetOrNew<ActionTask>().Add(100, () =>
                 {
                     Log.Debug("Exec");
@@ -34,7 +35,7 @@ namespace XFrameTest.Condition
                 {
                     Log.Debug("Exec2");
                     XModule.Condition.Event.Trigger(ConditionEvent.Create(CondConst.TEST, "9;9"));
-                }).Start();
+                }).Start();*/
             });
         }
 

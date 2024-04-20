@@ -40,9 +40,9 @@ namespace XFrame.Tasks
 
         public void SetException(Exception e)
         {
-            if (!(e is OperationCanceledException))
+            if (e is not OperationCanceledException)
             {
-                XTask.ExceptionHandler.Invoke(e);
+                XTask.ExceptionHandler?.Invoke(e);
             }
         }
 

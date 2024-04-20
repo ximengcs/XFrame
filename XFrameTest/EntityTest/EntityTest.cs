@@ -23,6 +23,7 @@ namespace XFrameTest
                 });
                 Log.Debug("-------------Create E1 End-------------");
 
+                /*
                 XModule.Task.GetOrNew<ActionTask>()
                     .Add(1f, () =>
                     {
@@ -39,7 +40,7 @@ namespace XFrameTest
                             db.SetData("4");
                         });
                         Log.Debug("-------------Create E1 End Again-------------");
-                    }).Start();
+                    }).Start();*/
             });
         }
 

@@ -1,11 +1,10 @@
-﻿using XFrame.Modules.Tasks;
-
+﻿
 namespace XFrame.Modules.Download
 {
     /// <summary>
     /// 下载辅助器
     /// </summary>
-    public interface IDownloadHelper : ITaskHandler
+    public interface IDownloadHelper
     {
         /// <summary>
         /// 下载是否完成，成功或失败完成时为true

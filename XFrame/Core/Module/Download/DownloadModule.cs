@@ -52,13 +52,11 @@ namespace XFrame.Modules.Download
         /// <param name="url">url</param>
         public DownTask Down(string url, params string[] reserveUrls)
         {
-            DownTask task = XModule.Task.GetOrNew<DownTask>();
             IDownloadHelper helper = (IDownloadHelper)XModule.Type.CreateInstance(m_Helper);
             helper.Url = url;
             helper.ReserveUrl = reserveUrls;
             helper.OnInit();
-            task.Add(helper);
-            return task;
+            return new DownTask(helper);
         }
         #endregion
 

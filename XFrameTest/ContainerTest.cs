@@ -146,11 +146,11 @@ namespace XFrameTest
             {
                 Console.WriteLine("New");
                 Container container = XModule.Container.New();
-                XModule.Task.GetOrNew<ActionTask>()
-                .Add(() =>
-                {
-                    XModule.Container.Remove(container);
-                }, true).Start();
+                //XModule.Task.GetOrNew<ActionTask>()
+                //.Add(() =>
+                //{
+                //    XModule.Container.Remove(container);
+                //}, true).Start();
             });
         }
     }

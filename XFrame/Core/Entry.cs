@@ -67,20 +67,18 @@ namespace XFrame.Core
             if (handler != null)
             {
                 handler.BeforeHandle()
-                       .AutoDelete()
-                       .OnComplete(() =>
+                       .OnCompleted(() =>
                        {
                            InnerInit<CoreModuleAttribute>(m_Core);
                            InnerInit<CommonModuleAttribute>(m_Custom);
                            handler.AfterHandle()
-                                  .AutoDelete()
-                                  .OnComplete(() =>
+                                  .OnCompleted(() =>
                                   {
                                       m_Inited = true;
                                       if (m_DoStart)
                                           Start();
-                                  }).Start();
-                       }).Start();
+                                  }).Coroutine();
+                       }).Coroutine();
             }
             else
             {
@@ -107,18 +105,16 @@ namespace XFrame.Core
             if (handler != null)
             {
                 handler.BeforeHandle()
-                       .AutoDelete()
-                       .OnComplete(() =>
+                       .OnCompleted(() =>
                        {
                            m_Core.Start();
                            m_Custom.Start();
                            handler.AfterHandle()
-                                  .AutoDelete()
-                                  .OnComplete(() =>
+                                  .OnCompleted(() =>
                                   {
                                       InnerStartRun();
-                                  }).Start();
-                       }).Start();
+                                  }).Coroutine();
+                       }).Coroutine();
             }
             else
             {

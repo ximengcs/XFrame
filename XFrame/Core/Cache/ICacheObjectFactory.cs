@@ -1,12 +1,10 @@
 ﻿
-using XFrame.Modules.Tasks;
+using XFrame.Tasks;
 
 namespace XFrame.Core.Caches
 {
-    public interface ICacheObjectFactory : ITaskHandler
+    public interface ICacheObjectFactory : IProTaskHandler
     {
-        bool IsDone { get; }
-
         ICacheObject Result { get; }
 
         void OnFactory();

@@ -7,6 +7,6 @@ namespace XFrame.Tasks
 
         ITaskBinder Binder { get; }
         
-        void Cancel();
+        void SetState(XTaskState state);
     }
 }

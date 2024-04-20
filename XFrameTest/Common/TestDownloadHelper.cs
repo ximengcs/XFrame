@@ -1,5 +1,6 @@
 ﻿
 using System.Net;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Download;
 
 namespace XFrameTest

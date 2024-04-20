@@ -166,12 +166,12 @@ namespace XFrameTest
                 Log.Debug("Start");
                 IContainer c1 = XModule.Container.New<Container1>();
 
-                XModule.Task.GetOrNew<ActionTask>().Add(1, () =>
-                {
-                    XModule.Container.Remove(c1);
-                    Log.Debug("Complete");
-                    IContainer c2 = XModule.Container.New<Container1>();
-                }).Start();
+                //XModule.Task.GetOrNew<ActionTask>().Add(1, () =>
+                //{
+                //    XModule.Container.Remove(c1);
+                //    Log.Debug("Complete");
+                //    IContainer c2 = XModule.Container.New<Container1>();
+                //}).Start();
             });
         }
     }

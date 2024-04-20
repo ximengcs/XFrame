@@ -1,37 +1,44 @@
 ﻿using System;
-using XFrame.Modules.Tasks;
+using XFrame.Tasks;
 
 namespace XFrame.Core.Caches
 {
-    public partial class CacheObjectTask : TaskBase
+    public partial class CacheObjectTask : XProTask<ICacheObject>
     {
+        private ICacheObjectFactory m_Handler;
         private Action<ICacheObject> m_Callback;
-        public ICacheObject CacheObject { get; private set; }
 
-        protected override void OnCreateFromPool()
+        public ICacheObject CacheObject => m_Handler.Result;
+
+        public CacheObjectTask(ICacheObjectFactory factory) : base(factory)
         {
-            base.OnCreateFromPool();
-            AddStrategy(new Strategy());
+            m_Handler = factory;
+            m_Handler.OnFactory();
         }
 
-        public CacheObjectTask OnComplete(Action<ICacheObject> callback)
+        public override ICacheObject GetResult()
+        {
+            return CacheObject;
+        }
+
+        public CacheObjectTask OnCompleted(Action<ICacheObject> callback)
         {
             m_Callback = callback;
             return this;
         }
 
-        protected override void InnerComplete()
+        protected override void InnerExecComplete()
         {
-            base.InnerComplete();
-            m_Callback?.Invoke(CacheObject);
-            m_Callback = null;
-        }
-
-        protected override void OnReleaseFromPool()
-        {
-            base.OnReleaseFromPool();
-            CacheObject = null;
-            m_Callback = null;
+            if (m_Callback != null)
+            {
+                if (m_Handler.Result != null)
+                    XCache.Event.Trigger(CacheObjectFactoryEvent.Create(m_Handler.Result.GetType()));
+                m_Handler.OnFinish();
+                m_Handler = null;
+                m_Callback?.Invoke(CacheObject);
+                m_Callback = null;
+            }
+            base.InnerExecComplete();
         }
     }
 }

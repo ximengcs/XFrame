@@ -1,4 +1,5 @@
 ﻿using XFrame.Modules.Tasks;
+using XFrame.Tasks;
 
 namespace XFrame.Core
 {
@@ -11,12 +12,12 @@ namespace XFrame.Core
         /// 启动之前处理
         /// </summary>
         /// <returns>此任务</returns>
-        ITask BeforeHandle();
+        XTask BeforeHandle();
 
         /// <summary>
         /// 启动之后处理
         /// </summary>
         /// <returns></returns>
-        ITask AfterHandle();
+        XTask AfterHandle();
     }
 }

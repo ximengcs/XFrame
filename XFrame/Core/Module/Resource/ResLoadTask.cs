@@ -1,6 +1,6 @@
 ﻿using System;
 using XFrame.Modules.Tasks;
-
+#if OLD_TASK
 namespace XFrame.Modules.Resource
 {
     /// <summary>
@@ -160,3 +160,4 @@ namespace XFrame.Modules.Resource
         }
     }
 }
+#endif

@@ -1,47 +1,41 @@
 ﻿using XFrame.Core;
-using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Tasks;
-using XFrame.Modules.Times;
+using XFrame.Tasks;
 
 namespace XFrameTest
 {
     class InitHandler : IInitHandler
     {
-        public ITask BeforeHandle()
+        public async XTask BeforeHandle()
         {
-            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
-            task.Add(() => Log.Debug("IInitHandler BeforeHandle " + XModule.Time.Time));
-            return task;
+            Log.Debug("IInitHandler BeforeHandle " + XModule.Time.Time);
+            await new XTaskCompleted();
         }
 
-        public ITask AfterHandle()
+        public async XTask AfterHandle()
         {
-            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
-            task.Add(3.0f, () => Log.Debug("IInitHandler AfterHandle " + XModule.Time.Time));
-            return task;
+            Log.Debug("IInitHandler AfterHandle " + XModule.Time.Time);
+            await new XTaskCompleted();
         }
 
         public void EnterHandle()
         {
-            
+
         }
     }
 
     class StartHandler : IStartHandler
     {
-        public ITask BeforeHandle()
+        public async XTask BeforeHandle()
         {
-            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("IStartHandler BeforeHandle "  + XModule.Time.Time));
-            return task;
+            Console.WriteLine("IStartHandler BeforeHandle "  + XModule.Time.Time);
+            await new XTaskCompleted();
         }
 
-        public ITask AfterHandle()
+        public async XTask AfterHandle()
         {
-            ActionTask task = XModule.Task.GetOrNew<ActionTask>();
-            task.Add(() => Console.WriteLine("IStartHandler AfterHandle " + XModule.Time.Time));
-            return task;
+            Console.WriteLine("IStartHandler AfterHandle " + XModule.Time.Time);
+            await new XTaskCompleted();
         }
     }
 }

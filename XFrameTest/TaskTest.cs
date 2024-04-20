@@ -11,6 +11,7 @@ using XFrame.Modules.Download;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Threads;
 using XFrame.Modules.Times;
+using XFrame.Tasks;
 
 namespace XFrameTest
 {
@@ -24,6 +25,8 @@ namespace XFrameTest
             {
                 Log.ToQueue = false;
                 Log.Debug($"[{XModule.Time.Frame}]");
+
+                /*
                 ActionTask task = XModule.Task.GetOrNew<ActionTask>();
                 task.Add(0, () =>
                 {
@@ -77,7 +80,6 @@ namespace XFrameTest
                     Log.Debug($"[{XModule.Time.Frame}] Complete {task.GetHashCode()}");
                 }).Start();
 
-                /*
                 DelayTask delay = TaskModule.Inst.GetOrNew<DelayTask>();
                 delay.Add(1.0f, () =>
                 {
@@ -96,14 +98,13 @@ namespace XFrameTest
         [TestMethod]
         public void TestDownload()
         {
-            EntryTest.Exec(() =>
+            EntryTest.Exec(async () =>
             {
                 string url = "https://c1b.tapque.com/Innovate/ASMRMakeOver/Production/iOS/V1.0.8/ASMRMakeOverConfig.json";
-                XModule.Download.Down(url).OnComplete((string text) =>
-                {
-                    Console.WriteLine("Download Complete");
-                    Console.WriteLine(text);
-                }).Start();
+                Console.WriteLine("Download Start");
+                DownTask task = await XModule.Download.Down(url);
+                Console.WriteLine("Download Complete");
+                Console.WriteLine(task.Text);
             });
         }
 
@@ -111,6 +112,17 @@ namespace XFrameTest
         public void TestStartup()
         {
             EntryTest.Exec(() => { Log.ConsumeWaitQueue(); });
+        }
+
+        [TestMethod]
+        public void TestDelay()
+        {
+            EntryTest.Exec(async () =>
+            {
+                Console.WriteLine("before");
+                await XTask.Delay(1000);
+                Console.WriteLine("after");
+            });
         }
     }
 }

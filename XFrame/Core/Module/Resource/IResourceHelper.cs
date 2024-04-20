@@ -42,7 +42,7 @@ namespace XFrame.Modules.Resource
         /// <param name="resPath">资源路径</param>
         /// <param name="type">资源类型</param>
         /// <returns>加载到的资源</returns>
-        ResLoadTask LoadAsync(string resPath, Type type);
+        ResLoadTask_ LoadAsync(string resPath, Type type);
 
         /// <summary>
         /// 异步加载资源
@@ -50,7 +50,7 @@ namespace XFrame.Modules.Resource
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="resPath">资源路径</param>
         /// <returns>加载到的资源</returns>
-        ResLoadTask<T> LoadAsync<T>(string resPath);
+        ResLoadTask_<T> LoadAsync<T>(string resPath);
 
         /// <summary>
         /// 卸载资源

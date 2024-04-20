@@ -38,12 +38,17 @@ namespace XFrame.Modules.Archives
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
 
+            Type type;
             if (!string.IsNullOrEmpty(XConfig.ArchiveUtilityHelper))
             {
-                Type type = XModule.Type.GetType(XConfig.ArchiveUtilityHelper);
-                IArchiveUtilityHelper helper = (IArchiveUtilityHelper)XModule.Type.CreateInstance(type);
-                ArchiveUtility.Helper = helper;
+                type = XModule.Type.GetType(XConfig.ArchiveUtilityHelper);
             }
+            else
+            {
+                type = typeof(DefaultArchiveUtilityHelper);
+            }
+            IArchiveUtilityHelper helper = (IArchiveUtilityHelper)XModule.Type.CreateInstance(type);
+            ArchiveUtility.Helper = helper;
             InnerInit();
         }
 
