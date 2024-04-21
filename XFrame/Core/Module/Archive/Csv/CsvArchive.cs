@@ -11,6 +11,7 @@ namespace XFrame.Modules.Archives
     {
         #region Inner Fields
         private string m_Path;
+        private IArchiveModule m_Module;
         private Csv<string> m_Csv;
         #endregion
 
@@ -21,16 +22,17 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        void IArchive.OnInit(IArchiveModule module, string path, string name, object param)
         {
             Name = name;
             m_Path = path;
+            m_Module = module;
             int column = 0;
             if (param != null)
                 column = (int)param;
             if (File.Exists(m_Path))
             {
-                string text = ArchiveUtility.ReadText(m_Path);
+                string text = ArchiveUtility.ReadText(m_Module,m_Path);
                 m_Csv = new Csv<string>(text, References.Require<StringParser>());
             }
             else
@@ -50,7 +52,7 @@ namespace XFrame.Modules.Archives
 
         public void Save()
         {
-            ArchiveUtility.WriteText(m_Path, m_Csv.ToString());
+            ArchiveUtility.WriteText(m_Module, m_Path, m_Csv.ToString());
         }
         #endregion
     }

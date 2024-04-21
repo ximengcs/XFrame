@@ -24,7 +24,7 @@ namespace XFrame.Modules.Entities
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Entities = new XCollection<IEntity>();
+            m_Entities = new XCollection<IEntity>(Domain);
         }
 
         protected override void OnDestroy()
@@ -41,13 +41,13 @@ namespace XFrame.Modules.Entities
         /// <typeparam name="T">实体基类或实体类</typeparam>
         public void RegisterEntity<T>() where T : class, IEntity
         {
-            TypeSystem module = XModule.Type
+            TypeSystem module = Domain.TypeModule
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub<T>();
 
             foreach (Type type in module)
             {
-                EntityPropAttribute atr = XModule.Type.GetAttribute<EntityPropAttribute>(type);
+                EntityPropAttribute atr = Domain.TypeModule.GetAttribute<EntityPropAttribute>(type);
                 if (atr != null)
                     module.AddKey(atr.Type, type);
             }
@@ -97,7 +97,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = XModule.Type
+            Type type = Domain.TypeModule
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -123,7 +123,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type baseType, IEntity parent, int typeId, OnDataProviderReady onReady = null)
         {
-            Type type = XModule.Type
+            Type type = Domain.TypeModule
                 .GetOrNewWithAttr<EntityPropAttribute>()
                 .GetOrNewBySub(baseType)
                 .GetKey(typeId);
@@ -139,7 +139,7 @@ namespace XFrame.Modules.Entities
             if (entity == null)
                 return;
 
-            XModule.Container.Remove(entity);
+            Domain.GetModule<IContainerModule>().Remove(entity);
             m_Entities.Remove(entity);
         }
         #endregion
@@ -147,7 +147,7 @@ namespace XFrame.Modules.Entities
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            return (IEntity)XModule.Container.New(entityType, true, parent, onReady);
+            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, true, parent, onReady);
         }
         #endregion
     }

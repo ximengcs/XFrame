@@ -9,6 +9,7 @@ namespace XFrame.Tasks
     {
         private T m_Result;
         private XComplete<XTaskState> m_OnComplete;
+        private Action<T> m_OnDataComplete;
         private ITaskBinder m_Binder;
         private XTaskCancelToken m_CancelToken;
         private List<ITask> m_Children;
@@ -101,7 +102,14 @@ namespace XFrame.Tasks
             if (m_CancelToken != null && !m_CancelToken.Disposed)
                 XTaskCancelToken.Release(m_CancelToken);
 
+
             m_Result = result;
+            if (m_OnDataComplete != null)
+            {
+                m_OnDataComplete(m_Result);
+                m_OnDataComplete = null;
+            }
+
             m_OnComplete.IsComplete = true;
             m_OnComplete.Invoke();
         }
@@ -126,6 +134,15 @@ namespace XFrame.Tasks
         public ITask OnCompleted(Action handler)
         {
             m_OnComplete.On(handler);
+            return this;
+        }
+
+        public ITask OnCompleted(Action<T> handler)
+        {
+            if (m_OnComplete.IsComplete)
+                handler(GetResult());
+            else
+                m_OnDataComplete += handler;
             return this;
         }
 

@@ -4,28 +4,28 @@ namespace XFrame.Core
 {
     public partial class XCore
     {
-        public static XCore Create()
+        public static XCore Create(XDomain domain)
         {
             XCore core = new XCore();
-            core.Init();
+            core.Init(domain);
             return core;
         }
 
-        public static XCore Create(Type coreType, params Type[] modules)
+        public static XCore Create(XDomain domain, Type coreType, params Type[] modules)
         {
             XCore core = new XCore();
-            core.Init();
-            core.InnerAddModuleFromSystem(coreType, default, default);
+            core.Init(domain);
+            core.AddModuleFromSystem(coreType, default, default);
             foreach (Type moduleType in modules)
                 core.InnerAddModule(moduleType, default, default);
             return core;
         }
 
-        public static XCore Create(Type coreType, Type[] modules, object[] datas = null)
+        public static XCore Create(XDomain domain, Type coreType, Type[] modules, object[] datas = null)
         {
             XCore core = new XCore();
-            core.Init();
-            core.InnerAddModuleFromSystem(coreType, default, default);
+            core.Init(domain);
+            core.AddModuleFromSystem(coreType, default, default);
             for (int i = 0; i < modules.Length; i++)
             {
                 Type moduleType = modules[i];

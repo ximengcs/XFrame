@@ -15,13 +15,14 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        void IArchive.OnInit(IArchiveModule module, string path, string name, object param)
         {
             Name = name;
             m_Path = path;
+            m_Module = module;
             if (File.Exists(m_Path))
             {
-                m_Root = JSONNode.Parse(ArchiveUtility.ReadText(m_Path));
+                m_Root = JSONNode.Parse(ArchiveUtility.ReadText(m_Module, m_Path));
             }
             if (m_Root == null)
                 m_Root = new JSONObject();
@@ -29,7 +30,7 @@ namespace XFrame.Modules.Archives
 
         public void Save()
         {
-            ArchiveUtility.WriteText(m_Path, m_Root.ToString(4));
+            ArchiveUtility.WriteText(m_Module, m_Path, m_Root.ToString(4));
         }
 
         public void Delete()
@@ -41,7 +42,7 @@ namespace XFrame.Modules.Archives
 
         public override void ClearData()
         {
-            XModule.Archive.Delete(this);
+            m_Module.Delete(this);
         }
     }
 }

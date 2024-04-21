@@ -8,6 +8,7 @@ namespace XFrame.Tasks
     {
         protected Action<float> m_OnUpdate;
         protected XComplete<XTaskState> m_OnComplete;
+        protected Action<T> m_OnDataComplete;
         protected ITaskBinder m_Binder;
         protected XTaskAction m_TaskAction;
         protected XTaskCancelToken m_CancelToken;
@@ -46,7 +47,11 @@ namespace XFrame.Tasks
             m_ProHandler = handler;
             m_OnComplete = new XComplete<XTaskState>(XTaskState.Normal);
             m_CancelToken = cancelToken;
-            XModule.Task.Register(this);
+        }
+
+        protected virtual void InnerStart()
+        {
+            XTaskHelper.Register(this);
         }
 
         void IUpdater.OnUpdate(float escapeTime)
@@ -82,6 +87,11 @@ namespace XFrame.Tasks
 
         protected virtual void InnerExecComplete()
         {
+            if (m_OnDataComplete != null)
+            {
+                m_OnDataComplete(GetResult());
+                m_OnDataComplete = null;
+            }
             m_OnComplete.IsComplete = true;
             m_OnComplete.Invoke();
         }
@@ -113,11 +123,12 @@ namespace XFrame.Tasks
                 XTaskCancelToken.Release(m_CancelToken);
 
             m_OnUpdate = null;
-            XModule.Task.UnRegister(this);
+            XTaskHelper.UnRegister(this);
         }
 
         public XProTask<T> GetAwaiter()
         {
+            InnerStart();
             return this;
         }
 
@@ -153,6 +164,15 @@ namespace XFrame.Tasks
         public ITask OnCompleted(Action handler)
         {
             m_OnComplete.On(handler);
+            return this;
+        }
+
+        public ITask OnCompleted(Action<T> handler)
+        {
+            if (m_OnComplete.IsComplete)
+                handler(GetResult());
+            else
+                m_OnDataComplete += handler;
             return this;
         }
 

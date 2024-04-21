@@ -15,7 +15,7 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 从对象池中创建时被调用
         /// </summary>
-        protected internal void OnCreate();
+        protected internal void OnCreate(IPoolModule module);
 
         /// <summary>
         /// 从对象池中请求时被调用

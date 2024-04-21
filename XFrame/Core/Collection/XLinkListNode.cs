@@ -104,7 +104,7 @@ namespace XFrame.Collections
 
         int IPoolObject.PoolKey => 0;
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
 
         }

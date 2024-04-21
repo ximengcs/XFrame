@@ -8,6 +8,7 @@ namespace XFrame.Core
     {
         private readonly static char SPLIT = ';';
 
+        private IPoolModule m_Module;
         private ValueTuple<T1> m_Value;
 
         public ValueTuple<T1> Value => m_Value;
@@ -24,7 +25,7 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1>(
-                XModule.Serialize.DeserializeToObject<T1>(contents[0]));
+                m_Module.Domain.GetModule<ISerializeModule>().DeserializeToObject<T1>(contents[0]));
 
             return m_Value;
         }
@@ -51,9 +52,9 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
-
+            m_Module = module;
         }
 
         void IPoolObject.OnRequest()
@@ -114,6 +115,7 @@ namespace XFrame.Core
     {
         private readonly static char SPLIT = ';';
 
+        private IPoolModule m_Module;
         private ValueTuple<T1, T2> m_Value;
 
         public ValueTuple<T1, T2> Value => m_Value;
@@ -130,8 +132,8 @@ namespace XFrame.Core
             pattern = pattern.Substring(1, pattern.Length - 2);
             string[] contents = pattern.Split(SPLIT);
             m_Value = new ValueTuple<T1, T2>(
-                XModule.Serialize.DeserializeToObject<T1>(contents[0]),
-                XModule.Serialize.DeserializeToObject<T2>(contents[1]));
+                m_Module.Domain.GetModule<ISerializeModule>().DeserializeToObject<T1>(contents[0]),
+                m_Module.Domain.GetModule<ISerializeModule>().DeserializeToObject<T2>(contents[1]));
 
             return m_Value;
         }
@@ -162,9 +164,9 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
-
+            m_Module = module;
         }
 
         void IPoolObject.OnRequest()

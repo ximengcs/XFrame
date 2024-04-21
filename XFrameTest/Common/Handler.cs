@@ -1,5 +1,6 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Times;
 using XFrame.Tasks;
 
 namespace XFrameTest
@@ -8,13 +9,13 @@ namespace XFrameTest
     {
         public async XTask BeforeHandle()
         {
-            Log.Debug("IInitHandler BeforeHandle " + XModule.Time.Time);
+            Log.Debug("IInitHandler BeforeHandle " + Entry.GetModule<ITimeModule>().Time);
             await new XTaskCompleted();
         }
 
         public async XTask AfterHandle()
         {
-            Log.Debug("IInitHandler AfterHandle " + XModule.Time.Time);
+            Log.Debug("IInitHandler AfterHandle " + Entry.GetModule<ITimeModule>().Time);
             await new XTaskCompleted();
         }
 
@@ -28,13 +29,13 @@ namespace XFrameTest
     {
         public async XTask BeforeHandle()
         {
-            Console.WriteLine("IStartHandler BeforeHandle "  + XModule.Time.Time);
+            Console.WriteLine("IStartHandler BeforeHandle "  + Entry.GetModule<ITimeModule>().Time);
             await new XTaskCompleted();
         }
 
         public async XTask AfterHandle()
         {
-            Console.WriteLine("IStartHandler AfterHandle " + XModule.Time.Time);
+            Console.WriteLine("IStartHandler AfterHandle " + Entry.GetModule<ITimeModule>().Time);
             await new XTaskCompleted();
         }
     }

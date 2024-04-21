@@ -18,6 +18,7 @@ namespace XFrame.Modules.Conditions
         private List<IConditionHandle> m_AllInfos;
         private Action<IConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<IConditionHandle>> m_NotInfos;
+        private IConditionModule m_Module;
 
         public string Name => m_Setting.Name;
 
@@ -33,16 +34,17 @@ namespace XFrame.Modules.Conditions
 
         public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(IConditionModule module, ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
         {
             m_Setting = setting;
             m_Complete = false;
+            m_Module = module;
             m_CompleteEvent = completeCallback;
             m_AllInfos = new List<IConditionHandle>();
             m_NotInfos = new Dictionary<int, List<IConditionHandle>>();
 
             ConditionHelperSetting helperSetting = setting.HelperSetting;
-            m_Helper = XModule.Condition.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
+            m_Helper = m_Module.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
             if (helperSetting.UsePersistData)
             {
                 InnerEnsureArchive();
@@ -59,7 +61,7 @@ namespace XFrame.Modules.Conditions
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
                 int target = handle.Target;
                 ConditionHelperSetting conditionSetting = setting.GetConditionHelperSettting(target);
-                CompareInfo compare = XModule.Condition.GetOrNewCompare(target, conditionSetting.UseInstance);
+                CompareInfo compare = m_Module.GetOrNewCompare(target, conditionSetting.UseInstance);
                 IDataProvider dataProvider;
                 if (conditionSetting.UsePersistData)
                 {
@@ -113,7 +115,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Archive != null)
                 return;
-            m_Archive = XModule.Archive.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
+            m_Archive = m_Module.Domain.GetModule<ArchiveModule>().GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
         }
 
         internal void InnerTrigger(int target, object param)

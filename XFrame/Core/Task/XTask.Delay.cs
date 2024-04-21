@@ -1,11 +1,17 @@
 ﻿
 using System;
 using XFrame.Core;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Tasks
 {
     public partial class XTask
     {
+        public static XProTask NextFrame()
+        {
+            return Delay(0);
+        }
+
         public static XProTask Delay(float time, bool nextFrameExec = true)
         {
             return new XProTask(new DelayHandler(time, nextFrameExec));
@@ -25,13 +31,13 @@ namespace XFrame.Tasks
             {
                 get
                 {
-                    if (XModule.Time.Frame < m_StartFrame)
+                    if (XTaskHelper.Time.Frame < m_StartFrame)
                     {
                         m_Pro = XTaskHelper.MIN_PROGRESS;
                     }
                     else
                     {
-                        m_Time += XModule.Time.EscapeTime;
+                        m_Time += XTaskHelper.Time.EscapeTime;
 
                         if (m_Target <= m_Time)
                         {
@@ -39,9 +45,10 @@ namespace XFrame.Tasks
                         }
                         else
                         {
-                            m_Pro = (m_Time - m_StartTime) / m_Time;
+                            m_Pro = m_Time / m_Target;
                         }
                     }
+
                     return m_Pro >= XTaskHelper.MAX_PROGRESS;
                 }
             }
@@ -52,8 +59,7 @@ namespace XFrame.Tasks
             {
                 m_Target = target;
                 m_Time = 0;
-                m_StartFrame = nextFrameExec ? XModule.Time.Frame + 1 : 0;
-                m_StartTime = XModule.Time.Time;
+                m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
             }
 
             public void OnCancel()

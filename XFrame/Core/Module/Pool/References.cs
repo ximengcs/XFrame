@@ -6,23 +6,29 @@ namespace XFrame.Modules.Pools
 {
     public static class References
     {
-        public static bool Available => XModule.Pool != null;
+        private static IPoolModule s_Module;
+        public static bool Available => s_Module != null;
+
+        public static void SetDomain(XDomain domain)
+        {
+            s_Module = domain.GetModule<IPoolModule>();
+        }
 
         public static IPoolObject Require(Type type)
         {
-            IPool pool = XModule.Pool.GetOrNew(type);
+            IPool pool = s_Module.GetOrNew(type);
             return pool.Require();
         }
 
         public static T Require<T>() where T : IPoolObject
         {
-            IPool<T> pool = XModule.Pool.GetOrNew<T>();
+            IPool<T> pool = s_Module.GetOrNew<T>();
             return pool.Require();
         }
 
         public static void Release(IPoolObject obj)
         {
-            IPool pool = XModule.Pool.GetOrNew(obj.GetType());
+            IPool pool = s_Module.GetOrNew(obj.GetType());
             pool.Release(obj);
         }
     }

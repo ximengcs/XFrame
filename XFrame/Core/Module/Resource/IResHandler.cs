@@ -11,5 +11,7 @@ namespace XFrame.Modules.Resource
         public string AssetPath { get; }
 
         public Type AssetType { get; }
+
+        void Start();
     }
 }

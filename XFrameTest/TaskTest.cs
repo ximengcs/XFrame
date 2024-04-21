@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using XFrame.Core;
+using XFrame.Modules.Datas;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Download;
 using XFrame.Modules.Tasks;
@@ -24,7 +25,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.ToQueue = false;
-                Log.Debug($"[{XModule.Time.Frame}]");
+                Log.Debug($"[{Entry.GetModule<ITimeModule>().Frame}]");
 
                 /*
                 ActionTask task = XModule.Task.GetOrNew<ActionTask>();
@@ -102,7 +103,7 @@ namespace XFrameTest
             {
                 string url = "https://c1b.tapque.com/Innovate/ASMRMakeOver/Production/iOS/V1.0.8/ASMRMakeOverConfig.json";
                 Console.WriteLine("Download Start");
-                DownTask task = await XModule.Download.Down(url);
+                DownTask task = await Entry.GetModule<IDownloadModule>().Down(url);
                 Console.WriteLine("Download Complete");
                 Console.WriteLine(task.Text);
             });

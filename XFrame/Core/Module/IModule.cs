@@ -7,7 +7,7 @@ namespace XFrame.Core
     /// </summary>
     public interface IModule : IXItem
     {
-        XCore Domain { get; }
+        XDomain Domain { get; }
 
         /// <summary>
         /// 初始化生命周期

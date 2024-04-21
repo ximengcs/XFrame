@@ -52,6 +52,10 @@ namespace XFrame.Modules.Download
                 m_Task = task;
                 m_Helper = helper;
                 m_ReserveUrlCount = m_Helper.ReserveUrl != null ? m_Helper.ReserveUrl.Length : 0;
+            }
+
+            public void Start()
+            {
                 InnerRequest();
             }
 

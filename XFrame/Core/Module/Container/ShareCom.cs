@@ -11,6 +11,7 @@ namespace XFrame.Modules.Containers
     {
         private IContainer m_Owner;
         private bool m_Active;
+        protected IContainerModule m_Module;
 
         public bool Active
         {
@@ -40,9 +41,10 @@ namespace XFrame.Modules.Containers
 
         protected IContainer Owner => m_Owner;
 
-        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
+        void IContainer.OnInit(IContainerModule module, int id, IContainer master, OnDataProviderReady onReady)
         {
             Id = id;
+            m_Module = module;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else

@@ -59,7 +59,7 @@ namespace XFrame.Modules.Event
                 Handler2 -= handler2;
             }
 
-            void IPoolObject.OnCreate()
+            void IPoolObject.OnCreate(IPoolModule module)
             {
 
             }

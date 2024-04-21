@@ -1,7 +1,6 @@
-﻿
-using XFrame.Tasks;
+﻿using XFrame.Tasks;
 
-namespace XFrame.Core.Caches
+namespace XFrame.Modules.Caches
 {
     public interface ICacheObjectFactory : IProTaskHandler
     {

@@ -10,10 +10,14 @@ namespace XFrame.Modules.Plots
     {
         private StoryInfo m_Current;
         private List<StoryInfo> m_StoryQueue;
+        private IPlotModule m_Module;
 
-        void IDirector.OnInit()
+        public IPlotModule Module => m_Module;
+
+        void IDirector.OnInit(IPlotModule module)
         {
             m_Current = null;
+            m_Module= module;
             m_StoryQueue = new List<StoryInfo>();
         }
 

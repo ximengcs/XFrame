@@ -17,6 +17,7 @@ namespace XFrame.Collections
         #endregion
 
         #region Inner Fields
+        private XDomain m_Domain;
         private Dictionary<Type, Dictionary<int, T>> m_WithTypes;
         private Dictionary<Type, T> m_Mains;
         private XLinkList<T> m_Elements;
@@ -27,8 +28,9 @@ namespace XFrame.Collections
         /// <summary>
         /// 构造集合
         /// </summary>
-        public XCollection(int startCapacity = DEFAULT_CAPACITY)
+        public XCollection(XDomain domain, int startCapacity = DEFAULT_CAPACITY)
         {
+            m_Domain = domain;
             m_WithTypes = new Dictionary<Type, Dictionary<int, T>>(startCapacity);
             m_Mains = new Dictionary<Type, T>(startCapacity);
             m_Elements = new XLinkList<T>(false);
@@ -48,7 +50,7 @@ namespace XFrame.Collections
                 return type;
 
             XTypeAttribute attr;
-            ITypeModule typeModule = XModule.Type;
+            ITypeModule typeModule = m_Domain.TypeModule;
             if (typeModule != null)
                 attr = typeModule.GetAttribute<XTypeAttribute>(type);
             else

@@ -2,6 +2,7 @@
 using System.Text;
 using XFrame.Core;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Reflection;
 
 namespace XFrameTest
 {
@@ -41,11 +42,11 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                Log.Debug(XModule.Type.CreateInstance<C1>() == null);
-                Log.Debug(XModule.Type.CreateInstance<C1>(9) == null);
-                Log.Debug(XModule.Type.CreateInstance<C1>(9.9f) == null);
-                Log.Debug(XModule.Type.CreateInstance<C1>(true) == null);
-                Log.Debug(XModule.Type.CreateInstance(typeof(C1).FullName, 1, 2) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>() == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(9) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(9.9f) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(true) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance(typeof(C1).FullName, 1, 2) == null);
             });
         }
 

@@ -2,6 +2,7 @@
 using XFrame.SimpleJSON;
 using XFrame.Core.Binder;
 using XFrame.Modules.Archives;
+using XFrame.Modules.Serialize;
 
 namespace XFrame.Modules.Plots
 {
@@ -12,12 +13,14 @@ namespace XFrame.Modules.Plots
     {
         private JsonArchive m_Persist;
         private JSONObject m_Sections;
+        private IPlotModule m_Module;
 
         public ValueBinder<bool> Finish { get; set; }
 
-        public PersistPlotDataProvider(JsonArchive data)
+        public PersistPlotDataProvider(IPlotModule module, JsonArchive data)
         {
             m_Persist = data;
+            m_Module = module;
             m_Sections = m_Persist.GetOrNewObject(nameof(m_Persist));
             Finish = new ValueBinder<bool>(
                 () => m_Persist.GetBool(nameof(Finish)),
@@ -41,7 +44,7 @@ namespace XFrame.Modules.Plots
 
         public void ClearData()
         {
-            XModule.Archive.Delete(m_Persist);
+            m_Module.Domain.GetModule<IArchiveModule>().Delete(m_Persist);
             m_Persist = null;
             m_Sections = null;
         }
@@ -68,7 +71,7 @@ namespace XFrame.Modules.Plots
             if (m_Sections.HasKey(key))
             {
                 string content = m_Sections[key];
-                return XModule.Serialize.DeserializeToObject<T>(content);
+                return m_Module.Domain.GetModule<ISerializeModule>().DeserializeToObject<T>(content);
             }
 
             return default;
@@ -82,7 +85,7 @@ namespace XFrame.Modules.Plots
         public void SetData<T>(string name, T value)
         {
             string key = $"{name}_{typeof(T).Name}";
-            string content = XModule.Serialize.SerializeObjectToRaw(value);
+            string content = m_Module.Domain.GetModule<ISerializeModule>().SerializeObjectToRaw(value);
             m_Sections[key] = content;
         }
     }

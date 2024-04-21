@@ -12,7 +12,7 @@ namespace XFrameTest.Condition
 
         public ConditionHelper()
         {
-            m_Archive = XModule.Archive.GetOrNew<JsonArchive>("condition_persist");
+            m_Archive = Entry.GetModule<ArchiveModule>().GetOrNew<JsonArchive>("condition_persist");
         }
 
         public int Type => 0;

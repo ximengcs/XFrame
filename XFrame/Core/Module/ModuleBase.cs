@@ -17,7 +17,7 @@ namespace XFrame.Core
         /// </summary>
         public int Id { get; internal set; }
 
-        public XCore Domain { get; internal set; }
+        public XDomain Domain { get; internal set; }
 
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {

@@ -26,6 +26,7 @@ namespace XFrame.Core
     {
         #region Inner Filed
         private bool m_IsStart;
+        private XDomain m_Domain;
         private XCollection<IModule> m_Modules;
         private Dictionary<Type, ModuleHandle> m_ModulesWithEvents;
         private Dictionary<Type, List<IModuleHelper>> m_Helpers;
@@ -35,10 +36,11 @@ namespace XFrame.Core
         /// <summary>
         /// 初始化核心
         /// </summary>
-        public void Init()
+        public void Init(XDomain domain)
         {
             m_IsStart = false;
-            m_Modules = new XCollection<IModule>();
+            m_Domain = domain;
+            m_Modules = new XCollection<IModule>(m_Domain);
             m_Helpers = new Dictionary<Type, List<IModuleHelper>>();
             m_ModulesWithEvents = new Dictionary<Type, ModuleHandle>();
         }
@@ -224,7 +226,7 @@ namespace XFrame.Core
                 helpers = new List<IModuleHelper>();
                 m_Helpers.Add(mType, helpers);
             }
-            IModuleHelper helper = (IModuleHelper)XModule.Type.CreateInstance(helperType);
+            IModuleHelper helper = (IModuleHelper)m_Domain.TypeModule.CreateInstance(helperType);
             helper.OnInit();
             helpers.Add(helper);
 
@@ -287,15 +289,14 @@ namespace XFrame.Core
         private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            ITypeModule typeModule = XModule.Type;
-            IModule module = (IModule)typeModule.CreateInstance(moduleType);
+            IModule module = (IModule)m_Domain.TypeModule.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
             Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
             return module;
         }
 
-        private IModule InnerAddModuleFromSystem(Type moduleType, int moduleId, object data)
+        public IModule AddModuleFromSystem(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();
             IModule module = (IModule)Activator.CreateInstance(moduleType);
@@ -319,7 +320,7 @@ namespace XFrame.Core
             if (baseClass != null)
             {
                 baseClass.Id = moduleId;
-                baseClass.Domain = this;
+                baseClass.Domain = m_Domain;
             }
             module.OnInit(data);
             if (m_IsStart)

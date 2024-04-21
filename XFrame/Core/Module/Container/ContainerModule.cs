@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Reflection;
+using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Containers
 {
@@ -22,17 +23,17 @@ namespace XFrame.Modules.Containers
         /// <returns>容器实例</returns>
         public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
         {
-            return (T)InnerNew(typeof(T), XModule.Id.Next(), updateTrusteeship, master, onReady);
+            return (T)InnerNew(typeof(T), Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         public Container New(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
-            return (Container)InnerNew(typeof(Container), XModule.Id.Next(), updateTrusteeship, master, onReady);
+            return (Container)InnerNew(typeof(Container), Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         public IContainer New(Type type, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
-            return InnerNew(type, XModule.Id.Next(), updateTrusteeship, master, onReady);
+            return InnerNew(type, Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         public IContainer New(Type type, int id, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
@@ -43,8 +44,8 @@ namespace XFrame.Modules.Containers
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
             int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
-            IContainer container = XModule.Type.CreateInstance(type) as IContainer;
-            container.OnInit(id, master, onReady);
+            IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
+            container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container);
             return container;
@@ -66,11 +67,11 @@ namespace XFrame.Modules.Containers
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Containers = new XCollection<IContainer>();
-            TypeSystem typeSys = XModule.Type.GetOrNew<IContainerHelper>();
+            m_Containers = new XCollection<IContainer>(Domain);
+            TypeSystem typeSys = Domain.TypeModule.GetOrNew<IContainerHelper>();
             foreach (Type type in typeSys)
             {
-                m_Helper = (IContainerHelper)XModule.Type.CreateInstance(type);
+                m_Helper = (IContainerHelper)Domain.TypeModule.CreateInstance(type);
                 break;
             }
         }

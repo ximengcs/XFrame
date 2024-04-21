@@ -40,7 +40,7 @@ namespace XFrame.Tasks
             {
                 get
                 {
-                    if (XModule.Time.Frame < m_StartFrame)
+                    if (XTaskHelper.Time.Frame < m_StartFrame)
                     {
                         m_Pro = XTaskHelper.MIN_PROGRESS;
                     }
@@ -60,7 +60,7 @@ namespace XFrame.Tasks
             public ConditionHandler(Func<bool> fun, bool nextFrameExec = true)
             {
                 m_Fun = fun;
-                m_StartFrame = nextFrameExec ? XModule.Time.Frame + 1 : 0;
+                m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
             }
 
             public void OnCancel()
@@ -82,7 +82,7 @@ namespace XFrame.Tasks
             {
                 get
                 {
-                    if (XModule.Time.Frame < m_StartFrame)
+                    if (XTaskHelper.Time.Frame < m_StartFrame)
                     {
                         m_Pro = XTaskHelper.MIN_PROGRESS;
                     }
@@ -108,7 +108,7 @@ namespace XFrame.Tasks
             public ConditionRepeatHandler(float timeGap, Func<bool> fun, bool nextFrameExec = true)
             {
                 m_Fun = fun;
-                m_StartFrame = nextFrameExec ? XModule.Time.Frame + 1 : 0;
+                m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
                 m_Timer = CDTimer.Create();
                 m_Timer.Record(timeGap);
             }
@@ -132,7 +132,7 @@ namespace XFrame.Tasks
             {
                 get
                 {
-                    if (XModule.Time.Frame < m_StartFrame)
+                    if (XTaskHelper.Time.Frame < m_StartFrame)
                     {
                         m_Pro = XTaskHelper.MIN_PROGRESS;
                     }
@@ -153,7 +153,7 @@ namespace XFrame.Tasks
             public ConditionWithDataHandler(Func<Pair<bool, object>> fun, bool nextFrameExec = true)
             {
                 m_Fun = fun;
-                m_StartFrame = nextFrameExec ? XModule.Time.Frame + 1 : 0;
+                m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
             }
 
             public void OnCancel()
@@ -174,7 +174,7 @@ namespace XFrame.Tasks
             {
                 get
                 {
-                    if (XModule.Time.Frame < m_StartFrame)
+                    if (XTaskHelper.Time.Frame < m_StartFrame)
                     {
                         m_Pro = XTaskHelper.MIN_PROGRESS;
                     }
@@ -191,7 +191,7 @@ namespace XFrame.Tasks
             public ConditionWithProgressHandler(Func<float> fun, bool nextFrameExec = true)
             {
                 m_Fun = fun;
-                m_StartFrame = nextFrameExec ? XModule.Time.Frame + 1 : 0;
+                m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
             }
 
             public void OnCancel()

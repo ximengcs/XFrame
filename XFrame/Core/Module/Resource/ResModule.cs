@@ -26,14 +26,14 @@ namespace XFrame.Modules.Resource
             m_PreLoadRes = new Dictionary<string, object>();
             if (IsDefaultModule && !string.IsNullOrEmpty(XConfig.DefaultRes))
             {
-                Type type = XModule.Type.GetType(XConfig.DefaultRes);
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultRes);
                 SetHelper(type);
             }
         }
 
         public IResourceHelper SetHelper(Type type)
         {
-            m_ResHelper = XModule.Type.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = Domain.TypeModule.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }
@@ -86,12 +86,12 @@ namespace XFrame.Modules.Resource
             }
         }
 
-        public ResLoadTask_ LoadAsync(string resPath, Type type)
+        public ResLoadTask LoadAsync(string resPath, Type type)
         {
             return m_ResHelper.LoadAsync(resPath, type);
         }
 
-        public ResLoadTask_<T> LoadAsync<T>(string resPath)
+        public ResLoadTask<T> LoadAsync<T>(string resPath)
         {
             return m_ResHelper.LoadAsync<T>(resPath);
         }

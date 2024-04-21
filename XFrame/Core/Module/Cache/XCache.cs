@@ -1,19 +1,24 @@
 ﻿using System;
-using XFrame.Modules.Reflection;
+using XFrame.Core;
 using XFrame.Modules.Event;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
+using XFrame.Collections;
+using XFrame.Modules.Pools;
 
-namespace XFrame.Core.Caches
+namespace XFrame.Modules.Caches
 {
-    public static partial class XCache
+    [CoreModule]
+    [XType(typeof(IPoolModule))]
+    public partial class XCache : ModuleBase
     {
-        private static Dictionary<Type, ObjectCollection> m_Factorys;
-        private static IEventSystem m_EvtSys;
+        private Dictionary<Type, ObjectCollection> m_Factorys;
+        private IEventSystem m_EvtSys;
 
-        public static IEventSystem Event => m_EvtSys;
+        public IEventSystem Event => m_EvtSys;
 
-        public static ICollection<ObjectCollection> Collections
+        public ICollection<ObjectCollection> Collections
         {
             get
             {
@@ -26,20 +31,20 @@ namespace XFrame.Core.Caches
             }
         }
 
-        public static void Initialize()
+        protected override void OnStart()
         {
-            Entry.OnRun += InnerInitFactory;
+            base.OnStart();
+            InnerInitFactory();
         }
 
-        private static void InnerInitFactory()
+        private void InnerInitFactory()
         {
-            Entry.OnRun -= InnerInitFactory;
-            m_EvtSys = XModule.Event.NewSys();
+            m_EvtSys = Domain.GetModule<IEventModule>().NewSys();
             m_Factorys = new Dictionary<Type, ObjectCollection>();
-            TypeSystem typeSys = XModule.Type.GetOrNew<ICacheObjectFactory>();
+            TypeSystem typeSys = Domain.TypeModule.GetOrNew<ICacheObjectFactory>();
             foreach (Type type in typeSys)
             {
-                CacheObjectAttribute attr = XModule.Type.GetAttribute<CacheObjectAttribute>(type);
+                CacheObjectAttribute attr = Domain.TypeModule.GetAttribute<CacheObjectAttribute>(type);
                 if (attr != null)
                 {
                     if (m_Factorys.ContainsKey(type))
@@ -47,18 +52,18 @@ namespace XFrame.Core.Caches
                         Log.Debug("XFrame", $"Cache object factory duplicate {type.FullName}, auto ignore");
                         continue;
                     }
-                    ICacheObjectFactory factory = (ICacheObjectFactory)XModule.Type.CreateInstance(type);
+                    ICacheObjectFactory factory = (ICacheObjectFactory)Domain.TypeModule.CreateInstance(type);
                     m_Factorys.Add(attr.Target, new ObjectCollection(attr.Target, factory, attr.CacheCount));
                 }
             }
         }
 
-        public static T GetFactory<T>() where T : class, ICacheObjectFactory
+        public T GetFactory<T>() where T : class, ICacheObjectFactory
         {
             return GetFactory(typeof(T)) as T;
         }
 
-        public static ICacheObjectFactory GetFactory(Type type)
+        public ICacheObjectFactory GetFactory(Type type)
         {
             if (m_Factorys.TryGetValue(type, out ObjectCollection collection))
             {
@@ -67,12 +72,12 @@ namespace XFrame.Core.Caches
             return default;
         }
 
-        public static bool Check<T>() where T : ICacheObject
+        public bool Check<T>() where T : ICacheObject
         {
             return Check(typeof(T));
         }
 
-        public static bool Check(Type type)
+        public bool Check(Type type)
         {
             if (m_Factorys.TryGetValue(type, out var collection))
             {
@@ -85,12 +90,12 @@ namespace XFrame.Core.Caches
             }
         }
 
-        public static T Require<T>() where T : ICacheObject
+        public T Require<T>() where T : ICacheObject
         {
             return (T)Require(typeof(T));
         }
 
-        public static ICacheObject Require(Type type)
+        public ICacheObject Require(Type type)
         {
             if (m_Factorys.TryGetValue(type, out var collection))
             {

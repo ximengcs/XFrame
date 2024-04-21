@@ -21,7 +21,7 @@ namespace XFrame.Modules.Serialize
             base.OnInit(data);
 
             m_Helpers = new Dictionary<int, ISerializeHelper>();
-            TypeSystem typeSys = XModule.Type.GetOrNew<ISerializeHelper>();
+            TypeSystem typeSys = Domain.TypeModule.GetOrNew<ISerializeHelper>();
             foreach (Type type in typeSys)
             {
                 InnerInit(type);
@@ -85,7 +85,7 @@ namespace XFrame.Modules.Serialize
 
         private void InnerInit(Type type)
         {
-            ISerializeHelper helper = XModule.Type.CreateInstance(type) as ISerializeHelper;
+            ISerializeHelper helper = Domain.TypeModule.CreateInstance(type) as ISerializeHelper;
             m_Helpers.Add(helper.HandleType, helper);
         }
     }

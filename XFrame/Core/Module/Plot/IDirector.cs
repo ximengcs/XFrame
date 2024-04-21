@@ -1,10 +1,14 @@
-﻿namespace XFrame.Modules.Plots
+﻿using XFrame.Modules.Archives;
+
+namespace XFrame.Modules.Plots
 {
     /// <summary>
     /// 故事导演
     /// </summary>
     public interface IDirector
     {
+        IPlotModule Module { get; }
+
         /// <summary>
         /// 播放一组故事
         /// </summary>
@@ -38,7 +42,7 @@
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        internal void OnInit();
+        internal void OnInit(IPlotModule module);
 
         /// <summary>
         /// 更新生命周期

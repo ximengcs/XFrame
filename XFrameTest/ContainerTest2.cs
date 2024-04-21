@@ -164,7 +164,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.Debug("Start");
-                IContainer c1 = XModule.Container.New<Container1>();
+                IContainer c1 = Entry.GetModule<IContainerModule>().New<Container1>();
 
                 //XModule.Task.GetOrNew<ActionTask>().Add(1, () =>
                 //{

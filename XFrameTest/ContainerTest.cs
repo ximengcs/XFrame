@@ -17,7 +17,7 @@ namespace XFrameTest
 
             public EntityA()
             {
-                m_Coms = XModule.Container.New();
+                m_Coms = Entry.GetModule<IContainerModule>().New();
                 Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
 
                 m_Coms.GetOrAddCom<Com1>();
@@ -31,7 +31,7 @@ namespace XFrameTest
 
             public void Destroy()
             {
-                XModule.Container.Remove(m_Coms);
+                Entry.GetModule<IContainerModule>().Remove(m_Coms);
                 m_Coms = default;
             }
         }
@@ -145,7 +145,7 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Console.WriteLine("New");
-                Container container = XModule.Container.New();
+                Container container = Entry.GetModule<IContainerModule>().New();
                 //XModule.Task.GetOrNew<ActionTask>()
                 //.Add(() =>
                 //{

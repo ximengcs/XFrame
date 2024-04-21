@@ -1,10 +1,9 @@
 ﻿using System;
 using XFrame.Collections;
-using XFrame.Modules.Tasks;
 
-namespace XFrame.Core.Caches
+namespace XFrame.Modules.Caches
 {
-    public static partial class XCache
+    public partial class XCache
     {
         public class ObjectCollection
         {
@@ -50,7 +49,9 @@ namespace XFrame.Core.Caches
 
             private void InnerRequire()
             {
-                new CacheObjectTask(m_Factory).OnCompleted(InnerNewObject);
+                new CacheObjectTask(m_Factory)
+                    .OnCompleted(InnerNewObject)
+                    .Coroutine();
             }
 
             private void InnerNewObject(ICacheObject obj)

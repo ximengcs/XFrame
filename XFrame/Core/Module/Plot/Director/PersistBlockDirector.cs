@@ -14,13 +14,17 @@ namespace XFrame.Modules.Plots
         private JsonArchive m_Archive;
         private StoryInfo m_Current;
         private Queue<StoryInfo> m_StoryQueue;
+        private IPlotModule m_Module;
 
-        void IDirector.OnInit()
+        public IPlotModule Module => m_Module;
+
+        void IDirector.OnInit(IPlotModule module)
         {
             m_Current = null;
             m_StoryQueue = new Queue<StoryInfo>();
-            m_Archive = XModule.Archive.GetOrNew<JsonArchive>(NAME);
-            InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
+            m_Module = module;
+            m_Archive = m_Module.Domain.GetModule<ArchiveModule>().GetOrNew<JsonArchive>(NAME);
+            InnerPlay(PlotUtility.InnerRestoreStories(m_Module, m_Archive));
         }
 
         void IDirector.OnUpdate()
@@ -72,8 +76,8 @@ namespace XFrame.Modules.Plots
         IPlotDataProvider IDirector.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
-            JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);
-            return new PersistPlotDataProvider(archive);
+            JsonArchive archive = m_Module.Domain.GetModule<ArchiveModule>().GetOrNew<JsonArchive>(saveName);
+            return new PersistPlotDataProvider(m_Module, archive);
         }
 
         private void InnerPlay(IStory story)

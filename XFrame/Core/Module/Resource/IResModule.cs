@@ -18,9 +18,9 @@ namespace XFrame.Modules.Resource
 
         T Load<T>(string resPath);
 
-        ResLoadTask_ LoadAsync(string resPath, Type type);
+        ResLoadTask LoadAsync(string resPath, Type type);
 
-        ResLoadTask_<T> LoadAsync<T>(string resPath);
+        ResLoadTask<T> LoadAsync<T>(string resPath);
 
         void Unload(object target);
 

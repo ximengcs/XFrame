@@ -1,5 +1,4 @@
-﻿
-namespace XFrame.Core.Caches
+﻿namespace XFrame.Modules.Caches
 {
     public interface ICacheObject
     {

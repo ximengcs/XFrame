@@ -184,7 +184,7 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
 
         }

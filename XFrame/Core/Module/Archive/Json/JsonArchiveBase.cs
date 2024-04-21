@@ -8,6 +8,7 @@ namespace XFrame.Modules.Archives
     public abstract class JsonArchiveBase : IJsonArchive
     {
         protected JSONNode m_Root;
+        protected IArchiveModule m_Module;
 
         public string Name { get; protected set; }
 
@@ -128,7 +129,7 @@ namespace XFrame.Modules.Archives
         /// <param name="v">此值将会被序列化并保存</param>
         public void Set(string key, object v)
         {
-            m_Root[key] = JSONNode.Parse(XModule.Serialize.SerializeObjectToRaw(v));
+            m_Root[key] = JSONNode.Parse(m_Module.Domain.GetModule<ISerializeModule>().SerializeObjectToRaw(v));
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace XFrame.Modules.Archives
             string objStr = m_Root[key].ToString();
             if (string.IsNullOrEmpty(objStr))
                 return defaultValue;
-            return (T)XModule.Serialize.DeserializeToObject(objStr, typeof(T));
+            return (T)m_Module.Domain.GetModule<ISerializeModule>().DeserializeToObject(objStr, typeof(T));
         }
 
         /// <summary>
@@ -233,7 +234,7 @@ namespace XFrame.Modules.Archives
 
         public IJsonArchive SpwanDataProvider()
         {
-            return SpwanDataProvider(XModule.Rand.RandString());
+            return SpwanDataProvider(m_Module.Domain.GetModule<IRandModule>().RandString());
         }
 
         public abstract void ClearData();

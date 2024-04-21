@@ -31,6 +31,12 @@ namespace XFrame.Modules.Download
             m_ProHandler = m_Handler;
         }
 
+        protected override void InnerStart()
+        {
+            base.InnerStart();
+            m_Handler.Start();
+        }
+
         public override DownTask GetResult()
         {
             return this;

@@ -13,12 +13,16 @@ namespace XFrame.Modules.Plots
         private const string NAME = "nonblock_director";
         private JsonArchive m_Archive;
         private XLinkList<StoryInfo> m_Stories;
+        private IPlotModule m_Module;
 
-        void IDirector.OnInit()
+        public IPlotModule Module => m_Module;
+
+        void IDirector.OnInit(IPlotModule module)
         {
+            m_Module = module;
             m_Stories = new XLinkList<StoryInfo>();
-            m_Archive = XModule.Archive.GetOrNew<JsonArchive>(NAME);
-            InnerPlay(PlotUtility.InnerRestoreStories(m_Archive));
+            m_Archive = m_Module.Domain.GetModule<ArchiveModule>().GetOrNew<JsonArchive>(NAME);
+            InnerPlay(PlotUtility.InnerRestoreStories(m_Module, m_Archive));
         }
 
         void IDirector.OnUpdate()
@@ -75,8 +79,9 @@ namespace XFrame.Modules.Plots
         IPlotDataProvider IDirector.CreateDataProvider(IStory story)
         {
             string saveName = PlotUtility.InnerGetStorySaveName(story.Name);
-            JsonArchive archive = XModule.Archive.GetOrNew<JsonArchive>(saveName);
-            return new PersistPlotDataProvider(archive);
+            IArchiveModule module = m_Module.Domain.GetModule<ArchiveModule>();
+            JsonArchive archive = module.GetOrNew<JsonArchive>(saveName);
+            return new PersistPlotDataProvider(m_Module, archive);
         }
 
         private void InnerPlay(IStory story)

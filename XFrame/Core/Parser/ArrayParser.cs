@@ -157,7 +157,7 @@ namespace XFrame.Core
             return true;
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
 
         }

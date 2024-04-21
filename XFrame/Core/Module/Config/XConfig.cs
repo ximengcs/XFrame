@@ -1,4 +1,5 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Reflection;
 
 namespace XFrame.Modules.Config

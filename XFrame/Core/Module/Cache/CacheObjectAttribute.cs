@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace XFrame.Core.Caches
+namespace XFrame.Modules.Caches
 {
     public class CacheObjectAttribute : Attribute
     {

@@ -25,9 +25,9 @@ namespace XFrame.Modules.Datas
 
             if (!string.IsNullOrEmpty(XConfig.DefaultDataTableHelper))
             {
-                Type type = XModule.Type.GetType(XConfig.DefaultDataTableHelper);
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultDataTableHelper);
                 if (type != null)
-                    m_Helper = (IDataHelper)XModule.Type.CreateInstance(type);
+                    m_Helper = (IDataHelper)Domain.TypeModule.CreateInstance(type);
             }
 
             if (m_Helper == null)
@@ -36,7 +36,7 @@ namespace XFrame.Modules.Datas
                 m_Helper.OnInit();
             }
 
-            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<TableAttribute>();
+            TypeSystem typeSys = Domain.TypeModule.GetOrNewWithAttr<TableAttribute>();
             foreach (Type type in typeSys)
                 Register(type);
         }

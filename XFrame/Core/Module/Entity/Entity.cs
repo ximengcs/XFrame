@@ -13,7 +13,7 @@ namespace XFrame.Modules.Entities
         protected internal override void OnInit()
         {
             base.OnInit();
-            Event = XModule.Event.NewSys();
+            Event = m_Module.Domain.GetModule<IEventModule>().NewSys();
         }
         #endregion
 

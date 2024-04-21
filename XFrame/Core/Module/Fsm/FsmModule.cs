@@ -61,7 +61,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IFsm GetOrNew(params Type[] states)
         {
-            return GetOrNew(XModule.Rand.RandString(), states);
+            return GetOrNew(Domain.GetModule<IRandModule>().RandString(), states);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace XFrame.Modules.StateMachine
         /// <returns>获取到的状态机</returns>
         public IFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
-            return GetOrNew(XModule.Rand.RandString(), owner, states);
+            return GetOrNew(Domain.GetModule<IRandModule>().RandString(), owner, states);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState<T>> states = new List<FsmState<T>>(types.Length);
             foreach (Type type in types)
             {
-                FsmState<T> state = (FsmState<T>)XModule.Type.CreateInstance(type);
+                FsmState<T> state = (FsmState<T>)Domain.TypeModule.CreateInstance(type);
                 states.Add(state);
             }
 
@@ -130,7 +130,7 @@ namespace XFrame.Modules.StateMachine
             List<FsmState> states = new List<FsmState>(types.Length);
             foreach (Type type in types)
             {
-                FsmState state = (FsmState)XModule.Type.CreateInstance(type);
+                FsmState state = (FsmState)Domain.TypeModule.CreateInstance(type);
                 states.Add(state);
             }
 

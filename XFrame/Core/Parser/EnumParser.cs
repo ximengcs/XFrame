@@ -7,6 +7,7 @@ namespace XFrame.Core
 {
     public class EnumParser<T> : IParser<T>, ICanConfigLog where T : Enum
     {
+        private IPoolModule m_Module;
         private T m_Value;
         public T Value => m_Value;
         public LogLevel LogLv { get; set; }
@@ -34,7 +35,7 @@ namespace XFrame.Core
 
         private void InnerSetDefault()
         {
-            DefaultValueAttribute attr = XModule.Type.GetAttribute<DefaultValueAttribute>(typeof(T));
+            DefaultValueAttribute attr = m_Module.Domain.TypeModule.GetAttribute<DefaultValueAttribute>(typeof(T));
             if (attr != null)
                 m_Value = (T)attr.Value;
             else
@@ -67,9 +68,9 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
-
+            m_Module = module;
         }
 
         void IPoolObject.OnRequest()

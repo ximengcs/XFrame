@@ -12,19 +12,23 @@ namespace XFrame.Modules.Times
 
         #region Default
         private static IUpdater m_Default;
-        public static IUpdater Default
+        public static IUpdater GetDeaultUpdater(ITimeModule module)
         {
-            get
-            {
-                if (m_Default == null)
-                    m_Default = new DefaultTimer();
-                return m_Default;
-            }
+            if (m_Default == null)
+                m_Default = new DefaultTimer(module);
+            return m_Default;
         }
 
         public class DefaultTimer : IUpdater
         {
-            float IUpdater.Time => XModule.Time.Time;
+            private ITimeModule m_Module;
+
+            float IUpdater.Time => m_Module.Time;
+
+            public DefaultTimer(ITimeModule module)
+            {
+                m_Module = module;
+            }
         }
         #endregion
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Modules.Rand;
 
 namespace XFrame.Modules.Plots
 {
@@ -42,7 +43,7 @@ namespace XFrame.Modules.Plots
 
         ISection IStory.AddSection(Type type)
         {
-            ISection section = (ISection)XModule.Type.CreateInstance(type);
+            ISection section = (ISection)m_Director.Module.Domain.TypeModule.CreateInstance(type);
             int index = m_SectionTypes.Count;
             SectionInfo info = new SectionInfo(index, section, SectionState.WaitInit, m_Data);
             info.Section.OnCreate(this, new SectionDataProvider(index, m_Data));
@@ -55,7 +56,7 @@ namespace XFrame.Modules.Plots
             m_Helper = helper;
             m_Director = director;
             if (string.IsNullOrEmpty(name))
-                name = $"story_{XModule.Rand.RandPath()}";
+                name = $"story_{m_Director.Module.Domain.GetModule<IRandModule>().RandPath()}";
             Name = name;
             m_SectionTypes = new List<SectionInfo>();
             m_Data = director.CreateDataProvider(this);
@@ -101,7 +102,7 @@ namespace XFrame.Modules.Plots
                     if (m_Current.Section.OnFinish())
                     {
                         m_Current.SetFinishData();
-                        XModule.Plot.Event.TriggerNow(PlotSectionFinishEvent.Create(m_Current.Section));
+                        m_Director.Module.Event.TriggerNow(PlotSectionFinishEvent.Create(m_Current.Section));
                         m_Current = null;
                         InnerCreateNext();
                     }

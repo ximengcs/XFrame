@@ -38,7 +38,7 @@ namespace XFrame.Modules.Conditions
         {
             base.OnInit(data);
 
-            m_Event = XModule.Event.NewSys();
+            m_Event = Domain.GetModule<IEventModule>().NewSys();
             m_Event.Listen(ConditionEvent.EventId, InnerConditionTouchHandler);
             m_Event.Listen(ConditionGroupEvent.EventId, InnerConditionGroupTouchHandler);
             m_Event.Listen(SpecificConditionEvent.EventId, InnerSpecificCondition);
@@ -49,22 +49,22 @@ namespace XFrame.Modules.Conditions
             m_ComparesType = new Dictionary<int, Type>();
             m_GroupList = new List<ConditionGroupHandle>();
 
-            TypeSystem typeSys = XModule.Type.GetOrNew<IConditionCompare>();
+            TypeSystem typeSys = Domain.TypeModule.GetOrNew<IConditionCompare>();
             foreach (Type type in typeSys)
             {
                 if (type.IsInterface || type.IsAbstract)
                     continue;
-                IConditionCompare compare = (IConditionCompare)XModule.Type.CreateInstance(type);
+                IConditionCompare compare = (IConditionCompare)Domain.TypeModule.CreateInstance(type);
                 m_Compares.Add(compare.Target, new Dictionary<int, CompareInfo>() { { ConditionHelperSetting.DEFAULT_INSTANCE, new CompareInfo(compare) } });
                 m_ComparesType.Add(compare.Target, compare.GetType());
             }
 
-            typeSys = XModule.Type.GetOrNew<IConditionHelper>();
+            typeSys = Domain.TypeModule.GetOrNew<IConditionHelper>();
             foreach (Type type in typeSys)
             {
                 if (type.IsInterface || type.IsAbstract)
                     continue;
-                IConditionHelper helper = (IConditionHelper)XModule.Type.CreateInstance(type);
+                IConditionHelper helper = (IConditionHelper)Domain.TypeModule.CreateInstance(type);
                 m_Helpers.Add(helper.Type, new Dictionary<int, IConditionHelper>() { { ConditionHelperSetting.DEFAULT_INSTANCE, helper } });
                 m_HelpersType.Add(helper.Type, helper.GetType());
             }
@@ -127,7 +127,7 @@ namespace XFrame.Modules.Conditions
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
                 return group;
             Log.Debug("Condition", $"Register {setting.Name} : {setting.Data}");
-            group = new ConditionGroupHandle(setting, InnerGroupCompleteHandler);
+            group = new ConditionGroupHandle(this, setting, InnerGroupCompleteHandler);
             if (!group.IsDisposed)
             {
                 m_Groups.Add(setting.Name, group);

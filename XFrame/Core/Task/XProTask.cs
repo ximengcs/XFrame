@@ -1,12 +1,13 @@
 using System;
-using System.Runtime.CompilerServices;
 using XFrame.Core;
+using System.Runtime.CompilerServices;
 
 namespace XFrame.Tasks
 {
     public class XProTask : ICriticalNotifyCompletion, IUpdater, ICancelTask, ITask
     {
         protected Action<float> m_OnUpdate;
+        protected Action<object> m_OnDataComplete;
         protected XComplete<XTaskState> m_OnComplete;
         protected ITaskBinder m_Binder;
         protected XTaskAction m_TaskAction;
@@ -49,7 +50,11 @@ namespace XFrame.Tasks
             m_ProHandler = handler;
             m_OnComplete = new XComplete<XTaskState>(XTaskState.Normal);
             m_CancelToken = cancelToken;
-            XModule.Task.Register(this);
+        }
+
+        protected virtual void InnerStart()
+        {
+            XTaskHelper.Register(this);
         }
 
         void IUpdater.OnUpdate(float escapeTime)
@@ -85,6 +90,11 @@ namespace XFrame.Tasks
 
         protected virtual void InnerExecComplete()
         {
+            if (m_OnDataComplete != null)
+            {
+                m_OnDataComplete(GetResult());
+                m_OnDataComplete = null;
+            }
             m_OnComplete.IsComplete = true;
             m_OnComplete.Invoke();
         }
@@ -116,11 +126,12 @@ namespace XFrame.Tasks
                 XTaskCancelToken.Release(m_CancelToken);
 
             m_OnUpdate = null;
-            XModule.Task.UnRegister(this);
+            XTaskHelper.UnRegister(this);
         }
 
         public XProTask GetAwaiter()
         {
+            InnerStart();
             return this;
         }
 
@@ -156,6 +167,15 @@ namespace XFrame.Tasks
         public ITask OnCompleted(Action handler)
         {
             m_OnComplete.On(handler);
+            return this;
+        }
+
+        public ITask OnCompleted(Action<object> handler)
+        {
+            if (m_OnComplete.IsComplete)
+                handler(GetResult());
+            else
+                m_OnDataComplete += handler;
             return this;
         }
 

@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Collections;
 using System.Collections.Generic;
+using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Containers
 {
@@ -12,15 +13,17 @@ namespace XFrame.Modules.Containers
     {
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
+        protected IContainerModule m_Module;
 
         public IContainer Master { get; private set; }
         public int Id { get; private set; }
 
         #region Container Life Fun
-        void IContainer.OnInit(int id, IContainer master, OnDataProviderReady onReady)
+        void IContainer.OnInit(IContainerModule module, int id, IContainer master, OnDataProviderReady onReady)
         {
+            m_Module = module;
             m_Data = new DataProvider();
-            m_Coms = new XCollection<ICom>();
+            m_Coms = new XCollection<ICom>(m_Module.Domain);
 
             Id = id;
             if (master != null && master.Master != null)
@@ -161,7 +164,7 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            ICom newCom = (ICom)XModule.Container.New(type, id, false, this, (db) =>
+            ICom newCom = (ICom)m_Module.New(type, id, false, this, (db) =>
             {
                 InnerInitCom((ICom)db);
                 onReady?.Invoke(db);
@@ -180,7 +183,7 @@ namespace XFrame.Modules.Containers
         private int InnerCheckId(Type type, int id)
         {
             if (m_Coms.Get(type, id) != null)
-                id = XModule.Id.Next();
+                id = m_Module.Domain.GetModule<IIdModule>().Next();
             return id;
         }
 

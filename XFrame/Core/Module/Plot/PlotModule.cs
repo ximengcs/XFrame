@@ -62,32 +62,32 @@ namespace XFrame.Modules.Plots
             base.OnInit(data);
             m_StoryHelpers = new Dictionary<Type, IStoryHelper>();
             m_Directors = new Dictionary<Type, IDirector>();
-            Event = XModule.Event.NewSys();
+            Event = Domain.GetModule<IEventModule>().NewSys();
 
-            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<DirectorAttribute>();
+            TypeSystem typeSys = Domain.TypeModule.GetOrNewWithAttr<DirectorAttribute>();
             foreach (Type type in typeSys)
             {
-                IDirector director = (IDirector)XModule.Type.CreateInstance(type);
-                DirectorAttribute attr = XModule.Type.GetAttribute<DirectorAttribute>(type);
+                IDirector director = (IDirector)Domain.TypeModule.CreateInstance(type);
+                DirectorAttribute attr = Domain.TypeModule.GetAttribute<DirectorAttribute>(type);
                 if (attr.Default)
                     m_DefaultDirector = director;
                 m_Directors.Add(type, director);
-                director.OnInit();
+                director.OnInit(this);
             }
 
-            typeSys = XModule.Type.GetOrNew<IStoryHelper>();
+            typeSys = Domain.TypeModule.GetOrNew<IStoryHelper>();
             foreach (Type type in typeSys)
             {
-                IStoryHelper director = (IStoryHelper)XModule.Type.CreateInstance(type);
+                IStoryHelper director = (IStoryHelper)Domain.TypeModule.CreateInstance(type);
                 m_StoryHelpers.Add(type, director);
             }
 
             if (!string.IsNullOrEmpty(XConfig.DefaultPlotHelper))
             {
-                Type type = XModule.Type.GetType(XConfig.DefaultPlotHelper);
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultPlotHelper);
                 if (type != null)
                 {
-                    m_Helper = (IPlotHelper)XModule.Type.CreateInstance(type);
+                    m_Helper = (IPlotHelper)Domain.TypeModule.CreateInstance(type);
                 }
             }
 

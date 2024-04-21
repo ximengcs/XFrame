@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Rand;
+using static XFrame.Modules.Times.CDTimer;
 
 namespace XFrame.Modules.Times
 {
@@ -13,6 +14,7 @@ namespace XFrame.Modules.Times
         private string m_Name;
         private IUpdater m_Updater;
         private Dictionary<int, CDInfo> m_Times;
+        private TimeModule m_TimeModule;
 
         public string Name => m_Name;
 
@@ -26,8 +28,6 @@ namespace XFrame.Modules.Times
         /// </summary>
         private CDTimer()
         {
-            m_Updater = Default;
-            m_Times = new Dictionary<int, CDInfo>();
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace XFrame.Modules.Times
         public static CDTimer Create()
         {
             CDTimer timer = References.Require<CDTimer>();
-            TimeModule timeModule = (TimeModule)XModule.Time;
-            timeModule.InnerAddTimer(timer);
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            timer.m_Updater = GetDeaultUpdater(timer.m_TimeModule);
             return timer;
         }
 
@@ -54,8 +54,8 @@ namespace XFrame.Modules.Times
         {
             CDTimer timer = References.Require<CDTimer>();
             timer.m_Name = name;
-            TimeModule timeModule = (TimeModule)XModule.Time;
-            timeModule.InnerAddTimer(timer);
+            timer.m_Times = new Dictionary<int, CDInfo>();
+            timer.m_Updater = GetDeaultUpdater(timer.m_TimeModule);
             return timer;
         }
 
@@ -65,8 +65,6 @@ namespace XFrame.Modules.Times
             timer.m_Name = name;
             timer.m_Updater = updater;
             timer.m_Times = new Dictionary<int, CDInfo>();
-            TimeModule timeModule = (TimeModule)XModule.Time;
-            timeModule.InnerAddTimer(timer);
             return timer;
         }
 
@@ -149,23 +147,20 @@ namespace XFrame.Modules.Times
             return CheckTime(default);
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
-
+            m_TimeModule = (TimeModule)module.Domain.GetModule<ITimeModule>();
         }
 
         void IPoolObject.OnRequest()
         {
-            m_Name = XModule.Rand.RandString();
-            m_Updater = Default;
-            TimeModule timeModule = (TimeModule)XModule.Time;
-            timeModule.InnerAddTimer(this);
+            m_Name = m_TimeModule.Domain.GetModule<IRandModule>().RandString();
+            m_TimeModule.InnerAddTimer(this);
         }
 
         void IPoolObject.OnRelease()
         {
-            TimeModule timeModule = (TimeModule)XModule.Time;
-            timeModule.InnerRemove(this);
+            m_TimeModule.InnerRemove(this);
             m_Name = null;
             m_Times.Clear();
             m_Updater = null;

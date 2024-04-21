@@ -8,6 +8,7 @@ namespace XFrame.Modules.Pools
     {
         private Type m_Type;
         private IPoolHelper m_Helper;
+        private IPoolModule m_Module;
         private XLinkList<IPoolObject> m_Objects;
         private XLoopQueue<XLinkNode<IPoolObject>> m_NodeCache;
         private int m_UseCount;
@@ -22,11 +23,12 @@ namespace XFrame.Modules.Pools
 
         public IXEnumerable<IPoolObject> AllObjects => m_Objects;
 
-        public ObjectPool(IPoolHelper helper)
+        public ObjectPool(IPoolModule module, IPoolHelper helper)
         {
             m_UseCount = 0;
             m_Type = typeof(T);
             m_Helper = helper;
+            m_Module = module;
             m_Objects = new XLinkList<IPoolObject>(false);
             m_NodeCache = new XLoopQueue<XLinkNode<IPoolObject>>(m_Helper.CacheCount);
         }
@@ -72,7 +74,7 @@ namespace XFrame.Modules.Pools
         {
             IPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
             m_Helper.OnObjectCreate(obj);
-            obj.OnCreate();
+            obj.OnCreate(m_Module);
             return obj;
         }
 

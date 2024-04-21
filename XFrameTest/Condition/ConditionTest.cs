@@ -18,7 +18,7 @@ namespace XFrameTest.Condition
                 ConditionData cond = new ConditionData("1|100,2|1.2,3|9;8,3|7;4");
                 ConditionSetting setting = new ConditionSetting("cond1", cond);
                 Log.Debug(cond);
-                XModule.Condition.Register(setting).OnComplete((handle) =>
+                Entry.GetModule<IConditionModule>().Register(setting).OnComplete((handle) =>
                 {
                     Log.Debug($"{handle.Name} complete");
                 });

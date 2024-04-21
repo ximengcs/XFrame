@@ -8,10 +8,14 @@ namespace XFrame.Modules.Plots
     [Director]
     public class NonBlockDirector : IDirector
     {
+        private IPlotModule m_Module;
         private XLinkList<StoryInfo> m_Stories;
 
-        void IDirector.OnInit()
+        public IPlotModule Module => m_Module;
+
+        void IDirector.OnInit(IPlotModule module)
         {
+            m_Module = module;
             m_Stories = new XLinkList<StoryInfo>();
         }
 

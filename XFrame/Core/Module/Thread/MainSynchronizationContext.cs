@@ -3,6 +3,7 @@ using XFrame.Core;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using XFrame.Tasks;
 
 namespace XFrame.Modules.Threads
 {
@@ -27,7 +28,7 @@ namespace XFrame.Modules.Threads
         #region IModule Life Fun
         public int Id => default;
 
-        public XCore Domain => default;
+        public XDomain Domain => XTaskHelper.Domain;
 
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {

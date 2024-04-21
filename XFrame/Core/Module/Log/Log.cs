@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using XFrame.Core;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Diagnotics
 {
@@ -24,6 +24,7 @@ namespace XFrame.Modules.Diagnotics
         public static bool ToQueue { get; set; }
         public static bool Power { get; set; }
 
+        private static ILogModule m_Log;
         private static Queue<LogInfo> s_WaitQueue;
 
         static Log()
@@ -31,6 +32,11 @@ namespace XFrame.Modules.Diagnotics
             ToQueue = true;
             Power = true;
             s_WaitQueue = new Queue<LogInfo>(128);
+        }
+
+        public static void SetDomain(XDomain domain)
+        {
+            m_Log = domain.GetModule<ILogModule>();
         }
 
         public static void ConsumeWaitQueue()
@@ -86,7 +92,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Debug, content));
             else
-                XModule.Log.Debug(content);
+                m_Log.Debug(content);
         }
 
         /// <summary>
@@ -100,7 +106,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Warning, content));
             else
-                XModule.Log.Warning(content);
+                m_Log.Warning(content);
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Error, content));
             else
-                XModule.Log.Error(content);
+                m_Log.Error(content);
         }
 
         /// <summary>
@@ -128,7 +134,17 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, content));
             else
-                XModule.Log.Fatal(content);
+                m_Log.Fatal(content);
+        }
+
+        public static void Exception(Exception e)
+        {
+            if (!Power)
+                return;
+            if (ToQueue)
+                s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, new object[] { e }));
+            else
+                m_Log.Fatal(e);
         }
     }
 }

@@ -3,7 +3,8 @@ using XFrame.Modules.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Tasks;
+using XFrame.Modules.Pools;
+using XFrame.Tasks;
 
 namespace XFrame.Core
 {
@@ -16,9 +17,9 @@ namespace XFrame.Core
         private static Action m_OnRun;
         private static Stopwatch m_Sw;
 
-        private static XCore m_Base;
-        private static XCore m_Core;
-        private static XCore m_Custom;
+        private static int CORE = 1;
+        private static int CUSTOM = 2;
+        private static XDomain m_Domain;
 
         private static Dictionary<Type, IEntryHandler> m_Handlers;
         #endregion
@@ -42,6 +43,8 @@ namespace XFrame.Core
         #endregion
 
         #region Interface
+        public static XDomain Domain => m_Domain;
+
         /// <summary>
         /// 初始化核心模块
         /// </summary>
@@ -53,24 +56,26 @@ namespace XFrame.Core
             m_Runing = false;
             m_DoStart = false;
             m_Handlers = new Dictionary<Type, IEntryHandler>();
-            m_Base = XCore.Create(typeof(TypeModule));
-            m_Core = XCore.Create();
-            m_Custom = XCore.Create();
+            m_Domain = new XDomain(3);
+            m_Domain.SetTypeModule(typeof(TypeModule));
 
             InnerConfigHandler();
             InenrInitHandler();
             IInitHandler handler = InnerGetHandler<IInitHandler>();
             handler.EnterHandle();
 
-            InnerInit<BaseModuleAttribute>(m_Base);
+            InnerInit<BaseModuleAttribute>(m_Domain.Base);
+            Log.SetDomain(m_Domain);
+            References.SetDomain(m_Domain);
+            XTaskHelper.SetDomain(m_Domain);
 
             if (handler != null)
             {
                 handler.BeforeHandle()
                        .OnCompleted(() =>
                        {
-                           InnerInit<CoreModuleAttribute>(m_Core);
-                           InnerInit<CommonModuleAttribute>(m_Custom);
+                           InnerInit<CoreModuleAttribute>(m_Domain[CORE]);
+                           InnerInit<CommonModuleAttribute>(m_Domain[CUSTOM]);
                            handler.AfterHandle()
                                   .OnCompleted(() =>
                                   {
@@ -82,8 +87,8 @@ namespace XFrame.Core
             }
             else
             {
-                InnerInit<CoreModuleAttribute>(m_Core);
-                InnerInit<CommonModuleAttribute>(m_Custom);
+                InnerInit<CoreModuleAttribute>(m_Domain[CORE]);
+                InnerInit<CommonModuleAttribute>(m_Domain[CUSTOM]);
                 m_Inited = true;
             }
         }
@@ -93,7 +98,7 @@ namespace XFrame.Core
         /// </summary>
         public static void Start()
         {
-            m_Base.Start();
+            m_Domain.Base.Start();
             if (!m_Inited)
             {
                 m_DoStart = true;
@@ -107,8 +112,8 @@ namespace XFrame.Core
                 handler.BeforeHandle()
                        .OnCompleted(() =>
                        {
-                           m_Core.Start();
-                           m_Custom.Start();
+                           m_Domain[CORE].Start();
+                           m_Domain[CUSTOM].Start();
                            handler.AfterHandle()
                                   .OnCompleted(() =>
                                   {
@@ -118,8 +123,8 @@ namespace XFrame.Core
             }
             else
             {
-                m_Core.Start();
-                m_Custom.Start();
+                m_Domain[CORE].Start();
+                m_Domain[CUSTOM].Start();
                 InnerStartRun();
             }
         }
@@ -135,11 +140,11 @@ namespace XFrame.Core
 
         public static void Trigger(Type type, object data = null)
         {
-            m_Base.Trigger(type, data);
+            m_Domain.Base.Trigger(type, data);
             if (m_Runing)
             {
-                m_Core.Trigger(type, data);
-                m_Custom.Trigger(type, data);
+                m_Domain[CORE].Trigger(type, data);
+                m_Domain[CUSTOM].Trigger(type, data);
             }
         }
 
@@ -153,14 +158,13 @@ namespace XFrame.Core
         /// </summary>
         public static void ShutDown()
         {
-            m_Runing = false;
-            m_Custom?.Destroy();
-            m_Core?.Destroy();
-            m_Base?.Destroy();
-            m_Custom = null;
-            m_Core = null;
-            m_Base = null;
-            m_OnRun = null;
+            if (m_Domain != null)
+            {
+                m_Runing = false;
+                m_Domain.Destroy();
+                m_Domain = null;
+                m_OnRun = null;
+            }
         }
 
         /// <summary>
@@ -175,7 +179,7 @@ namespace XFrame.Core
             {
                 if (handType == typeof(IEntryHandler))
                     continue;
-                m_Handlers.Add(handType, (IEntryHandler)XModule.Type.CreateInstance(type));
+                m_Handlers.Add(handType, (IEntryHandler)m_Domain.TypeModule.CreateInstance(type));
             }
         }
 
@@ -185,7 +189,7 @@ namespace XFrame.Core
         /// <typeparam name="T">模块组特性类型</typeparam>
         public static void AddModules<T>() where T : Attribute
         {
-            InnerInit<T>(m_Custom);
+            InnerInit<T>(m_Domain[CUSTOM]);
         }
 
         /// <summary>
@@ -195,22 +199,22 @@ namespace XFrame.Core
         /// <returns>模块</returns>
         public static T AddModule<T>(int moduleId = default, object userData = null) where T : IModule
         {
-            return (T)InnerAddModule(typeof(T), moduleId, m_Custom, userData);
+            return (T)InnerAddModule(typeof(T), moduleId, m_Domain[CUSTOM], userData);
         }
 
         public static void RemoveModule(IModule module)
         {
-            InnerRemoveModule(module);
+            m_Domain.RemoveModule(module);
         }
 
         public static void RemoveModule(Type moduleType, int moduleId = default)
         {
-            InnerRemoveModule(moduleType, moduleId);
+            m_Domain.RemoveModule(moduleType, moduleId);
         }
 
         public static void RemoveModule<T>(int moduleId = default) where T : IModule
         {
-            InnerRemoveModule(typeof(T), moduleId);
+            m_Domain.RemoveModule(typeof(T), moduleId);
         }
 
         /// <summary>
@@ -220,7 +224,7 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public static T GetModule<T>(int moduleId = default) where T : IModule
         {
-            return (T)InnerGetModule(typeof(T), moduleId);
+            return (T)m_Domain.GetModule(typeof(T), moduleId);
         }
 
         /// <summary>
@@ -230,7 +234,7 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public static T[] GetHelpers<T>() where T : IModule
         {
-            return m_Core.GetHelpers<T>();
+            return m_Domain.Base.GetHelpers<T>();
         }
 
         /// <summary>
@@ -240,14 +244,14 @@ namespace XFrame.Core
         /// <returns>辅助器实例</returns>
         public static T GetMainHelper<T>() where T : IModuleHelper
         {
-            return m_Core.GetMainHelper<T>();
+            return m_Domain.Base.GetMainHelper<T>();
         }
         #endregion
 
         #region Inner Implement
         private static void InnerConfigHandler()
         {
-            ITypeModule typeModule = m_Base.GetModule<ITypeModule>();
+            ITypeModule typeModule = m_Domain.Base.GetModule<ITypeModule>();
             TypeSystem typeSys = typeModule.GetOrNew<IConfigHandler>();
             List<Pair<int, IConfigHandler>> handlers = new List<Pair<int, IConfigHandler>>(typeSys.Count);
             foreach (Type type in typeSys)
@@ -273,7 +277,7 @@ namespace XFrame.Core
 
         private static void InenrInitHandler()
         {
-            TypeSystem typeSys = XModule.Type.GetOrNew<IEntryHandler>();
+            TypeSystem typeSys = m_Domain.TypeModule.GetOrNew<IEntryHandler>();
             foreach (Type type in typeSys)
             {
                 Type[] handTypes = type.GetInterfaces();
@@ -281,23 +285,21 @@ namespace XFrame.Core
                 {
                     if (handType == typeof(IEntryHandler))
                         continue;
-                    m_Handlers.Add(handType, (IEntryHandler)XModule.Type.CreateInstance(type));
+                    m_Handlers.Add(handType, (IEntryHandler)m_Domain.TypeModule.CreateInstance(type));
                 }
             }
 
-            typeSys = XModule.Type.GetOrNew<IModuleHandler>();
+            typeSys = m_Domain.TypeModule.GetOrNew<IModuleHandler>();
             foreach (Type type in typeSys)
             {
-                IModuleHandler handler = (IModuleHandler)XModule.Type.CreateInstance(type);
-                m_Base.AddHandle(handler.Target, handler);
-                m_Core.AddHandle(handler.Target, handler);
-                m_Custom.AddHandle(handler.Target, handler);
+                IModuleHandler handler = (IModuleHandler)m_Domain.TypeModule.CreateInstance(type);
+                m_Domain.AddHandle(handler.Target, handler);
             }
         }
 
         private static void InnerInit<T>(XCore target) where T : Attribute
         {
-            TypeSystem typeSys = XModule.Type.GetOrNewWithAttr<T>();
+            TypeSystem typeSys = m_Domain.Base.GetModule<ITypeModule>().GetOrNewWithAttr<T>();
             foreach (Type type in typeSys)
             {
                 InnerAddModule(type, default, target, default);
@@ -306,13 +308,13 @@ namespace XFrame.Core
 
         private static IModule InnerAddModule(Type moduleType, int moduleId, XCore target, object userData)
         {
-            IModule module = InnerGetModule(moduleType, moduleId);
+            IModule module = m_Domain.GetModule(moduleType, moduleId);
             if (module != null)
                 return module;
 
             if (moduleId == default)
             {
-                ITypeModule typeModule = m_Base.GetModule<ITypeModule>();
+                ITypeModule typeModule = m_Domain.Base.GetModule<ITypeModule>();
                 Attribute[] requires = typeModule.GetAttributes(moduleType, typeof(RequireModuleAttribute));
                 if (requires != null && requires.Length > 0)
                 {
@@ -325,40 +327,6 @@ namespace XFrame.Core
             }
 
             return target.Register(moduleType, moduleId, userData);
-        }
-
-        private static void InnerRemoveModule(Type moduleType, int moduleId)
-        {
-            if (m_Base == null)
-                return;
-
-            if (!m_Base.RemoveModule(moduleType, moduleId))
-                if (!m_Core.RemoveModule(moduleType, moduleId))
-                    m_Custom.RemoveModule(moduleType, moduleId);
-        }
-
-        private static void InnerRemoveModule(IModule module)
-        {
-            if (m_Base == null)
-                return;
-
-            if (!m_Base.RemoveModule(module))
-                if (!m_Core.RemoveModule(module))
-                    m_Custom.RemoveModule(module);
-        }
-
-        private static IModule InnerGetModule(Type moduleType, int moduleId)
-        {
-            if (m_Base == null)
-                return default;
-
-            IModule module;
-            module = m_Base.GetModule(moduleType, moduleId);
-            if (module == null)
-                module = m_Core.GetModule(moduleType, moduleId);
-            if (module == null)
-                module = m_Custom.GetModule(moduleType, moduleId);
-            return module;
         }
 
         private static T InnerGetHandler<T>()

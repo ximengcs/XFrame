@@ -1,10 +1,7 @@
 ﻿using System;
-using XFrame.Utility;
 using XFrame.Modules.Serialize;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using XFrame.Modules.Reflection;
-using XFrame.Core;
 
 namespace XFrame.Modules.Datas
 {
@@ -45,7 +42,7 @@ namespace XFrame.Modules.Datas
                 return;
             }
 
-            TableAttribute attr = XModule.Type.GetAttribute<TableAttribute>(type);
+            TableAttribute attr = m_Module.Domain.TypeModule.GetAttribute<TableAttribute>(type);
             if (attr != null)
             {
                 Type jsonType = attr != null ? attr.JsonType : null;
@@ -85,7 +82,7 @@ namespace XFrame.Modules.Datas
             tbType = null;
             jsonType = null;
 
-            DataAttribute attr = XModule.Type.GetAttribute<DataAttribute>(dataType);
+            DataAttribute attr = m_Module.Domain.TypeModule.GetAttribute<DataAttribute>(dataType);
             int tableType = attr != null ? attr.TableType : TableType.List;
             if (m_TableTypes.TryGetValue(tableType, out TypeInfo info))
             {
@@ -108,12 +105,12 @@ namespace XFrame.Modules.Datas
 
         private IDataTable InnerAdd(Type tbType, Type jsonType, string json, int textType)
         {
-            ISerializeModule serializeModule = XModule.Serialize;
+            ISerializeModule serializeModule = m_Module.Domain.GetModule<ISerializeModule>();
             if (serializeModule == null)
                 serializeModule = m_Module.Domain.GetModule<ISerializeModule>(m_Module.Id);
 
             object data = serializeModule.DeserializeToObject(json, textType, jsonType);
-            IDataTable table = (IDataTable)XModule.Type.CreateInstance(tbType);
+            IDataTable table = (IDataTable)m_Module.Domain.TypeModule.CreateInstance(tbType);
             table.OnInit(data);
 
             List<IDataTable> list;

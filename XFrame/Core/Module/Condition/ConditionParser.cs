@@ -26,7 +26,7 @@ namespace XFrame.Modules.Conditions
             return m_Value;
         }
 
-        void IPoolObject.OnCreate()
+        void IPoolObject.OnCreate(IPoolModule module)
         {
 
         }

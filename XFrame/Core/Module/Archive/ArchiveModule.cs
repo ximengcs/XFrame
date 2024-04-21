@@ -41,20 +41,20 @@ namespace XFrame.Modules.Archives
             Type type;
             if (!string.IsNullOrEmpty(XConfig.ArchiveUtilityHelper))
             {
-                type = XModule.Type.GetType(XConfig.ArchiveUtilityHelper);
+                type = Domain.TypeModule.GetType(XConfig.ArchiveUtilityHelper);
             }
             else
             {
                 type = typeof(DefaultArchiveUtilityHelper);
             }
-            IArchiveUtilityHelper helper = (IArchiveUtilityHelper)XModule.Type.CreateInstance(type);
+            IArchiveUtilityHelper helper = (IArchiveUtilityHelper)Domain.TypeModule.CreateInstance(type);
             ArchiveUtility.Helper = helper;
             InnerInit();
         }
 
         private void InnerInit()
         {
-            TypeSystem system = XModule.Type.GetOrNewWithAttr<ArchiveAttribute>();
+            TypeSystem system = Domain.TypeModule.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
                 InnerAddType(type);
             InnerRefreshFiles();
@@ -62,7 +62,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerAddType(Type type)
         {
-            ArchiveAttribute attri = XModule.Type.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = Domain.TypeModule.GetAttribute<ArchiveAttribute>(type);
             if (attri != null)
             {
                 if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
@@ -150,7 +150,7 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            ArchiveAttribute attri = XModule.Type.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = Domain.TypeModule.GetAttribute<ArchiveAttribute>(type);
             return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 
@@ -179,8 +179,8 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)XModule.Type.CreateInstance(archiveType);
-                source.OnInit(InnerGetPath(archiveType, name), name, param);
+                IArchive source = (IArchive)Domain.TypeModule.CreateInstance(archiveType);
+                source.OnInit(this, InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;
             }

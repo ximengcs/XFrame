@@ -35,7 +35,7 @@ namespace XFrame.Modules.Plots
                 sections.Add(section.GetType().FullName);
         }
 
-        public static IStory[] InnerRestoreStories(JsonArchive archive)
+        public static IStory[] InnerRestoreStories(IPlotModule module, JsonArchive archive)
         {
             List<IStory> stories = new List<IStory>();
             JSONObject map = archive.GetOrNewObject("stories");
@@ -48,14 +48,14 @@ namespace XFrame.Modules.Plots
                 if (item.Value.HasKey("story_helper_type"))
                 {
                     JSONNode storyHelperTypeNode = item.Value["story_helper_type"];
-                    storyHelperType = XModule.Type.GetType(storyHelperTypeNode);
+                    storyHelperType = module.Domain.TypeModule.GetType(storyHelperTypeNode);
                 }
-                Type storyType = XModule.Type.GetType(storyTypeNode);
-                IStory story = XModule.Plot.NewStory(storyType, storyHelperType, item.Key);
+                Type storyType = module.Domain.TypeModule.GetType(storyTypeNode);
+                IStory story = module.NewStory(storyType, storyHelperType, item.Key);
                 JSONNode sections = item.Value["sections"];
                 foreach (JSONNode section in sections)
                 {
-                    Type type = XModule.Type.GetType(section);
+                    Type type = module.Domain.TypeModule.GetType(section);
                     if (type != null)
                         story.AddSection(type);
                 }
