@@ -9,6 +9,8 @@ namespace XFrame.Modules.Serialize
     {
         int HandleType { get; }
 
+        void OnInit(ISerializeModule module);
+
         /// <summary>
         /// 反序列化
         /// </summary>

@@ -86,6 +86,7 @@ namespace XFrame.Modules.Serialize
         private void InnerInit(Type type)
         {
             ISerializeHelper helper = Domain.TypeModule.CreateInstance(type) as ISerializeHelper;
+            helper.OnInit(this);
             m_Helpers.Add(helper.HandleType, helper);
         }
     }
