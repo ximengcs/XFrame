@@ -29,6 +29,7 @@ namespace XFrame.Modules.Tasks
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -37,6 +38,7 @@ namespace XFrame.Modules.Tasks
             m_Watch = new Stopwatch();
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             m_ThisFrameTime = 0;
@@ -64,6 +66,7 @@ namespace XFrame.Modules.Tasks
         }
 
         #region Interface
+        /// <inheritdoc/>
         public int ExecCount => m_Tasks.Count;
 
         /// <summary>
@@ -71,11 +74,13 @@ namespace XFrame.Modules.Tasks
         /// </summary>
         public long TaskTimeout { get; set; }
 
+        /// <inheritdoc/>
         public void Register(IUpdater task)
         {
             m_Tasks.Add(task);
         }
 
+        /// <inheritdoc/>
         public void UnRegister(IUpdater task)
         {
             m_Tasks.Remove(task);

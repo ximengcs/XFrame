@@ -10,7 +10,7 @@ using XFrame.Modules.Pools;
 namespace XFrame.Modules.Caches
 {
     [CoreModule]
-    [XType(typeof(IPoolModule))]
+    [XType(typeof(XCache))]
     public partial class XCache : ModuleBase
     {
         private Dictionary<Type, ObjectCollection> m_Factorys;

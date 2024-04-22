@@ -1,7 +1,7 @@
 using System;
 using XFrame.Core;
-using System.Runtime.CompilerServices;
 using XFrame.Core.Binder;
+using System.Runtime.CompilerServices;
 
 namespace XFrame.Tasks
 {
@@ -98,6 +98,8 @@ namespace XFrame.Tasks
             }
             m_OnComplete.IsComplete = true;
             m_OnComplete.Invoke();
+            SetResult();
+
         }
 
         void ICancelTask.SetState(XTaskState state)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using XFrame.Core.Binder;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Tasks
 {

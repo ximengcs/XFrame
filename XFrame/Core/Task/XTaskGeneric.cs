@@ -1,7 +1,7 @@
 ﻿using System;
+using XFrame.Core.Binder;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using XFrame.Core.Binder;
 
 namespace XFrame.Tasks
 {
