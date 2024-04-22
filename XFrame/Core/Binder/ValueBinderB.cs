@@ -121,11 +121,19 @@ namespace XFrame.Core.Binder
             m_CondUpdateHandler.Remove(handler);
         }
 
+        /// <summary>
+        /// 返回绑定的值
+        /// </summary>
+        /// <param name="binder">绑定的值</param>
         public static implicit operator T(ValueBinder<T, VT> binder)
         {
             return binder.Value;
         }
 
+        /// <summary>
+        /// 返回持有值的字符串
+        /// </summary>
+        /// <returns>持有值的字符串</returns>
         public override string ToString()
         {
             return Value.ToString();
