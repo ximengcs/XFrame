@@ -7,6 +7,11 @@ namespace XFrameTest
     {
         public int HandleType => default;
 
+        public void OnInit(ISerializeModule module)
+        {
+            
+        }
+
         public object Deserialize(string json, Type dataType)
         {
             return JsonConvert.DeserializeObject(json, dataType);

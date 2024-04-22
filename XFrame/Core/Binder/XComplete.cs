@@ -1,6 +1,6 @@
 using System;
 
-namespace XFrame.Tasks
+namespace XFrame.Core.Binder
 {
     public struct XComplete<T>
     {
