@@ -46,6 +46,10 @@ namespace XFrame.Collections
             #endregion
 
             #region IXEnumerable Interface
+            /// <summary>
+            /// 获取迭代器
+            /// </summary>
+            /// <returns>迭代器</returns>
             public IEnumerator<T> GetEnumerator()
             {
                 switch (m_ItType)
@@ -56,12 +60,19 @@ namespace XFrame.Collections
                 }
             }
 
+            /// <summary>
+            /// 设置迭代器类型
+            /// </summary>
+            /// <param name="type">迭代器类型</param>
             public void SetIt(XItType type)
             {
                 m_ItType = type;
             }
             #endregion
-
+            /// <summary>
+            /// 获取Csv行数据字符串形式，以逗号分隔
+            /// </summary>
+            /// <returns>构造字符串</returns>
             public override string ToString()
             {
                 StringBuilder sb = new StringBuilder();
@@ -75,6 +86,11 @@ namespace XFrame.Collections
                 return sb.ToString();
             }
 
+            /// <summary>
+            /// 返回csv行数据字符串形式
+            /// </summary>
+            /// <param name="csv">csv行实例</param>
+            /// <returns>字符串形式</returns>
             public static implicit operator string(Line line)
             {
                 return line.ToString();

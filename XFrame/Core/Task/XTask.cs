@@ -82,7 +82,6 @@ namespace XFrame.Tasks
                 XTaskCancelToken.Release(m_CancelToken);
 
             m_OnComplete.IsComplete = true;
-            m_OnComplete.Invoke();
         }
 
         public void GetResult()

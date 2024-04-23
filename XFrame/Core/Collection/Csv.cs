@@ -24,19 +24,12 @@ namespace XFrame.Collections
         private Dictionary<int, XLinkNode<Line>> m_LinesWithIndex;
         #endregion
 
-        #region Const Fields
-        private const int DEFAULT_COLUMN = 8;
-        private const int REQUIRE = 1;
-        private const string CSV_PATTERN = "(?:,|\\n|^)(\"(?:(?:\"\")*[^\"]*)*\"|[^\",\\n]*|(?:\\n|$))";
-        //private const string CSV_PATTERN = "\"([^\"]+?)\",?|([^,]+),?|,";
-        #endregion
-
         #region Constructor
         /// <summary>
         /// 构造一个 <paramref name="column"/> 列的Csv
         /// </summary>
-        /// <param name="column"></param>
-        public Csv(int column = DEFAULT_COLUMN)
+        /// <param name="column">列数</param>
+        public Csv(int column = 8)
         {
             m_Column = column;
             m_Lines =  References.Require<XLinkList<Line>>();
@@ -162,11 +155,19 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <summary>
+        /// 获取迭代器
+        /// </summary>
+        /// <returns>迭代器</returns>
         public IEnumerator<Line> GetEnumerator()
         {
             return new Enumerator(m_Lines);
         }
 
+        /// <summary>
+        /// 设置迭代器类型
+        /// </summary>
+        /// <param name="type">迭代器类型</param>
         public void SetIt(XItType type)
         {
             m_Lines.SetIt(type);
@@ -204,6 +205,10 @@ namespace XFrame.Collections
         }
         #endregion
 
+        /// <summary>
+        /// 获取Csv数据字符串形式，以换行符分隔
+        /// </summary>
+        /// <returns>构造字符串</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -216,6 +221,9 @@ namespace XFrame.Collections
             return sb.ToString();
         }
 
+        /// <summary>
+        /// 释放
+        /// </summary>
         public void Dispose()
         {
             References.Release(m_Lines);
@@ -223,6 +231,11 @@ namespace XFrame.Collections
             m_LinesWithIndex = null;
         }
 
+        /// <summary>
+        /// 返回csv字符串形式
+        /// </summary>
+        /// <param name="csv">csv实例</param>
+        /// <returns>字符串形式</returns>
         public static implicit operator string(Csv<T> csv)
         {
             return csv.ToString();

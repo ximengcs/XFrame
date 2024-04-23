@@ -7,8 +7,19 @@ namespace XFrame.Core
     /// </summary>
     public interface IDataProvider
     {
+        /// <summary>
+        /// 是否含有数据
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <returns>true为含有</returns>
         bool HasData<T>();
 
+        /// <summary>
+        /// 是否含有数据
+        /// </summary>
+        /// <param name="name">数据名</param>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <returns>true为含有</returns>
         bool HasData<T>(string name);
 
         /// <summary>
@@ -41,6 +52,9 @@ namespace XFrame.Core
         /// <returns>获取到的数据</returns>
         T GetData<T>(string name);
 
+        /// <summary>
+        /// 清除数据
+        /// </summary>
         void ClearData();
     }
 }

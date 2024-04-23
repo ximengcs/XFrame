@@ -25,11 +25,13 @@ namespace XFrame.Core
         #endregion
 
         #region IDataProvider Interface
+        /// <inheritdoc cref="IDataProvider.HasData{T}()"/>
         public bool HasData<T>()
         {
             return m_MainDatas.ContainsKey(typeof(T));
         }
 
+        /// <inheritdoc cref="IDataProvider.HasData{T}(string)"/>
         public bool HasData<T>(string name)
         {
             if (m_Datas.TryGetValue(typeof(T), out Dictionary<string, object> values))
@@ -39,6 +41,7 @@ namespace XFrame.Core
             return false;
         }
 
+        /// <inheritdoc cref="IDataProvider.GetData{T}()"/>
         public T GetData<T>()
         {
             if (m_MainDatas.TryGetValue(typeof(T), out object value))
@@ -47,6 +50,7 @@ namespace XFrame.Core
                 return default;
         }
 
+        /// <inheritdoc cref="IDataProvider.GetData{T}(string)"/>
         public T GetData<T>(string name)
         {
             if (m_Datas.TryGetValue(typeof(T), out Dictionary<string, object> values))
@@ -58,11 +62,13 @@ namespace XFrame.Core
             return default;
         }
 
+        /// <inheritdoc cref="IDataProvider.SetData{T}(T)"/>
         public void SetData<T>(T value)
         {
             m_MainDatas[typeof(T)] = value;
         }
 
+        /// <inheritdoc cref="IDataProvider.SetData{T}(string, T)"/>
         public void SetData<T>(string name, T value)
         {
             Type type = typeof(T);
@@ -76,6 +82,7 @@ namespace XFrame.Core
             values[name] = value;
         }
 
+        /// <inheritdoc cref="IDataProvider.ClearData"/>
         public void ClearData()
         {
             m_MainDatas.Clear();

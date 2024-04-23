@@ -13,7 +13,10 @@ namespace XFrame.Collections
     public partial class XCollection<T> : IXEnumerable<T> where T : IXItem
     {
         #region Const Fields
-        private const int DEFAULT_CAPACITY = 16;
+        /// <summary>
+        /// 默认容量
+        /// </summary>
+        public const int DEFAULT_CAPACITY = 16;
         #endregion
 
         #region Inner Fields
@@ -183,6 +186,12 @@ namespace XFrame.Collections
             return default;
         }
 
+        /// <summary>
+        /// 获取指定id和给定类型的元素 
+        /// </summary>
+        /// <param name="elementType">需要获取的类型</param>
+        /// <param name="entityId">元素Id</param>
+        /// <returns>获取到的元素</returns>
         public T Get(Type elementType, int entityId)
         {
             Type xType = InnerGetMapType(elementType);
@@ -194,11 +203,19 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <summary>
+        /// 设置迭代器类型
+        /// </summary>
+        /// <param name="type">迭代器类型</param>
         public void SetIt(XItType type)
         {
             m_Elements.SetIt(type);
         }
 
+        /// <summary>
+        /// 获取迭代器
+        /// </summary>
+        /// <returns>迭代器</returns>
         public IEnumerator<T> GetEnumerator()
         {
             return new Enumerator(m_Elements);

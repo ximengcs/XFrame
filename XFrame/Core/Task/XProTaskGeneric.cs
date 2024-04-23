@@ -94,7 +94,6 @@ namespace XFrame.Tasks
                 m_OnDataComplete = null;
             }
             m_OnComplete.IsComplete = true;
-            m_OnComplete.Invoke();
             SetResult();
         }
 

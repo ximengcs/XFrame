@@ -1,16 +1,12 @@
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
-using static XFrame.SimpleJSON.JSONNode;
 
 namespace XFrame.Collections
 {
     /// <summary>
-    /// Ë«ÏòÁ´±í
-    /// ×¢Òâµã£º	1.Á´±íÊ¹ÓÃ¶ÔÏó³Ø£¬ĞèÒªµ÷ÓÃÕßÊ¹ÓÃÍêÖ®ºóµ÷ÓÃDisposeÊÍ·Å³Ø
-    ///			2.Á´±í¿ÉÒÔµ÷ÓÃNode½ÚµãµÄDeleteÖ±½ÓÉ¾³ı½Úµã
-    ///	Ê¹ÓÃ³¡¾°£ºĞèÒªË³Ğòµü´ú£¬ĞèÒªËæÊ±É¾³ı½Úµã£¬²»ĞèÒªËæ»ú·ÃÎÊ
+    /// åŒå‘é“¾è¡¨
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">æŒæœ‰ç±»å‹</typeparam>
     public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>, IXEnumerable<T>
     {
         #region Inner Fields
@@ -23,14 +19,17 @@ namespace XFrame.Collections
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// æ„é€ ä¸€ä¸ªåŒå‘é“¾è¡¨, ä¸ä½¿ç”¨å¯¹è±¡æ± 
+        /// </summary>
         public XLinkList() : this(false)
         {
         }
 
         /// <summary>
-        /// ¹¹ÔìÒ»¸öÁ´±í
-        /// usePool ÄÚ²¿Ê¹ÓÃÒ»¸öËù¸øÈİÁ¿µÄ¶ÔÏó³Ø
+        /// æ„é€ ä¸€ä¸ªåŒå‘é“¾è¡¨
         /// </summary>
+        /// <param name="usePool">æ˜¯å¦ä½¿ç”¨å¯¹è±¡æ± </param>
         public XLinkList(bool usePool = true)
         {
             UsePool = usePool;
@@ -38,10 +37,10 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ»¸öÊı¾İµ½Á´±íÎ²
+        /// æ·»åŠ å…ƒç´ åˆ°å°¾éƒ¨
         /// </summary>
-        /// <param name="data">ÒªÌí¼ÓµÄÊı¾İ</param>
-        /// <returns>Ìí¼ÓµÄ½Úµã</returns>
+        /// <param name="data">æ•°æ®</param>
+        /// <returns></returns>
         public XLinkNode<T> AddLast(T data)
         {
             XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
@@ -69,7 +68,7 @@ namespace XFrame.Collections
 
         #region Interface
         /// <summary>
-        /// Á´±íµÚÒ»¸ö½Úµã
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
         public XLinkNode<T> First
         {
@@ -78,7 +77,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Á´±í×îºóÒ»¸ö½Úµã
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
         public XLinkNode<T> Last
         {
@@ -87,7 +86,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Á´±í½ÚµãÊıÁ¿
+        /// ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public int Count
         {
@@ -96,14 +95,14 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÊÇ·ñ¿Õ
+        /// ï¿½Ç·ï¿½ï¿½
         /// </summary>
         public bool Empty => m_Count == 0;
 
         /// <summary>
-        /// Î²²¿²åÈëÒ»¸ö½Úµã
+        /// Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
-        /// <param name="node">½Úµã</param>
+        /// <param name="node">ï¿½Úµï¿½</param>
         public void AddLast(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -125,9 +124,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıµÚÒ»¸ö½Úµã
+        /// ï¿½Æ³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
-        /// <returns>ÒÆ³ıµôµÄÊı¾İ</returns>
+        /// <returns>ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</returns>
         public T RemoveFirst()
         {
             if (m_First == null)
@@ -150,9 +149,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıµÚÒ»¸ö½Úµã
+        /// ï¿½Æ³ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
-        /// <returns>ÒÆ³ıµÄ½Úµã</returns>
+        /// <returns>ï¿½Æ³ï¿½ï¿½Ä½Úµï¿½</returns>
         public XLinkNode<T> RemoveFirstNode()
         {
             if (m_First == null)
@@ -175,10 +174,10 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ»¸öÊı¾İµ½Á´±íÍ·
+        /// ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½Í·
         /// </summary>
-        /// <param name="data">ÒªÌí¼ÓµÄÊı¾İ</param>
-        /// <returns>Ìí¼ÓµÄ½Úµã</returns>
+        /// <param name="data">Òªï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½</param>
+        /// <returns>ï¿½ï¿½ÓµÄ½Úµï¿½</returns>
         public XLinkNode<T> AddFirst(T data)
         {
             XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
@@ -204,7 +203,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÔÚÒ»¸ö½ÚµãÖ®Ç°²åÈëÒ»¸ö½Úµã
+        /// ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
         /// <param name="node"></param>
         public void AddFirst(XLinkNode<T> node)
@@ -229,9 +228,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ı×îºóÒ»¸öÔªËØ
+        /// ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
         /// </summary>
-        /// <returns>ÒÆ³ıµÄÔªËØ</returns>
+        /// <returns>ï¿½Æ³ï¿½ï¿½ï¿½Ôªï¿½ï¿½</returns>
         public T RemoveLast()
         {
             if (m_Last == null)
@@ -254,9 +253,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ı×îºóÒ»¸ö½Úµã
+        /// ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½
         /// </summary>
-        /// <returns>ÒÆ³ıµÄ½Úµã</returns>
+        /// <returns>ï¿½Æ³ï¿½ï¿½Ä½Úµï¿½</returns>
         public XLinkNode<T> RemoveLastNode()
         {
             if (m_Last == null)
@@ -279,9 +278,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıÒ»¸öÔªËØ
+        /// ï¿½Æ³ï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½
         /// </summary>
-        /// <param name="value">´ıÒÆ³ıµÄÔªËØ</param>
+        /// <param name="value">ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½Ôªï¿½ï¿½</param>
         public void Remove(T value)
         {
             foreach (XLinkNode<T> node in this)
@@ -295,7 +294,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Çå³ıÁ´±í
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void Clear()
         {

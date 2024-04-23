@@ -7,7 +7,14 @@ namespace XFrame.Collections
     /// </summary>
     public enum XItType
     {
+        /// <summary>
+        /// 前向迭代
+        /// </summary>
         Forward,
+        
+        /// <summary>
+        /// 后向迭代
+        /// </summary>
         Backward
     }
 

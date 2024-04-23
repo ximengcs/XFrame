@@ -112,7 +112,6 @@ namespace XFrame.Tasks
             }
 
             m_OnComplete.IsComplete = true;
-            m_OnComplete.Invoke();
         }
 
         public T GetResult()
