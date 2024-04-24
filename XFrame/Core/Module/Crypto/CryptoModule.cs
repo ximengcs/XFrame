@@ -5,9 +5,7 @@ using XFrame.Modules.Config;
 
 namespace XFrame.Modules.Crypto
 {
-    /// <summary>
-    /// 数据加密模块
-    /// </summary>
+    /// <inheritdoc/>
     [CoreModule]
     [XType(typeof(ICryptoModule))]
     public class CryptoModule : ModuleBase, ICryptoModule
@@ -18,6 +16,7 @@ namespace XFrame.Modules.Crypto
         #region Life Fun
         private Type m_Type;
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -30,12 +29,7 @@ namespace XFrame.Modules.Crypto
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 创建加密器
-        /// </summary>
-        /// <param name="keyStr">密钥</param>
-        /// <param name="ivStr">密钥</param>
-        /// <returns>加密器</returns>
+        /// <inheritdoc/>
         public ICryptor New(string keyStr, string ivStr)
         {
             ICryptor cryptor = (ICryptor)Domain.TypeModule.CreateInstance(m_Type);
@@ -43,10 +37,7 @@ namespace XFrame.Modules.Crypto
             return cryptor;
         }
 
-        /// <summary>
-        /// 使用默认密钥创建加密器
-        /// </summary>
-        /// <returns>加密器</returns>
+        /// <inheritdoc/>
         public ICryptor New()
         {
             ICryptor cryptor = (ICryptor)Domain.TypeModule.CreateInstance(m_Type);

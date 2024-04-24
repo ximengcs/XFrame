@@ -12,6 +12,10 @@ namespace XFrame.Modules.Datas
         /// </summary>
         public int TableType { get; }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="tableType">数据表类型</param>
         public DataAttribute(int tableType)
         {
             TableType = tableType;
