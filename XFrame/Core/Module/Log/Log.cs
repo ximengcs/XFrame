@@ -21,7 +21,14 @@ namespace XFrame.Modules.Diagnotics
             }
         }
 
+        /// <summary>
+        /// 是否将Log输出到队列中
+        /// </summary>
         public static bool ToQueue { get; set; }
+
+        /// <summary>
+        /// 开关
+        /// </summary>
         public static bool Power { get; set; }
 
         private static ILogModule m_Log;
@@ -34,11 +41,18 @@ namespace XFrame.Modules.Diagnotics
             s_WaitQueue = new Queue<LogInfo>(128);
         }
 
+        /// <summary>
+        /// 设置域
+        /// </summary>
+        /// <param name="domain">域</param>
         public static void SetDomain(XDomain domain)
         {
             m_Log = domain.GetModule<ILogModule>();
         }
 
+        /// <summary>
+        /// 消耗队列中的Log输出到Logger中
+        /// </summary>
         public static void ConsumeWaitQueue()
         {
             if (s_WaitQueue == null)
@@ -54,6 +68,11 @@ namespace XFrame.Modules.Diagnotics
             s_WaitQueue.Clear();
         }
 
+        /// <summary>
+        /// 输出Log
+        /// </summary>
+        /// <param name="level">Log等级</param>
+        /// <param name="content">信息</param>
         public static void Print(LogLevel level, params object[] content)
         {
             if (!Power)
@@ -137,6 +156,10 @@ namespace XFrame.Modules.Diagnotics
                 m_Log.Fatal(content);
         }
 
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        /// <param name="e">异常</param>
         public static void Exception(Exception e)
         {
             if (!Power)
@@ -144,7 +167,7 @@ namespace XFrame.Modules.Diagnotics
             if (ToQueue)
                 s_WaitQueue.Enqueue(new LogInfo(LogLevel.Fatal, new object[] { e }));
             else
-                m_Log.Fatal(e);
+                m_Log.Exception(e);
         }
     }
 }

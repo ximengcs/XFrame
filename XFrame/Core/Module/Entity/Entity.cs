@@ -1,6 +1,5 @@
 ﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
-using XFrame.Core;
 
 namespace XFrame.Modules.Entities
 {
@@ -10,6 +9,7 @@ namespace XFrame.Modules.Entities
     public abstract class Entity : Container, IEntity
     {
         #region Life Fun
+        /// <inheritdoc/>
         protected internal override void OnInit()
         {
             base.OnInit();

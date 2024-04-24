@@ -6,15 +6,14 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Diagnotics
 {
-    /// <summary>
-    /// Log模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
     [XType(typeof(ILogModule))]
     public class LogModule : ModuleBase, ILogModule
     {
         private List<ILogger> m_Loggers;
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -27,20 +26,13 @@ namespace XFrame.Modules.Diagnotics
         }
 
         #region Interface
-        /// <summary>
-        /// 添加Log辅助器
-        /// </summary>
-        /// <typeparam name="T">Log辅助器类型</typeparam>
+        /// <inheritdoc/>
         public void AddLogger<T>() where T : ILogger
         {
             m_Loggers.Add(InnerAddLogger(typeof(T)));
         }
 
-        /// <summary>
-        /// 获取Log辅助器
-        /// </summary>
-        /// <typeparam name="T">辅助器类型</typeparam>
-        /// <returns>获取到的实例</returns>
+        /// <inheritdoc/>
         public T GetLogger<T>() where T : ILogger
         {
             foreach (ILogger logger in m_Loggers)
@@ -51,40 +43,28 @@ namespace XFrame.Modules.Diagnotics
             return default;
         }
 
-        /// <summary>
-        /// 调试信息
-        /// </summary>
-        /// <param name="content">信息</param>
+        /// <inheritdoc/>
         public void Debug(params object[] content)
         {
             foreach (ILogger logger in m_Loggers)
                 logger.Debug(content);
         }
 
-        /// <summary>
-        /// 警告信息
-        /// </summary>
-        /// <param name="content">信息</param>
+        /// <inheritdoc/>
         public void Warning(params object[] content)
         {
             foreach (ILogger logger in m_Loggers)
                 logger.Warning(content);
         }
 
-        /// <summary>
-        /// 错误信息
-        /// </summary>
-        /// <param name="content">信息</param>
+        /// <inheritdoc/>
         public void Error(params object[] content)
         {
             foreach (ILogger logger in m_Loggers)
                 logger.Error(content);
         }
 
-        /// <summary>
-        /// 致命错误信息
-        /// </summary>
-        /// <param name="content">信息</param>
+        /// <inheritdoc/>
         public void Fatal(params object[] content)
         {
             foreach (ILogger logger in m_Loggers)

@@ -3,13 +3,10 @@ using XFrame.Core;
 using System.Collections.Generic;
 using XFrame.Modules.Rand;
 using XFrame.Collections;
-using XFrame.Modules.Event;
 
 namespace XFrame.Modules.StateMachine
 {
-    /// <summary>
-    /// 有限状态机模块
-    /// </summary>
+    /// <inheritdoc/>
     [CoreModule]
     [RequireModule(typeof(RandModule))]
     [XType(typeof(IFsmModule))]
@@ -21,6 +18,7 @@ namespace XFrame.Modules.StateMachine
         #endregion
 
         #region Module Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -29,12 +27,14 @@ namespace XFrame.Modules.StateMachine
             m_Fsms = new Dictionary<string, IFsmBase>();
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnUpdate();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             foreach (IFsmBase fsm in m_FsmList)
@@ -43,65 +43,37 @@ namespace XFrame.Modules.StateMachine
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 获取(不存在时创建)有限状态机
-        /// </summary>
-        /// <param name="name">状态机名</param>
-        /// <param name="states">状态机状态集合</param>
-        /// <returns>获取到的状态机</returns>
+        /// <inheritdoc/>
         public IFsm GetOrNew(string name, params Type[] states)
         {
             return InnerCreateFsm(name, states);
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)有限状态机
-        /// </summary>
-        /// <param name="states">状态机状态集合</param>
-        /// <returns>获取到的状态机</returns>
+        /// <inheritdoc/>
         public IFsm GetOrNew(params Type[] states)
         {
             return GetOrNew(Domain.GetModule<IRandModule>().RandString(), states);
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)有限状态机
-        /// </summary>
-        /// <typeparam name="T">状态机拥有者类型</typeparam>
-        /// <param name="name">状态机名</param>
-        /// <param name="owner">状态机拥有者</param>
-        /// <param name="states">状态机状态集合</param>
-        /// <returns>获取到的状态机</returns>
+        /// <inheritdoc/>
         public IFsm<T> GetOrNew<T>(string name, T owner, params Type[] states)
         {
             return InnerCreateFsm(name, owner, states);
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)有限状态机
-        /// </summary>
-        /// <typeparam name="T">状态机拥有者类型</typeparam>
-        /// <param name="owner">状态机拥有者</param>
-        /// <param name="states">状态机状态集合</param>
-        /// <returns>获取到的状态机</returns>
+        /// <inheritdoc/>
         public IFsm<T> GetOrNew<T>(T owner, params Type[] states)
         {
             return GetOrNew(Domain.GetModule<IRandModule>().RandString(), owner, states);
         }
 
-        /// <summary>
-        /// 移除有限状态机
-        /// </summary>
-        /// <param name="name">需要移除的状态机</param>
+        /// <inheritdoc/>
         public void Remove(string name)
         {
             InnerRemoveFsm(name);
         }
 
-        /// <summary>
-        /// 移除状态机
-        /// </summary>
-        /// <param name="fsm">需要移除的状态机</param>
+        /// <inheritdoc/>
         public void Remove(IFsmBase fsm)
         {
             Remove(fsm.Name);

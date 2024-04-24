@@ -4,31 +4,28 @@ using XFrame.Core;
 
 namespace XFrame.Modules.Event
 {
-    /// <summary>
-    /// 事件模块
-    /// </summary>
+    /// <inheritdoc/>
     [CoreModule]
     [XType(typeof(IEventModule))]
     public class EventModule : ModuleBase, IEventModule
     {
         private List<XEventSystem> m_List;
          
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_List = new List<XEventSystem>();
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             for (int i = m_List.Count - 1; i >= 0; i--)
                 m_List[i].OnUpdate();
         }
 
-        /// <summary>
-        /// 创建一个事件系统
-        /// </summary>
-        /// <returns>事件系统</returns>
+        /// <inheritdoc/>
         public IEventSystem NewSys()
         {
             XEventSystem evtSys = new XEventSystem();
@@ -36,10 +33,7 @@ namespace XFrame.Modules.Event
             return evtSys;
         }
 
-        /// <summary>
-        /// 移除一个事件系统 
-        /// </summary>
-        /// <param name="evtSys">事件系统</param>
+        /// <inheritdoc/>
         public void Remove(IEventSystem evtSys)
         {
             m_List.Remove((XEventSystem)evtSys);

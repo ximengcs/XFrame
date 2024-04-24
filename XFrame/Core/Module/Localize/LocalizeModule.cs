@@ -8,9 +8,7 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Local
 {
-    /// <summary>
-    /// 本地化模块
-    /// </summary>
+    /// <inheritdoc/>
     [CoreModule]
     [RequireModule(typeof(EventModule))]
     [XType(typeof(ILocalizeModule))]
@@ -27,6 +25,7 @@ namespace XFrame.Modules.Local
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -38,14 +37,10 @@ namespace XFrame.Modules.Local
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 事件系统
-        /// </summary>
+        /// <inheritdoc/>
         public IEventSystem Event => m_Event;
 
-        /// <summary>
-        /// 当前语言
-        /// </summary>
+        /// <inheritdoc/>
         public Language Lang
         {
             get { return m_Language; }
@@ -61,22 +56,16 @@ namespace XFrame.Modules.Local
             }
         }
 
+        /// <inheritdoc/>
         public Language[] ExistLangs => m_Title;
 
-        /// <summary>
-        /// 是否存在语言
-        /// </summary>
-        /// <param name="language">语言</param>
-        /// <returns>true为存在</returns>
+        /// <inheritdoc/>
         public bool HasLanguage(Language language)
         {
             return InnerGetLangIndex(language) != -1;
         }
 
-        /// <summary>
-        /// 配置
-        /// </summary>
-        /// <param name="content">文本内容</param>
+        /// <inheritdoc/>
         public void Parse(string content)
         {
             if (!string.IsNullOrEmpty(content))
@@ -87,20 +76,13 @@ namespace XFrame.Modules.Local
             }
         }
 
-        /// <summary>
-        /// 设置文本格式化器
-        /// </summary>
-        /// <param name="formatter">自定义格式化</param>
+        /// <inheritdoc/>
         public void SetFormater(ICustomFormatter formatter)
         {
             m_Formatter.SetFormatter(formatter);
         }
 
-        /// <summary>
-        /// 获取一整行
-        /// </summary>
-        /// <param name="key">Id</param>
-        /// <returns>行</returns>
+        /// <inheritdoc/>
         public string[] GetLine(int key)
         {
             if (m_Data == null)
@@ -123,41 +105,33 @@ namespace XFrame.Modules.Local
             }
         }
 
-        /// <summary>
-        /// 获取本地化值
-        /// </summary>
-        /// <param name="language">指定语言</param>
-        /// <param name="key">Id</param>
-        /// <param name="values">参数</param>
-        /// <returns>值</returns>
+        /// <inheritdoc/>
         public string GetValue(Language language, int key, params object[] values)
         {
             int index = InnerGetLangIndex(language);
             return InnerGetValue(index, key, values);
         }
 
-        /// <summary>
-        /// 获取本地化值
-        /// </summary>
-        /// <param name="key">Id</param>
-        /// <param name="values">参数</param>
-        /// <returns>值</returns>
+        /// <inheritdoc/>
         public string GetValue(int key, params object[] values)
         {
             return InnerGetValue(m_Index, key, values);
         }
 
+        /// <inheritdoc/>
         public string GetValue(Language language, LanguageParam param)
         {
             int index = InnerGetLangIndex(language);
             return InnerGetValue(index, param.Id, param.Params);
         }
 
+        /// <inheritdoc/>
         public string GetValue(LanguageParam param)
         {
             return InnerGetValue(m_Index, param.Id, param.Params);
         }
 
+        /// <inheritdoc/>
         public string[] GetValues(int[] idList)
         {
             string[] result = new string[idList.Length];
@@ -166,6 +140,7 @@ namespace XFrame.Modules.Local
             return result;
         }
 
+        /// <inheritdoc/>
         public string[] GetValues(Language language, int[] idList)
         {
             string[] result = new string[idList.Length];
@@ -174,35 +149,26 @@ namespace XFrame.Modules.Local
             return result;
         }
 
-        /// <summary>
-        /// 获取本地化值
-        /// </summary>
-        /// <param name="key">Id</param>
-        /// <param name="args">参数Id</param>
-        /// <returns>值</returns>
+        /// <inheritdoc/>
         public string GetValueParam(int key, params int[] args)
         {
             return InnerGetValueParam(m_Index, key, args);
         }
 
-        /// <summary>
-        /// 获取本地化值
-        /// </summary>
-        /// <param name="language">指定语言</param>
-        /// <param name="key">Id</param>
-        /// <param name="args">参数Id</param> 
-        /// <returns>值</returns>
+        /// <inheritdoc/>
         public string GetValueParam(Language language, int key, params int[] args)
         {
             int index = InnerGetLangIndex(language);
             return InnerGetValueParam(index, key, args);
         }
 
+        /// <inheritdoc/>
         public string GetValueParam(LanguageIdParam param)
         {
             return InnerGetValueParam(m_Index, param.Id, param.Params);
         }
 
+        /// <inheritdoc/>
         public string GetValueParam(Language language, LanguageIdParam param)
         {
             int index = InnerGetLangIndex(language);

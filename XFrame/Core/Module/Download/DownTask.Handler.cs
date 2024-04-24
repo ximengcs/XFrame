@@ -1,6 +1,5 @@
-﻿using System;
+﻿using XFrame.Tasks;
 using XFrame.Modules.Diagnotics;
-using XFrame.Tasks;
 
 namespace XFrame.Modules.Download
 {

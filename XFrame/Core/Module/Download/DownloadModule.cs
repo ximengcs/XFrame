@@ -5,13 +5,10 @@ using XFrame.Modules.Pools;
 using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
 using XFrame.Collections;
-using XFrame.Modules.Datas;
 
 namespace XFrame.Modules.Download
 {
-    /// <summary>
-    /// 下载器模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
     [RequireModule(typeof(PoolModule))]
     [RequireModule(typeof(IdModule))]
@@ -24,6 +21,7 @@ namespace XFrame.Modules.Download
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -37,19 +35,13 @@ namespace XFrame.Modules.Download
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 设置下载辅助器
-        /// </summary>
-        /// <typeparam name="T">辅助器类型</typeparam>
+        /// <inheritdoc/>
         public void SetHelper<T>() where T : IDownloadHelper
         {
             InnerSetHelperType(typeof(T));
         }
 
-        /// <summary>
-        /// 下载文件或数据
-        /// </summary>
-        /// <param name="url">url</param>
+        /// <inheritdoc/>
         public DownTask Down(string url, params string[] reserveUrls)
         {
             IDownloadHelper helper = (IDownloadHelper)Domain.TypeModule.CreateInstance(m_Helper);

@@ -4,7 +4,7 @@ namespace XFrame.Modules.Entities
 {
     /// <summary>
     /// 实体属性
-    /// 有数据的实体必须生命此属性并提供正确的类型
+    /// 有数据的实体必须声明此属性并提供正确的类型
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class EntityPropAttribute : Attribute

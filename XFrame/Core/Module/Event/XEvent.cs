@@ -28,6 +28,7 @@ namespace XFrame.Modules.Event
 
         int IPoolObject.PoolKey => 0;
 
+        /// <inheritdoc/>
         protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();

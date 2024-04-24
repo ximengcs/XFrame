@@ -9,8 +9,12 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public abstract class EntityCom : Com, IEntityCom
     {
+        /// <summary>
+        /// 时间系统
+        /// </summary>
         public IEventSystem Event { get; private set; }
 
+        /// <inheritdoc/>
         protected internal override void OnInit()
         {
             base.OnInit();

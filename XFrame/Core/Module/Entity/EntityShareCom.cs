@@ -8,6 +8,9 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public class EntityShareCom : ShareCom, IEntityCom
     {
+        /// <summary>
+        /// 事件系统
+        /// </summary>
         public IEventSystem Event
         {
             get

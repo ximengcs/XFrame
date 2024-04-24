@@ -8,6 +8,9 @@ namespace XFrame.Modules.Local
     [DefaultValue(None)]
     public enum Language
     {
+        /// <summary>
+        /// 无效
+        /// </summary>
         None = -1,
         Afrikaans = 0,
         Arabic = 1,
