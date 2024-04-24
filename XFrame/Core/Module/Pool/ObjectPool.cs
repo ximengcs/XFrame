@@ -100,6 +100,7 @@ namespace XFrame.Modules.Pools
                 if (node != null)
                 {
                     obj = node.Value;
+                    obj.InPool = this;
                     node.Delete();
                     if (m_NodeCache.Full)
                     {
