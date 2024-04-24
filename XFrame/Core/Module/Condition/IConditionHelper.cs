@@ -23,13 +23,13 @@ namespace XFrame.Modules.Conditions
         /// <summary>
         /// 标记条件组完成
         /// </summary>
-        /// <param name="groupName">条件组名称</param>
+        /// <param name="group">条件组</param>
         void MarkFinish(IConditionGroupHandle group);
 
         /// <summary>
         /// 检查条件组是否完成
         /// </summary>
-        /// <param name="groupName">条件组名称</param>
+        /// <param name="group">条件组</param>
         /// <returns>true为完成，反之亦然</returns>
         bool CheckFinish(IConditionGroupHandle group);
     }

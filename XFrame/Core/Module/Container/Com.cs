@@ -9,6 +9,9 @@ namespace XFrame.Modules.Containers
     {
         private bool m_Active;
 
+        /// <summary>
+        /// 组件激活状态
+        /// </summary>
         public bool Active
         {
             get { return m_Active; }
@@ -26,8 +29,20 @@ namespace XFrame.Modules.Containers
         }
 
         IContainer ICom.Owner { get; set; }
+
+        /// <summary>
+        /// 组件所属容器
+        /// </summary>
         protected IContainer Owner => ((ICom)this).Owner;
+
+        /// <summary>
+        /// 激活生命周期
+        /// </summary>
         protected virtual void OnActive() { }
+
+        /// <summary>
+        /// 失活生命周期
+        /// </summary>
         protected virtual void OnInactive() { }
     }
 }

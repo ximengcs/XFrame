@@ -10,11 +10,15 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public interface IContainer : IXItem, IDataProvider, IXEnumerable<ICom>
     {
+        /// <summary>
+        /// 根容器
+        /// </summary>
         IContainer Master { get; }
 
         /// <summary>
         /// 初始化生命周期
         /// </summary>
+        /// <param name="module">容器所属模块</param>
         /// <param name="id">容器Id</param>
         /// <param name="master">容器拥有者</param>
         /// <param name="onReady">容器就绪事件</param>

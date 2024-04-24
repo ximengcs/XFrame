@@ -13,9 +13,18 @@ namespace XFrame.Modules.Containers
     {
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
+
+        /// <summary>
+        /// 容器所属模块
+        /// </summary>
         protected IContainerModule m_Module;
 
+        /// <inheritdoc/>
         public IContainer Master { get; private set; }
+
+        /// <summary>
+        /// 容器Id
+        /// </summary>
         public int Id { get; private set; }
 
         #region Container Life Fun
@@ -34,6 +43,9 @@ namespace XFrame.Modules.Containers
             OnInit();
         }
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
         protected internal virtual void OnInit() { }
 
         void IContainer.OnUpdate(float elapseTime)
@@ -47,6 +59,10 @@ namespace XFrame.Modules.Containers
             OnUpdate(elapseTime);
         }
 
+        /// <summary>
+        /// 更新生命周期
+        /// </summary>
+        /// <param name="elapseTime">逃逸时间</param>
         protected internal virtual void OnUpdate(float elapseTime) { }
 
         void IContainer.OnDestroy()
@@ -55,6 +71,9 @@ namespace XFrame.Modules.Containers
             OnDestroy();
         }
 
+        /// <summary>
+        /// 销毁生命周期
+        /// </summary>
         protected internal virtual void OnDestroy()
         {
             m_Coms = null;
@@ -63,21 +82,25 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Container Interface
+        /// <inheritdoc/>
         public T GetCom<T>(int id = 0) where T : ICom
         {
             return (T)InnerGetCom(typeof(T), id);
         }
 
+        /// <inheritdoc/>
         public ICom GetCom(Type type, int id = 0)
         {
             return InnerGetCom(type, id);
         }
 
+        /// <inheritdoc/>
         public ICom AddCom(ICom com)
         {
             return InnerInitCom(com);
         }
 
+        /// <inheritdoc/>
         public T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
             Type type = typeof(T);
@@ -85,52 +108,62 @@ namespace XFrame.Modules.Containers
             return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
+        /// <inheritdoc/>
         public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
+        /// <inheritdoc/>
         public ICom AddCom(Type type, OnDataProviderReady onReady = null)
         {
             int id = InnerCheckId(type, default);
             return InnerAdd(type, id, onReady);
         }
 
+        /// <inheritdoc/>
         public ICom AddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return InnerAdd(type, id, onReady);
         }
 
+        /// <inheritdoc/>
         public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)InnerGetOrAddCom(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
+        /// <inheritdoc/>
         public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
         {
             return (T)InnerGetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
+        /// <inheritdoc/>
         public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
             return InnerGetOrAddCom(type, default, onReady);
         }
 
+        /// <inheritdoc/>
         public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return InnerGetOrAddCom(type, id, onReady);
         }
 
+        /// <inheritdoc/>
         public void RemoveCom<T>(int id = 0) where T : ICom
         {
             InnerRemove(typeof(T), id);
         }
 
+        /// <inheritdoc/>
         public void RemoveCom(Type type, int id = 0)
         {
             InnerRemove(type, id);
         }
 
+        /// <inheritdoc/>
         public void ClearCom()
         {
             m_Coms.SetIt(XItType.Backward);
@@ -207,47 +240,56 @@ namespace XFrame.Modules.Containers
         #endregion
 
         #region Data Interface
+        /// <inheritdoc/>
         public bool HasData<T>()
         {
             return m_Data.HasData<T>();
         }
 
+        /// <inheritdoc/>
         public bool HasData<T>(string name)
         {
             return m_Data.HasData<T>(name);
         }
 
+        /// <inheritdoc/>
         public void SetData<T>(T value)
         {
             m_Data.SetData<T>(value);
         }
 
+        /// <inheritdoc/>
         public T GetData<T>()
         {
             return m_Data.GetData<T>();
         }
 
+        /// <inheritdoc/>
         public void SetData<T>(string name, T value)
         {
             m_Data.SetData<T>(name, value);
         }
 
+        /// <inheritdoc/>
         public T GetData<T>(string name)
         {
             return m_Data.GetData<T>(name);
         }
 
+        /// <inheritdoc/>
         public void ClearData()
         {
             m_Data.ClearData();
         }
         #endregion
 
+        /// <inheritdoc/>
         public IEnumerator<ICom> GetEnumerator()
         {
             return m_Coms.GetEnumerator();
         }
 
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_Coms.SetIt(type);

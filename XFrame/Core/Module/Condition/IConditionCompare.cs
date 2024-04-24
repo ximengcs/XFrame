@@ -48,9 +48,9 @@ namespace XFrame.Modules.Conditions
         bool Check(IConditionHandle info, T param);
 
         /// <summary>
-        /// 当事件<see cref="ConditionEvent"/>触发时，与<see cref="ConditionEvent.Target"/>相匹配的<see cref="Target"/>实现类
-        /// 的此方法会执行，与<see cref="ConditionGroupEvent.Target"/>相匹配的<see cref="Target"/>实现类的条件组
-        /// 的所有此方法会执行，与<see cref="SpecificConditionEvent.Target"/>相匹配的<see cref="Target"/>实现类的特定组的特定实例
+        /// 当事件<see cref="ConditionEvent"/>触发时，与<see cref="ConditionEvent.Target"/>相匹配的<see cref="IConditionCompare.Target"/>实现类
+        /// 的此方法会执行，与<see cref="ConditionGroupEvent.Target"/>相匹配的<see cref="IConditionCompare.Target"/>实现类的条件组
+        /// 的所有此方法会执行，与<see cref="SpecificConditionEvent.Handle"/>相匹配的<see cref="IConditionCompare.Target"/>实现类的特定组的特定实例
         /// 的此方法会执行，一般可以在此方法执行时执行一些存储状态的操作, 此方法在<see cref="Check"/>之前执行
         /// </summary>
         /// <param name="param">参数(事件参数<see cref="ConditionEvent.Param"/>)，随后执行check时的<see cref="Check"/>的param与此为同一值</param>
