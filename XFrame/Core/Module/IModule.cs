@@ -7,6 +7,9 @@ namespace XFrame.Core
     /// </summary>
     public interface IModule : IXItem
     {
+        /// <summary>
+        /// 模块所属域
+        /// </summary>
         XDomain Domain { get; }
 
         /// <summary>

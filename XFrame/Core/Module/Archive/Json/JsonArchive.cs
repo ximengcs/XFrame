@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using XFrame.Core;
 using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Archives
@@ -28,11 +27,13 @@ namespace XFrame.Modules.Archives
                 m_Root = new JSONObject();
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
             ArchiveUtility.WriteText(m_Module, m_Path, m_Root.ToString(4));
         }
 
+        /// <inheritdoc/>
         public void Delete()
         {
             if (File.Exists(m_Path))
@@ -40,6 +41,7 @@ namespace XFrame.Modules.Archives
         }
         #endregion
 
+        /// <inheritdoc/>
         public override void ClearData()
         {
             m_Module.Delete(this);

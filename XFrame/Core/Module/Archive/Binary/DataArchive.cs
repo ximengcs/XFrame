@@ -36,6 +36,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
             string dir = Path.GetDirectoryName(m_Path);
@@ -44,6 +45,7 @@ namespace XFrame.Modules.Archives
             ArchiveUtility.WriteBytes(m_Module, m_Path, ToBytes());
         }
 
+        /// <inheritdoc/>
         public void Delete()
         {
             m_Root.Delete("_");
@@ -51,6 +53,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public string Name { get; private set; }
 
         /// <summary>

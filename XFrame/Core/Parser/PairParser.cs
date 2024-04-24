@@ -113,7 +113,7 @@ namespace XFrame.Core
             References.Release(this);
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
 
         }

@@ -147,9 +147,10 @@ namespace XFrame.Modules.Times
             return CheckTime(default);
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
-            m_TimeModule = (TimeModule)module.Domain.GetModule<ITimeModule>();
+            IPoolObject poolObj = this;
+            m_TimeModule = (TimeModule)poolObj.InPool.Module.Domain.GetModule<ITimeModule>();
         }
 
         void IPoolObject.OnRequest()

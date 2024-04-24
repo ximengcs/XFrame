@@ -13,6 +13,10 @@ namespace XFrame.Modules.Conditions
     public class ConditionEvent : XEvent
     {
         private static int s_EventId;
+
+        /// <summary>
+        /// 事件Id
+        /// </summary>
         public static int EventId
         {
             get
@@ -31,8 +35,8 @@ namespace XFrame.Modules.Conditions
         /// <summary>
         /// 触发参数
         /// <para>
-        /// 可为数量等, 定义为<see cref="IConditionCompare{}.OnEventTrigger"/>和
-        /// <see cref="IConditionCompare{}.Check"/>的接受参数, 由<see cref="IConditionCompare"/>的具体实现类解析判断。
+        /// 可为数量等, 定义为<see cref="IConditionCompare{T}.OnEventTrigger"/>和
+        /// <see cref="IConditionCompare{T}.Check"/>的接受参数, 由<see cref="IConditionCompare"/>的具体实现类解析判断。
         /// </para>
         /// </summary>
         public object Param { get; private set; }

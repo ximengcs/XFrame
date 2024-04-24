@@ -67,7 +67,7 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
 
         }

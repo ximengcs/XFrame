@@ -52,9 +52,10 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
-            m_Module = module;
+            IPoolObject poolObj = this;
+            m_Module = poolObj.InPool.Module;
         }
 
         void IPoolObject.OnRequest()
@@ -164,9 +165,10 @@ namespace XFrame.Core
             return parser != null ? m_Value.Equals(parser.Value) : m_Value.Equals(obj);
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
-            m_Module = module;
+            IPoolObject poolObj = this;
+            m_Module = poolObj.InPool.Module;
         }
 
         void IPoolObject.OnRequest()

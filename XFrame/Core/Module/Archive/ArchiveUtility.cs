@@ -1,5 +1,4 @@
-﻿using XFrame.Core;
-using XFrame.Modules.Config;
+﻿using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 
 namespace XFrame.Modules.Archives

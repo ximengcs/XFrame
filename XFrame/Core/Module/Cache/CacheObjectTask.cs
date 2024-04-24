@@ -1,10 +1,8 @@
-﻿using System;
-using System.Xml.Linq;
-using XFrame.Tasks;
+﻿using XFrame.Tasks;
 
 namespace XFrame.Modules.Caches
 {
-    public partial class CacheObjectTask : XProTask<ICacheObject>
+    internal partial class CacheObjectTask : XProTask<ICacheObject>
     {
         private ICacheObjectFactory m_Handler;
         private ICacheObject m_Object;

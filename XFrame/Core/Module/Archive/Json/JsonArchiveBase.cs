@@ -1,15 +1,27 @@
-﻿using XFrame.Core;
+﻿using XFrame.SimpleJSON;
 using XFrame.Modules.Rand;
 using XFrame.Modules.Serialize;
-using XFrame.SimpleJSON;
 
 namespace XFrame.Modules.Archives
 {
+    /// <summary>
+    /// Json存档基类
+    /// </summary>
     public abstract class JsonArchiveBase : IJsonArchive
     {
+        /// <summary>
+        /// 根节点对象
+        /// </summary>
         protected JSONNode m_Root;
+
+        /// <summary>
+        /// 所属存档模块
+        /// </summary>
         protected IArchiveModule m_Module;
 
+        /// <summary>
+        /// 存档名
+        /// </summary>
         public string Name { get; protected set; }
 
         /// <summary>
@@ -36,6 +48,7 @@ namespace XFrame.Modules.Archives
         /// 获取int值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
         public int GetInt(string key, int defaultValue = default)
         {
@@ -48,6 +61,7 @@ namespace XFrame.Modules.Archives
         /// 获取long值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
         public long GetLong(string key, long defaultValue = default)
         {
@@ -80,6 +94,7 @@ namespace XFrame.Modules.Archives
         /// 获取float值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
         public float GetFloat(string key, float defaultValue = default)
         {
@@ -92,6 +107,7 @@ namespace XFrame.Modules.Archives
         /// 获取double值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>如果未设置过此键，则会返回0</returns>
         public float GetDouble(string key, float defaultValue = default)
         {
@@ -114,6 +130,7 @@ namespace XFrame.Modules.Archives
         /// 获取bool值
         /// </summary>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>如果未设置过此键，则会返回false</returns>
         public bool GetBool(string key, bool defaultValue = default)
         {
@@ -137,6 +154,7 @@ namespace XFrame.Modules.Archives
         /// </summary>
         /// <typeparam name="T">数据类型，如果与Set设置的数据类型不匹配，可能导致出错</typeparam>
         /// <param name="key">键</param>
+        /// <param name="defaultValue">默认值</param>
         /// <returns>获取到的数据</returns>
         public T Get<T>(string key, T defaultValue = default)
         {
@@ -168,6 +186,7 @@ namespace XFrame.Modules.Archives
             return node;
         }
 
+        /// <inheritdoc/>
         public void Remove(string key)
         {
             if (m_Root.HasKey(key))
@@ -194,49 +213,58 @@ namespace XFrame.Modules.Archives
             return node;
         }
 
+        /// <inheritdoc/>
         public bool HasData<T>()
         {
             return HasData<T>("main_value");
         }
 
+        /// <inheritdoc/>
         public bool HasData<T>(string name)
         {
             string key = $"{name}_{typeof(T).Name}";
             return m_Root.HasKey(key);
         }
 
+        /// <inheritdoc/>
         public T GetData<T>()
         {
             return GetData<T>("main_value");
         }
 
+        /// <inheritdoc/>
         public T GetData<T>(string name)
         {
             string key = $"{name}_{typeof(T).Name}";
             return Get<T>(key);
         }
 
+        /// <inheritdoc/>
         public void SetData<T>(T value)
         {
             SetData("main_value", value);
         }
 
+        /// <inheritdoc/>
         public void SetData<T>(string name, T value)
         {
             string key = $"{name}_{typeof(T).Name}";
             Set(key, value);
         }
 
+        /// <inheritdoc/>
         public IJsonArchive SpwanDataProvider(string name)
         {
             return new SubJsonArchive(this, name);
         }
 
+        /// <inheritdoc/>
         public IJsonArchive SpwanDataProvider()
         {
             return SpwanDataProvider(m_Module.Domain.GetModule<IRandModule>().RandString());
         }
 
+        /// <inheritdoc/>
         public abstract void ClearData();
     }
 }

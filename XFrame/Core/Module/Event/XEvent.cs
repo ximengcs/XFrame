@@ -12,11 +12,18 @@ namespace XFrame.Modules.Event
         /// </summary>
         public int Id { get; protected set; }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="id">事件Id</param>
         public XEvent(int id)
         {
             Id = id;
         }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
         public XEvent() { }
 
         int IPoolObject.PoolKey => 0;

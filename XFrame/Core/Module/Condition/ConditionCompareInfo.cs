@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace XFrame.Modules.Conditions
 {
-    public struct CompareDelegateInfo
+    internal struct CompareDelegateInfo
     {
         public MethodInfo Check;
         public MethodInfo OnEventTrigger;
@@ -16,7 +16,7 @@ namespace XFrame.Modules.Conditions
         }
     }
 
-    public struct CompareInfo
+    internal struct CompareInfo
     {
         private CompareDelegateInfo m_DeleInfo;
         private object[] m_CheckParam;

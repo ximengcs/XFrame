@@ -21,6 +21,8 @@ namespace XFrame.Modules.Pools
 
         public IPoolHelper Helper => m_Helper;
 
+        public IPoolModule Module => m_Module;
+
         public IXEnumerable<IPoolObject> AllObjects => m_Objects;
 
         public ObjectPool(IPoolModule module, IPoolHelper helper)
@@ -73,8 +75,9 @@ namespace XFrame.Modules.Pools
         private IPoolObject InnerCreate(int poolKey, object userData)
         {
             IPoolObject obj = m_Helper.Factory(m_Type, poolKey, userData);
+            obj.InPool = this;
             m_Helper.OnObjectCreate(obj);
-            obj.OnCreate(m_Module);
+            obj.OnCreate();
             return obj;
         }
 
@@ -115,7 +118,6 @@ namespace XFrame.Modules.Pools
 
             m_Helper.OnObjectRequest(obj);
             obj.OnRequest();
-            obj.InPool = this;
             return obj;
         }
 

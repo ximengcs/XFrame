@@ -1,11 +1,13 @@
 ﻿using System.IO;
 using XFrame.Core;
 using XFrame.Collections;
-using System.Xml.Linq;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Archives
 {
+    /// <summary>
+    /// csv存档
+    /// </summary>
     [Archive("csv")]
     public class CsvArchive : IArchive
     {
@@ -16,8 +18,12 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
+        /// <summary>
+        /// CSV数据
+        /// </summary>
         public Csv<string> Data => m_Csv;
 
+        /// <inheritdoc/>
         public string Name { get; private set; }
         #endregion
 
@@ -44,12 +50,14 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void Delete()
         {
             if (File.Exists(m_Path))
                 File.Delete(m_Path);
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
             ArchiveUtility.WriteText(m_Module, m_Path, m_Csv.ToString());

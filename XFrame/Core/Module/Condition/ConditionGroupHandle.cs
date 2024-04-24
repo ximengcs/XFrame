@@ -18,7 +18,7 @@ namespace XFrame.Modules.Conditions
         private List<IConditionHandle> m_AllInfos;
         private Action<IConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<IConditionHandle>> m_NotInfos;
-        private IConditionModule m_Module;
+        private ConditionModule m_Module;
 
         public string Name => m_Setting.Name;
 
@@ -34,7 +34,7 @@ namespace XFrame.Modules.Conditions
 
         public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(IConditionModule module, ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(ConditionModule module, ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
         {
             m_Setting = setting;
             m_Complete = false;

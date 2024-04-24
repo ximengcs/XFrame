@@ -68,7 +68,7 @@ namespace XFrame.Collections
 
         #region Interface
         /// <summary>
-        /// �����һ���ڵ�
+        /// 首个元素
         /// </summary>
         public XLinkNode<T> First
         {
@@ -77,7 +77,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �������һ���ڵ�
+        /// 最后一个元素
         /// </summary>
         public XLinkNode<T> Last
         {
@@ -86,7 +86,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ����ڵ�����
+        /// 元素数量
         /// </summary>
         public int Count
         {
@@ -95,14 +95,14 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƿ��
+        /// 列表是否为空
         /// </summary>
         public bool Empty => m_Count == 0;
 
         /// <summary>
-        /// β������һ���ڵ�
+        /// 在列表尾添加一个节点
         /// </summary>
-        /// <param name="node">�ڵ�</param>
+        /// <param name="node">节点</param>
         public void AddLast(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -124,9 +124,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƴ���һ���ڵ�
+        /// 移除第一个元素
         /// </summary>
-        /// <returns>�Ƴ���������</returns>
+        /// <returns>移除的元素</returns>
         public T RemoveFirst()
         {
             if (m_First == null)
@@ -149,9 +149,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƴ���һ���ڵ�
+        /// 移除第一个节点
         /// </summary>
-        /// <returns>�Ƴ��Ľڵ�</returns>
+        /// <returns>移除的节点</returns>
         public XLinkNode<T> RemoveFirstNode()
         {
             if (m_First == null)
@@ -174,10 +174,10 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ���һ�����ݵ�����ͷ
+        /// 在表头添加一个元素
         /// </summary>
-        /// <param name="data">Ҫ��ӵ�����</param>
-        /// <returns>��ӵĽڵ�</returns>
+        /// <param name="data">元素</param>
+        /// <returns>节点</returns>
         public XLinkNode<T> AddFirst(T data)
         {
             XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
@@ -203,9 +203,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ��һ���ڵ�֮ǰ����һ���ڵ�
+        /// 在表头添加一个节点
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">添加的节点</param>
         public void AddFirst(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -228,9 +228,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƴ����һ��Ԫ��
+        /// 移除最后一个元素
         /// </summary>
-        /// <returns>�Ƴ���Ԫ��</returns>
+        /// <returns>移除的元素</returns>
         public T RemoveLast()
         {
             if (m_Last == null)
@@ -253,9 +253,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƴ����һ���ڵ�
+        /// 移除最后一个节点
         /// </summary>
-        /// <returns>�Ƴ��Ľڵ�</returns>
+        /// <returns>移除的节点</returns>
         public XLinkNode<T> RemoveLastNode()
         {
             if (m_Last == null)
@@ -278,9 +278,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �Ƴ�һ��Ԫ��
+        /// 移除元素
         /// </summary>
-        /// <param name="value">���Ƴ���Ԫ��</param>
+        /// <param name="value">元素</param>
         public void Remove(T value)
         {
             foreach (XLinkNode<T> node in this)
@@ -294,7 +294,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// �������
+        /// 清除元素
         /// </summary>
         public void Clear()
         {
@@ -308,11 +308,13 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;
         }
 
+        /// <inheritdoc/>
         public IEnumerator<XLinkNode<T>> GetEnumerator()
         {
             switch (m_ItType)
@@ -335,13 +337,14 @@ namespace XFrame.Collections
         #endregion
 
         #region Pool Life Fun
+        /// <inheritdoc/>
         public string MarkName { get; set; }
 
         IPool IPoolObject.InPool { get; set; }
 
         int IPoolObject.PoolKey => 0;
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
 
         }

@@ -29,6 +29,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -82,12 +83,14 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             if (m_Timer.Check(SAVE_KEY, true))
                 InnerSaveAll();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -96,12 +99,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 获取或创建一个存档实例
-        /// </summary>
-        /// <typeparam name="T">存档类型</typeparam>
-        /// <param name="name">存档名</param>
-        /// <returns>存档实例</returns>
+        /// <inheritdoc/>
         public T GetOrNew<T>(string name, object param = null) where T : IArchive
         {
             return (T)InnerGetOrNew(name, typeof(T), param);
@@ -115,10 +113,7 @@ namespace XFrame.Modules.Archives
             InnerSaveAll();
         }
 
-        /// <summary>
-        /// 删除一份存档
-        /// </summary>
-        /// <param name="name"></param>
+        /// <inheritdoc/>
         public void Delete(string name)
         {
             if (m_Archives.TryGetValue(name, out IArchive source))
@@ -128,6 +123,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void Delete(IArchive archive)
         {
             if (m_Archives.ContainsKey(archive.Name))
@@ -137,6 +133,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void DeleteAll()
         {
             foreach (IArchive archive in m_Archives.Values)

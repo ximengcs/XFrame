@@ -157,6 +157,7 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <inheritdoc/>
         public IEnumerator<T> GetEnumerator()
         {
             switch (m_ItType)
@@ -167,6 +168,7 @@ namespace XFrame.Collections
             }
         }
 
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;

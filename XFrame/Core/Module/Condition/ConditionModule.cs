@@ -9,9 +9,7 @@ using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
-    /// <summary>
-    /// 条件监听模块 
-    /// </summary>
+    /// <inheritdoc/>
     [CommonModule]
     [XType(typeof(IConditionModule))]
     public class ConditionModule : ModuleBase, IConditionModule
@@ -25,15 +23,10 @@ namespace XFrame.Modules.Conditions
         private List<ConditionGroupHandle> m_GroupList;
         private Dictionary<string, ConditionGroupHandle> m_Groups;
 
-        /// <summary>
-        /// 当需要触发某个条件时 
-        /// 触发 <see cref="ConditionEvent"/> 
-        ///     <see cref="ConditionGroupEvent"/> 
-        ///     <see cref="SpecificConditionEvent"/> 
-        /// 事件到此事件系统
-        /// </summary>
+        /// <inheritdoc/>
         public IEventSystem Event => m_Event;
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -70,7 +63,7 @@ namespace XFrame.Modules.Conditions
             }
         }
 
-        public CompareInfo GetOrNewCompare(int target, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
+        internal CompareInfo GetOrNewCompare(int target, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
             if (m_Compares.TryGetValue(target, out Dictionary<int, CompareInfo> compares))
             {
@@ -88,7 +81,7 @@ namespace XFrame.Modules.Conditions
             return default;
         }
 
-        public IConditionHelper GetOrNewHelper(int type, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
+        internal IConditionHelper GetOrNewHelper(int type, int instance = ConditionHelperSetting.DEFAULT_INSTANCE)
         {
             if (m_Helpers.TryGetValue(type, out Dictionary<int, IConditionHelper> helpers))
             {
@@ -105,11 +98,7 @@ namespace XFrame.Modules.Conditions
             return default;
         }
 
-        /// <summary>
-        /// 获取条件组句柄
-        /// </summary>
-        /// <param name="name">组名称</param>
-        /// <returns>条件组句柄</returns>
+        /// <inheritdoc/>
         public IConditionGroupHandle Get(string name)
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle group))
@@ -117,11 +106,7 @@ namespace XFrame.Modules.Conditions
             return default;
         }
 
-        /// <summary>
-        /// 注册条件实例 查看<see cref="ConditionSetting"/>具体参数
-        /// </summary>
-        /// <param name="setting">条件配置</param>
-        /// <returns>条件组句柄</returns>
+        /// <inheritdoc/>
         public IConditionGroupHandle Register(ConditionSetting setting)
         {
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
@@ -136,10 +121,7 @@ namespace XFrame.Modules.Conditions
             return group;
         }
 
-        /// <summary>
-        /// 取消条件注册
-        /// </summary>
-        /// <param name="name">条件名</param>
+        /// <inheritdoc/>
         public void UnRegister(string name)
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
@@ -155,10 +137,7 @@ namespace XFrame.Modules.Conditions
             }
         }
 
-        /// <summary>
-        /// 取消条件注册
-        /// </summary>
-        /// <param name="name">条件组句柄</param>
+        /// <inheritdoc/>
         public void UnRegister(IConditionGroupHandle handle)
         {
             UnRegister(handle.Name);

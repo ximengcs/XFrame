@@ -1,14 +1,16 @@
 ﻿using System;
 using XFrame.Core;
+using XFrame.Collections;
 using XFrame.Modules.Event;
 using XFrame.Modules.Reflection;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using XFrame.Collections;
-using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Caches
 {
+    /// <summary>
+    /// 缓存模块
+    /// </summary>
     [CoreModule]
     [XType(typeof(XCache))]
     public partial class XCache : ModuleBase
@@ -16,8 +18,14 @@ namespace XFrame.Modules.Caches
         private Dictionary<Type, ObjectCollection> m_Factorys;
         private IEventSystem m_EvtSys;
 
+        /// <summary>
+        /// 事件系统
+        /// </summary>
         public IEventSystem Event => m_EvtSys;
 
+        /// <summary>
+        /// 缓存对象集合
+        /// </summary>
         public ICollection<ObjectCollection> Collections
         {
             get
@@ -31,6 +39,7 @@ namespace XFrame.Modules.Caches
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnStart()
         {
             base.OnStart();
@@ -58,11 +67,21 @@ namespace XFrame.Modules.Caches
             }
         }
 
+        /// <summary>
+        /// 获取对象工厂
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>工厂实例</returns>
         public T GetFactory<T>() where T : class, ICacheObjectFactory
         {
             return GetFactory(typeof(T)) as T;
         }
 
+        /// <summary>
+        /// 获取对象工厂
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <returns>工厂实例</returns>
         public ICacheObjectFactory GetFactory(Type type)
         {
             if (m_Factorys.TryGetValue(type, out ObjectCollection collection))
@@ -72,11 +91,21 @@ namespace XFrame.Modules.Caches
             return default;
         }
 
+        /// <summary>
+        /// 检查是否存在工厂
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>true为存在</returns>
         public bool Check<T>() where T : ICacheObject
         {
             return Check(typeof(T));
         }
 
+        /// <summary>
+        /// 检查是否存在工厂
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <returns>true为存在</returns>
         public bool Check(Type type)
         {
             if (m_Factorys.TryGetValue(type, out var collection))
@@ -90,11 +119,21 @@ namespace XFrame.Modules.Caches
             }
         }
 
+        /// <summary>
+        /// 请求一个对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>对象实例</returns>
         public T Require<T>() where T : ICacheObject
         {
             return (T)Require(typeof(T));
         }
 
+        /// <summary>
+        /// 请求一个对象
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <returns>对象实例</returns>
         public ICacheObject Require(Type type)
         {
             if (m_Factorys.TryGetValue(type, out var collection))

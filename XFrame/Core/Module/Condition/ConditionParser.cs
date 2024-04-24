@@ -11,22 +11,31 @@ namespace XFrame.Modules.Conditions
     {
         private ConditionData m_Value;
 
+        /// <inheritdoc/>
         public ConditionData Value => m_Value;
 
+        /// <inheritdoc/>
         public int PoolKey => default;
 
         IPool IPoolObject.InPool { get; set; }
+
+        /// <inheritdoc/>
         public string MarkName { get; set; }
 
         object IParser.Value => m_Value;
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="pattern">数据</param>
+        /// <returns>解析结果</returns>
         public ConditionData Parse(string pattern)
         {
             m_Value = new ConditionData(pattern);
             return m_Value;
         }
 
-        void IPoolObject.OnCreate(IPoolModule module)
+        void IPoolObject.OnCreate()
         {
 
         }

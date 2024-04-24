@@ -1,5 +1,4 @@
-﻿using XFrame.Modules.Tasks;
-using XFrame.Tasks;
+﻿using XFrame.Tasks;
 
 namespace XFrame.Core
 {

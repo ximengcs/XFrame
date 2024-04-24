@@ -28,6 +28,8 @@ namespace XFrame.Modules.Pools
         /// </summary>
         IPoolHelper Helper { get; }
 
+        IPoolModule Module { get; }
+
         IXEnumerable<IPoolObject> AllObjects { get; }
 
         /// <summary>
