@@ -12,6 +12,7 @@ namespace XFrame.Modules.Plots
         private List<StoryInfo> m_StoryQueue;
         private IPlotModule m_Module;
 
+        /// <inheritdoc/>
         public IPlotModule Module => m_Module;
 
         void IDirector.OnInit(IPlotModule module)
@@ -74,6 +75,7 @@ namespace XFrame.Modules.Plots
             m_StoryQueue = null;
         }
 
+        /// <inheritdoc/>
         public void Play(IStory story)
         {
             InnerPlay(story);
@@ -84,17 +86,20 @@ namespace XFrame.Modules.Plots
             m_StoryQueue.Add(new StoryInfo(story));
         }
 
+        /// <inheritdoc/>
         public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
                 Play(story);
         }
 
+        /// <inheritdoc/>
         public void Remove(IStory story)
         {
             Remove(story.Name);
         }
 
+        /// <inheritdoc/>
         public void Remove(string storyName)
         {
             if (m_Current.Story.Name == storyName)

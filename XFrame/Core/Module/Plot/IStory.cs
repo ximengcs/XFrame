@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using XFrame.Core;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Plots
 {
@@ -14,10 +14,19 @@ namespace XFrame.Modules.Plots
         /// </summary>
         IDirector Director { get; }
 
+        /// <summary>
+        /// 故事辅助器
+        /// </summary>
         IStoryHelper Helper { get; }
 
+        /// <summary>
+        /// 故事情节
+        /// </summary>
         IEnumerable<ISection> Sections { get; }
 
+        /// <summary>
+        /// 故事情节数量
+        /// </summary>
         int Count { get; }
 
         /// <summary>
@@ -40,7 +49,6 @@ namespace XFrame.Modules.Plots
         /// <summary>
         /// 初始化生命周期
         /// </summary>
-        /// <param name="data">数据提供器</param>
         internal void OnInit();
 
         /// <summary>
@@ -53,6 +61,9 @@ namespace XFrame.Modules.Plots
         /// </summary>
         internal void OnUpdate();
 
+        /// <summary>
+        /// 完成生命周期
+        /// </summary>
         internal void OnFinish();
 
         /// <summary>

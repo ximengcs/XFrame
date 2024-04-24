@@ -1,5 +1,4 @@
 ﻿using System;
-using XFrame.Core;
 
 namespace XFrame.Modules.Pools
 {

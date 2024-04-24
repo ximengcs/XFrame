@@ -1,5 +1,4 @@
-﻿using XFrame.Core;
-using XFrame.SimpleJSON;
+﻿using XFrame.SimpleJSON;
 using XFrame.Core.Binder;
 using XFrame.Modules.Archives;
 using XFrame.Modules.Serialize;

@@ -1,5 +1,4 @@
 ﻿using System;
-using XFrame.Core;
 using XFrame.SimpleJSON;
 using XFrame.Modules.Archives;
 using System.Collections.Generic;

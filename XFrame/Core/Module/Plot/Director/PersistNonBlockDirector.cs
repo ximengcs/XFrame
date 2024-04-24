@@ -1,5 +1,4 @@
 ﻿using XFrame.Collections;
-using XFrame.Core;
 using XFrame.Modules.Archives;
 
 namespace XFrame.Modules.Plots
@@ -15,6 +14,7 @@ namespace XFrame.Modules.Plots
         private XLinkList<StoryInfo> m_Stories;
         private IPlotModule m_Module;
 
+        /// <inheritdoc/>
         public IPlotModule Module => m_Module;
 
         void IDirector.OnInit(IPlotModule module)
@@ -64,12 +64,14 @@ namespace XFrame.Modules.Plots
             m_Stories.Clear();
         }
 
+        /// <inheritdoc/>
         public void Play(IStory story)
         {
             PlotUtility.InnerRecordStoryState(m_Archive, story);
             InnerPlay(story);
         }
 
+        /// <inheritdoc/>
         public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
@@ -95,11 +97,13 @@ namespace XFrame.Modules.Plots
                 InnerPlay(story);
         }
 
+        /// <inheritdoc/>
         public void Remove(IStory story)
         {
             Remove(story.Name);
         }
 
+        /// <inheritdoc/>
         public void Remove(string storyName)
         {
             foreach (XLinkNode<StoryInfo> info in m_Stories)

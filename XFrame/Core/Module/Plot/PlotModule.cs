@@ -5,13 +5,10 @@ using XFrame.Modules.Event;
 using XFrame.Modules.Config;
 using System.Collections.Generic;
 using XFrame.Collections;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Plots
 {
-    /// <summary>
-    /// 故事模块
-    /// </summary>
+    /// <inheritdoc/>
     [CommonModule]
     [RequireModule(typeof(EventModule))]
     [XType(typeof(IPlotModule))]
@@ -25,18 +22,13 @@ namespace XFrame.Modules.Plots
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public IEventSystem Event { get; private set; }
 
-        /// <summary>
-        /// 故事处理辅助类
-        /// </summary>
+        /// <inheritdoc/>
         public IPlotHelper Helper => m_Helper;
 
-        /// <summary>
-        /// 请求一个新故事
-        /// </summary>
-        /// <param name="name">故事名</param>
-        /// <returns>故事</returns>
+        /// <inheritdoc/>
         public IStory NewStory(Type targetDirectorType, Type helperType, string name = null)
         {
             Story story = null;
@@ -50,6 +42,7 @@ namespace XFrame.Modules.Plots
             return story;
         }
 
+        /// <inheritdoc/>
         public IStory NewStory(Type targetDirectorType, string name = null)
         {
             return NewStory(targetDirectorType, null, name);
@@ -57,6 +50,7 @@ namespace XFrame.Modules.Plots
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -96,12 +90,14 @@ namespace XFrame.Modules.Plots
             Event.Listen(NewStoryEvent.EventId, InnerNewStoryHandle);
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             foreach (IDirector director in m_Directors.Values)
                 director.OnUpdate();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();

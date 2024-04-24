@@ -1,5 +1,4 @@
-﻿using XFrame.Modules.Archives;
-
+﻿
 namespace XFrame.Modules.Plots
 {
     /// <summary>
@@ -7,6 +6,9 @@ namespace XFrame.Modules.Plots
     /// </summary>
     public interface IDirector
     {
+        /// <summary>
+        /// 所属模块
+        /// </summary>
         IPlotModule Module { get; }
 
         /// <summary>

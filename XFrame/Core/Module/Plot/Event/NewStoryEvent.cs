@@ -1,5 +1,4 @@
-﻿using System;
-using XFrame.Modules.Event;
+﻿using XFrame.Modules.Event;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Plots
@@ -28,6 +27,11 @@ namespace XFrame.Modules.Plots
         /// </summary>
         public IStory[] Stories { get; private set; }
 
+        /// <summary>
+        /// 创建事件
+        /// </summary>
+        /// <param name="stories">故事列表</param>
+        /// <returns>事件实例</returns>
         public static NewStoryEvent Create(IStory[] stories)
         {
             NewStoryEvent evt = References.Require<NewStoryEvent>();
@@ -36,6 +40,11 @@ namespace XFrame.Modules.Plots
             return evt;
         }
 
+        /// <summary>
+        /// 创建事件
+        /// </summary>
+        /// <param name="story">故事</param>
+        /// <returns>事件实例</returns>
         public static NewStoryEvent Create(IStory story)
         {
             NewStoryEvent evt = References.Require<NewStoryEvent>();

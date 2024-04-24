@@ -28,14 +28,22 @@ namespace XFrame.Modules.Pools
         /// </summary>
         IPoolHelper Helper { get; }
 
+        /// <summary>
+        /// 所属模块
+        /// </summary>
         IPoolModule Module { get; }
 
+        /// <summary>
+        /// 池中所有对象
+        /// </summary>
         IXEnumerable<IPoolObject> AllObjects { get; }
 
         /// <summary>
         /// 获取一个对象
         /// </summary>
-        /// <param name="obj">获取到的对象</param>
+        /// <param name="poolKey">对象key</param>
+        /// <param name="userData">对象数据</param>
+        /// <returns>对象实例</returns>
         IPoolObject Require(int poolKey = default, object userData = default);
 
         /// <summary>
@@ -47,7 +55,10 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 生成池对象
         /// </summary>
+        /// <param name="poolKey">对象key</param>
         /// <param name="count">生成数量</param>
+        /// <param name="userData">数据参数</param>
+        /// <param name="toList">添加到列表</param>
         void Spawn(int poolKey = default, int count = 1, object userData = default, XLinkList<IPoolObject> toList = null);
 
         /// <summary>
@@ -71,7 +82,8 @@ namespace XFrame.Modules.Pools
         /// <summary>
         /// 获取一个对象
         /// </summary>
-        /// <param name="obj">请求的对象</param>
+        /// <param name="poolKey">对象key</param>
+        /// <param name="userData">数据参数</param>
         /// <returns>是否是新创建的对象，返回false表示从对象池中创建</returns>
         new T Require(int poolKey = default, object userData = default);
     }

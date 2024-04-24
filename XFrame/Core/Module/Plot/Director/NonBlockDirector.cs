@@ -11,6 +11,7 @@ namespace XFrame.Modules.Plots
         private IPlotModule m_Module;
         private XLinkList<StoryInfo> m_Stories;
 
+        /// <inheritdoc/>
         public IPlotModule Module => m_Module;
 
         void IDirector.OnInit(IPlotModule module)
@@ -63,11 +64,13 @@ namespace XFrame.Modules.Plots
             m_Stories.Clear();
         }
 
+        /// <inheritdoc/>
         public void Play(IStory story)
         {
             InnerPlay(story);
         }
 
+        /// <inheritdoc/>
         public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
@@ -79,11 +82,13 @@ namespace XFrame.Modules.Plots
             m_Stories.AddLast(new StoryInfo(story));
         }
 
+        /// <inheritdoc/>
         public void Remove(IStory story)
         {
             Remove(story.Name);
         }
 
+        /// <inheritdoc/>
         public void Remove(string storyName)
         {
             foreach (XLinkNode<StoryInfo> info in m_Stories)

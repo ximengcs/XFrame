@@ -1,6 +1,5 @@
 ﻿using XFrame.Modules.Archives;
 using System.Collections.Generic;
-using XFrame.Core;
 
 namespace XFrame.Modules.Plots
 {
@@ -16,6 +15,7 @@ namespace XFrame.Modules.Plots
         private Queue<StoryInfo> m_StoryQueue;
         private IPlotModule m_Module;
 
+        /// <inheritdoc/>
         public IPlotModule Module => m_Module;
 
         void IDirector.OnInit(IPlotModule module)
@@ -67,6 +67,7 @@ namespace XFrame.Modules.Plots
             m_StoryQueue = null;
         }
 
+        /// <inheritdoc/>
         public void Play(IStory story)
         {
             PlotUtility.InnerRecordStoryState(m_Archive, story);
@@ -91,17 +92,20 @@ namespace XFrame.Modules.Plots
                 InnerPlay(story);
         }
 
+        /// <inheritdoc/>
         public void Play(IStory[] stories)
         {
             foreach (IStory story in stories)
                 Play(story);
         }
 
+        /// <inheritdoc/>
         public void Remove(IStory story)
         {
             Remove(story.Name);
         }
 
+        /// <inheritdoc/>
         public void Remove(string storyName)
         {
             PlotUtility.InnerRemoveStoryState(m_Archive, storyName);

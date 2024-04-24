@@ -3,7 +3,7 @@ using XFrame.Core;
 
 namespace XFrame.Modules.Plots
 {
-    public class SectionDataProvider : IDataProvider
+    internal class SectionDataProvider : IDataProvider
     {
         private IDataProvider m_Data;
         private string m_Prefix;
