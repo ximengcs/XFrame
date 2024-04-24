@@ -70,6 +70,13 @@ namespace XFrame.Modules.Diagnotics
             foreach (ILogger logger in m_Loggers)
                 logger.Fatal(content);
         }
+
+        /// <inheritdoc/>
+        public void Exception(Exception e)
+        {
+            foreach (ILogger logger in m_Loggers)
+                logger.Exception(e);
+        }
         #endregion
 
         private ILogger InnerAddLogger(Type type)

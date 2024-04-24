@@ -18,6 +18,11 @@ namespace XFrameTest
             Console.WriteLine(content);
         }
 
+        public void Exception(Exception e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Fatal(params object[] content)
         {
             Console.WriteLine(content);
