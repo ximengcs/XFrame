@@ -63,6 +63,10 @@ namespace XFrame.Modules.Resource
         /// </summary>
         void UnloadAll();
 
+        /// <summary>
+        /// 查看当前缓存的所有对象
+        /// </summary>
+        /// <returns>资源对象列表</returns>
         List<object> DumpAll();
     }
 }

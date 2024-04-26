@@ -7,9 +7,7 @@ using XFrame.Tasks;
 
 namespace XFrame.Modules.Resource
 {
-    /// <summary>
-    /// 资源模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
     [XType(typeof(IResModule))]
     public class ResModule : ModuleBase, IResModule
@@ -40,8 +38,10 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public IResourceHelper Helper => m_ResHelper;
 
+        /// <inheritdoc/>
         public async XTask Preload(IEnumerable<string> resPaths, Type type)
         {
             foreach (string path in resPaths)
@@ -54,18 +54,17 @@ namespace XFrame.Modules.Resource
             }
         }
 
-        public async XTask Preload(IXEnumerable<string> resPaths, Type type)
+        /// <inheritdoc/>
+        public async XTask Preload(string resPath, Type type)
         {
-            foreach (string path in resPaths)
-            {
-                if (m_PreLoadRes.ContainsKey(path))
-                    continue;
-                object asset = await LoadAsync(path, type);
-                if (asset != null)
-                    m_PreLoadRes.Add(path, asset);
-            }
+            if (m_PreLoadRes.ContainsKey(resPath))
+                return;
+            object asset = await LoadAsync(resPath, type);
+            if (asset != null)
+                m_PreLoadRes.Add(resPath, asset);
         }
 
+        /// <inheritdoc/>
         public object Load(string resPath, Type type)
         {
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
@@ -74,6 +73,7 @@ namespace XFrame.Modules.Resource
                 return m_ResHelper.Load(resPath, type);
         }
 
+        /// <inheritdoc/>
         public T Load<T>(string resPath)
         {
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
@@ -86,21 +86,25 @@ namespace XFrame.Modules.Resource
             }
         }
 
+        /// <inheritdoc/>
         public ResLoadTask LoadAsync(string resPath, Type type)
         {
             return m_ResHelper.LoadAsync(resPath, type);
         }
 
+        /// <inheritdoc/>
         public ResLoadTask<T> LoadAsync<T>(string resPath)
         {
             return m_ResHelper.LoadAsync<T>(resPath);
         }
 
+        /// <inheritdoc/>
         public void Unload(object target)
         {
             m_ResHelper.Unload(target);
         }
 
+        /// <inheritdoc/>
         public void UnloadPre(string resPath)
         {
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
@@ -110,11 +114,13 @@ namespace XFrame.Modules.Resource
             }
         }
 
+        /// <inheritdoc/>
         public void UnloadAll()
         {
             m_ResHelper.UnloadAll();
         }
 
+        /// <inheritdoc/>
         public void UnloadAllPre()
         {
             foreach (object asset in m_PreLoadRes.Values)

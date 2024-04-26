@@ -9,9 +9,7 @@ using XFrame.Collections;
 
 namespace XFrame.Modules.Procedure
 {
-    /// <summary>
-    /// 流程模块
-    /// </summary>
+    /// <inheritdoc/>
     [CommonModule]
     [XType(typeof(IProcedureModule))]
     public class ProcedureModule : ModuleBase, IProcedureModule
@@ -22,12 +20,14 @@ namespace XFrame.Modules.Procedure
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             InnerRefreshHandler();
         }
 
+        /// <inheritdoc/>
         protected override void OnStart()
         {
             base.OnStart();
@@ -45,12 +45,10 @@ namespace XFrame.Modules.Procedure
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public IFsm Fsm => m_Fsm;
 
-        /// <summary>
-        /// 重定向启动流程
-        /// </summary>
-        /// <param name="name">流程类全名称</param>
+        /// <inheritdoc/>
         public void Redirect(string name)
         {
             InnerRefreshHandler();
@@ -65,29 +63,20 @@ namespace XFrame.Modules.Procedure
             }
         }
 
-        /// <summary>
-        /// 重定向启动流程
-        /// </summary>
-        /// <param name="type">流程类</param>
+        /// <inheritdoc/>
         public void Redirect(Type type)
         {
             if (m_Fsm != null && m_Fsm.HasState(type))
                 m_Fsm.ChangeState(type);
         }
 
-        /// <summary>
-        /// 添加流程类
-        /// </summary>
-        /// <param name="type">流程类</param>
+        /// <inheritdoc/>
         public void Add(Type type)
         {
             InnerAdd(type);
         }
 
-        /// <summary>
-        /// 添加流程类
-        /// </summary>
-        /// <typeparam name="T">流程类</typeparam>
+        /// <inheritdoc/>
         public void Add<T>() where T : ProcedureBase
         {
             InnerAdd(typeof(T));
