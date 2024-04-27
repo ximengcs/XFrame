@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Text;
-using XFrame.Core;
-using XFrame.Modules.Reflection;
 
 namespace XFrame.Utility
 {

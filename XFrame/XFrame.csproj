@@ -10,8 +10,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Plugins\CsvHelper\" />
-		<Folder Include="Plugins\CommandLine\" />
+	  <Compile Remove="Plugins\**" />
+	  <EmbeddedResource Remove="Plugins\**" />
+	  <None Remove="Plugins\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\XFramePlugins\XFramePlugins.csproj" />
 	</ItemGroup>
 
 </Project>
