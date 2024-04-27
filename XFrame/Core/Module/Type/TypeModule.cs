@@ -25,12 +25,14 @@ namespace XFrame.Modules.Reflection
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             InnerInit();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();

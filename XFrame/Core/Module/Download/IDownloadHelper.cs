@@ -29,7 +29,6 @@ namespace XFrame.Modules.Download
         /// <summary>
         /// 请求下载
         /// </summary>
-        /// <param name="url"></param>
         protected internal void Request();
 
         /// <summary>

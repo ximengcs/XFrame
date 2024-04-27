@@ -78,6 +78,7 @@ namespace XFrame.Core.Binder
         /// 添加一个数值变更处理委托
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
+        /// <param name="atonceInvoke">是否自动执行一次</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
             if (handler == null)

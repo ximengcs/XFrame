@@ -18,6 +18,7 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -29,6 +30,11 @@ namespace XFrame.Modules.Resource
             }
         }
 
+        /// <summary>
+        /// 设置资源辅助器
+        /// </summary>
+        /// <param name="type">辅助器类型</param>
+        /// <returns>辅助器实例</returns>
         public IResourceHelper SetHelper(Type type)
         {
             m_ResHelper = Domain.TypeModule.CreateInstance(type) as IResourceHelper;

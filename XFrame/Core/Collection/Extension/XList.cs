@@ -5,6 +5,10 @@ using XFrame.Core.Binder;
 
 namespace XFrame.Collections
 {
+    /// <summary>
+    /// 带事件的列表
+    /// </summary>
+    /// <typeparam name="T">持有值类型</typeparam>
     public class XList<T> :
         ICollection<T>,
         IEnumerable<T>,
@@ -25,6 +29,15 @@ namespace XFrame.Collections
             remove => m_ChangeHandler -= value;
         }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        public XList()
+        {
+            m_Container = new List<T>();
+        }
+
+        /// <inheritdoc/>
         public IEnumerator<T> GetEnumerator()
         {
             return m_Container.GetEnumerator();
@@ -35,12 +48,14 @@ namespace XFrame.Collections
             return ((IEnumerable)m_Container).GetEnumerator();
         }
 
+        /// <inheritdoc/>
         public void Add(T item)
         {
             m_Container.Add(item);
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public int Add(object value)
         {
             int count = ((IList)m_Container).Add(value);
@@ -48,6 +63,7 @@ namespace XFrame.Collections
             return count;
         }
 
+        /// <inheritdoc/>
         public bool Replace(T value, T newValue)
         {
             int index = IndexOf(value);
@@ -65,22 +81,26 @@ namespace XFrame.Collections
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public bool Contains(object value)
         {
             return ((IList)m_Container).Contains(value);
         }
 
+        /// <inheritdoc/>
         public int IndexOf(object value)
         {
             return ((IList)m_Container).IndexOf(value);
         }
 
+        /// <inheritdoc/>
         public void Insert(int index, object value)
         {
             ((IList)m_Container).Insert(index, value);
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public void Remove(object value)
         {
             ((IList)m_Container).Remove(value);
@@ -93,6 +113,7 @@ namespace XFrame.Collections
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public bool IsFixedSize => ((IList)m_Container).IsFixedSize;
 
         void ICollection<T>.Clear()
@@ -101,16 +122,19 @@ namespace XFrame.Collections
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public bool Contains(T item)
         {
             return m_Container.Contains(item);
         }
 
+        /// <inheritdoc/>
         public void CopyTo(T[] array, int arrayIndex)
         {
             m_Container.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc/>
         public bool Remove(T item)
         {
             bool success = m_Container.Remove(item);
@@ -118,17 +142,22 @@ namespace XFrame.Collections
             return success;
         }
 
+        /// <inheritdoc/>
         public void CopyTo(Array array, int index)
         {
             ((ICollection)m_Container).CopyTo(array, index);
         }
 
+        /// <inheritdoc/>
         public int Count => m_Container.Count;
 
+        /// <inheritdoc/>
         public bool IsSynchronized => ((ICollection)m_Container).IsSynchronized;
 
+        /// <inheritdoc/>
         public object SyncRoot => ((ICollection)m_Container).SyncRoot;
 
+        /// <inheritdoc/>
         public bool IsReadOnly => ((ICollection<T>)m_Container).IsReadOnly;
 
         object IList.this[int index]
@@ -141,11 +170,13 @@ namespace XFrame.Collections
             }
         }
 
+        /// <inheritdoc/>
         public int IndexOf(T item)
         {
             return m_Container.IndexOf(item);
         }
 
+        /// <inheritdoc/>
         public void Insert(int index, T item)
         {
             m_Container.Insert(index, item);
@@ -158,6 +189,7 @@ namespace XFrame.Collections
             m_ChangeHandler?.Invoke();
         }
 
+        /// <inheritdoc/>
         public T this[int index]
         {
             get => m_Container[index];

@@ -89,7 +89,7 @@ namespace XFrame.Collections
             /// <summary>
             /// 返回csv行数据字符串形式
             /// </summary>
-            /// <param name="csv">csv行实例</param>
+            /// <param name="line">csv行实例</param>
             /// <returns>字符串形式</returns>
             public static implicit operator string(Line line)
             {

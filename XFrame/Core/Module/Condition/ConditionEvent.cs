@@ -55,12 +55,14 @@ namespace XFrame.Modules.Conditions
             return evt;
         }
 
+        /// <inheritdoc/>
         protected internal override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             Id = EventId;
         }
 
+        /// <inheritdoc/>
         protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();

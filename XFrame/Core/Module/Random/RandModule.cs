@@ -17,6 +17,7 @@ namespace XFrame.Modules.Rand
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);

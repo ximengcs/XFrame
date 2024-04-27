@@ -12,6 +12,7 @@ namespace XFrame.Modules.Local
         /// 无效
         /// </summary>
         None = -1,
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         Afrikaans = 0,
         Arabic = 1,
         Basque = 2,
@@ -55,5 +56,6 @@ namespace XFrame.Modules.Local
         ChineseTraditional = 41,
         Unknown = 42,
         Hungarian = 18
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     }
 }
