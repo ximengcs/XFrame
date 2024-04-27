@@ -1,17 +1,23 @@
 ﻿
-using System;
-using XFrame.Core;
-using XFrame.Modules.Diagnotics;
-
 namespace XFrame.Tasks
 {
     public partial class XTask
     {
+        /// <summary>
+        /// 等待下一帧
+        /// </summary>
+        /// <returns>任务</returns>
         public static XProTask NextFrame()
         {
             return Delay(0);
         }
 
+        /// <summary>
+        /// 延迟任务
+        /// </summary>
+        /// <param name="time">时间，秒为单位</param>
+        /// <param name="nextFrameExec">是否下一帧开始执行</param>
+        /// <returns>任务</returns>
         public static XProTask Delay(float time, bool nextFrameExec = true)
         {
             return new XProTask(new DelayHandler(time, nextFrameExec));
@@ -21,7 +27,6 @@ namespace XFrame.Tasks
         {
             private float m_Target;
             private float m_Time;
-            private float m_StartTime;
             private long m_StartFrame;
             private float m_Pro;
 

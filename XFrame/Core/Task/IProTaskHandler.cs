@@ -1,5 +1,8 @@
 namespace XFrame.Tasks
 {
+    /// <summary>
+    /// 带进度任务处理器
+    /// </summary>
     public interface IProTaskHandler
     {
         /// <summary>

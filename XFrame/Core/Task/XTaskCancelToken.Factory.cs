@@ -4,11 +4,15 @@ namespace XFrame.Tasks
 {
     public partial class XTaskCancelToken
     {
-        public const int MAX_CACHE = 1024;
+        private const int MAX_CACHE = 1024;
 
-        public static ConcurrentQueue<XTaskCancelToken>
+        private static ConcurrentQueue<XTaskCancelToken>
             s_CacheQueue = new ConcurrentQueue<XTaskCancelToken>();
 
+        /// <summary>
+        /// 请求一个取消绑定器
+        /// </summary>
+        /// <returns>取消绑定器</returns>
         public static XTaskCancelToken Require()
         {
             if (!s_CacheQueue.TryDequeue(out XTaskCancelToken token))
@@ -21,6 +25,10 @@ namespace XFrame.Tasks
             return token;
         }
 
+        /// <summary>
+        /// 请求一个取消绑定器
+        /// </summary>
+        /// <param name="token">取消绑定器</param>
         public static void Release(XTaskCancelToken token)
         {
             if (token == null)

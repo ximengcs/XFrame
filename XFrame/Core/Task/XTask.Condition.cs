@@ -8,22 +8,47 @@ namespace XFrame.Tasks
 {
     public partial class XTask
     {
+        /// <summary>
+        /// 构建带条件的任务
+        /// </summary>
+        /// <param name="fun">条件函数</param>
+        /// <param name="nextFrameExec">是否下一帧执行</param>
+        /// <returns>任务实例</returns>
         public static XProTask Condition(Func<bool> fun, bool nextFrameExec = true)
         {
             return new XProTask(new ConditionHandler(fun, nextFrameExec));
         }
 
+        /// <summary>
+        /// 构建带条件的任务
+        /// </summary>
+        /// <param name="fun">条件函数</param>
+        /// <param name="nextFrameExec">是否下一帧执行</param>
+        /// <returns>任务实例</returns>
         public static XProTask Condition(Func<Pair<bool, object>> fun, bool nextFrameExec = true)
         {
             return new XProTask(new ConditionWithDataHandler(fun, nextFrameExec));
         }
 
+        /// <summary>
+        /// 构建带条件的任务
+        /// </summary>
+        /// <param name="fun">条件函数</param>
+        /// <param name="nextFrameExec">是否下一帧执行</param>
+        /// <returns>任务实例</returns>
         public static XProTask Condition(Func<float> fun, bool nextFrameExec = true)
         {
             return new XProTask(new ConditionWithProgressHandler(fun, nextFrameExec));
         }
 
-        public static XProTask Repeat(float timeGap, Func<bool> fun, bool nextFrameExec = true)
+        /// <summary>
+        /// 执行一个心跳任务
+        /// </summary>
+        /// <param name="timeGap">间隔</param>
+        /// <param name="fun">条件函数</param>
+        /// <param name="nextFrameExec">是否下一帧执行</param>
+        /// <returns>任务实例</returns>
+        public static XProTask Beat(float timeGap, Func<bool> fun, bool nextFrameExec = true)
         {
             return new XProTask(new ConditionRepeatHandler(timeGap, fun, nextFrameExec));
         }

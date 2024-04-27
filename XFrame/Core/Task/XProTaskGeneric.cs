@@ -5,14 +5,44 @@ using System.Runtime.CompilerServices;
 
 namespace XFrame.Tasks
 {
+    /// <summary>
+    /// 带进度状态的任务
+    /// </summary>
     public abstract class XProTask<T> : ICriticalNotifyCompletion, IUpdater, ICancelTask, ITask
     {
+        /// <summary>
+        /// 更新事件回调
+        /// </summary>
         protected Action<float> m_OnUpdate;
+
+        /// <summary>
+        /// 完成回调
+        /// </summary>
         protected XComplete<XTaskState> m_OnComplete;
+
+        /// <summary>
+        /// 完成状态
+        /// </summary>
         protected Action<T> m_OnDataComplete;
+
+        /// <summary>
+        /// 任务绑定器
+        /// </summary>
         protected ITaskBinder m_Binder;
+
+        /// <summary>
+        /// 任务行为
+        /// </summary>
         protected XTaskAction m_TaskAction;
+
+        /// <summary>
+        /// 取消绑定器
+        /// </summary>
         protected XTaskCancelToken m_CancelToken;
+
+        /// <summary>
+        /// 进度处理器
+        /// </summary>
         protected IProTaskHandler m_ProHandler;
 
         XTaskCancelToken ICancelTask.Token
@@ -29,20 +59,43 @@ namespace XFrame.Tasks
 
         ITaskBinder ICancelTask.Binder => m_Binder;
 
+        /// <summary>
+        /// 任务行为 
+        /// </summary>
         public XTaskAction TaskAction => m_TaskAction;
 
+        /// <summary>
+        /// 设置任务行为 
+        /// </summary>
+        /// <param name="action">行为枚举</param>
+        /// <returns>返回当前任务</returns>
         public ITask SetAction(XTaskAction action)
         {
             m_TaskAction = action;
             return this;
         }
 
+        /// <summary>
+        /// 获取结果
+        /// </summary>
+        /// <returns>返回结果</returns>
         public abstract T GetResult();
 
+        /// <summary>
+        /// 是否完成
+        /// </summary>
         public bool IsCompleted => m_OnComplete.IsComplete;
 
+        /// <summary>
+        /// 进度
+        /// </summary>
         public float Progress => m_ProHandler.Pro;
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="handler">进度处理器</param>
+        /// <param name="cancelToken">取消绑定器</param>
         public XProTask(IProTaskHandler handler, XTaskCancelToken cancelToken = null)
         {
             m_ProHandler = handler;
@@ -50,6 +103,9 @@ namespace XFrame.Tasks
             m_CancelToken = cancelToken;
         }
 
+        /// <summary>
+        /// 开始任务
+        /// </summary>
         protected virtual void InnerStart()
         {
             XTaskHelper.Register(this);
@@ -86,6 +142,9 @@ namespace XFrame.Tasks
             }
         }
 
+        /// <summary>
+        /// 完成任务
+        /// </summary>
         protected virtual void InnerExecComplete()
         {
             if (m_OnDataComplete != null)
@@ -102,6 +161,7 @@ namespace XFrame.Tasks
             m_OnComplete.Value = state;
         }
 
+        /// <inheritdoc/>
         public void Coroutine()
         {
             InnerCoroutine();
@@ -112,12 +172,20 @@ namespace XFrame.Tasks
             await this;
         }
 
+        /// <summary>
+        /// 绑定对象
+        /// </summary>
+        /// <param name="binder">绑定器</param>
+        /// <returns>返回当前任务</returns>
         public ITask Bind(ITaskBinder binder)
         {
             m_Binder = binder;
             return this;
         }
 
+        /// <summary>
+        /// 设置结果
+        /// </summary>
         public void SetResult()
         {
             if (m_CancelToken != null && !m_CancelToken.Disposed)
@@ -127,12 +195,17 @@ namespace XFrame.Tasks
             XTaskHelper.UnRegister(this);
         }
 
+        /// <summary>
+        /// await 
+        /// </summary>
+        /// <returns>返回当前任务</returns>
         public XProTask<T> GetAwaiter()
         {
             InnerStart();
             return this;
         }
 
+        /// <inheritdoc/>
         public void Cancel(bool subTask)
         {
             InnerCancel();
@@ -148,26 +221,44 @@ namespace XFrame.Tasks
             cancelTask.Token.Cancel();
         }
 
-
+        /// <summary>
+        /// 注册更新事件
+        /// </summary>
+        /// <param name="handler">事件处理函数</param>
+        /// <returns>返回当前任务</returns>
         public ITask OnUpdate(Action<float> handler)
         {
             m_OnUpdate += handler;
             return this;
         }
 
-
+        /// <summary>
+        /// 注册完成事件
+        /// </summary>
+        /// <param name="handler">事件处理函数</param>
+        /// <returns>返回当前任务</returns>
         public ITask OnCompleted(Action<XTaskState> handler)
         {
             m_OnComplete.On(handler);
             return this;
         }
 
+        /// <summary>
+        /// 注册完成事件
+        /// </summary>
+        /// <param name="handler">事件处理函数</param>
+        /// <returns>返回当前任务</returns>
         public ITask OnCompleted(Action handler)
         {
             m_OnComplete.On(handler);
             return this;
         }
 
+        /// <summary>
+        /// 注册完成事件
+        /// </summary>
+        /// <param name="handler">事件处理函数</param>
+        /// <returns>返回当前任务</returns>
         public ITask OnCompleted(Action<T> handler)
         {
             if (m_OnComplete.IsComplete)
