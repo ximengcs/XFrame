@@ -4,6 +4,11 @@ namespace XFrame.Core
 {
     public partial class XCore
     {
+        /// <summary>
+        /// 创建一个核心
+        /// </summary>
+        /// <param name="domain">域</param>
+        /// <returns>核心实例</returns>
         public static XCore Create(XDomain domain)
         {
             XCore core = new XCore();
@@ -11,6 +16,13 @@ namespace XFrame.Core
             return core;
         }
 
+        /// <summary>
+        /// 创建一个核心
+        /// </summary>
+        /// <param name="domain">域</param>
+        /// <param name="coreType">添加的核心模块类型</param>
+        /// <param name="modules">其他类型模块列表</param>
+        /// <returns>核心模块</returns>
         public static XCore Create(XDomain domain, Type coreType, params Type[] modules)
         {
             XCore core = new XCore();
@@ -21,6 +33,14 @@ namespace XFrame.Core
             return core;
         }
 
+        /// <summary>
+        /// 创建一个核心
+        /// </summary>
+        /// <param name="domain">域</param>
+        /// <param name="coreType">添加的核心模块类型</param>
+        /// <param name="modules">其他类型模块列表</param>
+        /// <param name="datas">初始化参数</param>
+        /// <returns>核心模块</returns>
         public static XCore Create(XDomain domain, Type coreType, Type[] modules, object[] datas = null)
         {
             XCore core = new XCore();

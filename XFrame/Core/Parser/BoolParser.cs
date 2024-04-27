@@ -3,18 +3,32 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 布尔值解析器
+    /// </summary>
     public class BoolParser : IParser<bool>, ICanConfigLog
     {
         private bool m_Value;
+
+        /// <summary>
+        /// 值
+        /// </summary>
         public bool Value => m_Value;
+
+        /// <summary>
+        /// Log级别
+        /// </summary>
         public LogLevel LogLv { get; set; }
 
         object IParser.Value => m_Value;
 
         int IPoolObject.PoolKey => default;
+
+        /// <inheritdoc/>
         public string MarkName { get; set; }
         IPool IPoolObject.InPool { get; set; }
 
+        /// <inheritdoc/>
         public bool Parse(string pattern)
         {
             if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
@@ -26,6 +40,12 @@ namespace XFrame.Core
             return m_Value;
         }
 
+        /// <summary>
+        /// 尝试解析布尔值
+        /// </summary>
+        /// <param name="pattern">文本值</param>
+        /// <param name="value">布尔值</param>
+        /// <returns>是否成功</returns>
         public static bool TryParse(string pattern, out bool value)
         {
             if (!bool.TryParse(pattern, out value))
@@ -46,21 +66,37 @@ namespace XFrame.Core
             return Parse(pattern);
         }
 
+        /// <summary>
+        /// 释放到池中
+        /// </summary>
         public void Release()
         {
             References.Release(this);
         }
 
+        /// <summary>
+        /// 原始值
+        /// </summary>
+        /// <returns>原始值</returns>
         public override string ToString()
         {
             return m_Value.ToString();
         }
 
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <returns>哈希值</returns>
         public override int GetHashCode()
         {
             return m_Value.GetHashCode();
         }
 
+        /// <summary>
+        /// 检查两个值是否相等
+        /// </summary>
+        /// <param name="obj">待检查的值</param>
+        /// <returns>true表示相等</returns>
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
@@ -88,6 +124,12 @@ namespace XFrame.Core
 
         }
 
+        /// <summary>
+        /// 检查两个值是否相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">待比较的值</param>
+        /// <returns>true表示相等</returns>
         public static bool operator ==(BoolParser src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -100,6 +142,12 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 检查两个值是否不相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">待比较的值</param>
+        /// <returns>true表示不相等</returns>
         public static bool operator !=(BoolParser src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -112,11 +160,19 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 返回解析器的布尔值
+        /// </summary>
+        /// <param name="parser">解析器</param>
         public static implicit operator bool(BoolParser parser)
         {
             return parser != null ? parser.m_Value : default;
         }
 
+        /// <summary>
+        /// 将布尔值转换为解析器
+        /// </summary>
+        /// <param name="value">布尔值</param>
         public static implicit operator BoolParser(bool value)
         {
             BoolParser parser = References.Require<BoolParser>();

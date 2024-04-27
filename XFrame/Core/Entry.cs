@@ -8,6 +8,9 @@ using XFrame.Tasks;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 框架入口
+    /// </summary>
     public static class Entry
     {
         #region Inner Filed
@@ -25,6 +28,9 @@ namespace XFrame.Core
         #endregion
 
         #region Event
+        /// <summary>
+        /// 开始运行事件
+        /// </summary>
         public static event Action OnRun
         {
             add
@@ -43,6 +49,9 @@ namespace XFrame.Core
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 当前域
+        /// </summary>
         public static XDomain Domain => m_Domain;
 
         /// <summary>
@@ -138,6 +147,11 @@ namespace XFrame.Core
             m_OnRun?.Invoke();
         }
 
+        /// <summary>
+        /// 触发模块处理器 <see cref="IModuleHandler"/>
+        /// </summary>
+        /// <param name="type">目标类型 <see cref="IModuleHandler.Target"/></param>
+        /// <param name="data">参数 <see cref="IModuleHandler.Handle(IModule, object)"/></param>
         public static void Trigger(Type type, object data = null)
         {
             m_Domain.Base.Trigger(type, data);
@@ -148,6 +162,11 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 触发模块处理器 <see cref="IModuleHandler"/>
+        /// </summary>
+        /// <typeparam name="T">目标类型 <see cref="IModuleHandler.Target"/></typeparam>
+        /// <param name="data">参数 <see cref="IModuleHandler.Handle(IModule, object)"/></param>
         public static void Trigger<T>(object data = null)
         {
             Trigger(typeof(T), data);
@@ -202,16 +221,30 @@ namespace XFrame.Core
             return (T)InnerAddModule(typeof(T), moduleId, m_Domain[CUSTOM], userData);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <param name="module">模块</param>
         public static void RemoveModule(IModule module)
         {
             m_Domain.RemoveModule(module);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
         public static void RemoveModule(Type moduleType, int moduleId = default)
         {
             m_Domain.RemoveModule(moduleType, moduleId);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <typeparam name="T">模块类型</typeparam>
+        /// <param name="moduleId">模块Id</param>
         public static void RemoveModule<T>(int moduleId = default) where T : IModule
         {
             m_Domain.RemoveModule(typeof(T), moduleId);

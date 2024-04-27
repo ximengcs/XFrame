@@ -1,9 +1,8 @@
 ﻿using System;
-using XFrame.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
+using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Reflection;
+using System.Collections.Generic;
 
 namespace XFrame.Core
 {
@@ -45,6 +44,11 @@ namespace XFrame.Core
             m_ModulesWithEvents = new Dictionary<Type, ModuleHandle>();
         }
 
+        /// <summary>
+        /// 添加模块处理器
+        /// </summary>
+        /// <param name="handleType">处理目标类型</param>
+        /// <param name="handler">处理器</param>
         public void AddHandle(Type handleType, IModuleHandler handler)
         {
             if (!m_ModulesWithEvents.ContainsKey(handleType))
@@ -54,6 +58,11 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 触发模块处理器
+        /// </summary>
+        /// <param name="handlerType">处理目标类型</param>
+        /// <param name="data">参数</param>
         public void Trigger(Type handlerType, object data)
         {
             if (m_ModulesWithEvents.TryGetValue(handlerType, out ModuleHandle handle))
@@ -117,6 +126,13 @@ namespace XFrame.Core
             m_Modules = null;
         }
 
+        /// <summary>
+        /// 注册模块
+        /// </summary>
+        /// <param name="module">模块</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <param name="userData">模块初始化参数</param>
+        /// <returns></returns>
         public IModule Register(IModule module, int moduleId, object userData)
         {
             return InnerInitModule(module, moduleId, userData);
@@ -136,6 +152,7 @@ namespace XFrame.Core
         /// 注册模块
         /// </summary>
         /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
         /// <returns>模块实例</returns>
         public IModule Register(Type moduleType, int moduleId)
         {
@@ -146,6 +163,8 @@ namespace XFrame.Core
         /// 注册模块
         /// </summary>
         /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <param name="userData">模块初始化参数</param>
         /// <returns>模块实例</returns>
         public IModule Register(Type moduleType, int moduleId, object userData)
         {
@@ -156,7 +175,8 @@ namespace XFrame.Core
         /// 注册模块
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
-        /// <param name="data">模块初始化数据</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <param name="userData">模块初始化数据</param>
         /// <returns>模块实例</returns>
         public T Register<T>(int moduleId, object userData) where T : IModule
         {
@@ -167,6 +187,7 @@ namespace XFrame.Core
         /// 获取模块
         /// </summary>
         /// <typeparam name="T">模块类型</typeparam>
+        /// <param name="moduleId">模块Id</param>
         /// <returns>模块实例</returns>
         public T GetModule<T>(int moduleId = default) where T : IModule
         {
@@ -177,32 +198,63 @@ namespace XFrame.Core
         /// 获取模块
         /// </summary>
         /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
         /// <returns>模块实例</returns>
         public IModule GetModule(Type moduleType, int moduleId = default)
         {
             return InnerGetModule(moduleType, moduleId);
         }
 
+        /// <summary>
+        /// 检查是否存在模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <returns></returns>
         public bool HasModule(Type moduleType, int moduleId = default)
         {
             return InnerGetModule(moduleType, moduleId) != null;
         }
 
+        /// <summary>
+        /// 添加模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <param name="userData">模块初始化参数</param>
+        /// <returns>模块实例</returns>
         public IModule AddModule(Type moduleType, int moduleId = default, object userData = null)
         {
             return InnerAddModule(moduleType, moduleId, userData);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <param name="module">模块</param>
+        /// <returns>是否成功</returns>
         public bool RemoveModule(IModule module)
         {
             return m_Modules.Remove(module);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <typeparam name="T">模块类型</typeparam>
+        /// <param name="moduleId">模块Id</param>
+        /// <returns>是否成功</returns>
         public bool RemoveModule<T>(int moduleId = default) where T : IModule
         {
             return InnerRemoveModule(typeof(T), moduleId);
         }
 
+        /// <summary>
+        /// 移除模块
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <returns>是否成功</returns>
         public bool RemoveModule(Type moduleType, int moduleId = default)
         {
             return InnerRemoveModule(moduleType, moduleId);
@@ -219,6 +271,12 @@ namespace XFrame.Core
             return (T)RegisterHelper(typeof(T), typeof(ModuleT));
         }
 
+        /// <summary>
+        /// 注册模块辅助器
+        /// </summary>
+        /// <param name="helperType">辅助器类型</param>
+        /// <param name="mType">模块类型</param>
+        /// <returns>辅助器实例</returns>
         public IModuleHelper RegisterHelper(Type helperType, Type mType)
         {
             if (!m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
@@ -250,6 +308,11 @@ namespace XFrame.Core
             return default;
         }
 
+        /// <summary>
+        /// 获取所有处理目标类型的辅助器
+        /// </summary>
+        /// <param name="mType">目标类型</param>
+        /// <returns>辅助器列表</returns>
         public IModuleHelper[] GetHelpers(Type mType)
         {
             if (m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
@@ -272,6 +335,11 @@ namespace XFrame.Core
             return default;
         }
 
+        /// <summary>
+        /// 获取主辅助器（第一个添加）
+        /// </summary>
+        /// <param name="mType">处理目标类型</param>
+        /// <returns></returns>
         public IModuleHelper GetMainHelper(Type mType)
         {
             if (m_Helpers.TryGetValue(mType, out List<IModuleHelper> helpers))
@@ -296,6 +364,13 @@ namespace XFrame.Core
             return module;
         }
 
+        /// <summary>
+        /// 添加模块(从系统类<see cref="Activator"/>初始化)
+        /// </summary>
+        /// <param name="moduleType">模块类型</param>
+        /// <param name="moduleId">模块Id</param>
+        /// <param name="data">初始化参数</param>
+        /// <returns>模块实例</returns>
         public IModule AddModuleFromSystem(Type moduleType, int moduleId, object data)
         {
             Stopwatch sw = Stopwatch.StartNew();

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core
