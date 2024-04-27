@@ -1,13 +1,10 @@
 ﻿using XFrame.Core;
 using System.Collections.Generic;
 using XFrame.Collections;
-using XFrame.Modules.Tasks;
 
 namespace XFrame.Modules.Times
 {
-    /// <summary>
-    /// 时间模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
     [XType(typeof(ITimeModule))]
     public class TimeModule : ModuleBase, ITimeModule
@@ -19,19 +16,17 @@ namespace XFrame.Modules.Times
         private Dictionary<string, CDTimer> m_Timers;
 
         #region Interface
-        /// <summary>
-        /// 当前时间
-        /// </summary>
+        /// <inheritdoc/>
         public float Time => m_Time;
 
-        /// <summary>
-        /// 上帧到此帧逃逸时间
-        /// </summary>
+        /// <inheritdoc/>
         public float EscapeTime => m_EscapeTime;
 
+        /// <inheritdoc/>
         public long Frame => m_Frame;
         #endregion
 
+        /// <inheritdoc/>
         public CDTimer[] GetTimers()
         {
             CDTimer[] timers = new CDTimer[m_Timers.Count];
@@ -67,6 +62,7 @@ namespace XFrame.Modules.Times
         }
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -74,6 +70,7 @@ namespace XFrame.Modules.Times
             m_Timers = new Dictionary<string, CDTimer>();
         }
 
+        /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
             m_Time += escapeTime;

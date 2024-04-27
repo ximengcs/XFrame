@@ -5,14 +5,11 @@ using XFrame.Collections;
 using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using System.Data;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Reflection
 {
-    /// <summary>
-    /// 类型模块
-    /// </summary>
+    /// <inheritdoc/>
     [XType(typeof(ITypeModule))]
     public partial class TypeModule : ModuleBase, ITypeModule
     {
@@ -110,16 +107,19 @@ namespace XFrame.Modules.Reflection
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public T CreateInstance<T>(params object[] args)
         {
             return (T)InnerCreateInstance(typeof(T), args);
         }
 
+        /// <inheritdoc/>
         public object CreateInstance(Type type, params object[] args)
         {
             return InnerCreateInstance(type, args);
         }
 
+        /// <inheritdoc/>
         public object CreateInstance(string typeName, params object[] args)
         {
             Type type = GetType(typeName);
@@ -169,29 +169,20 @@ namespace XFrame.Modules.Reflection
             return instance;
         }
 
-        /// <summary>
-        /// 加载程序集
-        /// </summary>
-        /// <param name="data"></param>
+        /// <inheritdoc/>
         public void LoadAssembly(byte[] data)
         {
             Assembly.Load(data);
             InnerAssemblyUpdateHandle();
         }
 
-        /// <summary>
-        /// 程序集改变事件
-        /// </summary>
+        /// <inheritdoc/>
         public void OnTypeChange(Action handler)
         {
             m_OnTypeChange += handler;
         }
 
-        /// <summary>
-        /// 获取类型
-        /// </summary>
-        /// <param name="name">类型名</param>
-        /// <returns>获取到的类型</returns>
+        /// <inheritdoc/>
         public Type GetType(string name)
         {
             foreach (Assembly assembly in m_Assemblys)
@@ -203,23 +194,13 @@ namespace XFrame.Modules.Reflection
             return default;
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都具有所给定的属性类
-        /// </summary>
-        /// <typeparam name="T">Attribute属性类</typeparam>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNewWithAttr<T>() where T : Attribute
         {
             return GetOrNewWithAttr(typeof(T));
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都具有所给定的属性类
-        /// </summary>
-        /// <param name="pType">Attribute属性类</param>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNewWithAttr(Type pType)
         {
             TypeSystem module;
@@ -249,21 +230,25 @@ namespace XFrame.Modules.Reflection
             return module;
         }
 
+        /// <inheritdoc/>
         public bool HasAttribute<T>(Type classType) where T : Attribute
         {
             return GetAttribute(classType, typeof(T)) != null;
         }
 
+        /// <inheritdoc/>
         public bool HasAttribute(Type classType, Type pType)
         {
             return GetAttribute(classType, pType) != null;
         }
 
+        /// <inheritdoc/>
         public T GetAttribute<T>(Type classType) where T : Attribute
         {
             return (T)GetAttribute(classType, typeof(T));
         }
 
+        /// <inheritdoc/>
         public T[] GetAttributes<T>(Type classType) where T : Attribute
         {
             Type pType = typeof(T);
@@ -305,6 +290,7 @@ namespace XFrame.Modules.Reflection
             return result;
         }
 
+        /// <inheritdoc/>
         public Attribute GetAttribute(Type classType, Type pType)
         {
             if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
@@ -319,6 +305,7 @@ namespace XFrame.Modules.Reflection
             return default;
         }
 
+        /// <inheritdoc/>
         public Attribute[] GetAttributes(Type classType, Type pType)
         {
             List<Attribute> list;
@@ -359,23 +346,13 @@ namespace XFrame.Modules.Reflection
             return result;
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都是所给定的类型或子类
-        /// </summary>
-        /// <typeparam name="T">基类</typeparam>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNew<T>() where T : class
         {
             return GetOrNew(typeof(T));
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都是所给定的类型或子类
-        /// </summary>
-        /// <param name="baseType">基类</param>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNew(Type baseType)
         {
             TypeSystem module;
@@ -397,10 +374,7 @@ namespace XFrame.Modules.Reflection
             return module;
         }
 
-        /// <summary>
-        /// 获取所有类型
-        /// </summary>
-        /// <returns>类型列表</returns>
+        /// <inheritdoc/>
         public Type[] GetAllType()
         {
             return m_Types;

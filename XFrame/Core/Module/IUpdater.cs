@@ -1,6 +1,9 @@
 ﻿
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 更新处理器
+    /// </summary>
     public interface IUpdater
     {
         /// <summary>

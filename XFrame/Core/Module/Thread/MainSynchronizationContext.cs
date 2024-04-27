@@ -31,8 +31,10 @@ namespace XFrame.Modules.Threads
 
         #region IModule Life Fun
 
+        /// <inheritdoc/>
         public int Id => default;
 
+        /// <inheritdoc/>
         public XDomain Domain => XTaskHelper.Domain;
 
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
@@ -77,6 +79,7 @@ namespace XFrame.Modules.Threads
 
         #region System Life Fun
 
+        /// <inheritdoc/>
         public override void Post(SendOrPostCallback d, object state)
         {
             m_ActQueue.Enqueue(Pair.Create(d, state));

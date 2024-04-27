@@ -14,6 +14,7 @@ namespace XFrame.Core
         /// </summary>
         public static T Inst { get; private set; }
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);

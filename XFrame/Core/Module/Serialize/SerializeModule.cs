@@ -3,19 +3,17 @@ using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Reflection;
 using System.Collections.Generic;
-using XFrame.Utility;
 
 namespace XFrame.Modules.Serialize
 {
-    /// <summary>
-    /// 序列化模块
-    /// </summary>
+    /// <inheritdoc/>
     [CoreModule]
     [XType(typeof(ISerializeModule))]
     public class SerializeModule : ModuleBase, ISerializeModule
     {
         private Dictionary<int, ISerializeHelper> m_Helpers;
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -29,17 +27,13 @@ namespace XFrame.Modules.Serialize
         }
 
         #region Interface
-        /// <summary>
-        /// 反序列化
-        /// </summary>
-        /// <param name="text">text本文</param>
-        /// <param name="type">目标类型</param>
-        /// <returns>序列化到的对象</returns>
+        /// <inheritdoc/>
         public object DeserializeToObject(string text, Type type)
         {
             return DeserializeToObject(text, default, type);
         }
 
+        /// <inheritdoc/>
         public object DeserializeToObject(string text, int textType, Type type)
         {
             if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))
@@ -47,17 +41,13 @@ namespace XFrame.Modules.Serialize
             return default;
         }
 
-        /// <summary>
-        /// 反序列化
-        /// </summary>
-        /// <typeparam name="T">目标类型</typeparam>
-        /// <param name="text">text本文</param>
-        /// <returns>序列化到的对象</returns>
+        /// <inheritdoc/>
         public T DeserializeToObject<T>(string text)
         {
             return DeserializeToObject<T>(text, default);
         }
 
+        /// <inheritdoc/>
         public T DeserializeToObject<T>(string text, int textType)
         {
             if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))
@@ -65,16 +55,13 @@ namespace XFrame.Modules.Serialize
             return default;
         }
 
-        /// <summary>
-        /// 序列化 
-        /// </summary>
-        /// <param name="obj">需要序列化的对象</param>
-        /// <returns>json本文</returns>
+        /// <inheritdoc/>
         public string SerializeObjectToRaw(object obj)
         {
             return SerializeObjectToRaw(obj, default);
         }
 
+        /// <inheritdoc/>
         public string SerializeObjectToRaw(object obj, int textType)
         {
             if (m_Helpers.TryGetValue(textType, out ISerializeHelper helper))

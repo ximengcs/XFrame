@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using XFrame.Core;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Rand;
-using static XFrame.Modules.Times.CDTimer;
 
 namespace XFrame.Modules.Times
 {
@@ -16,9 +14,11 @@ namespace XFrame.Modules.Times
         private Dictionary<int, CDInfo> m_Times;
         private TimeModule m_TimeModule;
 
+        /// <inheritdoc/>
         public string Name => m_Name;
 
         int IPoolObject.PoolKey => default;
+        /// <inheritdoc/>
         public string MarkName { get; set; }
 
         IPool IPoolObject.InPool { get; set; }
@@ -42,6 +42,10 @@ namespace XFrame.Modules.Times
             return timer;
         }
 
+        /// <summary>
+        /// 构造CD计时器
+        /// </summary>
+        /// <returns>时间更新器</returns>
         public static CDTimer Create()
         {
             CDTimer timer = References.Require<CDTimer>();
@@ -50,6 +54,11 @@ namespace XFrame.Modules.Times
             return timer;
         }
 
+        /// <summary>
+        /// 构造CD计时器
+        /// </summary>
+        /// <param name="name">计时器名</param>
+        /// <returns>时间更新器</returns>
         public static CDTimer Create(string name)
         {
             CDTimer timer = References.Require<CDTimer>();
@@ -59,6 +68,12 @@ namespace XFrame.Modules.Times
             return timer;
         }
 
+        /// <summary>
+        /// 构造CD计时器
+        /// </summary>
+        /// <param name="name">计时器名</param>
+        /// <param name="updater">更新器</param>
+        /// <returns>时间更新器</returns>
         public static CDTimer Create(string name, IUpdater updater)
         {
             CDTimer timer = References.Require<CDTimer>();
@@ -68,6 +83,10 @@ namespace XFrame.Modules.Times
             return timer;
         }
 
+        /// <summary>
+        /// 设置更新器
+        /// </summary>
+        /// <param name="updater"></param>
         public void SetUpdater(IUpdater updater)
         {
             m_Updater = updater;
@@ -86,6 +105,10 @@ namespace XFrame.Modules.Times
             m_Times[key] = info;
         }
 
+        /// <summary>
+        /// 记录默认键的CD
+        /// </summary>
+        /// <param name="cd">cd时间</param>
         public void Record(float cd)
         {
             Record(default, cd);
@@ -101,6 +124,9 @@ namespace XFrame.Modules.Times
                 info.Reset();
         }
 
+        /// <summary>
+        /// 重置CD
+        /// </summary>
         public void Reset()
         {
             Reset(default);
@@ -127,11 +153,21 @@ namespace XFrame.Modules.Times
             return false;
         }
 
+        /// <summary>
+        /// 检查一个CD的状态
+        /// </summary>
+        /// <param name="reset">如果检查到的状态为到期，是否重置CD时间</param>
+        /// <returns>true表示到期，false表示未到CD时间</returns>
         public bool Check(bool reset = false)
         {
             return Check(default, reset);
         }
 
+        /// <summary>
+        /// 检查CD的时间状态
+        /// </summary>
+        /// <param name="key">CD键</param>
+        /// <returns>时间</returns>
         public float CheckTime(int key)
         {
             if (m_Times.TryGetValue(key, out CDInfo info))
@@ -142,6 +178,10 @@ namespace XFrame.Modules.Times
             return -1;
         }
 
+        /// <summary>
+        /// 检查默认键的CD时间状态
+        /// </summary>
+        /// <returns>时间</returns>
         public float CheckTime()
         {
             return CheckTime(default);

@@ -8,9 +8,7 @@ using XFrame.Collections;
 
 namespace XFrame.Modules.Tasks
 {
-    /// <summary>
-    /// 任务模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
     [RequireModule(typeof(RandModule))]
     [RequireModule(typeof(PoolModule))]
@@ -69,9 +67,7 @@ namespace XFrame.Modules.Tasks
         /// <inheritdoc/>
         public int ExecCount => m_Tasks.Count;
 
-        /// <summary>
-        /// 任务模块最大超时
-        /// </summary>
+        /// <inheritdoc/>
         public long TaskTimeout { get; set; }
 
         /// <inheritdoc/>

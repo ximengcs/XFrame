@@ -7,8 +7,15 @@ namespace XFrame.Modules.Serialize
     /// </summary>
     public interface ISerializeHelper
     {
+        /// <summary>
+        /// 处理文件类型
+        /// </summary>
         int HandleType { get; }
 
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        /// <param name="module"></param>
         void OnInit(ISerializeModule module);
 
         /// <summary>

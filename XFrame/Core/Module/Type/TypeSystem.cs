@@ -2,7 +2,6 @@
 using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using XFrame.Core;
 
 namespace XFrame.Modules.Reflection
 {
@@ -40,6 +39,9 @@ namespace XFrame.Modules.Reflection
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 类型数量
+        /// </summary>
         public int Count => m_AllTypes.Count;
 
         /// <summary>
@@ -109,6 +111,11 @@ namespace XFrame.Modules.Reflection
             return GetOrNewBySub(typeof(T));
         }
 
+        /// <summary>
+        /// 获取(不存在时创建)子类类型系统
+        /// </summary>
+        /// <param name="type">基类</param>
+        /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNewBySub(Type type)
         {
             if (m_Classifyes.TryGetValue(type, out TypeSystem module))
@@ -144,11 +151,16 @@ namespace XFrame.Modules.Reflection
             }
         }
 
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;
         }
 
+        /// <summary>
+        /// 获取所有类型
+        /// </summary>
+        /// <returns></returns>
         public Type[] ToArray()
         {
             return m_AllTypes.ToArray();
