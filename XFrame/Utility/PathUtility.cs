@@ -5,7 +5,7 @@ using XFrame.Modules.Diagnotics;
 namespace XFrame.Utility
 {
     /// <summary>
-    /// 路径常用工具方法
+    /// 路径常用方法
     /// </summary>
     public class PathUtility
     {
