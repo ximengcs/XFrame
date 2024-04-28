@@ -27,7 +27,7 @@ namespace XFrame.Core
         public int IntValue => m_IntValue;
 
         /// <summary>
-        /// 持有浮点值
+        /// 持有浮点值 
         /// </summary>
         public float FloatValue => m_FloatValue;
 
