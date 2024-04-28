@@ -1,12 +1,24 @@
 ﻿using System;
-using XFrame.Core;
+using System.Collections;
 using XFrame.Modules.Pools;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 标识符集合
+    /// <para>
+    /// 例 yanying^series#add~1-10^2#2^dir#l
+    /// 和<see cref="Name"/>类都存在一个主标识符，为yanying,
+    /// 以上例子中包含10个标识符
+    /// <para>yanying^series#1^2#2^dir#l</para>
+    /// <para>yanying^series#2^2#2^dir#l</para>
+    /// ...
+    /// <para>yanying^series#9^2#2^dir#l</para>
+    /// <para>yanying^series#10^2#2^dir#l</para>
+    /// </para>
+    /// </summary>
     public class Names : MapParser<IntOrHashParser, AreaParser>, IEnumerable<string>
     {
         private Comparison<IntOrHashParser> m_Compare;
@@ -61,22 +73,25 @@ namespace XFrame.Core
             return true;
         }
 
+        /// <inheritdoc/>>
         protected internal override void OnCreateFromPool()
         {
             base.OnCreateFromPool();
-            Split = Name.SPLIT;
-            Split2 = Name.SPLIT2;
+            Split = Name.SPLIT3;
+            Split2 = Name.SPLIT4;
             m_Keys = new List<IntOrHashParser>();
             m_Values = new List<string>();
             m_ValueMap = new HashSet<string>();
         }
 
+        /// <inheritdoc/>>
         protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();
             m_Keys.Clear();
         }
 
+        /// <inheritdoc/>>
         protected override void InnerParseItem(out IntOrHashParser kParser, out AreaParser vParser, string[] pItem)
         {
             m_ValueDirty = true;
@@ -100,21 +115,40 @@ namespace XFrame.Core
             m_Keys.Add(kParser);
         }
 
+        /// <summary>
+        /// 设置排序规则
+        /// </summary>
+        /// <param name="compareFunc"></param>
         public void SetSort(Comparison<IntOrHashParser> compareFunc)
         {
             m_Compare = compareFunc;
         }
 
+        /// <summary>
+        /// 是否存在标识名
+        /// </summary>
+        /// <param name="name">标识名</param>
+        /// <returns>true表示存在</returns>
         public bool Has(string name)
         {
             return m_ValueMap.Contains(name);
         }
 
+        /// <summary>
+        /// 是否存在标识名
+        /// </summary>
+        /// <param name="name">标识名解析器</param>
+        /// <returns>true表示存在</returns>
         public bool Has(Name name)
         {
             return m_ValueMap.Contains(name);
         }
 
+        /// <summary>
+        /// 检查是否相等
+        /// </summary>
+        /// <param name="obj">对比值</param>
+        /// <returns>true表示相等</returns>
         public override bool Equals(object obj)
         {
             Names parser = obj as Names;
@@ -159,6 +193,10 @@ namespace XFrame.Core
             return true;
         }
 
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <returns>哈希值</returns>
         public override int GetHashCode()
         {
             int result = 0;
@@ -167,15 +205,21 @@ namespace XFrame.Core
             return result;
         }
 
+        /// <summary>
+        /// 创建标识符解析器
+        /// </summary>
+        /// <param name="pattern">文本</param>
+        /// <returns>解析器</returns>
         public static Names Create(string pattern)
         {
             Names name = References.Require<Names>();
-            name.Split = Name.SPLIT;
-            name.Split2 = Name.SPLIT2;
+            name.Split = Name.SPLIT3;
+            name.Split2 = Name.SPLIT4;
             name.Parse(pattern);
             return name;
         }
 
+        /// <inheritdoc/>
         public IEnumerator<string> GetEnumerator()
         {
             return Values.GetEnumerator();
@@ -186,6 +230,12 @@ namespace XFrame.Core
             return Values.GetEnumerator();
         }
 
+        /// <summary>
+        /// 检查是否相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">对比值</param>
+        /// <returns>true标识相等</returns>
         public static bool operator ==(Names src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -198,6 +248,12 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 检查是否不相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">对比值</param>
+        /// <returns>true标识不相等</returns>
         public static bool operator !=(Names src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -210,11 +266,19 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 返回原始字符串
+        /// </summary>
+        /// <param name="parser">解析器</param>
         public static implicit operator string(Names parser)
         {
             return parser != null ? parser.m_Origin : default;
         }
 
+        /// <summary>
+        /// 将字符串转化为解析器
+        /// </summary>
+        /// <param name="value">字符串</param>
         public static implicit operator Names(string value)
         {
             return Create(value);

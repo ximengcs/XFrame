@@ -4,6 +4,11 @@ using XFrame.Modules.Pools;
 
 namespace XFrame.Core
 {
+    /// <summary>
+    /// 键值项解析器
+    /// </summary>
+    /// <typeparam name="K">键解析器类型</typeparam>
+    /// <typeparam name="V">值解析器类型</typeparam>
     public class PairParser<K, V> : IParser<Pair<K, V>>, ICanConfigLog where K : IParser where V : IParser
     {
         private const char SPLIT = '|';
@@ -12,6 +17,9 @@ namespace XFrame.Core
         private IParser m_KParser;
         private IParser m_VParser;
 
+        /// <summary>
+        /// Log等级
+        /// </summary>
         public LogLevel LogLv
         {
             get => throw new NotSupportedException();
@@ -26,6 +34,9 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 键值分割符
+        /// </summary>
         public char Split
         {
             get => m_Split;
@@ -39,12 +50,19 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
         public PairParser()
         {
             m_Split = SPLIT;
             InnerInitParser();
         }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="splitchar">键值分隔符</param>
         public PairParser(char splitchar)
         {
             m_Split = splitchar;
@@ -58,15 +76,21 @@ namespace XFrame.Core
             Value = new Pair<K, V>((K)m_KParser, (V)m_VParser);
         }
 
+        /// <summary>
+        /// 持有键值项
+        /// </summary>
         public Pair<K, V> Value { get; private set; }
 
         object IParser.Value => Value;
 
         int IPoolObject.PoolKey => default;
+
+        /// <inheritdoc/>
         public string MarkName { get; set; }
 
         IPool IPoolObject.InPool { get; set; }
 
+        /// <inheritdoc/>
         public Pair<K, V> Parse(string pattern)
         {
             m_Origin = pattern;
@@ -92,22 +116,38 @@ namespace XFrame.Core
             return Parse(pattern);
         }
 
+        /// <summary>
+        /// 键值项字符串
+        /// </summary>
+        /// <returns>字符串</returns>
         public override string ToString()
         {
             return Value.ToString();
         }
 
+        /// <summary>
+        /// 返回哈希值
+        /// </summary>
+        /// <returns>哈希值</returns>
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
+        /// <summary>
+        /// 检查两个值是否相等
+        /// </summary>
+        /// <param name="obj">对比值</param>
+        /// <returns>true表示相等</returns>
         public override bool Equals(object obj)
         {
             IParser parser = obj as IParser;
             return parser != null ? Value.Equals(parser.Value) : Value.Equals(obj);
         }
 
+        /// <summary>
+        /// 释放到池中
+        /// </summary>
         public void Release()
         {
             References.Release(this);
@@ -134,6 +174,12 @@ namespace XFrame.Core
 
         }
 
+        /// <summary>
+        /// 检查两个值是否相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">对比值</param>
+        /// <returns>true表示相等</returns>
         public static bool operator ==(PairParser<K, V> src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -146,6 +192,12 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 检查两个值是否不相等
+        /// </summary>
+        /// <param name="src">解析器</param>
+        /// <param name="tar">对比值</param>
+        /// <returns>不相等</returns>
         public static bool operator !=(PairParser<K, V> src, object tar)
         {
             if (ReferenceEquals(src, null))
@@ -158,6 +210,10 @@ namespace XFrame.Core
             }
         }
 
+        /// <summary>
+        /// 键值项转为解析器
+        /// </summary>
+        /// <param name="value">键值项</param>
         public static implicit operator PairParser<K, V>(Pair<K, V> value)
         {
             PairParser<K, V> parser = References.Require<PairParser<K, V>>();
@@ -165,6 +221,10 @@ namespace XFrame.Core
             return parser;
         }
 
+        /// <summary>
+        /// 返回解析器的值
+        /// </summary>
+        /// <param name="value">解析器</param>
         public static implicit operator Pair<K, V>(PairParser<K, V> value)
         {
             return value.Value;
