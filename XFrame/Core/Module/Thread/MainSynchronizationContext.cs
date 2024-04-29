@@ -1,10 +1,7 @@
-﻿using System;
-using XFrame.Core;
+﻿using XFrame.Core;
 using System.Threading;
 using System.Diagnostics;
-using System.Collections.Generic;
 using XFrame.Tasks;
-using XFrame.Modules.Diagnotics;
 using System.Collections.Concurrent;
 
 namespace XFrame.Modules.Threads
@@ -60,21 +57,12 @@ namespace XFrame.Modules.Threads
             {
                 long timeout = 0;
                 Stopwatch sw = new Stopwatch();
-                Log.Debug($"exec count {m_ActQueue.Count}");
                 while (m_ActQueue.Count > 0)
                 {
                     sw.Restart();
-                    if(m_ActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
+                    if (m_ActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
                     {
-                        try
-                        {
-                            Log.Debug("exec item");
-                            item.Key(item.Value);
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Exception(e);
-                        }
+                        item.Key(item.Value);
                     }
                     sw.Stop();
                     timeout += sw.ElapsedMilliseconds;

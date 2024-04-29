@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Tasks
 {
@@ -67,7 +66,6 @@ namespace XFrame.Tasks
             ITask task = awaiter as ITask;
             if (task == null)
             {
-                Log.Warning("XFrame", "Please use new task.");
                 awaiter.OnCompleted(wraper.RunNoState);
             }
             else
