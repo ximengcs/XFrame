@@ -54,7 +54,7 @@ namespace XFrame.Utility
             string[] paths = fullPath.Split('\\');
             if (paths.Length == 0)
             {
-                Log.Error("XFrame", "DataArchive file tree error");
+                Log.Error(Log.XFrame, "DataArchive file tree error");
                 thisName = default;
                 suplusName = default;
                 return default;

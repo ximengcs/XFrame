@@ -40,7 +40,7 @@ namespace XFrame.Modules.Datas
 
                     if (m_Datas.ContainsKey(id))
                     {
-                        Log.Warning("XFrame", $"DataTable Error {id} Multiple");
+                        Log.Warning(Log.XFrame, $"DataTable Error {id} Multiple");
                         continue;
                     }
                     m_Datas.Add(id, item);
@@ -63,7 +63,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Error("XFrame", $"DataTable Error {m_Type.Name} {id}");
+                Log.Error(Log.XFrame, $"DataTable Error {m_Type.Name} {id}");
                 return default;
             }
         }

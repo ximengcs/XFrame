@@ -74,7 +74,7 @@ namespace XFrame.Collections
         {
             if (Full)
             {
-                Log.Error("XFrame", "XLoopQueue add first element error. queue is full.");
+                Log.Error(Log.XFrame, "XLoopQueue add first element error. queue is full.");
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace XFrame.Collections
         {
             if (Empty)
             {
-                Log.Error("XFrame", "XLoopQueue remove first element error. queue is empty.");
+                Log.Error(Log.XFrame, "XLoopQueue remove first element error. queue is empty.");
                 return default;
             }
 
@@ -119,7 +119,7 @@ namespace XFrame.Collections
         {
             if (Full)
             {
-                Log.Error("XFrame", "XLoopQueue add last element error. queue is full.");
+                Log.Error(Log.XFrame, "XLoopQueue add last element error. queue is full.");
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace XFrame.Collections
         {
             if (Empty)
             {
-                Log.Error("XFrame", "XLoopQueue remove last element error. queue is empty.");
+                Log.Error(Log.XFrame, "XLoopQueue remove last element error. queue is empty.");
                 return default;
             }
 

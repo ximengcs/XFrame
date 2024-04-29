@@ -70,7 +70,7 @@ namespace XFrame.Modules.Download
                 DownloadResult result = m_Helper.Result;
                 if (result.IsSuccess)
                 {
-                    Log.Debug("XFrame", $"Download {m_Helper.Url} Successfully.");
+                    Log.Debug(Log.XFrame, $"Download {m_Helper.Url} Successfully.");
                     m_Task.Data = result.Data;
                     m_Task.Text = result.Text;
                     m_Task.Success = true;
@@ -82,17 +82,17 @@ namespace XFrame.Modules.Download
                     m_Times--;
                     if (m_Times <= 0)
                     {
-                        Log.Debug("XFrame", $"Download {m_Helper.Url} Error, stop download. reason: {result.ErrorReason}");
+                        Log.Debug(Log.XFrame, $"Download {m_Helper.Url} Error, stop download. reason: {result.ErrorReason}");
 
                         if (m_ReserveTryIndex < m_ReserveUrlCount)
                         {
                             m_Helper.Url = m_Helper.ReserveUrl[m_ReserveTryIndex++];
-                            Log.Debug("XFrame", $"Ready Download Reserve Url {m_Helper.Url}");
+                            Log.Debug(Log.XFrame, $"Ready Download Reserve Url {m_Helper.Url}");
                             InnerRequest();
                         }
                         else
                         {
-                            Log.Debug("XFrame", $"Download Failure {m_Helper.Url}");
+                            Log.Debug(Log.XFrame, $"Download Failure {m_Helper.Url}");
                             m_Task.Success = false;
                             m_IsComplete = true;
                             m_Pro = XTaskHelper.MAX_PROGRESS;
@@ -100,7 +100,7 @@ namespace XFrame.Modules.Download
                     }
                     else
                     {
-                        Log.Debug("XFrame", $"Download {m_Helper.Url} Error, reason: {result.ErrorReason}, suplus try times {m_Times}");
+                        Log.Debug(Log.XFrame, $"Download {m_Helper.Url} Error, reason: {result.ErrorReason}, suplus try times {m_Times}");
                         InnerRequest();
                         InnerNextPro();
                     }

@@ -39,7 +39,7 @@ namespace XFrame.Modules.Procedure
             }
             else
             {
-                Log.Error("XFrame", $"{TypeUtility.GetSimpleName(entrance)} Procedure do not define");
+                Log.Error(Log.XFrame, $"{TypeUtility.GetSimpleName(entrance)} Procedure do not define");
             }
         }
         #endregion
@@ -54,12 +54,12 @@ namespace XFrame.Modules.Procedure
             InnerRefreshHandler();
             if (!string.IsNullOrEmpty(name) && m_Procedures.TryGetByName(name, out Type type))
             {
-                Log.Debug("XFrame", $"Enter {TypeUtility.GetSimpleName(name)} Procedure");
+                Log.Debug(Log.XFrame, $"Enter {TypeUtility.GetSimpleName(name)} Procedure");
                 m_Fsm.ChangeState(type);
             }
             else
             {
-                Log.Error("XFrame", $"{TypeUtility.GetSimpleName(name)} Procedure do not define");
+                Log.Error(Log.XFrame, $"{TypeUtility.GetSimpleName(name)} Procedure do not define");
             }
         }
 
@@ -93,7 +93,7 @@ namespace XFrame.Modules.Procedure
             }
             else
             {
-                Log.Debug("XFrame", $"Already has exist proc {type.Name}.");
+                Log.Debug(Log.XFrame, $"Already has exist proc {type.Name}.");
             }
         }
 

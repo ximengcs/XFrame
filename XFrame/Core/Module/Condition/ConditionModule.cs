@@ -111,7 +111,7 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(setting.Name, out ConditionGroupHandle group))
                 return group;
-            Log.Debug("Condition", $"Register {setting.Name} : {setting.Data}");
+            Log.Debug(Log.Condition, $"Register {setting.Name} : {setting.Data}");
             group = new ConditionGroupHandle(this, setting, InnerGroupCompleteHandler);
             if (!group.IsDisposed)
             {
@@ -126,14 +126,14 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Groups.TryGetValue(name, out ConditionGroupHandle handle))
             {
-                Log.Debug("Condition", $"UnRegister {name}");
+                Log.Debug(Log.Condition, $"UnRegister {name}");
                 m_Groups.Remove(handle.Name);
                 m_GroupList.Remove(handle);
                 handle.Dispose();
             }
             else
             {
-                Log.Debug("Condition", $"UnRegister {name}, but has not exist.");
+                Log.Debug(Log.Condition, $"UnRegister {name}, but has not exist.");
             }
         }
 
@@ -145,7 +145,7 @@ namespace XFrame.Modules.Conditions
 
         private void InnerGroupCompleteHandler(IConditionGroupHandle group)
         {
-            Log.Debug("Condition", $"{group.Name} has complete => [{group.Setting.Data}]");
+            Log.Debug(Log.Condition, $"{group.Name} has complete => [{group.Setting.Data}]");
             ConditionSetting setting = group.Setting;
             ConditionGroupHandle realGroup = (ConditionGroupHandle)group;
             if (setting.AutoRemove)
@@ -187,7 +187,7 @@ namespace XFrame.Modules.Conditions
             }
             else
             {
-                Log.Error("Condition", $"Module do not has {group.Name}");
+                Log.Error(Log.Condition, $"Module do not has {group.Name}");
             }
         }
 
@@ -210,7 +210,7 @@ namespace XFrame.Modules.Conditions
             }
             else
             {
-                Log.Error("Condition", $"Module do not has {evt.Handle.Name}");
+                Log.Error(Log.Condition, $"Module do not has {evt.Handle.Name}");
             }
         }
 

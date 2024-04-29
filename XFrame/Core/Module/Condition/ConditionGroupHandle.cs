@@ -92,7 +92,7 @@ namespace XFrame.Modules.Conditions
             }
 
             if (m_Helper == null)
-                Log.Debug("Condition", $"warning -> condition {Name} helper is null");
+                Log.Debug(Log.Condition, $"warning -> condition {Name} helper is null");
 
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {

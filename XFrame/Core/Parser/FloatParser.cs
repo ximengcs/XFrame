@@ -35,7 +35,7 @@ namespace XFrame.Core
             if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
             {
                 m_Value = default;
-                Log.Print(LogLv, "XFrame", $"FloatParser parse failure. {pattern}");
+                Log.Print(LogLv, Log.XFrame, $"FloatParser parse failure. {pattern}");
             }
 
             return m_Value;

@@ -166,7 +166,7 @@ namespace XFrame.Modules.Reflection
 
             if (instance == null)
             {
-                Log.Error("XFrame", $"Create instance failure, {type.FullName}");
+                Log.Error(Log.XFrame, $"Create instance failure, {type.FullName}");
             }
             return instance;
         }

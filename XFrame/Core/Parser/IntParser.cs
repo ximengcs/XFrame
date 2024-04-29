@@ -41,7 +41,7 @@ namespace XFrame.Core
             if (string.IsNullOrEmpty(pattern) || !TryParse(pattern, out m_Value))
             {
                 m_Value = default;
-                Log.Print(LogLv, "XFrame", $"IntParser parse failure. {pattern}");
+                Log.Print(LogLv, Log.XFrame, $"IntParser parse failure. {pattern}");
             }
 
             return m_Value;

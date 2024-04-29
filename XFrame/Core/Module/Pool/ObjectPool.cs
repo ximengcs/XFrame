@@ -104,7 +104,7 @@ namespace XFrame.Modules.Pools
                     node.Delete();
                     if (m_NodeCache.Full)
                     {
-                        Log.Debug("XFrame", $"{m_Type.Name} pool node cache is full, the node will be gc");
+                        Log.Debug(Log.XFrame, $"{m_Type.Name} pool node cache is full, the node will be gc");
                     }
                     else
                     {
@@ -126,7 +126,7 @@ namespace XFrame.Modules.Pools
         {
             if (check && obj.InPool == null)
             {
-                Log.Debug("XFrame", $"Pool Object {obj.GetType().Name} May Be Released, Release Failed");
+                Log.Debug(Log.XFrame, $"Pool Object {obj.GetType().Name} May Be Released, Release Failed");
                 return false;
             }
 

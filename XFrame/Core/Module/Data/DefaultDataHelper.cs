@@ -38,7 +38,7 @@ namespace XFrame.Modules.Datas
         {
             if (!type.IsGenericType)
             {
-                Log.Debug("XFrame", "Data table type error");
+                Log.Debug(Log.XFrame, "Data table type error");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Debug("XFrame", $"Add data error. data type not has handler class.");
+                Log.Debug(Log.XFrame, $"Add data error. data type not has handler class.");
                 return default;
             }
         }
@@ -71,7 +71,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Debug("XFrame", $"Get data error. data type not has handler class.");
+                Log.Debug(Log.XFrame, $"Get data error. data type not has handler class.");
                 list = null;
                 return false;
             }

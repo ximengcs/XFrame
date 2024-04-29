@@ -67,7 +67,7 @@ namespace XFrame.Modules.Conditions
         {
             if (!m_HandleInfo.Valid)
             {
-                Log.Error("Condition", $"Target {Target} compare is null");
+                Log.Error(Log.Condition, $"Target {Target} compare is null");
                 return false;
             }
 
@@ -78,7 +78,7 @@ namespace XFrame.Modules.Conditions
         {
             if (!m_HandleInfo.Valid)
             {
-                Log.Error("Condition", $"Target {Target} compare is null");
+                Log.Error(Log.Condition, $"Target {Target} compare is null");
                 return false;
             }
 

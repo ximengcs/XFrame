@@ -100,7 +100,7 @@ namespace XFrame.Core
                 parser.Parse(m_Value);
                 if (m_Parsers.TryGetValue(type, out IParser oldParser))
                 {
-                    Log.Warning("XFrame", $"Universal parser already has parser {type.Name}. will release old.");
+                    Log.Warning(Log.XFrame, $"Universal parser already has parser {type.Name}. will release old.");
                     References.Release(oldParser);
                     m_Parsers[type] = parser;
                 }

@@ -47,7 +47,7 @@ namespace XFrame.Modules.StateMachine
             }
             else
             {
-                Log.Error("XFrame", $"Fsm start error");
+                Log.Error(Log.XFrame, $"Fsm start error");
             }
         }
 
@@ -61,7 +61,7 @@ namespace XFrame.Modules.StateMachine
             }
             else
             {
-                Log.Error("XFrame", $"Fsm Change State Error");
+                Log.Error(Log.XFrame, $"Fsm Change State Error");
             }
         }
 

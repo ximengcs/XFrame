@@ -37,7 +37,7 @@ namespace XFrame.Modules.Archives
                     return child.Data;
                 else
                 {
-                    Log.Warning("XFrame", "Read Error");
+                    Log.Warning(Log.XFrame, "Read Error");
                     return default;
                 }
             }

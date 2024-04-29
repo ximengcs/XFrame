@@ -87,7 +87,7 @@ namespace XFrame.Modules.Entities
                 .GetKey(typeId);
             if (type == null)
             {
-                Log.Debug("XFrame", $"Entity {baseType.Name} not register.");
+                Log.Debug(Log.XFrame, $"Entity {baseType.Name} not register.");
                 return default;
             }
             return InnerCreate(type, default, onReady);

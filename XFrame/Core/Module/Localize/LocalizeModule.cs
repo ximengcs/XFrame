@@ -87,7 +87,7 @@ namespace XFrame.Modules.Local
         {
             if (m_Data == null)
             {
-                Log.Error("XFrame", $"data can not init finish. key {key}");
+                Log.Error(Log.XFrame, $"data can not init finish. key {key}");
                 return default;
             }
 
@@ -181,7 +181,7 @@ namespace XFrame.Modules.Local
         {
             if (m_Data == null)
             {
-                Log.Error("XFrame", $"data can not init finish. index {index}, key {key}");
+                Log.Error(Log.XFrame, $"data can not init finish. index {index}, key {key}");
                 return default;
             }
 
@@ -203,7 +203,7 @@ namespace XFrame.Modules.Local
         {
             if (m_Data == null)
             {
-                Log.Error("XFrame", $"data can not init finish. index {index}, key {key}");
+                Log.Error(Log.XFrame, $"data can not init finish. index {index}, key {key}");
                 return default;
             }
 
@@ -252,7 +252,7 @@ namespace XFrame.Modules.Local
             else
             {
                 index = default;
-                Log.Error("XFrame", $"id {id} not index");
+                Log.Error(Log.XFrame, $"id {id} not index");
                 return false;
             }
         }
@@ -263,7 +263,7 @@ namespace XFrame.Modules.Local
                 return -1;
             int index = Array.IndexOf(m_Title, language);
             if (index == -1)
-                Log.Debug("XFrame", $"language map error. {language}");
+                Log.Debug(Log.XFrame, $"language map error. {language}");
             return index;
         }
         #endregion

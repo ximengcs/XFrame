@@ -58,7 +58,7 @@ namespace XFrame.Modules.Caches
                 {
                     if (m_Factorys.ContainsKey(type))
                     {
-                        Log.Debug("XFrame", $"Cache object factory duplicate {type.FullName}, auto ignore");
+                        Log.Debug(Log.XFrame, $"Cache object factory duplicate {type.FullName}, auto ignore");
                         continue;
                     }
                     ICacheObjectFactory factory = (ICacheObjectFactory)Domain.TypeModule.CreateInstance(type);
@@ -114,7 +114,7 @@ namespace XFrame.Modules.Caches
             }
             else
             {
-                Log.Debug("XFrame", $"Dont has {type.FullName} factory");
+                Log.Debug(Log.XFrame, $"Dont has {type.FullName} factory");
                 return default;
             }
         }
@@ -142,7 +142,7 @@ namespace XFrame.Modules.Caches
             }
             else
             {
-                Log.Debug("XFrame", $"Dont has {type.FullName} factory");
+                Log.Debug(Log.XFrame, $"Dont has {type.FullName} factory");
                 return default;
             }
         }

@@ -360,7 +360,7 @@ namespace XFrame.Core
             IModule module = (IModule)m_Domain.TypeModule.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
-            Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            Log.Debug(Log.XFrame, $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
             return module;
         }
 
@@ -377,7 +377,7 @@ namespace XFrame.Core
             IModule module = (IModule)Activator.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
             sw.Stop();
-            Log.Debug("XFrame", $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            Log.Debug(Log.XFrame, $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
             return module;
         }
 

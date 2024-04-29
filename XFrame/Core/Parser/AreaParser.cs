@@ -137,7 +137,7 @@ namespace XFrame.Core
                         }
                         else
                         {
-                            Log.Error("XFrame", $"NumAreaParse Error {pattern}");
+                            Log.Error(Log.XFrame, $"NumAreaParse Error {pattern}");
                         }
                     }
                     else

@@ -93,7 +93,7 @@ namespace XFrame.Collections
         {
             if (line.Count != m_Column)
             {
-                Log.Error("XFrame", $"csv inset column error.");
+                Log.Error(Log.XFrame, $"csv inset column error.");
                 return line;
             }
 
@@ -133,7 +133,7 @@ namespace XFrame.Collections
         public Line Get(int row)
         {
             if (row < 0)
-                Log.Debug("CSV", $"get csv data error.row out of bounds. cur {row} max {m_Row}");
+                Log.Debug(Log.CSV, $"get csv data error.row out of bounds. cur {row} max {m_Row}");
             return m_LinesWithIndex[row].Value;
         }
 
@@ -146,10 +146,10 @@ namespace XFrame.Collections
         public T Get(int row, int column)
         {
             if (row < 0 || row >= m_Row)
-                Log.Debug("CSV", $"get csv data error.row out of bounds. cur {row} max {m_Row}");
+                Log.Debug(Log.CSV, $"get csv data error.row out of bounds. cur {row} max {m_Row}");
             Line rowContent = m_LinesWithIndex[row].Value;
             if (column < 0 | column >= rowContent.Count)
-                Log.Debug("CSV", $"get csv data error.column out of bounds. cur {column} max {rowContent.Count}");
+                Log.Debug(Log.CSV, $"get csv data error.column out of bounds. cur {column} max {rowContent.Count}");
             return rowContent[column];
         }
         #endregion

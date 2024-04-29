@@ -21,7 +21,7 @@ namespace XFrame.Core
             if (string.IsNullOrEmpty(pattern))
             {
                 m_Value = default;
-                Log.Print(LogLv, "XFrame", $"IntParser parse failure. {pattern}");
+                Log.Print(LogLv, Log.XFrame, $"IntParser parse failure. {pattern}");
             }
             else
             {

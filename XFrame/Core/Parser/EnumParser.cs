@@ -46,7 +46,7 @@ namespace XFrame.Core
             else
             {
                 InnerSetDefault();
-                Log.Print(LogLv, "XFrame", $"EnumParser {typeof(T).Name} parse failure. {pattern}");
+                Log.Print(LogLv, Log.XFrame, $"EnumParser {typeof(T).Name} parse failure. {pattern}");
             }
 
             return m_Value;

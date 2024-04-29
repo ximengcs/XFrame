@@ -99,7 +99,7 @@ namespace XFrame.Core
             {
                 IntOrHashParser key = Name.AVATAR;
                 if (Has(key))
-                    Log.Error($"Name format error, multi type 0");
+                    Log.Error(Log.XFrame, $"Name format error, multi type 0");
                 kParser = key;
                 vParser = References.Require<AreaParser>();
                 vParser.Parse(pItem[0]);

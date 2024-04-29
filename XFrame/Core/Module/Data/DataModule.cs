@@ -62,7 +62,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Error("XFrame", $"DataManager Get Error {typeof(T).Name}");
+                Log.Error(Log.XFrame, $"DataManager Get Error {typeof(T).Name}");
                 return default;
             }
         }
@@ -76,7 +76,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Error("XFrame", $"DataManager Get Error {typeof(T).Name}");
+                Log.Error(Log.XFrame, $"DataManager Get Error {typeof(T).Name}");
                 return default;
             }
         }
@@ -102,7 +102,7 @@ namespace XFrame.Modules.Datas
                 return table.Get(itemId);
             else
             {
-                Log.Error("XFrame", $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
+                Log.Error(Log.XFrame, $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
                 return default;
             }
         }
@@ -115,7 +115,7 @@ namespace XFrame.Modules.Datas
                 return table.Get(itemId);
             else
             {
-                Log.Debug("XFrame", $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
+                Log.Debug(Log.XFrame, $"DataManager GetItem Error {typeof(DataTable<T>).Name} {itemId}");
                 return default;
             }
         }

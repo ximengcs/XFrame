@@ -59,7 +59,7 @@ namespace XFrame.Core
         /// </summary>
         public static void Init()
         {
-            Log.Debug("XFrame", "Launch Framework");
+            Log.Debug(Log.XFrame, "Launch Framework");
             m_Sw = Stopwatch.StartNew();
             m_Inited = false;
             m_Runing = false;
@@ -141,7 +141,7 @@ namespace XFrame.Core
         private static void InnerStartRun()
         {
             m_Sw.Stop();
-            Log.Debug("XFrame", $"Lunch spend time {m_Sw.ElapsedMilliseconds} ms");
+            Log.Debug(Log.XFrame, $"Lunch spend time {m_Sw.ElapsedMilliseconds} ms");
             m_Sw = null;
             m_Runing = true;
             m_OnRun?.Invoke();
