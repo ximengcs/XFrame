@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using XFrame.Tasks;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Concurrent;
 
 namespace XFrame.Modules.Threads
 {
@@ -16,7 +17,7 @@ namespace XFrame.Modules.Threads
         #region Inner Fields
 
         private int m_MainThread;
-        private Queue<Pair<SendOrPostCallback, object>> m_ActQueue;
+        private ConcurrentQueue<Pair<SendOrPostCallback, object>> m_ActQueue;
         private const long DEFAULT_TIMEOUT = 10;
 
         #endregion
@@ -41,7 +42,7 @@ namespace XFrame.Modules.Threads
         void IModule.OnInit(object data, ModuleConfigAction configCallback)
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
-            m_ActQueue = new Queue<Pair<SendOrPostCallback, object>>();
+            m_ActQueue = new ConcurrentQueue<Pair<SendOrPostCallback, object>>();
             ExecTimeout = DEFAULT_TIMEOUT;
             SetSynchronizationContext(this);
         }
