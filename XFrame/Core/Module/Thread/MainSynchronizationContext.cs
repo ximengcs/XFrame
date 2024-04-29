@@ -60,6 +60,7 @@ namespace XFrame.Modules.Threads
             {
                 long timeout = 0;
                 Stopwatch sw = new Stopwatch();
+                Log.Debug($"exec count {m_ActQueue.Count}");
                 while (m_ActQueue.Count > 0)
                 {
                     sw.Restart();
@@ -67,6 +68,7 @@ namespace XFrame.Modules.Threads
                     {
                         try
                         {
+                            Log.Debug("exec item");
                             item.Key(item.Value);
                         }
                         catch (Exception e)
