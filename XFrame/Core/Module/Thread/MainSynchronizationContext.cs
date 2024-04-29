@@ -4,6 +4,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using XFrame.Tasks;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Threads
 {
@@ -62,7 +63,15 @@ namespace XFrame.Modules.Threads
                 {
                     sw.Restart();
                     Pair<SendOrPostCallback, object> item = m_ActQueue.Dequeue();
-                    item.Key(item.Value);
+                    try
+                    {
+                        item.Key(item.Value);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Exception(e);
+                    }
+
                     sw.Stop();
                     timeout += sw.ElapsedMilliseconds;
                     if (timeout >= ExecTimeout)
