@@ -63,16 +63,17 @@ namespace XFrame.Modules.Threads
                 while (m_ActQueue.Count > 0)
                 {
                     sw.Restart();
-                    Pair<SendOrPostCallback, object> item = m_ActQueue.Dequeue();
-                    try
+                    if(m_ActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
                     {
-                        item.Key(item.Value);
+                        try
+                        {
+                            item.Key(item.Value);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Exception(e);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        Log.Exception(e);
-                    }
-
                     sw.Stop();
                     timeout += sw.ElapsedMilliseconds;
                     if (timeout >= ExecTimeout)
