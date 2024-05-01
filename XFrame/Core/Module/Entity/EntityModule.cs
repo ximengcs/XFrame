@@ -27,7 +27,7 @@ namespace XFrame.Modules.Entities
         /// <inheritdoc/>
         protected override void OnDestroy()
         {
-            base.OnDestroy(); 
+            base.OnDestroy();
             m_Entities.Clear();
         }
         #endregion
@@ -46,6 +46,12 @@ namespace XFrame.Modules.Entities
                 if (atr != null)
                     module.AddKey(atr.Type, type);
             }
+        }
+
+        /// <inheritdoc/>
+        public IEntity Get(int id)
+        {
+            return (IEntity)Domain.GetModule<IContainerModule>().Get(id);
         }
 
         /// <inheritdoc/>

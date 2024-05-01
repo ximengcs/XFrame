@@ -10,6 +10,13 @@ namespace XFrame.Modules.Containers
     public interface IContainerModule : IModule, IUpdater
     {
         /// <summary>
+        /// 根据Id获取一个容器
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns>容器</returns>
+        IContainer Get(int id);
+
+        /// <summary>
         /// 请求一个新的容器
         /// </summary>
         /// <typeparam name="T">容器类型</typeparam>

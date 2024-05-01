@@ -17,6 +17,13 @@ namespace XFrame.Modules.Entities
         void RegisterEntity<T>() where T : class, IEntity;
 
         /// <summary>
+        /// 根据Id获取实体
+        /// </summary>
+        /// <param name="entityId">实体Id</param>
+        /// <returns>实体</returns>
+        IEntity Get(int entityId);
+
+        /// <summary>
         /// 创建实体
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>

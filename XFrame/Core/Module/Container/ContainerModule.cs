@@ -3,6 +3,7 @@ using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Reflection;
 using XFrame.Modules.ID;
+using XFrame.Modules.Entities;
 
 namespace XFrame.Modules.Containers
 {
@@ -12,6 +13,12 @@ namespace XFrame.Modules.Containers
     public partial class ContainerModule : ModuleBase, IContainerModule
     {
         private XCollection<IContainer> m_Containers;
+
+        /// <inheritdoc/>
+        public IContainer Get(int id)
+        {
+            return m_Containers.Get<IEntity>(id);
+        }
 
         /// <inheritdoc/>
         public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
