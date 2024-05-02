@@ -271,7 +271,10 @@ namespace XFrame.Modules.Containers
             }
             else
             {
-                return m_Coms.Get(type, id);
+                if (id == default)
+                    return m_Coms.Get(type);
+                else
+                    return m_Coms.Get(type, id);
             }
             return default;
         }
