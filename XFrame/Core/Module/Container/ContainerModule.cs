@@ -1,7 +1,6 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Collections;
-using XFrame.Modules.Reflection;
 using XFrame.Modules.ID;
 using XFrame.Modules.Entities;
 
@@ -74,7 +73,10 @@ namespace XFrame.Modules.Containers
         public void OnUpdate(float escapeTime)
         {
             foreach (IContainer container in m_Containers)
-                container.OnUpdate(escapeTime);
+            {
+                if (container.Active)
+                    container.OnUpdate(escapeTime);
+            }
         }
 
         /// <inheritdoc/>

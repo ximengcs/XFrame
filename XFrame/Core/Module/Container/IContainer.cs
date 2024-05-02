@@ -10,10 +10,17 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public interface IContainer : IXItem, IDataProvider, IXEnumerable<ICom>
     {
+        bool Active { get; }
+
         /// <summary>
         /// 根容器
         /// </summary>
         IContainer Master { get; }
+
+        /// <summary>
+        /// 父容器
+        /// </summary>
+        IContainer Parent { get; }
 
         /// <summary>
         /// 初始化生命周期
@@ -34,6 +41,8 @@ namespace XFrame.Modules.Containers
         /// 销毁生命周期
         /// </summary>
         void OnDestroy();
+
+        void SetActive(bool active, bool recursive = true);
 
         /// <summary>
         /// 获取一个组件(Id为默认Id)

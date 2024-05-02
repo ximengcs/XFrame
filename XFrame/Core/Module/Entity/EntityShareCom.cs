@@ -15,7 +15,7 @@ namespace XFrame.Modules.Entities
         {
             get
             {
-                IEntity entity = ((ICom)this).Owner as IEntity;
+                IEntity entity = Master as IEntity;
                 return entity.Event;
             }
         }

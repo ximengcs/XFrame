@@ -23,17 +23,20 @@ namespace XFrame.Modules.Containers
         public bool Active
         {
             get { return m_Active; }
-            set
+        }
+
+        public void SetActive(bool active, bool recursive = true)
+        {
+            if (m_Active != active)
             {
-                if (m_Active != value)
-                {
-                    m_Active = value;
-                    if (m_Active)
-                        OnActive();
-                    else
-                        OnInactive();
-                }
+                m_Active = active;
+                if (m_Active)
+                    OnActive();
+                else
+                    OnInactive();
             }
+            if (recursive)
+                m_Owner.SetActive(active, recursive);
         }
 
         /// <inheritdoc/>
@@ -42,7 +45,7 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public IContainer Master { get; private set; }
 
-        IContainer ICom.Owner
+        public IContainer Parent
         {
             get => m_Owner;
             set => m_Owner = value;

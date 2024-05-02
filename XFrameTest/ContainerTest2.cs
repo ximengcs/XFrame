@@ -54,9 +54,9 @@ namespace XFrameTest
                 AddCom<Com2>();
 
                 string master = "null";
-                if (Master != null)  master = Master.GetHashCode().ToString();
+                if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("Com1 Master " + master);
                 Log.Debug("Com1 Owner " + owner);
 
@@ -92,7 +92,7 @@ namespace XFrameTest
                 string master = "null";
                 if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("Com2 Master " + master);
                 Log.Debug("Com2 Owner " + owner);
 

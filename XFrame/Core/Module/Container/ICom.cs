@@ -6,14 +6,6 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public interface ICom : IContainer
     {
-        /// <summary>
-        /// 是否处于激活状态
-        /// </summary>
-        bool Active { get; set; }
 
-        /// <summary>
-        /// 组件拥有者
-        /// </summary>
-        IContainer Owner { get; internal set; }
     }
 }

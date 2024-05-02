@@ -11,6 +11,7 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public partial class Container : IContainer
     {
+        private bool m_IsActive;
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
@@ -21,6 +22,42 @@ namespace XFrame.Modules.Containers
 
         /// <inheritdoc/>
         public IContainer Master { get; private set; }
+
+        public IContainer Parent { get; private set; }
+
+        public bool Active => m_IsActive;
+
+        public void SetActive(bool active, bool recursive = true)
+        {
+            if (active != m_IsActive)
+            {
+                m_IsActive = active;
+                if (m_IsActive)
+                    OnActive();
+                else
+                    OnInactive();
+            }
+
+            if (recursive)
+            {
+                foreach (ICom com in m_Coms)
+                {
+                    com.SetActive(active, recursive);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 激活生命周期
+        /// </summary>
+        protected virtual void OnActive() { }
+
+        /// <summary>
+        /// 失活生命周期
+        /// </summary>
+        protected virtual void OnInactive() { }
+
 
         /// <summary>
         /// 容器Id
@@ -35,10 +72,13 @@ namespace XFrame.Modules.Containers
             m_Coms = new XCollection<ICom>(m_Module.Domain);
 
             Id = id;
+            m_IsActive = true;
             if (master != null && master.Master != null)
                 Master = master.Master;
             else
                 Master = master;
+            Parent = master;
+
             onReady?.Invoke(this);
             OnInit();
         }
@@ -50,13 +90,13 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnUpdate(float elapseTime)
         {
-            m_Coms.SetIt(XItType.Forward);
-            foreach (ICom com in m_Coms)
-            {
-                if (com.Active)
-                    com.OnUpdate(elapseTime);
-            }
-            OnUpdate(elapseTime);
+            //m_Coms.SetIt(XItType.Forward);
+            //foreach (ICom com in m_Coms)
+            //{
+            //    if (com.Active)
+            //        com.OnUpdate(elapseTime);
+            //}
+            //OnUpdate(elapseTime);
         }
 
         /// <summary>
@@ -197,7 +237,7 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            ICom newCom = (ICom)m_Module.New(type, id, false, this, (db) =>
+            ICom newCom = (ICom)m_Module.New(type, id, true, this, (db) =>
             {
                 InnerInitCom((ICom)db);
                 onReady?.Invoke(db);
@@ -207,8 +247,6 @@ namespace XFrame.Modules.Containers
 
         private ICom InnerInitCom(ICom com)
         {
-            com.Owner = this;
-            com.Active = true;
             m_Coms.Add(com);
             return com;
         }
