@@ -54,6 +54,11 @@ namespace XFrame.Modules.Entities
             return (IEntity)Domain.GetModule<IContainerModule>().Get(id);
         }
 
+        public IEntity Create(Type entityType, int entityId, int typeId, OnDataProviderReady onReady = null)
+        {
+            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+        }
+
         /// <inheritdoc/>
         public T Create<T>(OnDataProviderReady onReady = null) where T : class, IEntity
         {

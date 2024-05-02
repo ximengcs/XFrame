@@ -253,9 +253,9 @@ namespace XFrame.Modules.Containers
 
         private int InnerCheckId(Type type, int id)
         {
-            if (m_Coms.Get(type, id) != null)
-                id = m_Module.Domain.GetModule<IIdModule>().Next();
-            return id;
+            //if (m_Coms.Get(type, id) != null)
+            //    id = m_Module.Domain.GetModule<IIdModule>().Next();
+            return m_Module.Domain.GetModule<IIdModule>().Next();
         }
 
         private ICom InnerGetCom(Type type, int id)
