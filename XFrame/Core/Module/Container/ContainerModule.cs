@@ -3,6 +3,9 @@ using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.ID;
 using XFrame.Modules.Entities;
+using System.Collections.Generic;
+using XFrame.Modules.Caches;
+using System.ComponentModel;
 
 namespace XFrame.Modules.Containers
 {
@@ -11,12 +14,21 @@ namespace XFrame.Modules.Containers
     [XType(typeof(IContainerModule))]
     public partial class ContainerModule : ModuleBase, IContainerModule
     {
-        private XCollection<IContainer> m_Containers;
+        //private XCollection<IContainer> m_Containers;
+        private Dictionary<int, IContainer> m_Containers;
+        private List<IContainer> m_Cache;
 
         /// <inheritdoc/>
         public IContainer Get(int id)
         {
-            return m_Containers.Get<IEntity>(id);
+            if (m_Containers.TryGetValue(id, out IContainer container))
+            {
+                return container;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <inheritdoc/>
@@ -48,16 +60,16 @@ namespace XFrame.Modules.Containers
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
-                m_Containers.Add(container);
+                m_Containers.Add(container.Id, container);
             return container;
         }
 
         /// <inheritdoc/>
         public void Remove(IContainer container)
         {
-            if (m_Containers.Contains(container))
+            if (m_Containers.ContainsKey(container.Id))
             {
-                m_Containers.Remove(container);
+                m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
         }
@@ -66,13 +78,16 @@ namespace XFrame.Modules.Containers
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Containers = new XCollection<IContainer>(Domain);
+            m_Cache = new List<IContainer>();
+            m_Containers = new Dictionary<int, IContainer>();
         }
 
         /// <inheritdoc/>
         public void OnUpdate(float escapeTime)
         {
-            foreach (IContainer container in m_Containers)
+            m_Cache.Clear();
+            m_Cache.AddRange(m_Containers.Values);
+            foreach (IContainer container in m_Cache)
             {
                 if (container.Active)
                     container.OnUpdate(escapeTime);
@@ -83,11 +98,16 @@ namespace XFrame.Modules.Containers
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            foreach (IContainer container in m_Containers)
+
+            m_Cache.Clear();
+            m_Cache.AddRange(m_Containers.Values);
+            var it = new ListExt.BackwardIt<IContainer>(m_Cache);
+            while (it.MoveNext())
             {
+                IContainer container = it.Current;
                 if (container == null)
                     continue;
-                m_Containers.Remove(container);
+                m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
             m_Containers.Clear();
