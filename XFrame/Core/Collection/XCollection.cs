@@ -21,7 +21,7 @@ namespace XFrame.Collections
 
         #region Inner Fields
         private XDomain m_Domain;
-        private Dictionary<int, T> m_WithTypes;
+        private Dictionary<Type, Dictionary<int, T>> m_WithTypes;
         private Dictionary<Type, T> m_Mains;
         private XLinkList<T> m_Elements;
         private Dictionary<int, XLinkNode<T>> m_NodeMap;
@@ -34,7 +34,7 @@ namespace XFrame.Collections
         public XCollection(XDomain domain, int startCapacity = DEFAULT_CAPACITY)
         {
             m_Domain = domain;
-            m_WithTypes = new Dictionary<int, T>(startCapacity);
+            m_WithTypes = new Dictionary<Type, Dictionary<int, T>>(startCapacity);
             m_Mains = new Dictionary<Type, T>(startCapacity);
             m_Elements = new XLinkList<T>(false);
             m_NodeMap = new Dictionary<int, XLinkNode<T>>(startCapacity);
@@ -70,19 +70,16 @@ namespace XFrame.Collections
             Type type = entity.GetType();
             Type xType = InnerGetMapType(type);
             Dictionary<int, T> entities;
-
-
-            //if (!m_WithTypes.TryGetValue(xType, out entities))
-            //{
-            //    entities = new Dictionary<int, T>();
-            //    m_WithTypes.Add(xType, entities);
-            //}
+            if (!m_WithTypes.TryGetValue(xType, out entities))
+            {
+                entities = new Dictionary<int, T>();
+                m_WithTypes.Add(xType, entities);
+            }
 
             XLinkNode<T> node = m_Elements.AddLast(entity);
             m_NodeMap.Add(node.GetHashCode(), node);
 
-            m_WithTypes.Add(entity.Id, entity);
-            //entities.Add(entity.Id, entity);
+            entities.Add(entity.Id, entity);
             if (!m_Mains.ContainsKey(xType))
                 m_Mains.Add(xType, entity);
         }
@@ -97,10 +94,8 @@ namespace XFrame.Collections
             bool success = false;
             Type type = item.GetType();
             Type xType = InnerGetMapType(type);
-            if (m_WithTypes.ContainsKey(item.Id))
-                m_WithTypes.Remove(item.Id);
-            //if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
-            //    success = entities.Remove(item.Id);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+                success = entities.Remove(item.Id);
             if (m_Mains.Remove(xType))
             {
                 if (!success)
@@ -140,13 +135,11 @@ namespace XFrame.Collections
             Type xType = InnerGetMapType(type);
             if (m_Mains.ContainsKey(xType))
                 return true;
-            if (m_WithTypes.ContainsKey(item.Id))
-                return true;
-            //if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
-            //{
-            //    if (entities.ContainsKey(item.Id))
-            //        return true;
-            //}
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+            {
+                if (entities.ContainsKey(item.Id))
+                    return true;
+            }
             return false;
         }
 
@@ -186,14 +179,10 @@ namespace XFrame.Collections
         /// <returns>获取到的元素</returns>
         public TEntity Get<TEntity>(int entityId) where TEntity : T
         {
-            //Type xType = InnerGetMapType(typeof(TEntity));
-            if (m_WithTypes.TryGetValue(entityId, out T entity))
-            {
-                return (TEntity)entity;
-            }
-            //if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
-            //    if (entities.TryGetValue(entityId, out T entity))
-            //        return (TEntity)entity;
+            Type xType = InnerGetMapType(typeof(TEntity));
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+                if (entities.TryGetValue(entityId, out T entity))
+                    return (TEntity)entity;
             return default;
         }
 
@@ -205,14 +194,10 @@ namespace XFrame.Collections
         /// <returns>获取到的元素</returns>
         public T Get(Type elementType, int entityId)
         {
-            //Type xType = InnerGetMapType(elementType);
-            if (m_WithTypes.TryGetValue(entityId, out T entity))
-            {
-                return entity;
-            }
-            //if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
-            //    if (entities.TryGetValue(entityId, out T entity))
-            //        return entity;
+            Type xType = InnerGetMapType(elementType);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+                if (entities.TryGetValue(entityId, out T entity))
+                    return entity;
             return default;
         }
         #endregion
