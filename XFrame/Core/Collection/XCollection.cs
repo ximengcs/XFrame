@@ -7,7 +7,7 @@ using XFrame.Core;
 namespace XFrame.Collections
 {
     /// <summary>
-    /// XItem的集合, 可以通过Id快速读取元素
+    /// XItem的集合, 可以通过Id快速读取元素, 同类型对象Id不唯一，不同类型元素可相同
     /// </summary>
     /// <typeparam name="T">持有的数据类型</typeparam>
     public partial class XCollection<T> : IXEnumerable<T> where T : IXItem
