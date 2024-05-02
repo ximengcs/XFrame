@@ -3,6 +3,7 @@ using XFrame.Core;
 using XFrame.Collections;
 using System.Collections.Generic;
 using XFrame.Modules.ID;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Containers
 {
@@ -207,10 +208,6 @@ namespace XFrame.Modules.Containers
         public void ClearCom()
         {
             m_Coms.SetIt(XItType.Backward);
-            foreach (ICom com in m_Coms)
-            {
-                com.OnDestroy();
-            }
             m_Coms.Clear();
         }
         #endregion
