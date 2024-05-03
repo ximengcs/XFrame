@@ -58,6 +58,7 @@ namespace XFrame.Modules.Reflection
             List<Type> tmpList = new List<Type>(1024);
             foreach (Assembly assembly in m_Assemblys)
             {
+                Log.Debug($"add {assembly}");
                 bool find = false;
                 AssemblyName aName = assembly.GetName();
                 string assemblyName = aName.Name;
@@ -69,7 +70,6 @@ namespace XFrame.Modules.Reflection
                 {
                     foreach (string name in XConfig.TypeChecker.AssemblyList)
                     {
-                        Log.Debug($"add {name} {assemblyName}");
                         if (assemblyName == name)
                         {
                             find = true;
@@ -84,7 +84,6 @@ namespace XFrame.Modules.Reflection
                 foreach (TypeInfo typeInfo in assembly.DefinedTypes)
                 {
                     Type type = typeInfo.AsType();
-                    Log.Debug($"check {type.Name} {!XConfig.TypeChecker.CheckType(type)}");
                     if (!XConfig.TypeChecker.CheckType(type))
                         continue;
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
