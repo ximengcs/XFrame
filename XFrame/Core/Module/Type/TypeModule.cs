@@ -6,7 +6,6 @@ using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
-using System.Xml.Linq;
 
 namespace XFrame.Modules.Reflection
 {
@@ -55,11 +54,9 @@ namespace XFrame.Modules.Reflection
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
             m_Constructors = new Dictionary<Type, ConstructorInfo[]>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            Log.Debug(AppDomain.CurrentDomain.GetHashCode());
             List<Type> tmpList = new List<Type>(1024);
             foreach (Assembly assembly in m_Assemblys)
             {
-                Log.Debug($"add {assembly}");
                 bool find = false;
                 AssemblyName aName = assembly.GetName();
                 string assemblyName = aName.Name;
