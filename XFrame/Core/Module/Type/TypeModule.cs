@@ -55,6 +55,7 @@ namespace XFrame.Modules.Reflection
             m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
             m_Constructors = new Dictionary<Type, ConstructorInfo[]>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            Log.Debug(AppDomain.CurrentDomain.GetHashCode());
             List<Type> tmpList = new List<Type>(1024);
             foreach (Assembly assembly in m_Assemblys)
             {
