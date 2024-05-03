@@ -6,6 +6,7 @@ using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
+using System.Xml.Linq;
 
 namespace XFrame.Modules.Reflection
 {
@@ -68,6 +69,7 @@ namespace XFrame.Modules.Reflection
                 {
                     foreach (string name in XConfig.TypeChecker.AssemblyList)
                     {
+                        Log.Debug($"add {name} {assemblyName}");
                         if (assemblyName == name)
                         {
                             find = true;
@@ -82,6 +84,7 @@ namespace XFrame.Modules.Reflection
                 foreach (TypeInfo typeInfo in assembly.DefinedTypes)
                 {
                     Type type = typeInfo.AsType();
+                    Log.Debug($"check {type.Name} {!XConfig.TypeChecker.CheckType(type)}");
                     if (!XConfig.TypeChecker.CheckType(type))
                         continue;
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
@@ -94,7 +97,6 @@ namespace XFrame.Modules.Reflection
                             list = new List<Type>(32);
                             m_TypesWithAttrs.Add(attrType, list);
                         }
-                        Log.Debug($"add {type.Name} {attrType.Name}");
                         list.Add(type);
                     }
                     tmpList.Add(type);
