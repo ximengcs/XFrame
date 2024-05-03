@@ -35,8 +35,6 @@ namespace XFrame.Modules.Containers
                 else
                     OnInactive();
             }
-            if (recursive)
-                m_Owner.SetActive(active, recursive);
         }
 
         /// <inheritdoc/>
@@ -45,16 +43,14 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public IContainer Master { get; private set; }
 
+        /// <summary>
+        /// 父容器
+        /// </summary>
         public IContainer Parent
         {
             get => m_Owner;
             set => m_Owner = value;
         }
-
-        /// <summary>
-        /// 父容器
-        /// </summary>
-        protected IContainer Owner => m_Owner;
 
         void IContainer.OnInit(IContainerModule module, int id, IContainer master, OnDataProviderReady onReady)
         {
@@ -64,6 +60,7 @@ namespace XFrame.Modules.Containers
                 Master = master.Master;
             else
                 Master = master;
+            m_Owner = master;
 
             onReady?.Invoke(this);
             OnInit();

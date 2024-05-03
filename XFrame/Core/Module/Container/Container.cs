@@ -12,7 +12,7 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public partial class Container : IContainer
     {
-        private bool m_IsActive;
+        protected bool m_IsActive;
         private DataProvider m_Data;
         private XCollection<ICom> m_Coms;
 
@@ -28,7 +28,7 @@ namespace XFrame.Modules.Containers
 
         public bool Active => m_IsActive;
 
-        public void SetActive(bool active, bool recursive = true)
+        public virtual void SetActive(bool active, bool recursive = true)
         {
             if (active != m_IsActive)
             {
@@ -171,7 +171,8 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
         {
-            return (T)InnerGetOrAddCom(typeof(T), default, (com) => onReady?.Invoke((T)com));
+            int id = InnerCheckId(typeof(T), default);
+            return (T)InnerGetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
@@ -183,7 +184,8 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
-            return InnerGetOrAddCom(type, default, onReady);
+            int id = InnerCheckId(type, default);
+            return InnerGetOrAddCom(type, id, onReady);
         }
 
         /// <inheritdoc/>
