@@ -121,20 +121,17 @@ namespace XFrame.Core
                 handler.BeforeHandle()
                        .OnCompleted(() =>
                        {
+                           InnerStartRun();
                            m_Domain[CORE].Start();
                            m_Domain[CUSTOM].Start();
-                           handler.AfterHandle()
-                                  .OnCompleted(() =>
-                                  {
-                                      InnerStartRun();
-                                  }).Coroutine();
+                           handler.AfterHandle().Coroutine();
                        }).Coroutine();
             }
             else
             {
+                InnerStartRun();
                 m_Domain[CORE].Start();
                 m_Domain[CUSTOM].Start();
-                InnerStartRun();
             }
         }
 
