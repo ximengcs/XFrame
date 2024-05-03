@@ -94,6 +94,7 @@ namespace XFrame.Modules.Reflection
                             list = new List<Type>(32);
                             m_TypesWithAttrs.Add(attrType, list);
                         }
+                        Log.Debug($"add {type.Name} {attrType.Name}");
                         list.Add(type);
                     }
                     tmpList.Add(type);
