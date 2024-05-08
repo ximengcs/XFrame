@@ -79,6 +79,10 @@ namespace XFrame.Modules.Containers
             else
                 Master = master;
             Parent = master;
+            if (Parent != null)
+            {
+                Parent.AddCom(this);
+            }
 
             onReady?.Invoke(this);
             OnInit();
@@ -247,6 +251,9 @@ namespace XFrame.Modules.Containers
         private IContainer InnerInitCom(IContainer com)
         {
             m_Coms.Add(com);
+            Container container = com as Container;
+            if (container != null)
+                container.Parent = this;
             return com;
         }
 
