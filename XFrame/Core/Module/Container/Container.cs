@@ -79,9 +79,10 @@ namespace XFrame.Modules.Containers
             else
                 Master = master;
             Parent = master;
+
             if (Parent != null)
             {
-                Parent.AddCom(this);
+                Parent.AddCom(Parent);
             }
 
             onReady?.Invoke(this);
@@ -240,11 +241,7 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            IContainer newCom = (IContainer)m_Module.New(type, id, true, this, (db) =>
-            {
-                InnerInitCom((IContainer)db);
-                onReady?.Invoke(db);
-            });
+            IContainer newCom = m_Module.New(type, id, true, this, onReady);
             return newCom;
         }
 
