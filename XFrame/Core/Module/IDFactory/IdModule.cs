@@ -24,7 +24,6 @@ namespace XFrame.Modules.ID
         public int Next()
         {
             int result = m_Time + m_Count++;
-            Log.Debug($"next id {result}");
             return result;
         }
     }

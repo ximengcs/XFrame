@@ -247,7 +247,6 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerInitCom(IContainer com)
         {
-            Log.Debug($"Inner init com {Id} child {com.Id}");
             m_Coms.Add(com);
             Container container = com as Container;
             if (container != null)
