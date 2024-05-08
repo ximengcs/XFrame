@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.ID
 {
@@ -22,7 +23,9 @@ namespace XFrame.Modules.ID
         /// <inheritdoc/>
         public int Next()
         {
-            return m_Time + m_Count++;
+            int result = m_Time + m_Count++;
+            Log.Debug($"next id {result}");
+            return result;
         }
     }
 }
