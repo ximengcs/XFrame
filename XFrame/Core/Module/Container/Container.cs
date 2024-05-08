@@ -82,7 +82,7 @@ namespace XFrame.Modules.Containers
 
             if (Parent != null)
             {
-                Parent.AddCom(Parent);
+                Parent.AddCom(this);
             }
 
             onReady?.Invoke(this);
