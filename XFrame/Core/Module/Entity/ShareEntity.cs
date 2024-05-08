@@ -11,17 +11,10 @@ namespace XFrame.Modules.Entities
         /// <summary>
         /// 事件系统
         /// </summary>
-        public IEventSystem Event
-        {
-            get
-            {
-                IEntity entity = Master as IEntity;
-                return entity.Event;
-            }
-        }
+        public IEventSystem Event => Master.Event;
 
-        IEntity IEntity.Master => Master as IEntity;
+        public new IEntity Master => ((ShareContainer)this).Master as IEntity;
 
-        IEntity IEntity.Parent => Parent as IEntity;
+        public new IEntity Parent => ((ShareContainer)this).Parent as IEntity;
     }
 }

@@ -23,9 +23,9 @@ namespace XFrame.Modules.Entities
         /// </summary>
         public IEventSystem Event { get; private set; }
 
-        IEntity IEntity.Master => Master as IEntity;
+        public new IEntity Master => ((Container)this).Master as IEntity;
 
-        IEntity IEntity.Parent => Parent as IEntity;
+        public new IEntity Parent => ((Container)this).Parent as IEntity;
         #endregion
     }
 }
