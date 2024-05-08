@@ -102,7 +102,7 @@ namespace XFrame.Modules.Containers
             //    if (com.Active)
             //        com.OnUpdate(elapseTime);
             //}
-            //OnUpdate(elapseTime);
+            OnUpdate(elapseTime);
         }
 
         /// <summary>

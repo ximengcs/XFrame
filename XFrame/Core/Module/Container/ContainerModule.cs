@@ -6,6 +6,7 @@ using XFrame.Modules.Entities;
 using System.Collections.Generic;
 using XFrame.Modules.Caches;
 using System.ComponentModel;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Containers
 {
