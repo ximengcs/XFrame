@@ -61,7 +61,7 @@ namespace XFrame.Modules.Entities
 
         public IEntity Create(Type entityType, int entityId, int typeId, OnDataProviderReady onReady = null)
         {
-            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+            return InnerCreate(entityType, entityId, typeId, onReady);
         }
 
         /// <inheritdoc/>
@@ -138,6 +138,11 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Inernal Implement
+        private IEntity InnerCreate(Type entityType, int entityId, int typeId, OnDataProviderReady onReady)
+        {
+            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+        }
+
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
             IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, true, parent, onReady);
