@@ -22,7 +22,7 @@ namespace XFrame.Modules.Entities
         {
             EntityCreateEvent e = References.Require<EntityCreateEvent>();
             e.Entity = entity;
-            e.Id = entity.Id;
+            e.Id = EventId;
             return e;
         }
 

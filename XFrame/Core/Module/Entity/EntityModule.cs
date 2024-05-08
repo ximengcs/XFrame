@@ -142,7 +142,6 @@ namespace XFrame.Modules.Entities
         {
             IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
             Event.TriggerNow(EntityCreateEvent.Create(entity));
-            Log.Debug("TriggerNow EntityCreateEvent");
             return entity;
         }
 
@@ -150,7 +149,6 @@ namespace XFrame.Modules.Entities
         {
             IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, true, parent, onReady);
             Event.TriggerNow(EntityCreateEvent.Create(entity));
-            Log.Debug("TriggerNow EntityCreateEvent");
             return entity;
         }
         #endregion

@@ -22,7 +22,7 @@ namespace XFrame.Modules.Entities
         {
             EntityDestroyEvent e = References.Require<EntityDestroyEvent>();
             e.Entity = entity;
-            e.Id = entity.Id;
+            e.Id = EventId;
             return e;
         }
 
