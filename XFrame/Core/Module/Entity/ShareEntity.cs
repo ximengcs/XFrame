@@ -19,5 +19,9 @@ namespace XFrame.Modules.Entities
                 return entity.Event;
             }
         }
+
+        IEntity IEntity.Master => Master as IEntity;
+
+        IEntity IEntity.Parent => Parent as IEntity;
     }
 }

@@ -22,6 +22,10 @@ namespace XFrame.Modules.Entities
         /// 实体事件系统
         /// </summary>
         public IEventSystem Event { get; private set; }
+
+        IEntity IEntity.Master => Master as IEntity;
+
+        IEntity IEntity.Parent => Parent as IEntity;
         #endregion
     }
 }

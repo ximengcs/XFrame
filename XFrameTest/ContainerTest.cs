@@ -47,6 +47,10 @@ namespace XFrameTest
         {
             public IEventSystem Event => throw new NotImplementedException();
 
+            IEntity IEntity.Master => throw new NotImplementedException();
+
+            IEntity IEntity.Parent => throw new NotImplementedException();
+
             protected override void OnInit()
             {
                 base.OnInit();

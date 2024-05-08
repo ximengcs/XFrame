@@ -12,5 +12,16 @@ namespace XFrame.Modules.Entities
         /// 实体事件系统
         /// </summary>
         IEventSystem Event { get; }
+
+        /// <summary>
+        /// 根实体
+        /// </summary>
+        new IEntity Master { get; }
+
+        /// <summary>
+        /// 父实体
+        /// </summary>
+        new IEntity Parent { get; }
+
     }
 }
