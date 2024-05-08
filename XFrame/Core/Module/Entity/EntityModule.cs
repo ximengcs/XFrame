@@ -140,7 +140,9 @@ namespace XFrame.Modules.Entities
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, int entityId, int typeId, OnDataProviderReady onReady)
         {
-            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+            IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+            Event.TriggerNow(EntityCreateEvent.Create(entity));
+            return entity;
         }
 
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
