@@ -6,7 +6,7 @@ namespace XFrame.Modules.Entities
     /// <summary>
     /// 共享组件实体
     /// </summary>
-    public class EntityShareCom : ShareCom, IEntityCom
+    public class ShareEntity : ShareContainer, IEntity
     {
         /// <summary>
         /// 事件系统

@@ -7,7 +7,7 @@ namespace XFrame.Modules.Containers
     /// <summary>
     /// 共享组件基类, 会共享容器数据
     /// </summary>
-    public abstract class ShareCom : ICom
+    public abstract class ShareContainer : IContainer
     {
         private IContainer m_Owner;
         private bool m_Active;
@@ -103,73 +103,73 @@ namespace XFrame.Modules.Containers
         protected virtual void OnInactive() { }
 
         /// <inheritdoc/>
-        public T GetCom<T>(int id = 0) where T : ICom
+        public T GetCom<T>(int id = 0) where T : IContainer
         {
             return m_Owner.GetCom<T>(id);
         }
 
         /// <inheritdoc/>
-        public ICom GetCom(Type type, int id = 0)
+        public IContainer GetCom(Type type, int id = 0)
         {
             return m_Owner.GetCom(type, id);
         }
 
         /// <inheritdoc/>
-        public T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom
+        public T AddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
             return m_Owner.AddCom<T>(onReady);
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(ICom com)
+        public IContainer AddCom(IContainer com)
         {
             return m_Owner.AddCom(com);
         }
 
         /// <inheritdoc/>
-        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
+        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : IContainer
         {
             return m_Owner.AddCom<T>(id, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(Type type, OnDataProviderReady onReady = null)
+        public IContainer AddCom(Type type, OnDataProviderReady onReady = null)
         {
             return m_Owner.AddCom(type, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(Type type, int id, OnDataProviderReady onReady = null)
+        public IContainer AddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return m_Owner.AddCom(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
             return m_Owner.GetOrAddCom<T>(onReady);
         }
 
         /// <inheritdoc/>
-        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : IContainer
         {
             return m_Owner.GetOrAddCom<T>(id, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
+        public IContainer GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
             return m_Owner.GetOrAddCom(type, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
+        public IContainer GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return m_Owner.GetOrAddCom(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public void RemoveCom<T>(int id = 0) where T : ICom
+        public void RemoveCom<T>(int id = 0) where T : IContainer
         {
             m_Owner.RemoveCom<T>(id);
         }
@@ -229,7 +229,7 @@ namespace XFrame.Modules.Containers
         }
 
         /// <inheritdoc/>
-        public IEnumerator<ICom> GetEnumerator()
+        public IEnumerator<IContainer> GetEnumerator()
         {
             return m_Owner.GetEnumerator();
         }

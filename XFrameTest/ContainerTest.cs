@@ -2,6 +2,8 @@
 using XFrame.Core;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Entities;
+using XFrame.Modules.Event;
 using XFrame.Modules.Tasks;
 
 namespace XFrameTest
@@ -36,13 +38,15 @@ namespace XFrameTest
             }
         }
 
-        private interface IT : ICom
+        private interface IT : IEntity
         {
 
         }
 
-        private class Com1 : Com, IT
+        private class Com1 : Container, IT
         {
+            public IEventSystem Event => throw new NotImplementedException();
+
             protected override void OnInit()
             {
                 base.OnInit();
@@ -63,7 +67,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com2 : Com
+        private class Com2 : Entity
         {
             protected override void OnInit()
             {
@@ -84,7 +88,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com3 : ShareCom
+        private class Com3 : ShareContainer
         {
             protected override void OnInit()
             {
@@ -105,7 +109,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com4 : ShareCom
+        private class Com4 : ShareContainer
         {
             protected override void OnInit()
             {

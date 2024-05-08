@@ -14,7 +14,7 @@ namespace XFrame.Modules.Containers
     {
         protected bool m_IsActive;
         private DataProvider m_Data;
-        private XCollection<ICom> m_Coms;
+        private XCollection<IContainer> m_Coms;
 
         /// <summary>
         /// 容器所属模块
@@ -41,7 +41,7 @@ namespace XFrame.Modules.Containers
 
             if (recursive)
             {
-                foreach (ICom com in m_Coms)
+                foreach (IContainer com in m_Coms)
                 {
                     com.SetActive(active, recursive);
                 }
@@ -70,7 +70,7 @@ namespace XFrame.Modules.Containers
         {
             m_Module = module;
             m_Data = new DataProvider();
-            m_Coms = new XCollection<ICom>(m_Module.Domain);
+            m_Coms = new XCollection<IContainer>(m_Module.Domain);
 
             Id = id;
             m_IsActive = true;
@@ -124,25 +124,25 @@ namespace XFrame.Modules.Containers
 
         #region Container Interface
         /// <inheritdoc/>
-        public T GetCom<T>(int id = 0) where T : ICom
+        public T GetCom<T>(int id = 0) where T : IContainer
         {
             return (T)InnerGetCom(typeof(T), id);
         }
 
         /// <inheritdoc/>
-        public ICom GetCom(Type type, int id = 0)
+        public IContainer GetCom(Type type, int id = 0)
         {
             return InnerGetCom(type, id);
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(ICom com)
+        public IContainer AddCom(IContainer com)
         {
             return InnerInitCom(com);
         }
 
         /// <inheritdoc/>
-        public T AddCom<T>(OnDataProviderReady onReady = null) where T : ICom
+        public T AddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
             Type type = typeof(T);
             int id = InnerCheckId(type, default);
@@ -150,52 +150,52 @@ namespace XFrame.Modules.Containers
         }
 
         /// <inheritdoc/>
-        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
+        public T AddCom<T>(int id, OnDataProviderReady onReady = null) where T : IContainer
         {
             return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(Type type, OnDataProviderReady onReady = null)
+        public IContainer AddCom(Type type, OnDataProviderReady onReady = null)
         {
             int id = InnerCheckId(type, default);
             return InnerAdd(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom AddCom(Type type, int id, OnDataProviderReady onReady = null)
+        public IContainer AddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return InnerAdd(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
             int id = InnerCheckId(typeof(T), default);
             return (T)InnerGetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
-        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : ICom
+        public T GetOrAddCom<T>(int id, OnDataProviderReady onReady = null) where T : IContainer
         {
             return (T)InnerGetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
-        public ICom GetOrAddCom(Type type, OnDataProviderReady onReady = null)
+        public IContainer GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
             int id = InnerCheckId(type, default);
             return InnerGetOrAddCom(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public ICom GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
+        public IContainer GetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
             return InnerGetOrAddCom(type, id, onReady);
         }
 
         /// <inheritdoc/>
-        public void RemoveCom<T>(int id = 0) where T : ICom
+        public void RemoveCom<T>(int id = 0) where T : IContainer
         {
             InnerRemove(typeof(T), id);
         }
@@ -217,7 +217,7 @@ namespace XFrame.Modules.Containers
         #region Inner Implement
         private void InnerRemove(Type type, int id)
         {
-            ICom com = m_Coms.Get(type, id);
+            IContainer com = m_Coms.Get(type, id);
             if (com != null)
             {
                 m_Coms.Remove(com);
@@ -225,26 +225,26 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        private ICom InnerGetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
+        private IContainer InnerGetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
-            ICom com = InnerGetCom(type, id);
+            IContainer com = InnerGetCom(type, id);
             if (com != null)
                 return com;
             else
                 return InnerAdd(type, id, onReady);
         }
 
-        private ICom InnerAdd(Type type, int id, OnDataProviderReady onReady)
+        private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            ICom newCom = (ICom)m_Module.New(type, id, true, this, (db) =>
+            IContainer newCom = (IContainer)m_Module.New(type, id, true, this, (db) =>
             {
-                InnerInitCom((ICom)db);
+                InnerInitCom((IContainer)db);
                 onReady?.Invoke(db);
             });
             return newCom;
         }
 
-        private ICom InnerInitCom(ICom com)
+        private IContainer InnerInitCom(IContainer com)
         {
             m_Coms.Add(com);
             return com;
@@ -257,11 +257,11 @@ namespace XFrame.Modules.Containers
             return m_Module.Domain.GetModule<IIdModule>().Next();
         }
 
-        private ICom InnerGetCom(Type type, int id)
+        private IContainer InnerGetCom(Type type, int id)
         {
             if (type.IsInterface || type.IsAbstract)
             {
-                foreach (ICom com in m_Coms)
+                foreach (IContainer com in m_Coms)
                 {
                     Type comType = com.GetType();
                     if (type.IsAssignableFrom(comType) && com.Id == id)
@@ -324,7 +324,7 @@ namespace XFrame.Modules.Containers
         #endregion
 
         /// <inheritdoc/>
-        public IEnumerator<ICom> GetEnumerator()
+        public IEnumerator<IContainer> GetEnumerator()
         {
             return m_Coms.GetEnumerator();
         }

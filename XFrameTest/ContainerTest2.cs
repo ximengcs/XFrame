@@ -45,7 +45,7 @@ namespace XFrameTest
         #endregion
 
         #region Com1
-        public class Com1 : Com
+        public class Com1 : Container
         {
             protected override void OnInit()
             {
@@ -81,7 +81,7 @@ namespace XFrameTest
         #endregion
 
         #region Com2
-        private class Com2 : Com
+        private class Com2 : Container
         {
             protected override void OnInit()
             {
@@ -117,7 +117,7 @@ namespace XFrameTest
         #endregion
 
         #region 
-        public class ShareCom1 : ShareCom
+        public class ShareCom1 : ShareContainer
         {
             protected override void OnInit()
             {
@@ -129,7 +129,7 @@ namespace XFrameTest
                 string master = "null";
                 if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("ShareCom1 Master " + master);
                 Log.Debug("ShareCom1 Owner " + owner);
 
@@ -153,7 +153,7 @@ namespace XFrameTest
         }
         #endregion
 
-        public class Com3 : Com
+        public class Com3 : Container
         {
 
         }

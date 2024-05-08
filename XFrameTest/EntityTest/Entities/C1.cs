@@ -3,7 +3,7 @@ using XFrame.Modules.Diagnotics;
 
 namespace XFrameTest
 {
-    internal class C1 : EntityCom
+    internal class C1 : Entity
     {
         private bool m_Update;
 

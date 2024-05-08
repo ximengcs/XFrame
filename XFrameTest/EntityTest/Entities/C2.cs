@@ -4,7 +4,7 @@ using XFrame.Modules.Entities;
 
 namespace XFrameTest
 {
-    internal class C2 : EntityShareCom
+    internal class C2 : ShareEntity
     {
         private bool m_Update;
 
