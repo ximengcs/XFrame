@@ -41,25 +41,20 @@ namespace XFrame.Modules.Containers
         public int Id { get; private set; }
 
         /// <inheritdoc/>
-        public IContainer Master { get; private set; }
+        public IContainer Master => m_Owner.Master;
 
         /// <summary>
         /// 父容器
         /// </summary>
         public IContainer Parent
         {
-            get => m_Owner;
-            set => m_Owner = value;
+            get => m_Owner.Parent;
         }
 
         void IContainer.OnInit(IContainerModule module, int id, IContainer master, OnDataProviderReady onReady)
         {
             Id = id;
             m_Module = module;
-            if (master != null && master.Master != null)
-                Master = master.Master;
-            else
-                Master = master;
             m_Owner = master;
 
             onReady?.Invoke(this);

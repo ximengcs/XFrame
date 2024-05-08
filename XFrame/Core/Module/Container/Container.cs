@@ -43,6 +43,7 @@ namespace XFrame.Modules.Containers
             {
                 foreach (IContainer com in m_Coms)
                 {
+                    Log.Debug($" container {com.GetHashCode()} {com.GetType().FullName}");
                     com.SetActive(active, recursive);
                 }
             }
@@ -78,12 +79,16 @@ namespace XFrame.Modules.Containers
                 Master = master.Master;
             else
                 Master = master;
+
             Parent = master;
 
             if (Parent != null)
             {
                 Parent.AddCom(this);
             }
+
+            if (Master == null)
+                Master = this;
 
             onReady?.Invoke(this);
             OnInit();
