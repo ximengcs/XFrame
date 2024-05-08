@@ -4,6 +4,7 @@ using XFrame.Collections;
 using XFrame.Modules.Reflection;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Containers;
+using XFrame.Modules.Event;
 
 namespace XFrame.Modules.Entities
 {
@@ -13,6 +14,7 @@ namespace XFrame.Modules.Entities
     public class EntityModule : ModuleBase, IEntityModule
     {
         #region Inner Field
+        private IEventSystem m_Event;
         private XCollection<IEntity> m_Entities;
         #endregion
 
@@ -22,6 +24,7 @@ namespace XFrame.Modules.Entities
         {
             base.OnInit(data);
             m_Entities = new XCollection<IEntity>(Domain);
+            m_Event = Domain.GetModule<IEventModule>().NewSys();
         }
 
         /// <inheritdoc/>
@@ -33,6 +36,8 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Interface
+        public IEventSystem Event => m_Event;
+
         /// <inheritdoc/>
         public void RegisterEntity<T>() where T : class, IEntity
         {
@@ -128,13 +133,16 @@ namespace XFrame.Modules.Entities
 
             Domain.GetModule<IContainerModule>().Remove(entity);
             m_Entities.Remove(entity);
+            Event.TriggerNow(EntityDestroyEvent.Create(entity));
         }
         #endregion
 
         #region Inernal Implement
         private IEntity InnerCreate(Type entityType, IEntity parent, OnDataProviderReady onReady)
         {
-            return (IEntity)Domain.GetModule<IContainerModule>().New(entityType, true, parent, onReady);
+            IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, true, parent, onReady);
+            Event.TriggerNow(EntityCreateEvent.Create(entity));
+            return entity;
         }
         #endregion
     }

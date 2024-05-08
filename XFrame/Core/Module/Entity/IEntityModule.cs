@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Core;
 using XFrame.Modules.Containers;
+using XFrame.Modules.Event;
 
 namespace XFrame.Modules.Entities
 {
@@ -10,6 +11,8 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public interface IEntityModule : IModule
     {
+        IEventSystem Event { get; }
+
         /// <summary>
         /// 注册实体，创建实体前需要注册实体
         /// </summary>
