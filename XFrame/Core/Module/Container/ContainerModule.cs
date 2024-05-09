@@ -83,7 +83,7 @@ namespace XFrame.Modules.Containers
             sb.AppendLine();
             foreach (IContainer child in m_Containers.Values)
             {
-                sb.AppendLine($"- {child.GetType().Name} {child.Id}");
+                sb.AppendLine($"- {child.GetType().Name} {child.Id} -> {(child.Parent != null ? child.Parent.Id.ToString() : "NULL")}");
                 InnerCheckRecursive(child, sb, "\t");
             }
             Log.Debug(Log.Container, sb.ToString());
@@ -102,7 +102,7 @@ namespace XFrame.Modules.Containers
                     continue;
                 }
                 sb.Append(tab);
-                sb.AppendLine($"{child.GetType().Name} {child.Id}");
+                sb.AppendLine($"{child.GetType().Name} {child.Id} -> {(child.Parent != null ? child.Parent.Id.ToString() : "NULL")}");
                 InnerCheckRecursive(child, sb, tab);
             }
         }
