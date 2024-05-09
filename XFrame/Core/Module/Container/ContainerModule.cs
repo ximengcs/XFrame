@@ -64,7 +64,7 @@ namespace XFrame.Modules.Containers
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container.Id, container);
-            Log.Debug($"there is container added.");
+            Log.Debug(Log.Container, $"there is container added.");
             InnerDebugContainers();
             return container;
         }
@@ -80,6 +80,7 @@ namespace XFrame.Modules.Containers
         private void InnerDebugContainers()
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
             foreach (IContainer child in m_Containers.Values)
             {
                 sb.AppendLine($"- {child.GetType().Name} {child.Id}");
