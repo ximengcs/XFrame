@@ -11,6 +11,7 @@ namespace XFrame.Modules.Diagnotics
     {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         public const string XFrame = nameof(XFrame);
+        public const string Container = nameof(Container);
         public const string CSV = nameof(CSV);
         public const string Condition = nameof(Condition);
         public const string Procedure = nameof(Procedure);

@@ -240,7 +240,6 @@ namespace XFrame.Modules.Containers
             IContainer com = m_Coms.Get(type, id);
             if (com != null)
             {
-                Log.Debug($" {GetType().Name} {Id} remove child {type.Name} {id}");
                 m_Coms.Remove(com);
             }
         }

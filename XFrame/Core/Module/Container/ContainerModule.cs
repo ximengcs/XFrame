@@ -73,7 +73,7 @@ namespace XFrame.Modules.Containers
         public void Remove(IContainer container)
         {
             InnerRemoveRecursive(container);
-            Log.Debug($"there is container removed.");
+            Log.Debug(Log.Container, $"there is container removed.");
             InnerDebugContainers();
         }
 
@@ -85,7 +85,7 @@ namespace XFrame.Modules.Containers
                 sb.AppendLine($"- {child.GetType().Name} {child.Id}");
                 InnerCheckRecursive(child, sb, "\t");
             }
-            Log.Debug(sb.ToString());
+            Log.Debug(Log.Container, sb.ToString());
         }
 
         private void InnerCheckRecursive(IContainer container, StringBuilder sb, string tab)
@@ -97,7 +97,7 @@ namespace XFrame.Modules.Containers
             {
                 if (child == container)
                 {
-                    Log.Error($"same container, {child.GetType().Name} {container.GetType().Name}");
+                    Log.Error(Log.Container, $"same container, {child.GetType().Name} {container.GetType().Name}");
                     continue;
                 }
                 sb.Append(tab);
