@@ -81,11 +81,6 @@ namespace XFrame.Modules.Containers
 
             Parent = master;
 
-            if (Parent != null)
-            {
-                Parent.AddCom(this);
-            }
-
             if (Master == null)
                 Master = this;
 
