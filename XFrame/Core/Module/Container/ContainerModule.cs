@@ -107,14 +107,14 @@ namespace XFrame.Modules.Containers
 
         private void InnerRemoveRecursive(IContainer container)
         {
-            Log.Debug($"ready remove {container.GetType().Name} {container.Id}");
             foreach (IContainer child in container)
                 InnerRemoveRecursive(child);
-            //if (m_Containers.ContainsKey(container.Id))
-            //{
-            //    m_Containers.Remove(container.Id);
-            //    container.OnDestroy();
-            //}
+            if (m_Containers.ContainsKey(container.Id))
+            {
+                Log.Debug($"ready remove {container.GetType().Name} {container.Id}");
+                m_Containers.Remove(container.Id);
+                container.OnDestroy();
+            }
         }
 
         /// <inheritdoc/>
