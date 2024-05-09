@@ -15,7 +15,6 @@ namespace XFrame.Modules.Entities
     {
         #region Inner Field
         private IEventSystem m_Event;
-        private XCollection<IEntity> m_Entities;
         #endregion
 
         #region Life Fun
@@ -23,7 +22,6 @@ namespace XFrame.Modules.Entities
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Entities = new XCollection<IEntity>(Domain);
             m_Event = Domain.GetModule<IEventModule>().NewSys();
         }
 
@@ -31,7 +29,6 @@ namespace XFrame.Modules.Entities
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            m_Entities.Clear();
         }
         #endregion
 
@@ -132,7 +129,6 @@ namespace XFrame.Modules.Entities
                 return;
 
             Domain.GetModule<IContainerModule>().Remove(entity);
-            m_Entities.Remove(entity);
             Event.TriggerNow(EntityDestroyEvent.Create(entity));
         }
         #endregion
