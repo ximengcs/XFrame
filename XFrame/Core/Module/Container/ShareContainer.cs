@@ -82,6 +82,8 @@ namespace XFrame.Modules.Containers
         void IContainer.OnDestroy()
         {
             OnDestroy();
+            m_Owner = null;
+            m_Module = null;
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ using XFrame.Modules.Caches;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using System.Text;
+using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Containers
 {
@@ -107,14 +108,29 @@ namespace XFrame.Modules.Containers
 
         private void InnerRemoveRecursive(IContainer container)
         {
+            CommonPoolObject<List<IContainer>> cache = References.Require<CommonPoolObject<List<IContainer>>>();
+            List<IContainer> cacheList;
+            if (!cache.Valid)
+            {
+                cacheList = new List<IContainer>(8);
+                cache.Target = cacheList;
+            }
+            else
+            {
+                cacheList = cache.Target;
+            }
+
             foreach (IContainer child in container)
+                cacheList.Add(child);
+            foreach (IContainer child in cacheList)
                 InnerRemoveRecursive(child);
             if (m_Containers.ContainsKey(container.Id))
             {
-                Log.Debug($"ready remove {container.GetType().Name} {container.Id}");
                 m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
+            cacheList.Clear();
+            References.Release(cache);
         }
 
         /// <inheritdoc/>
