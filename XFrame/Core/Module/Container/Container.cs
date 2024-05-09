@@ -129,6 +129,8 @@ namespace XFrame.Modules.Containers
                 Parent = null;
             }
             ClearCom();
+            m_Coms = null;
+            m_Data = null;
         }
 
         /// <summary>
@@ -136,8 +138,6 @@ namespace XFrame.Modules.Containers
         /// </summary>
         protected internal virtual void OnDestroy()
         {
-            m_Coms = null;
-            m_Data = null;
         }
         #endregion
 
