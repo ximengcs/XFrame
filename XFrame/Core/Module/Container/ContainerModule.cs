@@ -71,10 +71,8 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public void Remove(IContainer container)
         {
-            Log.Debug($"there is container removed. before");
-            InnerDebugContainers();
             InnerRemoveRecursive(container);
-            Log.Debug($"there is container removed. after");
+            Log.Debug($"there is container removed.");
             InnerDebugContainers();
         }
 
@@ -112,11 +110,11 @@ namespace XFrame.Modules.Containers
             Log.Debug($"ready remove {container.GetType().Name} {container.Id}");
             foreach (IContainer child in container)
                 InnerRemoveRecursive(child);
-            if (m_Containers.ContainsKey(container.Id))
-            {
-                m_Containers.Remove(container.Id);
-                container.OnDestroy();
-            }
+            //if (m_Containers.ContainsKey(container.Id))
+            //{
+            //    m_Containers.Remove(container.Id);
+            //    container.OnDestroy();
+            //}
         }
 
         /// <inheritdoc/>
