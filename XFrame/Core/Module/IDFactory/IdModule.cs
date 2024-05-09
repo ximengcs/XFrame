@@ -13,9 +13,6 @@ namespace XFrame.Modules.ID
     {
         private IIDNumberHelper m_Helper;
 
-        private int m_Time;
-        private int m_Count;
-
         /// <inheritdoc/>
         protected override void OnInit(object data)
         {
@@ -34,10 +31,7 @@ namespace XFrame.Modules.ID
         /// <inheritdoc/>
         public int Next()
         {
-            int result = m_Time + m_Count++;
-            if (result == 0)
-                result = Next();
-            return result;
+            return m_Helper.Next();
         }
     }
 }
