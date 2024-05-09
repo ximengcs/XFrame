@@ -17,15 +17,17 @@ namespace XFrame.Modules.ID
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            if (string.IsNullOrEmpty(XConfig.DefaultIDHelper))
-            {
-                m_Helper = new DefaultIDNumberHelper();
-            }
-            else
+            if (!string.IsNullOrEmpty(XConfig.DefaultIDHelper))
             {
                 Type type = Domain.TypeModule.GetType(XConfig.DefaultIDHelper);
-                m_Helper = (IIDNumberHelper)Domain.TypeModule.CreateInstance(type);
+                if (type != null)
+                {
+                    m_Helper = (IIDNumberHelper)Domain.TypeModule.CreateInstance(type);
+                }
             }
+
+            if (m_Helper == null)
+                m_Helper = new DefaultIDNumberHelper();
         }
 
         /// <inheritdoc/>
