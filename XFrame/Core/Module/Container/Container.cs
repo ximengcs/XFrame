@@ -122,6 +122,7 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
+            Log.Debug($"{GetType().FullName} {m_Coms.Count}");
             OnDestroy();
             if (Parent != null)
             {
