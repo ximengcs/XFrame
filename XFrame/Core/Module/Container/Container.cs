@@ -123,6 +123,8 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
+            if (Parent != null)
+                Parent.RemoveCom(GetType(), Id);
             ClearCom();
             OnDestroy();
         }
@@ -236,7 +238,6 @@ namespace XFrame.Modules.Containers
             if (com != null)
             {
                 m_Coms.Remove(com);
-                com.OnDestroy();
             }
         }
 
