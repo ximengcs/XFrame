@@ -1,6 +1,7 @@
 ﻿using System;
 using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.ID
@@ -10,6 +11,8 @@ namespace XFrame.Modules.ID
     [XType(typeof(IIdModule))]
     public class IdModule : ModuleBase, IIdModule
     {
+        private IIDNumberHelper m_Helper;
+
         private int m_Time;
         private int m_Count;
 
@@ -17,7 +20,15 @@ namespace XFrame.Modules.ID
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Time =(int)(DateTime.Now.Ticks / 1000);
+            if (string.IsNullOrEmpty(XConfig.DefaultIDHelper))
+            {
+                m_Helper = new DefaultIDNumberHelper();
+            }
+            else
+            {
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultIDHelper);
+                m_Helper = (IIDNumberHelper)Domain.TypeModule.CreateInstance(type);
+            }
         }
 
         /// <inheritdoc/>

@@ -48,7 +48,6 @@ namespace XFrame.Modules.Containers
             }
         }
 
-
         /// <summary>
         /// 激活生命周期
         /// </summary>

@@ -66,5 +66,7 @@ namespace XFrame.Modules.Config
         /// 默认Plot辅助器
         /// </summary>
         public static string DefaultPlotHelper;
+
+        public static string DefaultIDHelper;
     }
 }

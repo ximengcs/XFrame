@@ -9,7 +9,6 @@ using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using System.Text;
 using XFrame.Modules.Pools;
-using XFrame.Core.Module.Container;
 
 namespace XFrame.Modules.Containers
 {
@@ -21,12 +20,6 @@ namespace XFrame.Modules.Containers
         //private XCollection<IContainer> m_Containers;
         private Dictionary<int, IContainer> m_Containers;
         private List<IContainer> m_Cache;
-        private IContainerHelper m_Helper;
-
-        public void SetHelper(IContainerHelper helper)
-        {
-            m_Helper = helper;
-        }
 
         /// <inheritdoc/>
         public IContainer Get(int id)
@@ -45,20 +38,20 @@ namespace XFrame.Modules.Containers
         public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
         {
             Type type = typeof(T);
-            return (T)InnerNew(type, m_Helper.NextId(type), updateTrusteeship, master, onReady);
+            return (T)InnerNew(type, Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         /// <inheritdoc/>
         public Container New(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
             Type type = typeof(Container);
-            return (Container)InnerNew(typeof(Container), m_Helper.NextId(type), updateTrusteeship, master, onReady);
+            return (Container)InnerNew(typeof(Container), Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         /// <inheritdoc/>
         public IContainer New(Type type, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
         {
-            return InnerNew(type, m_Helper.NextId(type), updateTrusteeship, master, onReady);
+            return InnerNew(type, Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
         }
 
         /// <inheritdoc/>
@@ -149,7 +142,6 @@ namespace XFrame.Modules.Containers
             base.OnInit(data);
             m_Cache = new List<IContainer>();
             m_Containers = new Dictionary<int, IContainer>();
-            m_Helper = new DefaultContainerHelper(Domain);
         }
 
         /// <inheritdoc/>
