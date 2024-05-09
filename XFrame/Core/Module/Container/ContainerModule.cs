@@ -111,6 +111,7 @@ namespace XFrame.Modules.Containers
                 InnerRemoveRecursive(child);
             if (m_Containers.ContainsKey(container.Id))
             {
+                Log.Debug($"contians {container.GetType().Name} {container.Id}, will remove");
                 m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
