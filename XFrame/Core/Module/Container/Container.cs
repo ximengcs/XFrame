@@ -252,6 +252,7 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerInitCom(IContainer com)
         {
+            Log.Debug($"add init com {com.GetType().FullName} {com.Id}");
             m_Coms.Add(com);
             if (m_IsActive)
                 com.SetActive(true);
