@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using XFrame.Modules.Caches;
 using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
+using System.Text;
 
 namespace XFrame.Modules.Containers
 {
@@ -62,6 +63,8 @@ namespace XFrame.Modules.Containers
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container.Id, container);
+            Log.Debug($"there is container added.");
+            InnerDebugContainers();
             return container;
         }
 
@@ -69,6 +72,37 @@ namespace XFrame.Modules.Containers
         public void Remove(IContainer container)
         {
             InnerRemoveRecursive(container);
+            Log.Debug($"there is container removed.");
+            InnerDebugContainers();
+        }
+
+        private void InnerDebugContainers()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (IContainer child in m_Containers.Values)
+            {
+                sb.AppendLine($"- {child.GetType().Name} {child.Id}");
+                InnerCheckRecursive(child, sb, "\t");
+            }
+            Log.Debug(sb.ToString());
+        }
+
+        private void InnerCheckRecursive(IContainer container, StringBuilder sb, string tab)
+        {
+            if (container is ShareContainer)
+                return;
+            tab += '\t';
+            foreach (IContainer child in container)
+            {
+                if (child == container)
+                {
+                    Log.Error($"same container, {child.GetType().Name} {container.GetType().Name}");
+                    continue;
+                }
+                sb.Append(tab);
+                sb.AppendLine($"{child.GetType().Name} {child.Id}");
+                InnerCheckRecursive(child, sb, tab);
+            }
         }
 
         private void InnerRemoveRecursive(IContainer container)
