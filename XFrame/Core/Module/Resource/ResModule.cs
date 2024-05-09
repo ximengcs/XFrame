@@ -71,6 +71,12 @@ namespace XFrame.Modules.Resource
         }
 
         /// <inheritdoc/>
+        public bool HasPreload(string resPath)
+        {
+            return m_PreLoadRes.ContainsKey(resPath);
+        }
+
+        /// <inheritdoc/>
         public object Load(string resPath, Type type)
         {
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))

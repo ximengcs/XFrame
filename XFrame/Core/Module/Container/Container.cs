@@ -43,7 +43,6 @@ namespace XFrame.Modules.Containers
             {
                 foreach (IContainer com in m_Coms)
                 {
-                    Log.Debug($" container {com.GetHashCode()} {com.GetType().FullName}");
                     com.SetActive(active, recursive);
                 }
             }
@@ -134,15 +133,15 @@ namespace XFrame.Modules.Containers
 
         #region Container Interface
         /// <inheritdoc/>
-        public T GetCom<T>(int id = 0) where T : IContainer
+        public T GetCom<T>(int id = 0, bool useXType = true) where T : IContainer
         {
-            return (T)InnerGetCom(typeof(T), id);
+            return (T)InnerGetCom(typeof(T), id, useXType);
         }
 
         /// <inheritdoc/>
-        public IContainer GetCom(Type type, int id = 0)
+        public IContainer GetCom(Type type, int id = 0, bool useXType = true)
         {
-            return InnerGetCom(type, id);
+            return InnerGetCom(type, id, useXType);
         }
 
         /// <inheritdoc/>
@@ -237,7 +236,7 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerGetOrAddCom(Type type, int id, OnDataProviderReady onReady = null)
         {
-            IContainer com = InnerGetCom(type, id);
+            IContainer com = InnerGetCom(type, id, true);
             if (com != null)
                 return com;
             else
@@ -247,12 +246,15 @@ namespace XFrame.Modules.Containers
         private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
             IContainer newCom = m_Module.New(type, id, true, this, onReady);
+            InnerInitCom(newCom);
             return newCom;
         }
 
         private IContainer InnerInitCom(IContainer com)
         {
             m_Coms.Add(com);
+            if (m_IsActive)
+                com.SetActive(true);
             Container container = com as Container;
             if (container != null)
                 container.Parent = this;
@@ -266,24 +268,68 @@ namespace XFrame.Modules.Containers
             return m_Module.Domain.GetModule<IIdModule>().Next();
         }
 
-        private IContainer InnerGetCom(Type type, int id)
+        public List<T> GetComs<T>(bool useXType = false) where T : IContainer
         {
-            if (type.IsInterface || type.IsAbstract)
+            Type targetType = typeof(T);
+            if (useXType)
+            {
+                return m_Coms.GetAll<T>();
+            }
+            else
+            {
+                List<T> list = new List<T>();
+                foreach (IContainer com in m_Coms)
+                {
+                    Type comType = com.GetType();
+                    if (comType == targetType || comType.IsAssignableFrom(targetType))
+                    {
+                        list.Add((T)com);
+                    }
+                }
+                return list;
+            }
+        }
+
+        public List<IContainer> GetComs(Type targetType, bool useXType = false)
+        {
+            if (useXType)
+            {
+                return m_Coms.GetAll(targetType);
+            }
+            else
+            {
+                List<IContainer> list = new List<IContainer>();
+                foreach (IContainer com in m_Coms)
+                {
+                    Type comType = com.GetType();
+                    if (comType == targetType || comType.IsAssignableFrom(targetType))
+                    {
+                        list.Add(com);
+                    }
+                }
+                return list;
+            }
+        }
+
+        private IContainer InnerGetCom(Type type, int id, bool useXType)
+        {
+            if (useXType)
+            {
+                return id == default ? m_Coms.Get(type) : m_Coms.Get(type, id);
+            }
+            else
             {
                 foreach (IContainer com in m_Coms)
                 {
                     Type comType = com.GetType();
-                    if (type.IsAssignableFrom(comType) && com.Id == id)
-                        return com;
+                    if (type == comType || type.IsAssignableFrom(comType))
+                    {
+                        if (id == default || id == com.Id)
+                            return com;
+                    }
                 }
             }
-            else
-            {
-                if (id == default)
-                    return m_Coms.Get(type);
-                else
-                    return m_Coms.Get(type, id);
-            }
+
             return default;
         }
         #endregion

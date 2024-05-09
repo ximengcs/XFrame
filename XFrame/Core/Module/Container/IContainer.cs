@@ -2,6 +2,7 @@
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.Pools;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Containers
 {
@@ -50,7 +51,7 @@ namespace XFrame.Modules.Containers
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="id">组件Id</param>
         /// <returns>组件实例</returns>
-        T GetCom<T>(int id = default) where T : IContainer;
+        T GetCom<T>(int id = default, bool useXType = true) where T : IContainer;
 
         /// <summary>
         /// 获取一个组件
@@ -58,7 +59,11 @@ namespace XFrame.Modules.Containers
         /// <param name="type">组件类型</param>
         /// <param name="id">组件Id</param>
         /// <returns>组件实例</returns>
-        IContainer GetCom(Type type, int id = default);
+        IContainer GetCom(Type type, int id = default, bool useXType = true);
+
+        List<T> GetComs<T>(bool useXType = false) where T : IContainer;
+
+        List<IContainer> GetComs(Type targetType, bool useXType = false);
 
         /// <summary>
         /// 添加一个组件(Id为默认Id)

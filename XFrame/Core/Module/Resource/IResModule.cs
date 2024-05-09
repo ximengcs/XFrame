@@ -32,6 +32,13 @@ namespace XFrame.Modules.Resource
         XTask Preload(string resPath, Type type);
 
         /// <summary>
+        /// 是否已经预加载资源
+        /// </summary>
+        /// <param name="resPath">资源路径</param>
+        /// <returns>true表示已预加载</returns>
+        bool HasPreload(string resPath);
+
+        /// <summary>
         /// 加载资源
         /// </summary>
         /// <param name="resPath">资源路径</param>

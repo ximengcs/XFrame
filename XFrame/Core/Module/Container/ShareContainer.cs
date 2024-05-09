@@ -98,15 +98,15 @@ namespace XFrame.Modules.Containers
         protected virtual void OnInactive() { }
 
         /// <inheritdoc/>
-        public T GetCom<T>(int id = 0) where T : IContainer
+        public T GetCom<T>(int id = 0, bool useXType = true) where T : IContainer
         {
-            return m_Owner.GetCom<T>(id);
+            return m_Owner.GetCom<T>(id, useXType);
         }
 
         /// <inheritdoc/>
-        public IContainer GetCom(Type type, int id = 0)
+        public IContainer GetCom(Type type, int id = 0, bool useXType = true)
         {
-            return m_Owner.GetCom(type, id);
+            return m_Owner.GetCom(type, id, useXType);
         }
 
         /// <inheritdoc/>
@@ -233,6 +233,16 @@ namespace XFrame.Modules.Containers
         public void SetIt(XItType type)
         {
             m_Owner.SetIt(type);
+        }
+
+        public List<T> GetComs<T>(bool useXType = false) where T : IContainer
+        {
+            return m_Owner.GetComs<T>(useXType);
+        }
+
+        public List<IContainer> GetComs(Type targetType, bool useXType = false)
+        {
+            return m_Owner.GetComs(targetType, useXType);
         }
     }
 }

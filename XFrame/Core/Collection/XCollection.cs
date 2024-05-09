@@ -157,6 +157,29 @@ namespace XFrame.Collections
                 return default;
         }
 
+        public List<TEntity> GetAll<TEntity>() where TEntity : T
+        {
+            Type xType = InnerGetMapType(typeof(TEntity));
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+            {
+                List<TEntity> result = new List<TEntity>();
+                foreach (var item in entities)
+                    result.Add((TEntity)item.Value);
+                return result;
+            }
+            return default;
+        }
+
+        public List<T> GetAll(Type elementType)
+        {
+            Type xType = InnerGetMapType(elementType);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+            {
+                return new List<T>(entities.Values);
+            }
+            return default;
+        }
+
         /// <summary>
         /// 获取给定类型的第一个添加到集合中的元素
         /// </summary>
