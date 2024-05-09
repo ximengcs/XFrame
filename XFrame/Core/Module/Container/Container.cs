@@ -122,13 +122,13 @@ namespace XFrame.Modules.Containers
 
         void IContainer.OnDestroy()
         {
+            OnDestroy();
             if (Parent != null)
             {
                 Parent.RemoveCom(GetType(), Id);
                 Parent = null;
             }
             ClearCom();
-            OnDestroy();
         }
 
         /// <summary>
