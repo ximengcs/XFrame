@@ -24,6 +24,8 @@ namespace XFrame.Modules.ID
         public int Next()
         {
             int result = m_Time + m_Count++;
+            if (result == 0)
+                result = Next();
             return result;
         }
     }

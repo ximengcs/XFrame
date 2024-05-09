@@ -165,8 +165,7 @@ namespace XFrame.Modules.Containers
         public T AddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
             Type type = typeof(T);
-            int id = InnerCheckId(type, default);
-            return (T)InnerAdd(typeof(T), id, (com) => onReady?.Invoke((T)com));
+            return (T)InnerAdd(typeof(T), (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
@@ -178,8 +177,7 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public IContainer AddCom(Type type, OnDataProviderReady onReady = null)
         {
-            int id = InnerCheckId(type, default);
-            return InnerAdd(type, id, onReady);
+            return InnerAdd(type, onReady);
         }
 
         /// <inheritdoc/>
@@ -191,8 +189,7 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public T GetOrAddCom<T>(OnDataProviderReady onReady = null) where T : IContainer
         {
-            int id = InnerCheckId(typeof(T), default);
-            return (T)InnerGetOrAddCom(typeof(T), id, (com) => onReady?.Invoke((T)com));
+            return (T)InnerGetOrAddCom(typeof(T), default, (com) => onReady?.Invoke((T)com));
         }
 
         /// <inheritdoc/>
@@ -204,8 +201,7 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public IContainer GetOrAddCom(Type type, OnDataProviderReady onReady = null)
         {
-            int id = InnerCheckId(type, default);
-            return InnerGetOrAddCom(type, id, onReady);
+            return InnerGetOrAddCom(type, default, onReady);
         }
 
         /// <inheritdoc/>
@@ -250,7 +246,18 @@ namespace XFrame.Modules.Containers
             if (com != null)
                 return com;
             else
-                return InnerAdd(type, id, onReady);
+            {
+                if (id == default)
+                    return InnerAdd(type, onReady);
+                else
+                    return InnerAdd(type, id, onReady);
+            }
+        }
+
+        private IContainer InnerAdd(Type type, OnDataProviderReady onReady)
+        {
+            IContainer newCom = m_Module.New(type, true, this, onReady);
+            return newCom;
         }
 
         private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
@@ -268,13 +275,6 @@ namespace XFrame.Modules.Containers
             if (container != null)
                 container.Parent = this;
             return com;
-        }
-
-        private int InnerCheckId(Type type, int id)
-        {
-            //if (m_Coms.Get(type, id) != null)
-            //    id = m_Module.Domain.GetModule<IIdModule>().Next();
-            return m_Module.Domain.GetModule<IIdModule>().Next();
         }
 
         public List<T> GetComs<T>(bool useXType = false) where T : IContainer

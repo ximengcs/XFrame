@@ -9,6 +9,8 @@ namespace XFrame.Modules.Containers
     /// </summary>
     public interface IContainerModule : IModule, IUpdater
     {
+        void SetHelper(IContainerHelper helper);
+
         /// <summary>
         /// 根据Id获取一个容器
         /// </summary>
