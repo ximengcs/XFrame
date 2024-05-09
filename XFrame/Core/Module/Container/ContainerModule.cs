@@ -114,6 +114,10 @@ namespace XFrame.Modules.Containers
                 m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
+            else
+            {
+                Log.Debug($"cannot contians {container.GetType().Name} {container.Id}");
+            }
         }
 
         /// <inheritdoc/>
