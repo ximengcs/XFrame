@@ -64,7 +64,7 @@ namespace XFrame.Modules.Containers
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container.Id, container);
-            Log.Debug(Log.Container, $"there is container added.");
+            Log.Debug(Log.Container, $"there is container added. {container.GetType().Name} {container.Id}");
             InnerDebugContainers();
             return container;
         }
@@ -72,8 +72,8 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public void Remove(IContainer container)
         {
+            Log.Debug(Log.Container, $"there is container removed. {container.GetType().Name} {container.Id}");
             InnerRemoveRecursive(container);
-            Log.Debug(Log.Container, $"there is container removed.");
             InnerDebugContainers();
         }
 
