@@ -56,6 +56,8 @@ namespace XFrame.Modules.Containers
             Id = id;
             m_Module = module;
             m_Owner = master;
+            if (master != null)
+                master.AddCom(this);
 
             onReady?.Invoke(this);
             OnInit();

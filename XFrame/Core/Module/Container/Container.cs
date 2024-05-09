@@ -66,7 +66,7 @@ namespace XFrame.Modules.Containers
         public int Id { get; private set; }
 
         #region Container Life Fun
-        void IContainer.OnInit(IContainerModule module, int id, IContainer master, OnDataProviderReady onReady)
+        void IContainer.OnInit(IContainerModule module, int id, IContainer parent, OnDataProviderReady onReady)
         {
             m_Module = module;
             m_Data = new DataProvider();
@@ -74,12 +74,23 @@ namespace XFrame.Modules.Containers
 
             Id = id;
             m_IsActive = true;
-            if (master != null && master.Master != null)
-                Master = master.Master;
-            else
-                Master = master;
 
-            Parent = master;
+            if (parent != null && parent.Master != null)
+                Master = parent.Master;
+            else
+                Master = parent;
+
+            Parent = parent;
+
+            if (parent != null)
+            {
+                Container p = parent as Container;
+                if (p != null)
+                {
+                    p.InnerInitCom(this);
+                }
+            }
+
 
             if (Master == null)
                 Master = this;
@@ -241,7 +252,6 @@ namespace XFrame.Modules.Containers
         private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
             IContainer newCom = m_Module.New(type, id, true, this, onReady);
-            InnerInitCom(newCom);
             return newCom;
         }
 
