@@ -31,12 +31,12 @@ namespace XFrame.Modules.Entities
 
         protected override IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            return m_Module.Domain.GetModule<IEntityModule>().Create(type, id, default, onReady);
+            return m_Module.Domain.GetModule<IEntityModule>().Create(this, type, id, onReady);
         }
 
         protected override IContainer InnerAdd(Type type, OnDataProviderReady onReady)
         {
-            return m_Module.Domain.GetModule<IEntityModule>().Create(type, onReady);
+            return m_Module.Domain.GetModule<IEntityModule>().Create(type, this, onReady);
         }
     }
 }

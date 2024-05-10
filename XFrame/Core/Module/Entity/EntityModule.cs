@@ -56,9 +56,9 @@ namespace XFrame.Modules.Entities
             return (IEntity)Domain.GetModule<IContainerModule>().Get(id);
         }
 
-        public IEntity Create(Type entityType, int entityId, int typeId, OnDataProviderReady onReady = null)
+        public IEntity Create(IEntity parent, Type entityType, int entityId, OnDataProviderReady onReady = null)
         {
-            return InnerCreate(entityType, entityId, typeId, onReady);
+            return InnerCreate(parent, entityType, entityId, onReady);
         }
 
         /// <inheritdoc/>
@@ -134,9 +134,9 @@ namespace XFrame.Modules.Entities
         #endregion
 
         #region Inernal Implement
-        private IEntity InnerCreate(Type entityType, int entityId, int typeId, OnDataProviderReady onReady)
+        private IEntity InnerCreate(IEntity parent, Type entityType, int entityId, OnDataProviderReady onReady)
         {
-            IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, null, onReady);
+            IEntity entity = (IEntity)Domain.GetModule<IContainerModule>().New(entityType, entityId, true, parent, onReady);
             Event.TriggerNow(EntityCreateEvent.Create(entity));
             return entity;
         }

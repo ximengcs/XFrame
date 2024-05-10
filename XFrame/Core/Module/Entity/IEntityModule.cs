@@ -26,7 +26,7 @@ namespace XFrame.Modules.Entities
         /// <returns>实体</returns>
         IEntity Get(int entityId);
 
-        IEntity Create(Type entityType, int entityId, int typeId, OnDataProviderReady onReady = null);
+        IEntity Create(IEntity parent, Type entityType, int entityId, OnDataProviderReady onReady = null);
 
         /// <summary>
         /// 创建实体
