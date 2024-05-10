@@ -253,13 +253,13 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        private IContainer InnerAdd(Type type, OnDataProviderReady onReady)
+        protected virtual IContainer InnerAdd(Type type, OnDataProviderReady onReady)
         {
             IContainer newCom = m_Module.New(type, true, this, onReady);
             return newCom;
         }
 
-        private IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
+        protected virtual IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
             IContainer newCom = m_Module.New(type, id, true, this, onReady);
             return newCom;

@@ -1,5 +1,6 @@
 ﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
+using System;
 
 namespace XFrame.Modules.Entities
 {
@@ -27,5 +28,15 @@ namespace XFrame.Modules.Entities
 
         public new IEntity Parent => ((Container)this).Parent as IEntity;
         #endregion
+
+        protected override IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
+        {
+            return m_Module.Domain.GetModule<IEntityModule>().Create(type, id, default, onReady);
+        }
+
+        protected override IContainer InnerAdd(Type type, OnDataProviderReady onReady)
+        {
+            return m_Module.Domain.GetModule<IEntityModule>().Create(type, onReady);
+        }
     }
 }
