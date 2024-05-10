@@ -300,6 +300,7 @@ namespace XFrame.Modules.Containers
 
         public List<IContainer> GetComs(Type targetType, bool useXType = false)
         {
+            Log.Debug($"Get coms {targetType.FullName} {m_Coms.Count} {useXType}");
             if (useXType)
             {
                 return m_Coms.GetAll(targetType);
