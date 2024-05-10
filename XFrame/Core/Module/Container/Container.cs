@@ -310,7 +310,9 @@ namespace XFrame.Modules.Containers
                 foreach (IContainer com in m_Coms)
                 {
                     Type comType = com.GetType();
-                    Log.Debug($" {comType.FullName} {targetType.FullName} {targetType.IsAssignableFrom(comType)}" );
+                    Log.Debug(comType == null);
+                    Log.Debug(targetType == null);
+                    Log.Debug($" {comType.FullName} {targetType.FullName} {targetType.IsAssignableFrom(comType)}");
                     if (comType == targetType || targetType.IsAssignableFrom(comType))
                     {
                         list.Add(com);
