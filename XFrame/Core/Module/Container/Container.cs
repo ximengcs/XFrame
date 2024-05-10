@@ -289,7 +289,7 @@ namespace XFrame.Modules.Containers
                 foreach (IContainer com in m_Coms)
                 {
                     Type comType = com.GetType();
-                    if (comType == targetType || comType.IsAssignableFrom(targetType))
+                    if (comType == targetType || targetType.IsAssignableFrom(comType))
                     {
                         list.Add((T)com);
                     }
@@ -300,7 +300,6 @@ namespace XFrame.Modules.Containers
 
         public List<IContainer> GetComs(Type targetType, bool useXType = false)
         {
-            Log.Debug($"Get coms {targetType.FullName} {m_Coms.Count} {useXType}");
             if (useXType)
             {
                 return m_Coms.GetAll(targetType);
@@ -311,9 +310,6 @@ namespace XFrame.Modules.Containers
                 foreach (IContainer com in m_Coms)
                 {
                     Type comType = com.GetType();
-                    Log.Debug(comType == null);
-                    Log.Debug(targetType == null);
-                    Log.Debug($" {comType.FullName} {targetType.FullName} {targetType.IsAssignableFrom(comType)}");
                     if (comType == targetType || targetType.IsAssignableFrom(comType))
                     {
                         list.Add(com);
