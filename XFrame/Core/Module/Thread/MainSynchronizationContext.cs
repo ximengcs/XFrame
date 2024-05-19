@@ -66,7 +66,7 @@ namespace XFrame.Modules.Threads
                     }
                     sw.Stop();
                     timeout += sw.ElapsedMilliseconds;
-                    if (timeout >= ExecTimeout)
+                    if (ExecTimeout != -1 && timeout >= ExecTimeout)
                         break;
                 }
             }
