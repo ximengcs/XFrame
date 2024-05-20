@@ -11,7 +11,7 @@ namespace XFrame.Modules.Times
             /// <summary>
             /// 时间
             /// </summary>
-            float Time { get; }
+            double Time { get; }
         }
 
         #region Default
@@ -36,7 +36,7 @@ namespace XFrame.Modules.Times
         {
             private ITimeModule m_Module;
 
-            float IUpdater.Time => m_Module.Time;
+            double IUpdater.Time => m_Module.Time;
 
             /// <summary>
             /// 构造器

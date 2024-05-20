@@ -26,7 +26,7 @@ namespace XFrame.Tasks
         /// <summary>
         /// 任务进度，返回最大值
         /// </summary>
-        public float Progress => XTaskHelper.MAX_PROGRESS;
+        public double Progress => XTaskHelper.MAX_PROGRESS;
 
         /// <summary>
         /// 任务行为，返回<see cref="XTaskAction.ContinueWhenSubTaskFailure"/>

@@ -11,12 +11,12 @@ namespace XFrame.Modules.Times
         /// <summary>
         /// 当前时间
         /// </summary>
-        float Time { get; }
+        double Time { get; }
 
         /// <summary>
         /// 上帧到此帧逃逸时间
         /// </summary>
-        float EscapeTime { get; }
+        double EscapeTime { get; }
 
         /// <summary>
         /// 当前帧数

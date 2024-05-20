@@ -15,7 +15,7 @@ namespace XFrame.Tasks
         /// <summary>
         /// 进度
         /// </summary>
-        float Progress { get; }
+        double Progress { get; }
 
         /// <summary>
         /// 任务行为

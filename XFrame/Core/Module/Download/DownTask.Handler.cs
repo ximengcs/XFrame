@@ -13,7 +13,7 @@ namespace XFrame.Modules.Download
             private int m_ReserveTryIndex;
             private int m_ReserveUrlCount;
             private int m_Times;
-            private float m_Pro;
+            private double m_Pro;
             private bool m_IsComplete;
 
             public object Data
@@ -40,7 +40,7 @@ namespace XFrame.Modules.Download
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public Handler(DownTask task, IDownloadHelper helper)
             {
@@ -58,7 +58,7 @@ namespace XFrame.Modules.Download
                 InnerRequest();
             }
 
-            private float InnerRefreshPro()
+            private double InnerRefreshPro()
             {
                 if (m_IsComplete)
                     return XTaskHelper.MAX_PROGRESS;
@@ -120,7 +120,7 @@ namespace XFrame.Modules.Download
                 m_Helper = null;
             }
 
-            private float InnerNextPro()
+            private double InnerNextPro()
             {
                 m_Pro = m_Pro + (1 - m_Pro) * 0.1f;
                 return m_Pro;

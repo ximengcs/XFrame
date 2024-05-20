@@ -13,7 +13,7 @@ namespace XFrame.Tasks
         /// <summary>
         /// 更新事件回调
         /// </summary>
-        protected Action<float> m_OnUpdate;
+        protected Action<double> m_OnUpdate;
 
         /// <summary>
         /// 完成回调
@@ -92,7 +92,7 @@ namespace XFrame.Tasks
         /// <summary>
         /// 进度
         /// </summary>
-        public float Progress => m_ProHandler.Pro;
+        public double Progress => m_ProHandler.Pro;
 
         /// <summary>
         /// 构造器
@@ -114,7 +114,7 @@ namespace XFrame.Tasks
             XTaskHelper.Register(this);
         }
 
-        void IUpdater.OnUpdate(float escapeTime)
+        void IUpdater.OnUpdate(double escapeTime)
         {
             if (m_CancelToken != null)
             {
@@ -230,7 +230,7 @@ namespace XFrame.Tasks
         /// </summary>
         /// <param name="handler">事件处理函数</param>
         /// <returns>返回当前任务</returns>
-        public ITask OnUpdate(Action<float> handler)
+        public ITask OnUpdate(Action<double> handler)
         {
             m_OnUpdate += handler;
             return this;

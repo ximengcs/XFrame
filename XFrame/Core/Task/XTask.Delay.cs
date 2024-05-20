@@ -26,9 +26,9 @@ namespace XFrame.Tasks
         private class DelayHandler : IProTaskHandler
         {
             private float m_Target;
-            private float m_Time;
+            private double m_Time;
             private long m_StartFrame;
-            private float m_Pro;
+            private double m_Pro;
 
             public object Data => null;
 
@@ -58,7 +58,7 @@ namespace XFrame.Tasks
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public DelayHandler(float target, bool nextFrameExec)
             {

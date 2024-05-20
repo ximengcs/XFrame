@@ -57,7 +57,7 @@ namespace XFrame.Tasks
         {
             private Func<bool> m_Fun;
             private long m_StartFrame;
-            private float m_Pro;
+            private double m_Pro;
 
             public object Data => null;
 
@@ -80,7 +80,7 @@ namespace XFrame.Tasks
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public ConditionHandler(Func<bool> fun, bool nextFrameExec = true)
             {
@@ -99,7 +99,7 @@ namespace XFrame.Tasks
             private CDTimer m_Timer;
             private Func<bool> m_Fun;
             private long m_StartFrame;
-            private float m_Pro;
+            private double m_Pro;
 
             public object Data => null;
 
@@ -128,7 +128,7 @@ namespace XFrame.Tasks
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public ConditionRepeatHandler(float timeGap, Func<bool> fun, bool nextFrameExec = true)
             {
@@ -148,7 +148,7 @@ namespace XFrame.Tasks
         {
             private Func<Pair<bool, object>> m_Fun;
             private long m_StartFrame;
-            private float m_Pro;
+            private double m_Pro;
             private Pair<bool, object> m_Result;
 
             public object Data => m_Result.Value;
@@ -173,7 +173,7 @@ namespace XFrame.Tasks
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public ConditionWithDataHandler(Func<Pair<bool, object>> fun, bool nextFrameExec = true)
             {
@@ -191,7 +191,7 @@ namespace XFrame.Tasks
         {
             private Func<float> m_Fun;
             private long m_StartFrame;
-            private float m_Pro;
+            private double m_Pro;
 
             public object Data => null;
 
@@ -211,7 +211,7 @@ namespace XFrame.Tasks
                 }
             }
 
-            public float Pro => m_Pro;
+            public double Pro => m_Pro;
 
             public ConditionWithProgressHandler(Func<float> fun, bool nextFrameExec = true)
             {

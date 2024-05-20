@@ -10,7 +10,7 @@ namespace XFrameTest
     {
         public class A : ModuleBase, IUpdater
         {
-            public void OnUpdate(float escapeTime)
+            public void OnUpdate(double escapeTime)
             {
                 
             }
@@ -19,7 +19,7 @@ namespace XFrameTest
         [CommonModule]
         public class B : SingletonModule<B>, IUpdater
         {
-            public void OnUpdate(float escapeTime)
+            public void OnUpdate(double escapeTime)
             {
             }
         }

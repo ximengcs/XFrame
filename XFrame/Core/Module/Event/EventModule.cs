@@ -19,7 +19,7 @@ namespace XFrame.Modules.Event
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             for (int i = m_List.Count - 1; i >= 0; i--)
                 m_List[i].OnUpdate();

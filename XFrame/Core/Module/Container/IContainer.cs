@@ -36,7 +36,7 @@ namespace XFrame.Modules.Containers
         /// 更新生命周期
         /// </summary>
         /// <param name="elapseTime">逃逸时间</param>
-        void OnUpdate(float elapseTime);
+        void OnUpdate(double elapseTime);
 
         /// <summary>
         /// 销毁生命周期

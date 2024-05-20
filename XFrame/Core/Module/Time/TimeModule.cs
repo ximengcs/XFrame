@@ -9,18 +9,18 @@ namespace XFrame.Modules.Times
     [XType(typeof(ITimeModule))]
     public class TimeModule : ModuleBase, ITimeModule
     {
-        private float m_Time;
-        private float m_EscapeTime;
+        private double m_Time;
+        private double m_EscapeTime;
         private long m_Frame;
         private List<CDTimer> m_AnonymousTimers;
         private Dictionary<string, CDTimer> m_Timers;
 
         #region Interface
         /// <inheritdoc/>
-        public float Time => m_Time;
+        public double Time => m_Time;
 
         /// <inheritdoc/>
-        public float EscapeTime => m_EscapeTime;
+        public double EscapeTime => m_EscapeTime;
 
         /// <inheritdoc/>
         public long Frame => m_Frame;
@@ -71,7 +71,7 @@ namespace XFrame.Modules.Times
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             m_Time += escapeTime;
             m_EscapeTime = escapeTime;

@@ -103,7 +103,7 @@ namespace XFrame.Modules.Containers
         /// </summary>
         protected internal virtual void OnInit() { }
 
-        void IContainer.OnUpdate(float elapseTime)
+        void IContainer.OnUpdate(double elapseTime)
         {
             //m_Coms.SetIt(XItType.Forward);
             //foreach (ICom com in m_Coms)
@@ -118,7 +118,7 @@ namespace XFrame.Modules.Containers
         /// 更新生命周期
         /// </summary>
         /// <param name="elapseTime">逃逸时间</param>
-        protected internal virtual void OnUpdate(float elapseTime) { }
+        protected internal virtual void OnUpdate(double elapseTime) { }
 
         void IContainer.OnDestroy()
         {

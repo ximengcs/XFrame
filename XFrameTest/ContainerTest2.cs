@@ -28,7 +28,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -64,7 +64,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -100,7 +100,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -137,7 +137,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;

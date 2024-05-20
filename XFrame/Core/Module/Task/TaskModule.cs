@@ -37,7 +37,7 @@ namespace XFrame.Modules.Tasks
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             m_ThisFrameTime = 0;
             for (int i = m_Tasks.Count - 1; i >= 0; i--)
@@ -50,7 +50,7 @@ namespace XFrame.Modules.Tasks
         }
         #endregion
 
-        internal void InnerExecTask(IUpdater task, float escapeTime)
+        internal void InnerExecTask(IUpdater task, double escapeTime)
         {
             m_Watch.Restart();
             task.OnUpdate(escapeTime);

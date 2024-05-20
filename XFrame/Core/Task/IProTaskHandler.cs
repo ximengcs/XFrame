@@ -18,7 +18,7 @@ namespace XFrame.Tasks
         /// <summary>
         /// 加载进度
         /// </summary>
-        float Pro { get; }
+        double Pro { get; }
 
         /// <summary>
         /// 任务取消生命周期函数

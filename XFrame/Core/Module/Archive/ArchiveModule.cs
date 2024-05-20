@@ -84,7 +84,7 @@ namespace XFrame.Modules.Archives
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             if (m_Timer.Check(SAVE_KEY, true))
                 InnerSaveAll();

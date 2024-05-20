@@ -58,7 +58,7 @@ namespace XFrameTest
                 Log.Debug($"Com1 OnInit " + (Master == null));
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com1 OnUpdate");
@@ -79,7 +79,7 @@ namespace XFrameTest
                 Log.Debug($"Com2 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com2 OnUpdate");
@@ -100,7 +100,7 @@ namespace XFrameTest
                 Log.Debug($"Com3 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com3 OnUpdate");
@@ -121,7 +121,7 @@ namespace XFrameTest
                 Log.Debug($"Com4 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com4 OnUpdate");

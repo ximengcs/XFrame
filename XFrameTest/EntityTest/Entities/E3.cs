@@ -19,7 +19,7 @@ namespace XFrameTest
             Log.Debug("E3 OnInit " + GetData<Pair<string, string>>());
         }
 
-        protected override void OnUpdate(float elapseTime)
+        protected override void OnUpdate(double elapseTime)
         {
             base.OnUpdate(elapseTime);
             Log.Debug("E3 OnUpdate");

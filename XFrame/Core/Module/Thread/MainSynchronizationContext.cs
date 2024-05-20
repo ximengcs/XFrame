@@ -50,7 +50,7 @@ namespace XFrame.Modules.Threads
         {
         }
 
-        void IUpdater.OnUpdate(float escapeTime)
+        void IUpdater.OnUpdate(double escapeTime)
         {
             if (m_ActQueue.Count <= 0)
                 return;

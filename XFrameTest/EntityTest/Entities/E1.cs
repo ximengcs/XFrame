@@ -18,7 +18,7 @@ namespace XFrameTest
             GetOrAddCom<C1>((db) => db.SetData(GetData<int>()));
         }
 
-        protected override void OnUpdate(float elapseTime)
+        protected override void OnUpdate(double elapseTime)
         {
             base.OnUpdate(elapseTime);
             if (m_Update)

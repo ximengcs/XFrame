@@ -14,7 +14,7 @@ namespace XFrame.Core
         public void Handle(IModule module, object data)
         {
             IUpdater updater = module as IUpdater;
-            updater.OnUpdate((float)data);
+            updater.OnUpdate((double)data);
         }
     }
 }

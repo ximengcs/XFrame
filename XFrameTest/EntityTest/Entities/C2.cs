@@ -15,7 +15,7 @@ namespace XFrameTest
             m_Update = true;
         }
 
-        protected override void OnUpdate(float elapseTime)
+        protected override void OnUpdate(double elapseTime)
         {
             base.OnUpdate(elapseTime);
             if (m_Update)

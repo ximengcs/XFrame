@@ -43,7 +43,7 @@ namespace XFrame.Tasks
         public bool IsCompleted => m_OnComplete.IsComplete;
 
         /// <inheritdoc/>
-        public float Progress => m_OnComplete.IsComplete ? XTaskHelper.MAX_PROGRESS : XTaskHelper.MIN_PROGRESS;
+        public double Progress => m_OnComplete.IsComplete ? XTaskHelper.MAX_PROGRESS : XTaskHelper.MIN_PROGRESS;
 
         /// <summary>
         /// 构造器

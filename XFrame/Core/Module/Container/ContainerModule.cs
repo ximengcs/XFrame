@@ -145,7 +145,7 @@ namespace XFrame.Modules.Containers
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             m_Cache.Clear();
             m_Cache.AddRange(m_Containers.Values);

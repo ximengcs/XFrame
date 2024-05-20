@@ -91,7 +91,7 @@ namespace XFrame.Modules.Plots
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             foreach (IDirector director in m_Directors.Values)
                 director.OnUpdate();

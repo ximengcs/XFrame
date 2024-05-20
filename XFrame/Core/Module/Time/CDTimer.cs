@@ -168,7 +168,7 @@ namespace XFrame.Modules.Times
         /// </summary>
         /// <param name="key">CD键</param>
         /// <returns>时间</returns>
-        public float CheckTime(int key)
+        public double CheckTime(int key)
         {
             if (m_Times.TryGetValue(key, out CDInfo info))
             {
@@ -182,7 +182,7 @@ namespace XFrame.Modules.Times
         /// 检查默认键的CD时间状态
         /// </summary>
         /// <returns>时间</returns>
-        public float CheckTime()
+        public double CheckTime()
         {
             return CheckTime(default);
         }
@@ -215,7 +215,7 @@ namespace XFrame.Modules.Times
         private class CDInfo
         {
             private IUpdater m_Updater;
-            public float EndTime;
+            public double EndTime;
             public float CD;
 
             public CDInfo(IUpdater updater)
@@ -223,7 +223,7 @@ namespace XFrame.Modules.Times
                 m_Updater = updater;
             }
 
-            public float Suplus
+            public double Suplus
             {
                 get { return EndTime - m_Updater.Time; }
             }

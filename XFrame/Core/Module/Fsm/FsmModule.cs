@@ -28,7 +28,7 @@ namespace XFrame.Modules.StateMachine
         }
 
         /// <inheritdoc/>
-        public void OnUpdate(float escapeTime)
+        public void OnUpdate(double escapeTime)
         {
             foreach (IFsmBase fsm in m_FsmList)
                 fsm.OnUpdate();
