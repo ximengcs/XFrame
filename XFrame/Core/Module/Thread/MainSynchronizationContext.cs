@@ -3,6 +3,7 @@ using System.Threading;
 using System.Diagnostics;
 using XFrame.Tasks;
 using System.Collections.Concurrent;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Threads
 {
@@ -53,6 +54,7 @@ namespace XFrame.Modules.Threads
             if (m_ActQueue.Count <= 0)
                 return;
 
+            Log.Debug($" thread update {m_MainThread} {Thread.CurrentThread.ManagedThreadId} ");
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
