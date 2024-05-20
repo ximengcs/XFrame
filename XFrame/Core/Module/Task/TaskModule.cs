@@ -5,6 +5,7 @@ using XFrame.Modules.Times;
 using XFrame.Modules.Rand;
 using System.Collections.Generic;
 using XFrame.Collections;
+using System;
 
 namespace XFrame.Modules.Tasks
 {
@@ -22,7 +23,6 @@ namespace XFrame.Modules.Tasks
 
         #region Inner Fields
         private List<IUpdater> m_Tasks;
-        private Stopwatch m_Watch;
         private float m_ThisFrameTime;
         #endregion
 
@@ -33,7 +33,6 @@ namespace XFrame.Modules.Tasks
             base.OnInit(data);
             TaskTimeout = DEFAULT_TIMEOUT;
             m_Tasks = new List<IUpdater>(32);
-            m_Watch = new Stopwatch();
         }
 
         /// <inheritdoc/>
@@ -52,10 +51,10 @@ namespace XFrame.Modules.Tasks
 
         internal void InnerExecTask(IUpdater task, double escapeTime)
         {
-            m_Watch.Restart();
+            long now = DateTime.Now.Ticks;
             task.OnUpdate(escapeTime);
-            m_Watch.Stop();
-            m_ThisFrameTime += m_Watch.ElapsedMilliseconds;
+            now = (DateTime.Now.Ticks - now) / TimeSpan.TicksPerMillisecond;
+            m_ThisFrameTime += now;
         }
 
         internal bool InnerCanContinue()

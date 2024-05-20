@@ -3,6 +3,7 @@ using XFrame.Tasks;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System;
 
 namespace XFrame.Modules.Threads
 {
@@ -58,16 +59,15 @@ namespace XFrame.Modules.Threads
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
-                Stopwatch sw = new Stopwatch();
+                long now = DateTime.Now.Ticks;
                 while (m_ActQueue.Count > 0)
                 {
-                    sw.Restart();
                     if (m_ActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
                     {
                         item.Key(item.Value);
                     }
-                    sw.Stop();
-                    timeout += sw.ElapsedMilliseconds;
+                    long escape = DateTime.Now.Ticks - now;
+                    timeout += escape / TimeSpan.TicksPerMillisecond;
                     if (ExecTimeout != -1 && timeout >= ExecTimeout)
                         break;
                 }
@@ -82,16 +82,15 @@ namespace XFrame.Modules.Threads
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
-                Stopwatch sw = new Stopwatch();
                 while (m_UpdateAfterActQueue.Count > 0)
                 {
-                    sw.Restart();
+                    long now = DateTime.Now.Ticks;
                     if (m_UpdateAfterActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
                     {
                         item.Key(item.Value);
                     }
-                    sw.Stop();
-                    timeout += sw.ElapsedMilliseconds;
+                    long escape = DateTime.Now.Ticks - now;
+                    timeout += escape / TimeSpan.TicksPerMillisecond;
                     if (ExecTimeout != -1 && timeout >= ExecTimeout)
                         break;
                 }

@@ -18,7 +18,7 @@ namespace XFrame.Core
         private static bool m_DoStart;
         private static bool m_Runing;
         private static Action m_OnRun;
-        private static Stopwatch m_Sw;
+        private static long m_Time;
 
         private static int CORE = 1;
         private static int CUSTOM = 2;
@@ -60,7 +60,7 @@ namespace XFrame.Core
         public static void Init()
         {
             Log.Debug(Log.XFrame, "Launch Framework");
-            m_Sw = Stopwatch.StartNew();
+            m_Time = DateTime.Now.Ticks;
             m_Inited = false;
             m_Runing = false;
             m_DoStart = false;
@@ -137,9 +137,8 @@ namespace XFrame.Core
 
         private static void InnerStartRun()
         {
-            m_Sw.Stop();
-            Log.Debug(Log.XFrame, $"Lunch spend time {m_Sw.ElapsedMilliseconds} ms");
-            m_Sw = null;
+            m_Time = DateTime.Now.Ticks - m_Time;
+            Log.Debug(Log.XFrame, $"Lunch spend time {m_Time / TimeSpan.TicksPerMillisecond} ms");
             m_Runing = true;
             m_OnRun?.Invoke();
         }

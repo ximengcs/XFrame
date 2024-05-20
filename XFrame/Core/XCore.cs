@@ -356,11 +356,11 @@ namespace XFrame.Core
 
         private IModule InnerAddModule(Type moduleType, int moduleId, object data)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            long now = DateTime.Now.Ticks;
             IModule module = (IModule)m_Domain.TypeModule.CreateInstance(moduleType);
             InnerInitModule(module, moduleId, data);
-            sw.Stop();
-            Log.Debug(Log.XFrame, $"Add module {moduleType.Name} time {sw.ElapsedMilliseconds} ms.");
+            now = DateTime.Now.Ticks - now;
+            Log.Debug(Log.XFrame, $"Add module {moduleType.Name} time {now / TimeSpan.TicksPerMillisecond} ms.");
             return module;
         }
 
