@@ -55,7 +55,7 @@ namespace XFrame.Modules.Threads
             if (m_ActQueue.Count <= 0)
                 return;
 
-            Log.Debug($" thread update 1 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks)} ");
+            Log.Debug($" thread update 1 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
@@ -73,7 +73,7 @@ namespace XFrame.Modules.Threads
                         break;
                 }
             }
-            Log.Debug($" thread update 2 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks)} ");
+            Log.Debug($" thread update 2 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
         }
 
         void IModule.OnDestroy()
