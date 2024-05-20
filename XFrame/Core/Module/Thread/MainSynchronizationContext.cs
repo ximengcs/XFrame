@@ -4,6 +4,7 @@ using System.Diagnostics;
 using XFrame.Tasks;
 using System.Collections.Concurrent;
 using XFrame.Modules.Diagnotics;
+using System;
 
 namespace XFrame.Modules.Threads
 {
@@ -54,7 +55,7 @@ namespace XFrame.Modules.Threads
             if (m_ActQueue.Count <= 0)
                 return;
 
-            Log.Debug($" thread update {m_MainThread} {Thread.CurrentThread.ManagedThreadId} ");
+            Log.Debug($" thread update 1 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks)} ");
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
@@ -72,6 +73,7 @@ namespace XFrame.Modules.Threads
                         break;
                 }
             }
+            Log.Debug($" thread update 2 {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks)} ");
         }
 
         void IModule.OnDestroy()
