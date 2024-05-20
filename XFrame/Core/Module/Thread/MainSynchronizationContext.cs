@@ -11,12 +11,13 @@ namespace XFrame.Modules.Threads
     /// <summary>
     /// 主线程上下文处理
     /// </summary>
-    public class MainSynchronizationContext : SynchronizationContext, IModule, IUpdater
+    public class MainSynchronizationContext : SynchronizationContext, IModule, IUpdater, IFinishUpdater
     {
         #region Inner Fields
 
         private int m_MainThread;
         private ConcurrentQueue<Pair<SendOrPostCallback, object>> m_ActQueue;
+        private ConcurrentQueue<Pair<SendOrPostCallback, object>> m_UpdateAfterActQueue;
         private const long DEFAULT_TIMEOUT = 10;
 
         #endregion
@@ -42,6 +43,7 @@ namespace XFrame.Modules.Threads
         {
             m_MainThread = Thread.CurrentThread.ManagedThreadId;
             m_ActQueue = new ConcurrentQueue<Pair<SendOrPostCallback, object>>();
+            m_UpdateAfterActQueue = new ConcurrentQueue<Pair<SendOrPostCallback, object>>();
             ExecTimeout = DEFAULT_TIMEOUT;
             SetSynchronizationContext(this);
         }
@@ -76,6 +78,32 @@ namespace XFrame.Modules.Threads
             Log.Debug($" thread update 2, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
         }
 
+        void IFinishUpdater.OnUpdate(double escapeTime)
+        {
+            if (m_UpdateAfterActQueue.Count <= 0)
+                return;
+
+            Log.Debug($" thread after update 1, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
+            if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
+            {
+                long timeout = 0;
+                Stopwatch sw = new Stopwatch();
+                while (m_UpdateAfterActQueue.Count > 0)
+                {
+                    sw.Restart();
+                    if (m_UpdateAfterActQueue.TryDequeue(out Pair<SendOrPostCallback, object> item))
+                    {
+                        item.Key(item.Value);
+                    }
+                    sw.Stop();
+                    timeout += sw.ElapsedMilliseconds;
+                    if (ExecTimeout != -1 && timeout >= ExecTimeout)
+                        break;
+                }
+            }
+            Log.Debug($" thread after update 2, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
+        }
+
         void IModule.OnDestroy()
         {
         }
@@ -90,6 +118,10 @@ namespace XFrame.Modules.Threads
             m_ActQueue.Enqueue(Pair.Create(d, state));
         }
 
+        public void PostFinishUpdate(SendOrPostCallback d, object state)
+        {
+            m_UpdateAfterActQueue.Enqueue(Pair.Create(d, state));
+        }
         #endregion
     }
 }
