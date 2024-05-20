@@ -1,10 +1,8 @@
 ﻿using XFrame.Core;
+using XFrame.Tasks;
 using System.Threading;
 using System.Diagnostics;
-using XFrame.Tasks;
 using System.Collections.Concurrent;
-using XFrame.Modules.Diagnotics;
-using System;
 
 namespace XFrame.Modules.Threads
 {
@@ -57,7 +55,6 @@ namespace XFrame.Modules.Threads
             if (m_ActQueue.Count <= 0)
                 return;
 
-            Log.Debug($" thread update 1, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
@@ -75,7 +72,6 @@ namespace XFrame.Modules.Threads
                         break;
                 }
             }
-            Log.Debug($" thread update 2, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
         }
 
         void IFinishUpdater.OnUpdate(double escapeTime)
@@ -83,7 +79,6 @@ namespace XFrame.Modules.Threads
             if (m_UpdateAfterActQueue.Count <= 0)
                 return;
 
-            Log.Debug($" thread after update 1, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
             if (m_MainThread == Thread.CurrentThread.ManagedThreadId)
             {
                 long timeout = 0;
@@ -101,7 +96,6 @@ namespace XFrame.Modules.Threads
                         break;
                 }
             }
-            Log.Debug($" thread after update 2, escape {escapeTime}, {m_MainThread} {Thread.CurrentThread.ManagedThreadId} {new TimeSpan(DateTime.Now.Ticks).TotalMilliseconds} ");
         }
 
         void IModule.OnDestroy()
