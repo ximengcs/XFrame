@@ -16,7 +16,6 @@ namespace XFrame.Core.Threads
                 fiber.Use();
                 while (!fiber.Disposed)
                 {
-                    Log.Debug($"fiber {fiber.GetHashCode()} {fiber.Disposed}");
                     fiber.Update(time);
                     Thread.Sleep(time);
                 }
