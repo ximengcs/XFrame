@@ -4,7 +4,6 @@ using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Entities;
 using XFrame.Modules.Event;
-using XFrame.Modules.Tasks;
 
 namespace XFrameTest
 {

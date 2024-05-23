@@ -1,6 +1,5 @@
-﻿using XFrame.Core;
-
-namespace XFrame.Modules.Tasks
+﻿
+namespace XFrame.Core.Threads
 {
     /// <summary>
     /// 任务模块

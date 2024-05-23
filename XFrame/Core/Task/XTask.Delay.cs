@@ -26,6 +26,7 @@ namespace XFrame.Tasks
         private class DelayHandler : IProTaskHandler
         {
             private float m_Target;
+            private double m_LastTime;
             private double m_Time;
             private long m_StartFrame;
             private double m_Pro;
@@ -42,7 +43,8 @@ namespace XFrame.Tasks
                     }
                     else
                     {
-                        m_Time += XTaskHelper.Time.EscapeTime;
+                        m_Time += XTaskHelper.Time.Time - m_LastTime;
+                        m_LastTime = XTaskHelper.Time.Time;
 
                         if (m_Target <= m_Time)
                         {
@@ -64,6 +66,7 @@ namespace XFrame.Tasks
             {
                 m_Target = target;
                 m_Time = 0;
+                m_LastTime = XTaskHelper.Time.Time;
                 m_StartFrame = nextFrameExec ? XTaskHelper.Time.Frame + 1 : 0;
             }
 

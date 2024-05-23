@@ -1,6 +1,6 @@
 using System;
 using XFrame.Core;
-using XFrame.Modules.Tasks;
+using XFrame.Core.Threads;
 using XFrame.Modules.Times;
 
 namespace XFrame.Tasks
@@ -56,8 +56,13 @@ namespace XFrame.Tasks
         public static void SetDomain(XDomain domain)
         {
             m_Domain = domain;
-            m_Module = domain.GetModule<ITaskModule>();
+            m_Module = domain.GetModule<FiberModule>();
             m_TimeModule = domain.GetModule<ITimeModule>();
+        }
+
+        public static void SetTaskModule(ITaskModule taskModule)
+        {
+            m_Module = taskModule;
         }
 
         /// <summary>

@@ -2,9 +2,9 @@
 using XFrame.Core;
 using XFrame.Modules.ID;
 using XFrame.Modules.Pools;
-using XFrame.Modules.Tasks;
 using XFrame.Modules.Config;
 using XFrame.Collections;
+using XFrame.Core.Threads;
 
 namespace XFrame.Modules.Download
 {
@@ -12,7 +12,7 @@ namespace XFrame.Modules.Download
     [BaseModule]
     [RequireModule(typeof(PoolModule))]
     [RequireModule(typeof(IdModule))]
-    [RequireModule(typeof(TaskModule))]
+    [RequireModule(typeof(FiberModule))]
     [XType(typeof(IDownloadModule))]
     public partial class DownloadModule : ModuleBase, IDownloadModule
     {

@@ -1,7 +1,6 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Entities;
-using XFrame.Modules.Tasks;
 
 namespace XFrameTest
 {

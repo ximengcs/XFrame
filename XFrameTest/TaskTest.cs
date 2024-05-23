@@ -9,7 +9,6 @@ using XFrame.Core;
 using XFrame.Modules.Datas;
 using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Download;
-using XFrame.Modules.Tasks;
 using XFrame.Modules.Threads;
 using XFrame.Modules.Times;
 using XFrame.Tasks;

@@ -3,7 +3,6 @@ using NUnit.Framework.Internal;
 using XFrame.Core;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Tasks;
 
 namespace XFrameTest
 {
