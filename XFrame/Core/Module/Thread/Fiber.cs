@@ -32,7 +32,6 @@ namespace XFrame.Core.Threads
         public void Dispose()
         {
             m_Disposed = true;
-            Log.Debug($"fiber dispose {GetHashCode()}");
             try
             {
                 m_Thread.Interrupt();
