@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core.Threads
 {
@@ -13,8 +14,9 @@ namespace XFrame.Core.Threads
                 int time = data.Item2;
                 Fiber fiber = data.Item1;
                 fiber.Use();
-                while (true)
+                while (!fiber.Disposed)
                 {
+                    Log.Debug($"fiber {fiber.GetHashCode()} {fiber.Disposed}");
                     fiber.Update(time);
                     Thread.Sleep(time);
                 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core.Threads
 {
@@ -9,8 +11,11 @@ namespace XFrame.Core.Threads
         private Thread m_Thread;
         private List<IUpdater> m_UpdaterList;
         private FiberSynchronizationContext m_Context;
+        private bool m_Disposed;
 
         public int Type => m_Type;
+
+        public bool Disposed => m_Disposed;
 
         public Fiber(int type, int threadId = -1)
         {
@@ -26,7 +31,18 @@ namespace XFrame.Core.Threads
 
         public void Dispose()
         {
-            m_Thread.Abort();
+            m_Disposed = true;
+            Log.Debug($"fiber dispose {GetHashCode()}");
+            try
+            {
+                m_Thread.Interrupt();
+                m_Thread.Abort();
+            }
+            catch (Exception e)
+            {
+                Log.Exception(e);
+            }
+
             m_Thread = null;
         }
 

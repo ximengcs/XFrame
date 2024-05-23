@@ -64,6 +64,15 @@ namespace XFrame.Core.Threads
             return fiber;
         }
 
+        public void Destroy(Fiber fiber)
+        {
+            if (m_Fibers.ContainsKey(fiber.Type))
+            {
+                fiber.Dispose();
+                m_Fibers.Remove(fiber.Type);
+            }
+        }
+
         public void Update(int type, double escapeTime)
         {
             if (m_Fibers.TryGetValue(type, out Fiber fiber))
