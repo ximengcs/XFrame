@@ -1,10 +1,21 @@
 ﻿using System;
 using System.Threading;
+using System.Timers;
 
 namespace XFrame.Core.Threads
 {
     public static class FiberExtension
     {
+        public static Action SleepBefore;
+        public static Action SleepAfter;
+
+        public static void Sleep(int millisecondsTimeout)
+        {
+            SleepBefore?.Invoke();
+            Thread.Sleep(millisecondsTimeout);
+            SleepAfter?.Invoke();
+        }
+
         public static void StartThread(this Fiber param, int waitMillSecondTime = 0)
         {
             Thread thread = new Thread((p) =>
@@ -16,7 +27,7 @@ namespace XFrame.Core.Threads
                 while (!fiber.Disposed)
                 {
                     fiber.Update(time);
-                    Thread.Sleep(time);
+                    Sleep(time);
                 }
             });
             thread.Start(ValueTuple.Create(param, waitMillSecondTime));
