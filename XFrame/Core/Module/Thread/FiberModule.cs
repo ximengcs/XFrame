@@ -20,9 +20,10 @@ namespace XFrame.Core.Threads
             }
         }
 
-        public int ExecCount => throw new NotImplementedException();
-
-        public long TaskTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool CurrentIsMain
+        {
+            get { return Thread.CurrentThread.ManagedThreadId == m_MainFiber.Thread; }
+        }
 
         protected override void OnInit(object data)
         {

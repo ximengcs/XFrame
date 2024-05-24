@@ -28,6 +28,8 @@ namespace XFrame.Core.Threads
         /// <inheritdoc/>
         public XDomain Domain => XTaskHelper.Domain;
 
+        internal int ThreadId => m_ThreadId;
+
         public FiberSynchronizationContext(int threadId)
         {
             m_ThreadId = threadId;

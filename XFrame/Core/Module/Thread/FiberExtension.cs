@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core.Threads
 {
