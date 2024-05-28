@@ -28,7 +28,8 @@ namespace XFrame.Modules.Entities
             IContainerModule containerModule = GetUseModule<IContainerModule>();
             setting.DataProvider = InnerSetEntityScene;
             IEntity entity = (IEntity)containerModule.Create(entityId, setting);
-            m_Helper.EntityOnCreate(entity);
+            if (m_Helper != null)
+                m_Helper.EntityOnCreate(entity);
             return entity;
         }
 
@@ -37,7 +38,8 @@ namespace XFrame.Modules.Entities
             IContainerModule containerModule = GetUseModule<IContainerModule>();
             setting.DataProvider = InnerSetEntityScene;
             IEntity entity = (IEntity)containerModule.Create(setting);
-            m_Helper.EntityOnCreate(entity);
+            if (m_Helper != null)
+                m_Helper.EntityOnCreate(entity);
             return entity;
         }
 
