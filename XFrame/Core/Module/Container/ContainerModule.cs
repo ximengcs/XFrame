@@ -57,7 +57,7 @@ namespace XFrame.Modules.Containers
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
                 m_Containers.Add(container.Id, container);
-            Log.Debug(Log.Container, $"there is container added. {container.GetType().Name} {container.Id}");
+            Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
             InnerDebugContainers();
             return container;
         }
@@ -65,7 +65,7 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public void Remove(IContainer container)
         {
-            Log.Debug(Log.Container, $"there is container removed. {container.GetType().Name} {container.Id}");
+            Log.Debug(Log.Container, $"({Id})there is container removed. {container.GetType().Name} {container.Id}");
             InnerRemoveRecursive(container);
             InnerDebugContainers();
         }
@@ -79,6 +79,7 @@ namespace XFrame.Modules.Containers
                 sb.AppendLine($"{(child.Parent != null ? "-" : "·")} {child.GetType().Name} {child.Id} -> {(child.Parent != null ? child.Parent.Id.ToString() : "NULL")}");
                 InnerCheckRecursive(child, sb, "\t");
             }
+            sb.Insert(0, $"({Id})");
             Log.Debug(Log.Container, sb.ToString());
         }
 
@@ -91,7 +92,7 @@ namespace XFrame.Modules.Containers
             {
                 if (child == container)
                 {
-                    Log.Error(Log.Container, $"same container, {child.GetType().Name} {container.GetType().Name}");
+                    Log.Error(Log.Container, $"({Id})same container, {child.GetType().Name} {container.GetType().Name}");
                     continue;
                 }
                 sb.Append(tab);
