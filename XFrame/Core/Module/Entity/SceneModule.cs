@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using XFrame.Core;
+using XFrame.Modules.Containers;
 using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Entities
@@ -20,7 +21,11 @@ namespace XFrame.Modules.Entities
         {
             if (m_Scenes.ContainsKey(id))
                 return m_Scenes[id];
-            return Entry.AddModule<Scene>(id);
+            Scene scene = Entry.AddModule<Scene>(id);
+            ContainerModule containerModule = Entry.AddModule<ContainerModule>(id);
+            scene.RegisterUseModule(typeof(IContainerModule), id);
+            containerModule.RegisterUseModule(typeof(IEntityModule), id);
+            return scene;
         }
 
         public IScene Create()
