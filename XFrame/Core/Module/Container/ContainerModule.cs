@@ -2,10 +2,7 @@
 using XFrame.Core;
 using XFrame.Collections;
 using XFrame.Modules.ID;
-using XFrame.Modules.Entities;
 using System.Collections.Generic;
-using XFrame.Modules.Caches;
-using System.ComponentModel;
 using XFrame.Modules.Diagnotics;
 using System.Text;
 using XFrame.Modules.Pools;
@@ -19,6 +16,7 @@ namespace XFrame.Modules.Containers
     {
         //private XCollection<IContainer> m_Containers;
         private Dictionary<int, IContainer> m_Containers;
+        private Dictionary<int, IContainer> m_UpdateList;
         private List<IContainer> m_Cache;
 
         public void GetAll(List<IContainer> list)
@@ -54,9 +52,10 @@ namespace XFrame.Modules.Containers
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
+            m_Containers.Add(container.Id, container);
             container.OnInit(this, id, master, onReady);
             if (updateTrusteeship)
-                m_Containers.Add(container.Id, container);
+                m_UpdateList.Add(container.Id, container);
             Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
             InnerDebugContainers();
             return container;
@@ -119,6 +118,8 @@ namespace XFrame.Modules.Containers
                 cacheList.Add(child);
             foreach (IContainer child in cacheList)
                 InnerRemoveRecursive(child);
+            if (m_UpdateList.ContainsKey(container.Id))
+                m_UpdateList.Remove(container.Id);
             if (m_Containers.ContainsKey(container.Id))
             {
                 m_Containers.Remove(container.Id);
@@ -134,13 +135,14 @@ namespace XFrame.Modules.Containers
             base.OnInit(data);
             m_Cache = new List<IContainer>();
             m_Containers = new Dictionary<int, IContainer>();
+            m_UpdateList = new Dictionary<int, IContainer>();
         }
 
         /// <inheritdoc/>
         public void OnUpdate(double escapeTime)
         {
             m_Cache.Clear();
-            m_Cache.AddRange(m_Containers.Values);
+            m_Cache.AddRange(m_UpdateList.Values);
             foreach (IContainer container in m_Cache)
             {
                 if (container.Active)
@@ -165,6 +167,7 @@ namespace XFrame.Modules.Containers
                 container.OnDestroy();
             }
             m_Containers.Clear();
+            m_UpdateList.Clear();
         }
     }
 }
