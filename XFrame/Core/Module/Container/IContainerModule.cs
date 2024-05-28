@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using XFrame.Core;
 
 namespace XFrame.Modules.Containers
@@ -19,6 +20,8 @@ namespace XFrame.Modules.Containers
         IContainer Create(int id, IContainerSetting setting);
 
         IContainer Create(IContainerSetting setting);
+
+        void GetAll(List<IContainer> result);
 
         /// <summary>
         /// 移除一个容器

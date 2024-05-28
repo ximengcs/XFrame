@@ -21,6 +21,12 @@ namespace XFrame.Modules.Containers
         private Dictionary<int, IContainer> m_Containers;
         private List<IContainer> m_Cache;
 
+        public void GetAll(List<IContainer> list)
+        {
+            foreach (var entry in m_Containers)
+                list.Add(entry.Value);
+        }
+
         /// <inheritdoc/>
         public IContainer Get(int id)
         {
