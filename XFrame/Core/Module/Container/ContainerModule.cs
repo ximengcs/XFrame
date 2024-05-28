@@ -52,8 +52,8 @@ namespace XFrame.Modules.Containers
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
-            m_Containers.Add(container.Id, container);
             container.OnInit(this, id, master, onReady);
+            m_Containers.Add(container.Id, container);
             if (updateTrusteeship)
                 m_UpdateList.Add(container.Id, container);
             Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
