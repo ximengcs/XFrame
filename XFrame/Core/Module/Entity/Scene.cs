@@ -44,7 +44,7 @@ namespace XFrame.Modules.Entities
         public IEntity Create(int entityId, EntitySetting setting)
         {
             IContainerModule containerModule = GetUseModule<IContainerModule>();
-            setting.DataProvider = InnerSetEntityScene;
+            setting.DataProvider += InnerSetEntityScene;
             setting.ModuleUpdate = false;
             IEntity entity = (IEntity)containerModule.Create(entityId, setting);
             if (m_Helper != null)
@@ -55,7 +55,7 @@ namespace XFrame.Modules.Entities
         public IEntity Create(EntitySetting setting)
         {
             IContainerModule containerModule = GetUseModule<IContainerModule>();
-            setting.DataProvider = InnerSetEntityScene;
+            setting.DataProvider += InnerSetEntityScene;
             setting.ModuleUpdate = false;
             IEntity entity = (IEntity)containerModule.Create(setting);
             if (m_Helper != null)
