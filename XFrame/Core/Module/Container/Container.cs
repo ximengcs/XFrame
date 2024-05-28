@@ -90,12 +90,17 @@ namespace XFrame.Modules.Containers
                 }
             }
 
-
             if (Master == null)
                 Master = this;
 
+            OnReadyInit();
             onReady?.Invoke(this);
             OnInit();
+        }
+
+        protected virtual void OnReadyInit()
+        {
+
         }
 
         /// <summary>

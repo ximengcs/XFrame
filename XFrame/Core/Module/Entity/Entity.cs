@@ -1,6 +1,7 @@
 ﻿using XFrame.Modules.Event;
 using XFrame.Modules.Containers;
 using System;
+using XFrame.Core;
 
 namespace XFrame.Modules.Entities
 {
@@ -16,9 +17,14 @@ namespace XFrame.Modules.Entities
         protected internal override void OnInit()
         {
             base.OnInit();
-            Scene = GetData<IScene>();
-            SetData<IScene>(null);
             Event = m_Module.Domain.GetModule<IEventModule>().NewSys();
+        }
+
+        protected override void OnReadyInit()
+        {
+            base.OnReadyInit();
+            ModuleBase module = m_Module as ModuleBase;
+            Scene = (IScene)module.GetUseModule<IEntityModule>();
         }
         #endregion
 
