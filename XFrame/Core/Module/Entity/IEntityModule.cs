@@ -1,6 +1,4 @@
-﻿using System;
-using XFrame.Core;
-using XFrame.Modules.Containers;
+﻿using XFrame.Core;
 using XFrame.Modules.Event;
 
 namespace XFrame.Modules.Entities
@@ -13,11 +11,7 @@ namespace XFrame.Modules.Entities
     {
         IEventSystem Event { get; }
 
-        /// <summary>
-        /// 注册实体，创建实体前需要注册实体
-        /// </summary>
-        /// <typeparam name="T">实体基类或实体类</typeparam>
-        void RegisterEntity<T>() where T : class, IEntity;
+        void SetHelper(IEntityHelper helper);
 
         /// <summary>
         /// 根据Id获取实体
@@ -26,79 +20,9 @@ namespace XFrame.Modules.Entities
         /// <returns>实体</returns>
         IEntity Get(int entityId);
 
-        IEntity Create(IEntity parent, Type entityType, int entityId, OnDataProviderReady onReady = null);
+        IEntity Create(int entityId, EntitySetting setting);
 
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        T Create<T>(OnDataProviderReady onReady = null) where T : class, IEntity;
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <param name="type">实体类型</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        IEntity Create(Type type, OnDataProviderReady onReady = null);
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="parent">父实体</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        T Create<T>(IEntity parent, OnDataProviderReady onReady = null) where T : class, IEntity;
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <param name="type">实体类型</param>
-        /// <param name="parent">父实体</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        IEntity Create(Type type, IEntity parent, OnDataProviderReady onReady = null);
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="typeId">类型Id</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        T Create<T>(int typeId, OnDataProviderReady onReady = null) where T : class, IEntity;
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <param name="baseType">实体类型</param>
-        /// <param name="typeId">类型Id</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        IEntity Create(Type baseType, int typeId, OnDataProviderReady onReady = null);
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="parent">父实体</param>
-        /// <param name="typeId">类型Id</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        T Create<T>(IEntity parent, int typeId, OnDataProviderReady onReady = null) where T : class, IEntity;
-
-        /// <summary>
-        /// 创建实体
-        /// </summary>
-        /// <param name="baseType">实体类型</param>
-        /// <param name="parent">父实体</param>
-        /// <param name="typeId">类型Id</param>
-        /// <param name="onReady">数据提供委托</param>
-        /// <returns>创建的实体</returns>
-        IEntity Create(Type baseType, IEntity parent, int typeId, OnDataProviderReady onReady = null);
+        IEntity Create(EntitySetting setting);
 
         /// <summary>
         /// 销毁一个实体

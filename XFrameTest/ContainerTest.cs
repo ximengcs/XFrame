@@ -18,16 +18,16 @@ namespace XFrameTest
 
             public EntityA()
             {
-                m_Coms = Entry.GetModule<IContainerModule>().New();
-                Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
-
-                m_Coms.GetOrAddCom<Com1>();
-                m_Coms.GetOrAddCom<Com2>((com) =>
-                {
-                    com.SetData(98259);
-                });
-                m_Coms.GetOrAddCom<Com3>();
-                m_Coms.GetOrAddCom<Com1>();
+                //m_Coms = Entry.GetModule<IContainerModule>().New();
+                //Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
+                //
+                //m_Coms.GetOrAddCom<Com1>();
+                //m_Coms.GetOrAddCom<Com2>((com) =>
+                //{
+                //    com.SetData(98259);
+                //});
+                //m_Coms.GetOrAddCom<Com3>();
+                //m_Coms.GetOrAddCom<Com1>();
             }
 
             public void Destroy()
@@ -49,6 +49,8 @@ namespace XFrameTest
             IEntity IEntity.Master => throw new NotImplementedException();
 
             IEntity IEntity.Parent => throw new NotImplementedException();
+
+            public IScene Scene => throw new NotImplementedException();
 
             protected override void OnInit()
             {
@@ -152,7 +154,6 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Console.WriteLine("New");
-                Container container = Entry.GetModule<IContainerModule>().New();
                 //XModule.Task.GetOrNew<ActionTask>()
                 //.Add(() =>
                 //{

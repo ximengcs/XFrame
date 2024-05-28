@@ -34,30 +34,15 @@ namespace XFrame.Modules.Containers
             }
         }
 
-        /// <inheritdoc/>
-        public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
+        public IContainer Create(int id, IContainerSetting setting)
         {
-            Type type = typeof(T);
-            return (T)InnerNew(type, Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
+            return InnerNew(setting.Type, id, setting.ModuleUpdate, setting.Master, setting.DataProvider);
         }
 
-        /// <inheritdoc/>
-        public Container New(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
+        public IContainer Create(IContainerSetting setting)
         {
-            Type type = typeof(Container);
-            return (Container)InnerNew(typeof(Container), Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
-        }
-
-        /// <inheritdoc/>
-        public IContainer New(Type type, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
-        {
-            return InnerNew(type, Domain.GetModule<IIdModule>().Next(), updateTrusteeship, master, onReady);
-        }
-
-        /// <inheritdoc/>
-        public IContainer New(Type type, int id, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
-        {
-            return InnerNew(type, id, updateTrusteeship, master, onReady);
+            int id = GetUseModule<IIdModule>().Next();
+            return InnerNew(setting.Type, id, setting.ModuleUpdate, setting.Master, setting.DataProvider);
         }
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)

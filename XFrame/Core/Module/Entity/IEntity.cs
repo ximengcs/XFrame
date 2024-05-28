@@ -13,6 +13,8 @@ namespace XFrame.Modules.Entities
         /// </summary>
         IEventSystem Event { get; }
 
+        IScene Scene { get; }
+
         /// <summary>
         /// 根实体
         /// </summary>

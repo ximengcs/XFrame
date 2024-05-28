@@ -10,7 +10,6 @@ namespace XFrameTest
 
     }
 
-    [EntityProp(3)]
     internal class E3 : EBase
     {
         protected override void OnInit()

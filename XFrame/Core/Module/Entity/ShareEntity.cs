@@ -16,5 +16,15 @@ namespace XFrame.Modules.Entities
         public new IEntity Master => ((ShareContainer)this).Master as IEntity;
 
         public new IEntity Parent => ((ShareContainer)this).Parent as IEntity;
+
+        public IScene Scene { get; private set; }
+
+        protected internal override void OnInit()
+        {
+            base.OnInit();
+
+            Scene = GetData<IScene>();
+            SetData<IScene>(null);
+        }
     }
 }

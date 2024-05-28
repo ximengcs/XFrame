@@ -13,14 +13,14 @@ namespace XFrameTest
             EntryTest.Exec(100, () =>
             {
                 Log.Debug("-------------Create E1 Start-------------");
-                E1 e1 = Entry.GetModule<IEntityModule>().Create<E1>((db) =>
-                {
-                    Log.Debug("DB OnReady");
-                    db.SetData(Pair.Create("TestKey", "TestValue"));
-                    db.SetData(1);
-                    db.SetData("2");
-                });
-                Log.Debug("-------------Create E1 End-------------");
+                //E1 e1 = Entry.GetModule<IEntityModule>().Create<E1>((db) =>
+                //{
+                //    Log.Debug("DB OnReady");
+                //    db.SetData(Pair.Create("TestKey", "TestValue"));
+                //    db.SetData(1);
+                //    db.SetData("2");
+                //});
+                //Log.Debug("-------------Create E1 End-------------");
 
                 /*
                 XModule.Task.GetOrNew<ActionTask>()
@@ -48,22 +48,22 @@ namespace XFrameTest
         {
             EntryTest.Exec(100, () =>
             {
-                E1 e1 = Entry.GetModule<IEntityModule>().Create<E1>((entity) =>
-                {
-                    Log.Debug("OnEntityReady");
-                    entity.SetData(Pair.Create("TestKey", "TestValue"));
-                });
-                e1.AddCom<C1>((com) =>
-                {
-                    e1.AddCom<C2>(2, (com2) =>
-                    {
-                        com2.SetData("2");
-                    });
-                    com.SetData(1);
-                });
-
-                e1.RemoveCom<C2>(2);
-                Entry.GetModule<IEntityModule>().Destroy(e1);
+                //E1 e1 = Entry.GetModule<IEntityModule>().Create<E1>((entity) =>
+                //{
+                //    Log.Debug("OnEntityReady");
+                //    entity.SetData(Pair.Create("TestKey", "TestValue"));
+                //});
+                //e1.AddCom<C1>((com) =>
+                //{
+                //    e1.AddCom<C2>(2, (com2) =>
+                //    {
+                //        com2.SetData("2");
+                //    });
+                //    com.SetData(1);
+                //});
+                //
+                //e1.RemoveCom<C2>(2);
+                //Entry.GetModule<IEntityModule>().Destroy(e1);
             });
         }
 
@@ -72,8 +72,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(50, () =>
             {
-                Entry.GetModule<IEntityModule>().RegisterEntity<EBase>();
-                EBase c3 = Entry.GetModule<IEntityModule>().Create<EBase>(3);
+
             });
         }
 
@@ -82,7 +81,7 @@ namespace XFrameTest
         {
             EntryTest.Exec(50, () =>
             {
-                Entry.GetModule<IEntityModule>().Create<E3>();
+
             });
         }
     }

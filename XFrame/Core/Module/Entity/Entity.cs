@@ -9,11 +9,15 @@ namespace XFrame.Modules.Entities
     /// </summary>
     public abstract class Entity : Container, IEntity
     {
+        public IScene Scene { get; private set; }
+
         #region Life Fun
         /// <inheritdoc/>
         protected internal override void OnInit()
         {
             base.OnInit();
+            Scene = GetData<IScene>();
+            SetData<IScene>(null);
             Event = m_Module.Domain.GetModule<IEventModule>().NewSys();
         }
         #endregion
@@ -31,12 +35,18 @@ namespace XFrame.Modules.Entities
 
         protected override IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            return m_Module.Domain.GetModule<IEntityModule>().Create(this, type, id, onReady);
+            EntitySetting setting = new EntitySetting(type, id);
+            setting.Master = this;
+            setting.DataProvider = onReady;
+            return Scene.Create(setting);
         }
 
         protected override IContainer InnerAdd(Type type, OnDataProviderReady onReady)
         {
-            return m_Module.Domain.GetModule<IEntityModule>().Create(type, this, onReady);
+            EntitySetting setting = new EntitySetting(type);
+            setting.Master = this;
+            setting.DataProvider = onReady;
+            return Scene.Create(setting);
         }
     }
 }
