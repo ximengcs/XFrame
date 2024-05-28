@@ -30,15 +30,7 @@ namespace XFrame.Modules.Entities
             DataProvider = null;
         }
 
-        public EntitySetting(Type type, int id)
-        {
-            Master = null;
-            m_Type = type;
-            ModuleUpdate = true;
-            DataProvider = null;
-        }
-
-        public EntitySetting(Type type, int id, IContainer master)
+        public EntitySetting(Type type, IContainer master)
         {
             Master = master;
             m_Type = type;

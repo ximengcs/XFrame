@@ -29,15 +29,7 @@ namespace XFrame.Modules.Containers
             DataProvider = null;
         }
 
-        public ContainerSetting(Type type, int id)
-        {
-            Master = null;
-            m_Type = type;
-            ModuleUpdate = true;
-            DataProvider = null;
-        }
-
-        public ContainerSetting(Type type, int id, IContainer master)
+        public ContainerSetting(Type type, IContainer master)
         {
             Master = master;
             m_Type = type;

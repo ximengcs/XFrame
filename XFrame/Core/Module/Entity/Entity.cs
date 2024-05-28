@@ -35,16 +35,14 @@ namespace XFrame.Modules.Entities
 
         protected override IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            EntitySetting setting = new EntitySetting(type, id);
-            setting.Master = this;
+            EntitySetting setting = new EntitySetting(type, this);
             setting.DataProvider = onReady;
-            return Scene.Create(setting);
+            return Scene.Create(id, setting);
         }
 
         protected override IContainer InnerAdd(Type type, OnDataProviderReady onReady)
         {
-            EntitySetting setting = new EntitySetting(type);
-            setting.Master = this;
+            EntitySetting setting = new EntitySetting(type, this);
             setting.DataProvider = onReady;
             return Scene.Create(setting);
         }

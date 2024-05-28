@@ -255,8 +255,7 @@ namespace XFrame.Modules.Containers
 
         protected virtual IContainer InnerAdd(Type type, OnDataProviderReady onReady)
         {
-            ContainerSetting setting = new ContainerSetting(type);
-            setting.Master = this;
+            ContainerSetting setting = new ContainerSetting(type, this);
             setting.DataProvider = onReady;
             IContainer newCom = m_Module.Create(setting);
             return newCom;
@@ -264,10 +263,9 @@ namespace XFrame.Modules.Containers
 
         protected virtual IContainer InnerAdd(Type type, int id, OnDataProviderReady onReady)
         {
-            ContainerSetting setting = new ContainerSetting(type, id);
-            setting.Master = this;
+            ContainerSetting setting = new ContainerSetting(type, this);
             setting.DataProvider = onReady;
-            IContainer newCom = m_Module.Create(setting);
+            IContainer newCom = m_Module.Create(id, setting);
             return newCom;
         }
 
