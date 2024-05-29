@@ -103,6 +103,13 @@ namespace XFrame.Collections
                     m_WithTypes.Remove(xType);
                 }
             }
+
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities2))
+                if (entities2.TryGetValue(item.Id, out T entity))
+                {
+                    Log.Debug($"remove 2 contains");
+                }
+
             bool contains = Get(xType, item.Id) == null;
             Log.Debug($"remove contains {contains}");
             if (m_Mains.Remove(xType))
