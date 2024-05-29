@@ -16,6 +16,8 @@ namespace XFrame.Core.Threads
 
         internal int Thread { get { return m_Context.ThreadId; } }
 
+        private bool IsMain => m_Type == 0;
+
         public int Type => m_Type;
 
         public bool Disposed => m_Disposed;
@@ -36,6 +38,8 @@ namespace XFrame.Core.Threads
 
         public void Dispose()
         {
+            if (IsMain)
+                return;
             m_Disposed = true;
             try
             {

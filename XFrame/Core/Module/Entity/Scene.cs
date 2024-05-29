@@ -30,7 +30,12 @@ namespace XFrame.Modules.Entities
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            Domain.GetModule<IEventModule>().Remove(Event);
             m_Fiber.UnRegisterUpdater(this);
+            m_Fiber.Dispose();
+            m_Fiber = null;
+            m_Containers = null;
+            Event = null;
         }
 
         public void SetHelper(IEntityHelper helper)

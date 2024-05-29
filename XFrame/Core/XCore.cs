@@ -431,7 +431,15 @@ namespace XFrame.Core
         private bool InnerRemoveModule(Type moduleType, int moduleId)
         {
             IModule module = m_Modules.Get(moduleType, moduleId);
-            return module != null ? m_Modules.Remove(module) : false;
+            if (module != null)
+            {
+                module.OnDestroy();
+                return m_Modules.Remove(module);
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
     }
