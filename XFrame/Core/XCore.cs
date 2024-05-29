@@ -433,8 +433,8 @@ namespace XFrame.Core
             IModule module = m_Modules.Get(moduleType, moduleId);
             if (module != null)
             {
-                module.OnDestroy();
                 bool succes = m_Modules.Remove(module);
+                module.OnDestroy();
                 Log.Debug($"contains {m_Modules.Get(moduleType, moduleId) == null}");
                 return succes;
             }
