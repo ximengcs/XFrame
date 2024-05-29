@@ -53,10 +53,14 @@ namespace XFrame.Modules.Containers
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
-            m_Containers.Add(id, container);
-            m_ContainersList.Add(container);
-            if (updateTrusteeship)
-                m_UpdateList.Add(container.Id, container);
+            lock (m_ContainersList)
+            {
+                m_Containers.Add(id, container);
+                m_ContainersList.Add(container);
+                if (updateTrusteeship)
+                    m_UpdateList.Add(container.Id, container);
+            }
+
             container.OnInit(this, id, master, onReady);
             Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
             InnerDebugContainers();
@@ -67,8 +71,11 @@ namespace XFrame.Modules.Containers
         public void Remove(IContainer container)
         {
             Log.Debug(Log.Container, $"({Id})there is container removed. {container.GetType().Name} {container.Id}");
-            InnerRemoveRecursive(container);
-            InnerDebugContainers();
+            lock (m_ContainersList)
+            {
+                InnerRemoveRecursive(container);
+                InnerDebugContainers();
+            }
         }
 
         private void InnerDebugContainers()
