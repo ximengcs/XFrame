@@ -78,7 +78,6 @@ namespace XFrame.Modules.Entities
 
         public void OnUpdate(double escapeTime)
         {
-            Log.Debug($"scene update {Id}");
             IContainerModule containerModule = GetUseModule<IContainerModule>();
             m_Containers.Clear();
             containerModule.GetAll(m_Containers);
