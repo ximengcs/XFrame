@@ -77,7 +77,7 @@ namespace XFrame.Collections
             }
 
             XLinkNode<T> node = m_Elements.AddLast(entity);
-            m_NodeMap.Add(node.GetHashCode(), node);
+            m_NodeMap.Add(entity.GetHashCode(), node);
 
             entities.Add(entity.Id, entity);
             if (!m_Mains.ContainsKey(xType))
