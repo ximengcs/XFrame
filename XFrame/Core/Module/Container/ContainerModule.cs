@@ -155,7 +155,6 @@ namespace XFrame.Modules.Containers
         /// <inheritdoc/>
         public void OnUpdate(double escapeTime)
         {
-            Log.Debug($"update {Thread.CurrentThread.ManagedThreadId}");
             m_Cache.Clear();
             m_Cache.AddRange(m_ContainersList);
             foreach (IContainer container in m_Cache)

@@ -96,7 +96,13 @@ namespace XFrame.Collections
             Type type = item.GetType();
             Type xType = InnerGetMapType(type);
             if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+            {
                 success = entities.Remove(item.Id);
+                if (entities.Count == 0)
+                {
+                    m_WithTypes.Remove(xType);
+                }
+            }
             if (m_Mains.Remove(xType))
             {
                 if (!success)
