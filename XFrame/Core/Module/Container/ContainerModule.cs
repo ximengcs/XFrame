@@ -23,7 +23,6 @@ namespace XFrame.Modules.Containers
 
         public void GetAll(List<IContainer> list)
         {
-            Log.Debug($"{GetHashCode()} {Id} GetAll");
             foreach (var entry in m_Containers)
                 list.Add(entry.Value);
         }
@@ -54,7 +53,6 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
-            Log.Debug($"{GetHashCode()} {Id} InnerNew");
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
             m_Containers.Add(id, container);
             m_ContainersList.Add(container);
@@ -127,7 +125,6 @@ namespace XFrame.Modules.Containers
                 m_UpdateList.Remove(container.Id);
             if (m_ContainersList.Contains(container))
             {
-                Log.Debug($"{GetHashCode()} {Id} Remove");
                 m_ContainersList.Remove(container);
             }
             if (m_Containers.ContainsKey(container.Id))
