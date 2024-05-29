@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using XFrame.Modules.Reflection;
 using System.Reflection;
 using XFrame.Core;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Collections
 {
@@ -220,7 +221,10 @@ namespace XFrame.Collections
             Type xType = InnerGetMapType(elementType);
             if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
                 if (entities.TryGetValue(entityId, out T entity))
+                {
+                    Log.Debug($"get yes {xType.FullName} {entityId}");
                     return entity;
+                }
             return default;
         }
         #endregion
