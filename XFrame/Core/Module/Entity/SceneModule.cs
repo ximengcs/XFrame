@@ -18,6 +18,13 @@ namespace XFrame.Modules.Entities
             m_Scenes = new Dictionary<int, IScene>();
         }
 
+        public IScene Get(int id)
+        {
+            if (m_Scenes.TryGetValue(id, out IScene scene))
+                return scene;
+            return null;
+        }
+
         public IScene Create(int id, Fiber fiber = null)
         {
             if (m_Scenes.ContainsKey(id))
@@ -28,6 +35,7 @@ namespace XFrame.Modules.Entities
             ContainerModule containerModule = Entry.AddModule<ContainerModule>(id);
             scene.RegisterUseModule(typeof(IContainerModule), id);
             containerModule.RegisterUseModule(typeof(IEntityModule), id);
+            m_Scenes.Add(id, scene);
             return scene;
         }
 
