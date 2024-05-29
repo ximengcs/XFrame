@@ -49,6 +49,7 @@ namespace XFrame.Modules.Entities
         public void Destroy(IScene scene)
         {
             int key = scene.Id;
+            Log.Debug("remove 0");
             if (m_Scenes.ContainsKey(key))
             {
                 m_Scenes.Remove(key);
