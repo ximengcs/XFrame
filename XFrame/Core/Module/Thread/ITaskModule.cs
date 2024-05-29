@@ -10,12 +10,12 @@ namespace XFrame.Core.Threads
         /// 注册可更新的任务
         /// </summary>
         /// <param name="task">任务</param>
-        void Register(IUpdater task);
+        void Register(IFiberUpdate task);
 
         /// <summary>
         /// 取消任务的注册
         /// </summary>
         /// <param name="task">任务</param>
-        void UnRegister(IUpdater task);
+        void UnRegister(IFiberUpdate task);
     }
 }

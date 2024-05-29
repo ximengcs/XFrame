@@ -69,7 +69,7 @@ namespace XFrame.Tasks
         /// 注册可更新任务
         /// </summary>
         /// <param name="task">任务</param>
-        public static void Register(IUpdater task)
+        public static void Register(IFiberUpdate task)
         {
             m_Module.Register(task);
         }
@@ -78,7 +78,7 @@ namespace XFrame.Tasks
         /// 取消注册可更新任务
         /// </summary>
         /// <param name="task">任务</param>
-        public static void UnRegister(IUpdater task)
+        public static void UnRegister(IFiberUpdate task)
         {
             m_Module.UnRegister(task);
         }

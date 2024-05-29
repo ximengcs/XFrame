@@ -10,7 +10,7 @@ using XFrame.Modules.Diagnotics;
 namespace XFrame.Modules.Entities
 {
     [XType(typeof(IEntityModule))]
-    internal class Scene : ModuleBase, IScene, IUpdater
+    internal class Scene : ModuleBase, IScene, IFiberUpdate
     {
         private IEntityHelper m_Helper;
         private Fiber m_Fiber;

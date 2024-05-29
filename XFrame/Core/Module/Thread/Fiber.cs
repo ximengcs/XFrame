@@ -9,8 +9,8 @@ namespace XFrame.Core.Threads
     {
         private int m_Type;
         private Thread m_Thread;
-        private List<IUpdater> m_UpdaterList;
-        private List<IUpdater> m_CacheList;
+        private List<IFiberUpdate> m_UpdaterList;
+        private List<IFiberUpdate> m_CacheList;
         private FiberSynchronizationContext m_Context;
         private bool m_Disposed;
 
@@ -23,8 +23,8 @@ namespace XFrame.Core.Threads
         public Fiber(int type, int threadId = -1)
         {
             m_Type = type;
-            m_CacheList = new List<IUpdater>();
-            m_UpdaterList = new List<IUpdater>();
+            m_CacheList = new List<IFiberUpdate>();
+            m_UpdaterList = new List<IFiberUpdate>();
             m_Context = new FiberSynchronizationContext(threadId);
         }
 
@@ -78,17 +78,17 @@ namespace XFrame.Core.Threads
         {
             m_CacheList.Clear();
             m_CacheList.AddRange(m_UpdaterList);
-            foreach (IUpdater updater in m_CacheList)
+            foreach (IFiberUpdate updater in m_CacheList)
                 updater.OnUpdate(escapeTime);
             m_Context.OnUpdate(escapeTime);
         }
 
-        public void RegisterUpdater(IUpdater updater)
+        public void RegisterUpdater(IFiberUpdate updater)
         {
             m_UpdaterList.Add(updater);
         }
 
-        public void UnRegisterUpdater(IUpdater updater)
+        public void UnRegisterUpdater(IFiberUpdate updater)
         {
             m_UpdaterList.Remove(updater);
         }

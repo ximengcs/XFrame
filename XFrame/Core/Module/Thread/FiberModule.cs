@@ -91,13 +91,13 @@ namespace XFrame.Core.Threads
             m_Fibers = null;
         }
 
-        public void Register(IUpdater task)
+        public void Register(IFiberUpdate task)
         {
             Fiber currentFiber = FindFiber(SynchronizationContext.Current);
             currentFiber.RegisterUpdater(task);
         }
 
-        public void UnRegister(IUpdater task)
+        public void UnRegister(IFiberUpdate task)
         {
             Fiber currentFiber = FindFiber(SynchronizationContext.Current);
             currentFiber.UnRegisterUpdater(task);

@@ -2,13 +2,14 @@
 using XFrame.Core;
 using XFrame.Core.Binder;
 using System.Runtime.CompilerServices;
+using XFrame.Core.Threads;
 
 namespace XFrame.Tasks
 {
     /// <summary>
     /// 带进度状态的任务
     /// </summary>
-    public abstract class XProTask<T> : ICriticalNotifyCompletion, IUpdater, ICancelTask, ITask
+    public abstract class XProTask<T> : ICriticalNotifyCompletion, IFiberUpdate, ICancelTask, ITask
     {
         /// <summary>
         /// 更新事件回调
@@ -111,7 +112,7 @@ namespace XFrame.Tasks
             XTaskHelper.Register(this);
         }
 
-        void IUpdater.OnUpdate(double escapeTime)
+        void IFiberUpdate.OnUpdate(double escapeTime)
         {
             if (m_CancelToken != null)
             {
