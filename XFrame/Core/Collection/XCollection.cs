@@ -222,7 +222,6 @@ namespace XFrame.Collections
             if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
                 if (entities.TryGetValue(entityId, out T entity))
                 {
-                    Log.Debug($"get yes {xType.FullName} {entityId}");
                     return entity;
                 }
             return default;
