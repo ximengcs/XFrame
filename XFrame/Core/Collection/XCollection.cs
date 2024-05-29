@@ -103,6 +103,8 @@ namespace XFrame.Collections
                     m_WithTypes.Remove(xType);
                 }
             }
+            bool contains = Get(xType, item.Id) == null;
+            Log.Debug($"remove contains {contains}");
             if (m_Mains.Remove(xType))
             {
                 if (!success)
