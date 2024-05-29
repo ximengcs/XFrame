@@ -31,7 +31,7 @@ namespace XFrame.Core.Threads
         public void SetThread(Thread thread)
         {
             m_Thread = thread;
-            Log.Debug(Log.Fiber, $"create fiber {m_Type} {Thread}");
+            Log.Debug(Log.Fiber, $"create fiber {m_Type} {m_Thread.ManagedThreadId}");
         }
 
         public void Dispose()
