@@ -4,6 +4,8 @@ using XFrame.Modules.Containers;
 using XFrame.Collections;
 using XFrame.Core.Threads;
 using System.Collections.Generic;
+using XFrame.Modules.Caches;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Entities
 {
@@ -76,6 +78,7 @@ namespace XFrame.Modules.Entities
 
         public void OnUpdate(double escapeTime)
         {
+            Log.Debug($"scene update {Id}");
             IContainerModule containerModule = GetUseModule<IContainerModule>();
             m_Containers.Clear();
             containerModule.GetAll(m_Containers);
