@@ -23,8 +23,6 @@ namespace XFrame.Modules.Entities
         {
             base.OnInit(data);
             m_Fiber = data as Fiber;
-            if (m_Fiber == null)
-                m_Fiber = Domain.GetModule<FiberModule>().MainFiber;
             m_Fiber.RegisterUpdater(this);
             m_Containers = new List<IContainer>();
             Event = Domain.GetModule<IEventModule>().NewSys();
