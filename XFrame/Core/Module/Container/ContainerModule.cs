@@ -23,8 +23,7 @@ namespace XFrame.Modules.Containers
 
         public void GetAll(List<IContainer> list)
         {
-            foreach (var entry in m_Containers)
-                list.Add(entry.Value);
+            list.AddRange(m_Containers.Values);
         }
 
         /// <inheritdoc/>
