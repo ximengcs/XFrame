@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
 using System.Text;
 using XFrame.Modules.Pools;
+using System.Threading;
 
 namespace XFrame.Modules.Containers
 {
@@ -22,6 +23,7 @@ namespace XFrame.Modules.Containers
 
         public void GetAll(List<IContainer> list)
         {
+            Log.Debug($"{Thread.CurrentThread.ManagedThreadId} get all");
             foreach (var entry in m_Containers)
                 list.Add(entry.Value);
         }
@@ -52,6 +54,7 @@ namespace XFrame.Modules.Containers
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
+            Log.Debug($"{Thread.CurrentThread.ManagedThreadId} InnerNew");
             IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
             m_Containers.Add(id, container);
             m_ContainersList.Add(container);
@@ -123,7 +126,10 @@ namespace XFrame.Modules.Containers
             if (m_UpdateList.ContainsKey(container.Id))
                 m_UpdateList.Remove(container.Id);
             if (m_ContainersList.Contains(container))
+            {
+                Log.Debug($"{Thread.CurrentThread.ManagedThreadId} Remove");
                 m_ContainersList.Remove(container);
+            }
             if (m_Containers.ContainsKey(container.Id))
             {
                 m_Containers.Remove(container.Id);
