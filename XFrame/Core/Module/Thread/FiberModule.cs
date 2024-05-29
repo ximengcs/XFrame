@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core.Threads
 {
@@ -15,7 +15,10 @@ namespace XFrame.Core.Threads
             get
             {
                 if (m_MainFiber == null)
+                {
                     m_MainFiber = new Fiber(0, Thread.CurrentThread.ManagedThreadId);
+                    Log.Debug(Log.Fiber, $"create main fiber {m_MainFiber.Type} {m_MainFiber.Thread}");
+                }
                 return m_MainFiber;
             }
         }

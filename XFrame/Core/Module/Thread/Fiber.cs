@@ -30,6 +30,7 @@ namespace XFrame.Core.Threads
 
         public void SetThread(Thread thread)
         {
+            Log.Debug(Log.Fiber, $"create fiber {m_Type} {Thread}");
             m_Thread = thread;
         }
 

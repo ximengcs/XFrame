@@ -15,6 +15,7 @@ namespace XFrame.Modules.Diagnotics
         public const string CSV = nameof(CSV);
         public const string Condition = nameof(Condition);
         public const string Procedure = nameof(Procedure);
+        public const string Fiber = nameof(Fiber);
 #pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         private struct LogInfo
