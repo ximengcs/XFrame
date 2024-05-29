@@ -39,10 +39,12 @@ namespace XFrame.Modules.Entities
 
         public void Destroy(IScene scene)
         {
-            if (m_Scenes.ContainsKey(scene.Id))
+            int key = scene.Id;
+            if (m_Scenes.ContainsKey(key))
             {
-                m_Scenes.Remove(scene.Id);
-                Entry.RemoveModule<Scene>(scene.Id);
+                m_Scenes.Remove(key);
+                Entry.RemoveModule<Scene>(key);
+                Entry.RemoveModule<ContainerModule>(key);
             }
         }
     }

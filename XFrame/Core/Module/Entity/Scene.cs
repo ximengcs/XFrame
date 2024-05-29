@@ -4,8 +4,6 @@ using XFrame.Modules.Containers;
 using XFrame.Collections;
 using XFrame.Core.Threads;
 using System.Collections.Generic;
-using XFrame.Modules.Caches;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Entities
 {
@@ -14,7 +12,6 @@ namespace XFrame.Modules.Entities
     {
         private IEntityHelper m_Helper;
         private Fiber m_Fiber;
-        private IContainerModule m_ContainerModule;
         private List<IContainer> m_Containers;
 
         public IEventSystem Event { get; private set; }
