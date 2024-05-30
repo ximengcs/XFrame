@@ -133,11 +133,12 @@ namespace XFrame.Modules.Reflection
         private object InnerCreateInstance(Type type, params object[] args)
         {
             object instance = default;
-            if (!m_Constructors.TryGetValue(type, out ConstructorInfo[] ctors))
+            ConstructorInfo[] ctors;
+            lock (m_Constructors)
             {
-                ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                lock (m_Constructors)
+                if (!m_Constructors.TryGetValue(type, out ctors))
                 {
+                    ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                     m_Constructors.Add(type, ctors);
                 }
             }
