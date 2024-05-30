@@ -15,6 +15,8 @@ namespace XFrame.Modules.Entities
         private Fiber m_Fiber;
         private List<IContainer> m_Containers;
 
+        public bool Disposed { get; private set; }
+
         public IEventSystem Event { get; private set; }
 
         public Fiber Fiber => m_Fiber;
@@ -31,6 +33,7 @@ namespace XFrame.Modules.Entities
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            Disposed = true;
             Domain.GetModule<IEventModule>().Remove(Event);
             if (!m_Fiber.Disposed)
             {

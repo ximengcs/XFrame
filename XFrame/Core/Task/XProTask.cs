@@ -65,6 +65,8 @@ namespace XFrame.Tasks
         /// </summary>
         public XTaskAction TaskAction => m_TaskAction;
 
+        public bool Disposed => m_OnComplete.IsComplete;
+
         /// <summary>
         /// 设置任务行为 
         /// </summary>
@@ -158,7 +160,6 @@ namespace XFrame.Tasks
             }
             m_OnComplete.IsComplete = true;
             SetResult();
-
         }
 
         void ICancelTask.SetState(XTaskState state)

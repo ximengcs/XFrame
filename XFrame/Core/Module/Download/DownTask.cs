@@ -13,6 +13,8 @@ namespace XFrame.Modules.Download
         private Action<byte[]> m_BytesCallback;
         private Action<string> m_TextCallback;
 
+        public bool Disposed => m_OnComplete.IsComplete;
+
         /// <summary>
         /// 是否成功
         /// </summary>

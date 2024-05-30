@@ -83,7 +83,10 @@ namespace XFrame.Core.Threads
             m_CacheList.Clear();
             m_CacheList.AddRange(m_UpdaterList);
             foreach (IFiberUpdate updater in m_CacheList)
-                updater.OnUpdate(escapeTime);
+            {
+                if (!updater.Disposed)
+                    updater.OnUpdate(escapeTime);
+            }
             m_Context.OnUpdate(escapeTime);
         }
 

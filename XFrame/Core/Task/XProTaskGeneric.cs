@@ -58,6 +58,8 @@ namespace XFrame.Tasks
             }
         }
 
+        public bool Disposed => m_OnComplete.IsComplete;
+
         ITaskBinder ICancelTask.Binder => m_Binder;
 
         /// <summary>
