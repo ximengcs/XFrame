@@ -31,7 +31,6 @@ namespace XFrame.Modules.Entities
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            Log.Debug($"destroy scene {Id} {m_Fiber == null}");
             Domain.GetModule<IEventModule>().Remove(Event);
             m_Fiber.UnRegisterUpdater(this);
             m_Fiber.Dispose();

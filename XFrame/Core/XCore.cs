@@ -101,8 +101,12 @@ namespace XFrame.Core
         public void Destroy()
         {
             m_Modules.SetIt(XItType.Backward);
+            List<IModule> modules = new List<IModule>(m_Modules.Count);
             foreach (IModule module in m_Modules)
+                modules.Add(module);
+            foreach (IModule module in modules)
             {
+                m_Modules.Remove(module);
                 module.OnDestroy();
                 if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
                 {
@@ -120,9 +124,7 @@ namespace XFrame.Core
                     helper.OnDestroy();
                 }
             }
-            m_Helpers.Clear();
             m_Helpers = null;
-            m_Modules.Clear();
             m_Modules = null;
         }
 
