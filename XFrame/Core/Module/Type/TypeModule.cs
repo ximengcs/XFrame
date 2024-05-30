@@ -6,6 +6,7 @@ using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 using XFrame.Modules.Pools;
+using System.Collections.Concurrent;
 
 namespace XFrame.Modules.Reflection
 {
@@ -18,10 +19,10 @@ namespace XFrame.Modules.Reflection
         private Type[] m_Types;
         private Assembly[] m_Assemblys;
         private string m_Module;
-        private Dictionary<Type, Attribute[]> m_TypesAllAttrs;
-        private Dictionary<Type, List<Type>> m_TypesWithAttrs;
-        private Dictionary<Type, TypeSystem> m_ClassRegister;
-        private Dictionary<Type, ConstructorInfo[]> m_Constructors;
+        private ConcurrentDictionary<Type, Attribute[]> m_TypesAllAttrs;
+        private ConcurrentDictionary<Type, List<Type>> m_TypesWithAttrs;
+        private ConcurrentDictionary<Type, TypeSystem> m_ClassRegister;
+        private ConcurrentDictionary<Type, ConstructorInfo[]> m_Constructors;
         #endregion
 
         #region Life Fun
@@ -50,9 +51,9 @@ namespace XFrame.Modules.Reflection
         private void InnerInit()
         {
             m_Module = nameof(XFrame);
-            m_TypesAllAttrs = new Dictionary<Type, Attribute[]>();
-            m_TypesWithAttrs = new Dictionary<Type, List<Type>>();
-            m_Constructors = new Dictionary<Type, ConstructorInfo[]>();
+            m_TypesAllAttrs = new ConcurrentDictionary<Type, Attribute[]>();
+            m_TypesWithAttrs = new ConcurrentDictionary<Type, List<Type>>();
+            m_Constructors = new ConcurrentDictionary<Type, ConstructorInfo[]>();
             m_Assemblys = AppDomain.CurrentDomain.GetAssemblies();
             List<Type> tmpList = new List<Type>(1024);
             foreach (Assembly assembly in m_Assemblys)
@@ -85,14 +86,14 @@ namespace XFrame.Modules.Reflection
                     if (!XConfig.TypeChecker.CheckType(type))
                         continue;
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
-                    m_TypesAllAttrs.Add(type, attrs);
+                    m_TypesAllAttrs.TryAdd(type, attrs);
                     foreach (Attribute attr in attrs)
                     {
                         Type attrType = attr.GetType();
                         if (!m_TypesWithAttrs.TryGetValue(attrType, out List<Type> list))
                         {
                             list = new List<Type>(32);
-                            m_TypesWithAttrs.Add(attrType, list);
+                            m_TypesWithAttrs.TryAdd(attrType, list);
                         }
                         list.Add(type);
                     }
@@ -104,7 +105,7 @@ namespace XFrame.Modules.Reflection
             if (m_ClassRegister != null)
                 m_ClassRegister.Clear();
             else
-                m_ClassRegister = new Dictionary<Type, TypeSystem>();
+                m_ClassRegister = new ConcurrentDictionary<Type, TypeSystem>();
         }
         #endregion
 
@@ -136,7 +137,7 @@ namespace XFrame.Modules.Reflection
             if (!m_Constructors.TryGetValue(type, out ConstructorInfo[] ctors))
             {
                 ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                m_Constructors.Add(type, ctors);
+                m_Constructors.TryAdd(type, ctors);
             }
 
             foreach (ConstructorInfo ctor in ctors)
@@ -210,7 +211,7 @@ namespace XFrame.Modules.Reflection
                 return module;
 
             module = new TypeSystem(this, pType);
-            m_ClassRegister.Add(pType, module);
+            m_ClassRegister.TryAdd(pType, module);
             foreach (var item in m_TypesWithAttrs)
             {
                 if (item.Key.IsSubclassOf(pType) || item.Key == pType)
@@ -362,7 +363,7 @@ namespace XFrame.Modules.Reflection
                 return module;
 
             module = new TypeSystem(this, baseType);
-            m_ClassRegister.Add(baseType, module);
+            m_ClassRegister.TryAdd(baseType, module);
             foreach (Type type in m_Types)
             {
                 if (baseType != type && baseType.IsAssignableFrom(type))
