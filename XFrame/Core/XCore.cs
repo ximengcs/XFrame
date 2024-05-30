@@ -435,7 +435,12 @@ namespace XFrame.Core
             {
                 bool succes = m_Modules.Remove(module);
                 module.OnDestroy();
-                bool contains = m_Modules.Get2(moduleType, moduleId) == null;
+                IModule tmp = m_Modules.Get2(moduleType, moduleId);
+                if (tmp != null)
+                {
+                    Log.Debug($"{tmp.GetType().FullName} {tmp.Id}");
+                }
+                bool contains = tmp == null;
                 Log.Debug($"contains {contains} {succes}");
                 return succes;
             }
