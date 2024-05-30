@@ -4,6 +4,7 @@ using XFrame.Modules.Containers;
 using XFrame.Collections;
 using XFrame.Core.Threads;
 using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Entities
 {
@@ -30,6 +31,7 @@ namespace XFrame.Modules.Entities
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            Log.Debug($"destroy scene {Id} {m_Fiber == null}");
             Domain.GetModule<IEventModule>().Remove(Event);
             m_Fiber.UnRegisterUpdater(this);
             m_Fiber.Dispose();
