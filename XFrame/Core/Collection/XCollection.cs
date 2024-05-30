@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using XFrame.Modules.Reflection;
 using System.Reflection;
 using XFrame.Core;
-using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Collections
 {
@@ -104,8 +103,6 @@ namespace XFrame.Collections
                 }
             }
 
-            bool contains = Get2(xType, item.Id) == null;
-            Log.Debug($"remove contains {contains}");
             if (m_Mains.Remove(xType))
             {
                 if (!success)
@@ -233,19 +230,6 @@ namespace XFrame.Collections
                 {
                     return entity;
                 }
-            return default;
-        }
-
-        public T Get2(Type elementType, int entityId)
-        {
-            Type xType = InnerGetMapType(elementType);
-            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
-                if (entities.TryGetValue(entityId, out T entity))
-                {
-                    Log.Debug($"contains ---- {elementType.FullName} {entityId}");
-                    return entity;
-                }
-            Log.Debug($"not contains ---- {elementType.FullName} {entityId}");
             return default;
         }
         #endregion

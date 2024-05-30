@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using XFrame.Core;
 using XFrame.Core.Threads;
 using XFrame.Modules.Containers;
-using XFrame.Modules.Diagnotics;
 using XFrame.Modules.ID;
 
 namespace XFrame.Modules.Entities
@@ -49,15 +48,11 @@ namespace XFrame.Modules.Entities
         public void Destroy(IScene scene)
         {
             int key = scene.Id;
-            Log.Debug("remove 0");
             if (m_Scenes.ContainsKey(key))
             {
                 m_Scenes.Remove(key);
-                Log.Debug("remove 1");
                 Entry.RemoveModule<Scene>(key);
-                Log.Debug("remove 2");
                 Entry.RemoveModule<ContainerModule>(key);
-                Log.Debug("remove 3");
             }
         }
     }
