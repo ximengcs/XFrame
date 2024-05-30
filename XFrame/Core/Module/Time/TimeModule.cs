@@ -39,11 +39,19 @@ namespace XFrame.Modules.Times
         internal void InnerAddTimer(CDTimer timer)
         {
             if (string.IsNullOrEmpty(timer.Name))
-                m_AnonymousTimers.Add(timer);
+            {
+                lock (m_AnonymousTimers)
+                {
+                    m_AnonymousTimers.Add(timer);
+                }
+            }
             else
             {
-                if (!m_Timers.ContainsKey(timer.Name))
-                    m_Timers.Add(timer.Name, timer);
+                lock (m_Timers)
+                {
+                    if (!m_Timers.ContainsKey(timer.Name))
+                        m_Timers.Add(timer.Name, timer);
+                }
             }
         }
 
@@ -51,13 +59,19 @@ namespace XFrame.Modules.Times
         {
             if (string.IsNullOrEmpty(timer.Name))
             {
-                if (m_AnonymousTimers.Contains(timer))
-                    m_AnonymousTimers.Remove(timer);
+                lock (m_AnonymousTimers)
+                {
+                    if (m_AnonymousTimers.Contains(timer))
+                        m_AnonymousTimers.Remove(timer);
+                }
             }
             else
             {
-                if (m_Timers.ContainsKey(timer.Name))
-                    m_Timers.Remove(timer.Name);
+                lock (m_Timers)
+                {
+                    if (m_Timers.ContainsKey(timer.Name))
+                        m_Timers.Remove(timer.Name);
+                }
             }
         }
 
