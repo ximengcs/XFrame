@@ -32,8 +32,12 @@ namespace XFrame.Modules.Entities
         {
             base.OnDestroy();
             Domain.GetModule<IEventModule>().Remove(Event);
-            m_Fiber.UnRegisterUpdater(this);
-            m_Fiber.Dispose();
+            if (!m_Fiber.Disposed)
+            {
+                m_Fiber.UnRegisterUpdater(this);
+                Entry.GetModule<FiberModule>().Destroy(m_Fiber);
+            }
+
             m_Fiber = null;
             m_Containers = null;
             Event = null;

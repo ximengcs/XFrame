@@ -60,20 +60,27 @@ namespace XFrame.Core.Threads
 
         public Fiber GetOrNew(int type)
         {
-            if (!m_Fibers.TryGetValue(type, out Fiber fiber))
+            Fiber fiber;
+            lock (m_Fibers)
             {
-                fiber = new Fiber(type);
-                m_Fibers.Add(type, fiber);
+                if (!m_Fibers.TryGetValue(type, out fiber))
+                {
+                    fiber = new Fiber(type);
+                    m_Fibers.Add(type, fiber);
+                }
             }
             return fiber;
         }
 
         public void Destroy(Fiber fiber)
         {
-            if (m_Fibers.ContainsKey(fiber.Type))
+            lock (m_Fibers)
             {
-                fiber.Dispose();
-                m_Fibers.Remove(fiber.Type);
+                if (m_Fibers.ContainsKey(fiber.Type))
+                {
+                    fiber.Dispose();
+                    m_Fibers.Remove(fiber.Type);
+                }
             }
         }
 
