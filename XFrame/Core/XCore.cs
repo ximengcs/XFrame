@@ -442,6 +442,13 @@ namespace XFrame.Core
                 }
                 bool contains = tmp == null;
                 Log.Debug($"contains {contains} {succes}");
+                foreach (var entry in m_ModulesWithEvents)
+                {
+                    if (entry.Key.IsAssignableFrom(moduleType))
+                    {
+                        entry.Value.Modules.Remove(module);
+                    }
+                }
                 return succes;
             }
             else
