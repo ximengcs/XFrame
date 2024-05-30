@@ -104,13 +104,7 @@ namespace XFrame.Collections
                 }
             }
 
-            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities2))
-                if (entities2.TryGetValue(item.Id, out T entity))
-                {
-                    Log.Debug($"remove 2 contains");
-                }
-
-            bool contains = Get(xType, item.Id) == null;
+            bool contains = Get2(xType, item.Id) == null;
             Log.Debug($"remove contains {contains}");
             if (m_Mains.Remove(xType))
             {
@@ -239,6 +233,19 @@ namespace XFrame.Collections
                 {
                     return entity;
                 }
+            return default;
+        }
+
+        public T Get2(Type elementType, int entityId)
+        {
+            Type xType = InnerGetMapType(elementType);
+            if (m_WithTypes.TryGetValue(xType, out Dictionary<int, T> entities))
+                if (entities.TryGetValue(entityId, out T entity))
+                {
+                    Log.Debug($"contains ---- {elementType.FullName} {entityId}");
+                    return entity;
+                }
+            Log.Debug($"not contains ---- {elementType.FullName} {entityId}");
             return default;
         }
         #endregion
