@@ -18,6 +18,15 @@ namespace XFrame.Modules.Entities
             m_Scenes = new Dictionary<int, IScene>();
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            List<IScene> list = new List<IScene>(m_Scenes.Values);
+            m_Scenes = null;
+            foreach (IScene scene in list)
+                scene.OnDestroy();
+        }
+
         public IScene Get(int id)
         {
             if (m_Scenes.TryGetValue(id, out IScene scene))
