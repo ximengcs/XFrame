@@ -29,5 +29,7 @@ namespace XFrame.Modules.Entities
         /// </summary>
         /// <param name="entity">需要销毁的实体</param>
         void Destroy(IEntity entity);
+
+        void Destroy(int entityId);
     }
 }

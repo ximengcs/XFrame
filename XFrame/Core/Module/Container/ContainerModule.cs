@@ -7,6 +7,7 @@ using XFrame.Modules.Diagnotics;
 using System.Text;
 using XFrame.Modules.Pools;
 using System.Threading;
+using System.ComponentModel;
 
 namespace XFrame.Modules.Containers
 {
@@ -70,6 +71,12 @@ namespace XFrame.Modules.Containers
             Log.Debug(Log.Container, $"({Id})there is container removed. {container.GetType().Name} {container.Id}");
             InnerRemoveRecursive(container);
             InnerDebugContainers();
+        }
+
+        public void Remove(int id)
+        {
+            IContainer container = Get(id);
+            Remove(container);
         }
 
         private void InnerDebugContainers()

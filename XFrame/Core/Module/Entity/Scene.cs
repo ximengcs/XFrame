@@ -80,6 +80,12 @@ namespace XFrame.Modules.Entities
             m_Helper.EntityOnDestroy(entity);
         }
 
+        public void Destroy(int entityId)
+        {
+            IContainerModule containerModule = GetUseModule<IContainerModule>();
+            containerModule.Remove(entityId);
+        }
+
         public IEntity Get(int entityId)
         {
             IContainerModule containerModule = GetUseModule<IContainerModule>();

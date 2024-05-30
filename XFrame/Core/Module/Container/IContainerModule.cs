@@ -28,5 +28,7 @@ namespace XFrame.Modules.Containers
         /// </summary>
         /// <param name="container">容器实例</param>
         void Remove(IContainer container);
+
+        void Remove(int id);
     }
 }
