@@ -21,7 +21,6 @@ namespace XFrame.Modules.Containers
         private Dictionary<int, IContainer> m_UpdateList;
         private List<IContainer> m_ContainersList;
         private List<IContainer> m_Cache;
-        private List<IContainer> m_RemoveCache;
 
         public void GetAll(List<IContainer> list)
         {
@@ -136,11 +135,10 @@ namespace XFrame.Modules.Containers
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Cache = new List<IContainer>();
+            m_Cache = new List<IContainer>(1024);
             m_Containers = new Dictionary<int, IContainer>();
             m_UpdateList = new Dictionary<int, IContainer>();
             m_ContainersList = new List<IContainer>();
-            m_RemoveCache = new List<IContainer>();
         }
 
         /// <inheritdoc/>
@@ -173,7 +171,6 @@ namespace XFrame.Modules.Containers
             m_Containers = null;
             m_UpdateList = null;
             m_ContainersList = null;
-            m_RemoveCache = null;
         }
     }
 }
