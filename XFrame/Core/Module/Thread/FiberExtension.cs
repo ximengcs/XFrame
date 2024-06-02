@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Timers;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Core.Threads
 {
@@ -26,8 +27,15 @@ namespace XFrame.Core.Threads
                 fiber.Use();
                 while (!fiber.Disposed)
                 {
-                    fiber.Update(time);
-                    Sleep(time);
+                    try
+                    {
+                        fiber.Update(time);
+                        Sleep(time);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Exception(ex);
+                    }
                 }
             });
             thread.Start(ValueTuple.Create(param, waitMillSecondTime));

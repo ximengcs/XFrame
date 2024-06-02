@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Collections.Generic;
 using XFrame.Modules.Diagnotics;
+using XFrame.Modules.Caches;
 
 namespace XFrame.Core.Threads
 {
@@ -8,6 +9,7 @@ namespace XFrame.Core.Threads
     public class FiberModule : ModuleBase, IUpdater, ITaskModule
     {
         private Fiber m_MainFiber;
+        private List<Fiber> m_Cache;
         private Dictionary<int, Fiber> m_Fibers;
 
         public Fiber MainFiber
@@ -31,6 +33,7 @@ namespace XFrame.Core.Threads
         protected override void OnInit(object data)
         {
             base.OnInit(data);
+            m_Cache = new List<Fiber>();
             m_Fibers = new Dictionary<int, Fiber>();
         }
 
@@ -38,10 +41,15 @@ namespace XFrame.Core.Threads
         {
             if (MainFiber.CheckContent(context))
                 return MainFiber;
-            foreach (Fiber fiber in m_Fibers.Values)
+            lock (m_Cache)
             {
-                if (fiber.CheckContent(context))
-                    return fiber;
+                m_Cache.Clear();
+                m_Cache.AddRange(m_Fibers.Values);
+                foreach (Fiber fiber in m_Cache)
+                {
+                    if (fiber.CheckContent(context))
+                        return fiber;
+                }
             }
             return null;
         }

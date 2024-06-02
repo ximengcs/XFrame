@@ -21,6 +21,7 @@ namespace XFrame.Modules.Containers
         private Dictionary<int, IContainer> m_UpdateList;
         private List<IContainer> m_ContainersList;
         private List<IContainer> m_Cache;
+        private List<IContainer> m_RemoveCache;
 
         public void GetAll(List<IContainer> list)
         {
@@ -112,21 +113,11 @@ namespace XFrame.Modules.Containers
 
         private void InnerRemoveRecursive(IContainer container)
         {
-            CommonPoolObject<List<IContainer>> cache = References.Require<CommonPoolObject<List<IContainer>>>();
-            List<IContainer> cacheList;
-            if (!cache.Valid)
-            {
-                cacheList = new List<IContainer>(8);
-                cache.Target = cacheList;
-            }
-            else
-            {
-                cacheList = cache.Target;
-            }
-
+            List<IContainer> cache = new List<IContainer>();
+            cache.Clear();
             foreach (IContainer child in container)
-                cacheList.Add(child);
-            foreach (IContainer child in cacheList)
+                cache.Add(child);
+            foreach (IContainer child in cache)
                 InnerRemoveRecursive(child);
             if (m_UpdateList.ContainsKey(container.Id))
                 m_UpdateList.Remove(container.Id);
@@ -139,8 +130,6 @@ namespace XFrame.Modules.Containers
                 m_Containers.Remove(container.Id);
                 container.OnDestroy();
             }
-            cacheList.Clear();
-            References.Release(cache);
         }
 
         /// <inheritdoc/>
@@ -151,6 +140,7 @@ namespace XFrame.Modules.Containers
             m_Containers = new Dictionary<int, IContainer>();
             m_UpdateList = new Dictionary<int, IContainer>();
             m_ContainersList = new List<IContainer>();
+            m_RemoveCache = new List<IContainer>();
         }
 
         /// <inheritdoc/>
@@ -183,6 +173,7 @@ namespace XFrame.Modules.Containers
             m_Containers = null;
             m_UpdateList = null;
             m_ContainersList = null;
+            m_RemoveCache = null;
         }
     }
 }
