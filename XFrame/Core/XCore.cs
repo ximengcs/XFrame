@@ -107,6 +107,7 @@ namespace XFrame.Core
             foreach (IModule module in modules)
             {
                 m_Modules.Remove(module);
+                Log.Debug(Log.XFrame, $"destroy module {module.GetType().Name} {module.Id}");
                 module.OnDestroy();
                 if (m_Helpers.TryGetValue(module.GetType(), out List<IModuleHelper> helpers))
                 {
@@ -436,6 +437,7 @@ namespace XFrame.Core
             if (module != null)
             {
                 bool succes = m_Modules.Remove(module);
+                Log.Debug(Log.XFrame, $"destroy module {moduleType.Name} {moduleId}");
                 module.OnDestroy();
                 foreach (var entry in m_ModulesWithEvents)
                 {

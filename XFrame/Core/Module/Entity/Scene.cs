@@ -32,6 +32,7 @@ namespace XFrame.Modules.Entities
 
         protected override void OnDestroy()
         {
+            Log.Error("scene destory");
             base.OnDestroy();
             Disposed = true;
             Domain.GetModule<IEventModule>().Remove(Event);

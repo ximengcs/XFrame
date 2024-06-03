@@ -153,8 +153,8 @@ namespace XFrame.Core
             m_Domain.Base.Trigger(type, data);
             if (m_Runing)
             {
-                m_Domain[CORE].Trigger(type, data);
-                m_Domain[CUSTOM].Trigger(type, data);
+                for (int i = 1; i < m_Domain.Count; i++)
+                    m_Domain.Trigger(i, type, data);
             }
         }
 

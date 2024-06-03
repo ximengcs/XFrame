@@ -11,20 +11,21 @@ namespace XFrame.Modules.Entities
     public class SceneModule : ModuleBase
     {
         private Dictionary<int, IScene> m_Scenes;
+        private XCore m_ScenesCore;
 
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Scenes = new Dictionary<int, IScene>();
+            m_ScenesCore = Domain.AddCore(true, false);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            List<IScene> list = new List<IScene>(m_Scenes.Values);
+            m_ScenesCore.Destroy();
             m_Scenes = null;
-            foreach (IScene scene in list)
-                scene.OnDestroy();
+            m_ScenesCore = null;
         }
 
         public IScene Get(int id)
@@ -40,8 +41,8 @@ namespace XFrame.Modules.Entities
                 return m_Scenes[id];
             if (fiber == null)
                 fiber = Domain.GetModule<FiberModule>().MainFiber;
-            Scene scene = Entry.AddModule<Scene>(id, fiber);
-            ContainerModule containerModule = Entry.AddModule<ContainerModule>(id);
+            Scene scene = (Scene)m_ScenesCore.AddModule(typeof(Scene), id, fiber);
+            ContainerModule containerModule = (ContainerModule)m_ScenesCore.AddModule(typeof(ContainerModule), id);
             scene.RegisterUseModule(typeof(IContainerModule), id);
             containerModule.RegisterUseModule(typeof(IEntityModule), id);
             m_Scenes.Add(id, scene);
@@ -60,8 +61,8 @@ namespace XFrame.Modules.Entities
             if (m_Scenes.ContainsKey(key))
             {
                 m_Scenes.Remove(key);
-                Entry.RemoveModule<Scene>(key);
-                Entry.RemoveModule<ContainerModule>(key);
+                m_ScenesCore.RemoveModule<Scene>(key);
+                m_ScenesCore.RemoveModule<ContainerModule>(key);
             }
         }
     }

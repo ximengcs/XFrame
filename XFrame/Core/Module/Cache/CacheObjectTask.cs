@@ -9,8 +9,6 @@ namespace XFrame.Modules.Caches
 
         public ICacheObject CacheObject => m_Object;
 
-        public bool Disposed => m_OnComplete.IsComplete;
-
         public CacheObjectTask(ICacheObjectFactory factory) : base(factory)
         {
             m_Handler = factory;

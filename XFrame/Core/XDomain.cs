@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using XFrame.Modules.Reflection;
 
 namespace XFrame.Core
@@ -6,15 +7,17 @@ namespace XFrame.Core
     /// <summary>
     /// 域 (包含多个核心)
     /// </summary>
-    public class XDomain
+    public partial class XDomain
     {
-        private XCore[] m_Cores;
+        private List<CoreInfo> m_Cores;
         private ITypeModule m_TypeModule;
 
         /// <summary>
         /// 基础核心
         /// </summary>
-        public XCore Base => m_Cores[0];
+        public XCore Base => m_Cores[0].Inst;
+
+        public int Count => m_Cores.Count;
 
         /// <summary>
         /// 类型模块
@@ -26,7 +29,7 @@ namespace XFrame.Core
         /// </summary>
         /// <param name="index">下标</param>
         /// <returns>核心</returns>
-        public XCore this[int index] => m_Cores[index];
+        public XCore this[int index] => m_Cores[index].Inst;
 
         /// <summary>
         /// 构造器
@@ -34,9 +37,23 @@ namespace XFrame.Core
         /// <param name="capacity">容量</param>
         public XDomain(int capacity)
         {
-            m_Cores = new XCore[capacity];
-            for (int i = 0; i < m_Cores.Length; i++)
-                m_Cores[i] = XCore.Create(this);
+            m_Cores = new List<CoreInfo>(capacity);
+            for (int i = 0; i < capacity; i++)
+                AddCore(true, true);
+        }
+
+        public XCore AddCore(bool trigger, bool destory)
+        {
+            XCore core = XCore.Create(this);
+            CoreInfo info = new CoreInfo()
+            {
+                Inst = core,
+                Index = m_Cores.Count,
+                Trigger = trigger,
+                Destory = destory
+            };
+            m_Cores.Add(info);
+            return core;
         }
 
         /// <summary>
@@ -48,6 +65,13 @@ namespace XFrame.Core
             m_TypeModule = (ITypeModule)Base.AddModuleFromSystem(type, default, default);
         }
 
+        public void Trigger(int index, Type type, object data)
+        {
+            CoreInfo info = m_Cores[index];
+            if (info.Trigger)
+                info.Inst.Trigger(type, data);
+        }
+
         /// <summary>
         /// 添加模块
         /// </summary>
@@ -57,7 +81,7 @@ namespace XFrame.Core
         /// <param name="userData">模块初始化参数</param>
         public void AddModule(int id, Type moduleType, int moduleId = default, object userData = null)
         {
-            m_Cores[id].AddModule(moduleType, moduleId, userData);
+            m_Cores[id].Inst.AddModule(moduleType, moduleId, userData);
         }
 
         /// <summary>
@@ -67,8 +91,8 @@ namespace XFrame.Core
         /// <param name="handler">模块处理器</param>
         public void AddHandle(Type handleType, IModuleHandler handler)
         {
-            foreach (XCore core in m_Cores)
-                core.AddHandle(handleType, handler);
+            foreach (CoreInfo core in m_Cores)
+                core.Inst.AddHandle(handleType, handler);
         }
 
         /// <summary>
@@ -78,9 +102,9 @@ namespace XFrame.Core
         /// <param name="moduleId">模块Id</param>
         public void RemoveModule(Type moduleType, int moduleId = default)
         {
-            foreach (XCore core in m_Cores)
+            foreach (CoreInfo core in m_Cores)
             {
-                if (core.RemoveModule(moduleType, moduleId))
+                if (core.Inst.RemoveModule(moduleType, moduleId))
                     break;
             }
         }
@@ -91,9 +115,9 @@ namespace XFrame.Core
         /// <param name="module">模块</param>
         public void RemoveModule(IModule module)
         {
-            foreach (XCore core in m_Cores)
+            foreach (CoreInfo core in m_Cores)
             {
-                if (core.RemoveModule(module))
+                if (core.Inst.RemoveModule(module))
                     break;
             }
         }
@@ -106,9 +130,9 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public IModule GetModule(Type moduleType, int moduleId = default)
         {
-            foreach (XCore core in m_Cores)
+            foreach (CoreInfo core in m_Cores)
             {
-                IModule module = core.GetModule(moduleType, moduleId);
+                IModule module = core.Inst.GetModule(moduleType, moduleId);
                 if (module != null)
                     return module;
             }
@@ -123,9 +147,9 @@ namespace XFrame.Core
         /// <returns>模块实例</returns>
         public T GetModule<T>(int moduleId = default) where T : IModule
         {
-            foreach (XCore core in m_Cores)
+            foreach (CoreInfo core in m_Cores)
             {
-                T module = core.GetModule<T>(moduleId);
+                T module = core.Inst.GetModule<T>(moduleId);
                 if (module != null)
                     return module;
             }
@@ -137,8 +161,12 @@ namespace XFrame.Core
         /// </summary>
         public void Destroy()
         {
-            for (int i = m_Cores.Length - 1; i >= 0; i--)
-                m_Cores[i].Destroy();
+            for (int i = m_Cores.Count - 1; i >= 0; i--)
+            {
+                CoreInfo info = m_Cores[i];
+                if (info.Destory)
+                    info.Inst.Destroy();
+            }
             m_Cores = null;
         }
     }
