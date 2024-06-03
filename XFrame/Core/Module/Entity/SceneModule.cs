@@ -17,13 +17,12 @@ namespace XFrame.Modules.Entities
         {
             base.OnInit(data);
             m_Scenes = new Dictionary<int, IScene>();
-            m_ScenesCore = Domain.AddCore(true, false);
+            m_ScenesCore = Domain.AddCore(true, true);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            m_ScenesCore.Destroy();
             m_Scenes = null;
             m_ScenesCore = null;
         }
