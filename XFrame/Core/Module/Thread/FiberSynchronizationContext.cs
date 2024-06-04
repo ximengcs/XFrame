@@ -37,6 +37,13 @@ namespace XFrame.Core.Threads
             ExecTimeout = DEFAULT_TIMEOUT;
         }
 
+        public void OnDestroy()
+        {
+            m_ActQueue = null;
+            m_ThreadId = default;
+            ExecTimeout = default;
+        }
+
         public void OnUpdate(double escapeTime)
         {
             if (m_ThreadId != -1 && m_ThreadId != Thread.CurrentThread.ManagedThreadId)

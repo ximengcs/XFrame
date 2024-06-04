@@ -13,6 +13,7 @@ namespace XFrame.Core.Threads
         private List<IFiberUpdate> m_CacheList;
         private FiberSynchronizationContext m_Context;
         private bool m_Disposed;
+        private string m_Name;
 
         internal int Thread { get { return m_Context.ThreadId; } }
 
@@ -22,7 +23,7 @@ namespace XFrame.Core.Threads
 
         public bool Disposed => m_Disposed;
 
-        public Fiber(int type, int threadId = -1)
+        public Fiber(string name, int type, int threadId = -1)
         {
             m_Type = type;
             m_CacheList = new List<IFiberUpdate>();
@@ -33,25 +34,20 @@ namespace XFrame.Core.Threads
         public void SetThread(Thread thread)
         {
             m_Thread = thread;
-            Log.Debug(Log.Fiber, $"create fiber {m_Type} {m_Thread.ManagedThreadId}");
+            Log.Debug(Log.Fiber, $"create fiber [{m_Name}] {m_Type} {m_Thread.ManagedThreadId}");
         }
 
         public void Dispose()
         {
             if (IsMain)
                 return;
+            Log.Debug(Log.Fiber, $"dispose fiber [{m_Name}] {m_Type} {m_Thread.ManagedThreadId}");
             m_Disposed = true;
-            try
-            {
-                m_Thread.Interrupt();
-                m_Thread.Abort();
-            }
-            catch (Exception e)
-            {
-                Log.Exception(e);
-            }
-
+            m_Context.OnDestroy();
             m_Thread = null;
+            m_CacheList = null;
+            m_UpdaterList = null;
+            m_Context = null;
         }
 
         public bool CheckContent(SynchronizationContext context)
