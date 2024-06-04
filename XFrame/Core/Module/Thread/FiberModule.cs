@@ -18,8 +18,8 @@ namespace XFrame.Core.Threads
             {
                 if (m_MainFiber == null)
                 {
-                    m_MainFiber = new Fiber(0, Thread.CurrentThread.ManagedThreadId);
-                    Log.Debug(Log.Fiber, $"create main fiber {m_MainFiber.Type} {m_MainFiber.Thread}");
+                    m_MainFiber = new Fiber("Main", 0);
+                    m_MainFiber.SetThread(Thread.CurrentThread.ManagedThreadId);
                 }
                 return m_MainFiber;
             }
@@ -66,14 +66,14 @@ namespace XFrame.Core.Threads
             return default;
         }
 
-        public Fiber GetOrNew(int type)
+        public Fiber GetOrNew(string name, int type)
         {
             Fiber fiber;
             lock (m_Fibers)
             {
                 if (!m_Fibers.TryGetValue(type, out fiber))
                 {
-                    fiber = new Fiber(type);
+                    fiber = new Fiber(name, type);
                     m_Fibers.Add(type, fiber);
                 }
             }

@@ -30,11 +30,15 @@ namespace XFrame.Core.Threads
 
         internal int ThreadId => m_ThreadId;
 
-        public FiberSynchronizationContext(int threadId)
+        public FiberSynchronizationContext()
         {
-            m_ThreadId = threadId;
             m_ActQueue = new ConcurrentQueue<Pair<SendOrPostCallback, object>>();
             ExecTimeout = DEFAULT_TIMEOUT;
+        }
+
+        internal void SetThread(int thread)
+        {
+            m_ThreadId = thread;
         }
 
         public void OnDestroy()
@@ -46,7 +50,7 @@ namespace XFrame.Core.Threads
 
         public void OnUpdate(double escapeTime)
         {
-            if (m_ThreadId != -1 && m_ThreadId != Thread.CurrentThread.ManagedThreadId)
+            if (m_ThreadId != Thread.CurrentThread.ManagedThreadId)
                 return;
 
             if (m_ActQueue.Count <= 0)
