@@ -33,8 +33,11 @@ namespace XFrame.Modules.Reflection
 
         internal void AddSubClass(Type type)
         {
-            m_AllTypes.Add(type);
-            m_NameTypes[type.FullName] = type;
+            if (!m_NameTypes.ContainsKey(type.FullName))
+            {
+                m_AllTypes.Add(type);
+                m_NameTypes[type.FullName] = type;
+            }
         }
         #endregion
 
