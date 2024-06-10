@@ -1,105 +1,184 @@
-﻿using XFrame.Core;
-using XFrame.Modules.ID;
+﻿using System;
+using XFrame.Core;
 using XFrame.Collections;
+using XFrame.Modules.ID;
+using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
+using System.Text;
 using XFrame.Modules.Pools;
-using System;
-using XFrame.Modules.XType;
+using System.Threading;
+using System.ComponentModel;
 
 namespace XFrame.Modules.Containers
 {
-    /// <summary>
-    /// 容器类模块
-    /// </summary>
-    [XModule]
-    public partial class ContainerModule : SingletonModule<ContainerModule>
+    /// <inheritdoc/>
+    [CommonModule]
+    [XType(typeof(IContainerModule))]
+    public partial class ContainerModule : ModuleBase, IContainerModule
     {
-        private IContainerHelper m_Helper;
-        private XCollection<IContainer> m_Containers;
+        //private XCollection<IContainer> m_Containers;
+        private Dictionary<int, IContainer> m_Containers;
+        private Dictionary<int, IContainer> m_UpdateList;
+        private List<IContainer> m_ContainersList;
+        private List<IContainer> m_Cache;
 
-        /// <summary>
-        /// 请求一个新的容器
-        /// </summary>
-        /// <param name="master">容器拥有者</param>
-        /// <returns>容器实例</returns>
-        public T New<T>(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null) where T : IContainer
+        public void GetAll(List<IContainer> list)
         {
-            return (T)InnerNew(typeof(T), IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            list.AddRange(m_Containers.Values);
         }
 
-        public Container New(bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
+        /// <inheritdoc/>
+        public IContainer Get(int id)
         {
-            return (Container)InnerNew(typeof(Container), IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            if (m_Containers.TryGetValue(id, out IContainer container))
+            {
+                return container;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public IContainer New(Type type, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
+        public IContainer Create(int id, IContainerSetting setting)
         {
-            return InnerNew(type, IdModule.Inst.Next(), updateTrusteeship, master, onReady);
+            return InnerNew(setting.Type, id, setting.ModuleUpdate, setting.Master, setting.DataProvider);
         }
 
-        public IContainer New(Type type, int id, bool updateTrusteeship = true, IContainer master = null, OnDataProviderReady onReady = null)
+        public IContainer Create(IContainerSetting setting)
         {
-            return InnerNew(type, id, updateTrusteeship, master, onReady);
+            int id = GetUseModule<IIdModule>().Next();
+            return InnerNew(setting.Type, id, setting.ModuleUpdate, setting.Master, setting.DataProvider);
         }
 
         private IContainer InnerNew(Type type, int id, bool updateTrusteeship, IContainer master, OnDataProviderReady onReady)
         {
-            IPool pool = PoolModule.Inst.GetOrNew(type);
-            int poolKey = m_Helper != null ? m_Helper.GetPoolKey(type, id, master) : 0;
-            IPoolObject obj = pool.Require(poolKey);
-            IContainer container = obj as IContainer;
-            container.OnInit(id, master, onReady);
+            IContainer container = Domain.TypeModule.CreateInstance(type) as IContainer;
+            m_Containers.Add(id, container);
+            m_ContainersList.Add(container);
             if (updateTrusteeship)
-                m_Containers.Add(container);
+                m_UpdateList.Add(container.Id, container);
+
+            container.OnInit(this, id, master, onReady);
+            Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
+            InnerDebugContainers();
             return container;
         }
 
-        /// <summary>
-        /// 移除一个容器
-        /// </summary>
-        /// <param name="container">容器</param>
+        /// <inheritdoc/>
         public void Remove(IContainer container)
         {
-            if (m_Containers.Contains(container))
+            Log.Debug(Log.Container, $"({Id})there is container removed. {container.GetType().Name} {container.Id}");
+            InnerRemoveRecursive(container);
+            InnerDebugContainers();
+        }
+
+        public void Remove(int id)
+        {
+            IContainer container = Get(id);
+            Remove(container);
+        }
+
+        private void InnerDebugContainers()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            foreach (IContainer child in m_Containers.Values)
             {
-                m_Containers.Remove(container);
-                container.OnDestroy();
-                IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
-                pool.Release(container);
+                bool root = child.Parent == null;
+                if (root)
+                {
+                    sb.AppendLine($"- {child.GetType().Name} {child.Id} -> {(child.Parent != null ? child.Parent.Id.ToString() : "NULL")}");
+                    InnerCheckRecursive(child, sb, "\t");
+                }
+                else
+                {
+                    sb.AppendLine($"· [{child.Id}|{child.GetType().Name}]");
+                }
+            }
+            sb.Insert(0, $"({Id})");
+            Log.Debug(Log.Container, sb.ToString());
+        }
+
+        private void InnerCheckRecursive(IContainer container, StringBuilder sb, string tab)
+        {
+            if (container is ShareContainer)
+                return;
+            tab += '\t';
+            foreach (IContainer child in container)
+            {
+                if (child == container)
+                {
+                    Log.Error(Log.Container, $"({Id})same container, {child.GetType().Name} {container.GetType().Name}");
+                    continue;
+                }
+                sb.Append(tab);
+                sb.AppendLine($"{child.GetType().Name} {child.Id} -> {(child.Parent != null ? child.Parent.Id.ToString() : "NULL")}");
+                InnerCheckRecursive(child, sb, tab);
             }
         }
 
+        private void InnerRemoveRecursive(IContainer container)
+        {
+            List<IContainer> cache = new List<IContainer>();
+            cache.Clear();
+            foreach (IContainer child in container)
+                cache.Add(child);
+            foreach (IContainer child in cache)
+                InnerRemoveRecursive(child);
+            if (m_UpdateList.ContainsKey(container.Id))
+                m_UpdateList.Remove(container.Id);
+            if (m_ContainersList.Contains(container))
+            {
+                m_ContainersList.Remove(container);
+            }
+            if (m_Containers.ContainsKey(container.Id))
+            {
+                m_Containers.Remove(container.Id);
+                container.OnDestroy();
+            }
+        }
+
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Containers = new XCollection<IContainer>();
-            TypeSystem typeSys = TypeModule.Inst.GetOrNew<IContainerHelper>();
-            foreach (Type type in typeSys)
+            m_Cache = new List<IContainer>(1024);
+            m_Containers = new Dictionary<int, IContainer>();
+            m_UpdateList = new Dictionary<int, IContainer>();
+            m_ContainersList = new List<IContainer>();
+        }
+
+        /// <inheritdoc/>
+        public void OnUpdate(double escapeTime)
+        {
+            m_Cache.Clear();
+            m_Cache.AddRange(m_ContainersList);
+            foreach (IContainer container in m_Cache)
             {
-                m_Helper = (IContainerHelper)TypeModule.Inst.CreateInstance(type);
-                break;
+                if (container.Active)
+                    container.OnUpdate(escapeTime);
             }
         }
 
-        protected override void OnUpdate(float escapeTime)
-        {
-            base.OnUpdate(escapeTime);
-            foreach (IContainer container in m_Containers)
-                container.OnUpdate(escapeTime);
-        }
-
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            foreach (IContainer container in m_Containers)
+
+            m_Cache.Clear();
+            m_Cache.AddRange(m_ContainersList);
+            var it = new ListExt.BackwardIt<IContainer>(m_Cache);
+            while (it.MoveNext())
             {
+                IContainer container = it.Current;
                 if (container == null)
                     continue;
-                m_Containers.Remove(container);
                 container.OnDestroy();
-                IPool pool = PoolModule.Inst.GetOrNew(container.GetType());
-                pool.Release(container);
             }
-            m_Containers.Clear();
+            m_Containers = null;
+            m_UpdateList = null;
+            m_ContainersList = null;
         }
     }
 }

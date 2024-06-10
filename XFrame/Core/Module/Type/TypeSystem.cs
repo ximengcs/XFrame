@@ -3,7 +3,7 @@ using XFrame.Collections;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
     /// <summary>
     /// 类型系统
@@ -13,6 +13,7 @@ namespace XFrame.Modules.XType
         #region Inner Fields
         private XItType m_ItType;
         private Type m_MainType;
+        private ITypeModule m_TypeModule;
         private List<Type> m_AllTypes;
         private Dictionary<Type, TypeSystem> m_Classifyes;
         private Dictionary<int, Type> m_KeyTypes;
@@ -20,8 +21,9 @@ namespace XFrame.Modules.XType
         #endregion
 
         #region Inner Imeplement
-        internal TypeSystem(Type mainType)
+        internal TypeSystem(ITypeModule typeModule, Type mainType)
         {
+            m_TypeModule = typeModule;
             m_MainType = mainType;
             m_AllTypes = new List<Type>();
             m_Classifyes = new Dictionary<Type, TypeSystem>();
@@ -31,12 +33,18 @@ namespace XFrame.Modules.XType
 
         internal void AddSubClass(Type type)
         {
-            m_AllTypes.Add(type);
-            m_NameTypes[type.FullName] = type;
+            if (!m_NameTypes.ContainsKey(type.FullName))
+            {
+                m_AllTypes.Add(type);
+                m_NameTypes[type.FullName] = type;
+            }
         }
         #endregion
 
         #region Interface
+        /// <summary>
+        /// 类型数量
+        /// </summary>
         public int Count => m_AllTypes.Count;
 
         /// <summary>
@@ -53,7 +61,7 @@ namespace XFrame.Modules.XType
         {
             if ((!m_AllTypes.Contains(type) && m_MainType != type) || m_KeyTypes.ContainsKey(key))
             {
-                Log.Error("XFrame", $"Type {type.Name} module add index error.");
+                Log.Error(Log.XFrame, $"Type {type.Name} module add index error.");
                 return;
             }
             m_KeyTypes[key] = type;
@@ -106,18 +114,23 @@ namespace XFrame.Modules.XType
             return GetOrNewBySub(typeof(T));
         }
 
+        /// <summary>
+        /// 获取(不存在时创建)子类类型系统
+        /// </summary>
+        /// <param name="type">基类</param>
+        /// <returns>获取到的类型系统</returns>
         public TypeSystem GetOrNewBySub(Type type)
         {
             if (m_Classifyes.TryGetValue(type, out TypeSystem module))
                 return module;
 
-            module = new TypeSystem(type);
+            module = new TypeSystem(m_TypeModule, type);
             m_Classifyes.Add(type, module);
             foreach (Type subType in m_AllTypes)
             {
                 if (type.IsAssignableFrom(subType))
                 {
-                    XAttribute xAttr = TypeModule.Inst.GetAttribute<XAttribute>(subType);
+                    XAttribute xAttr = m_TypeModule.GetAttribute<XAttribute>(subType);
                     module.AddSubClass(subType);
                     if (xAttr != null)
                         module.AddKey(xAttr.Id, subType);
@@ -141,11 +154,16 @@ namespace XFrame.Modules.XType
             }
         }
 
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;
         }
 
+        /// <summary>
+        /// 获取所有类型
+        /// </summary>
+        /// <returns></returns>
         public Type[] ToArray()
         {
             return m_AllTypes.ToArray();

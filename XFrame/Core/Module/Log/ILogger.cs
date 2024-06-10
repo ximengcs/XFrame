@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace XFrame.Modules.Diagnotics
 {
     /// <summary>
@@ -29,5 +31,11 @@ namespace XFrame.Modules.Diagnotics
         /// </summary>
         /// <param name="content">信息</param>
         void Fatal(params object[] content);
+
+        /// <summary>
+        /// 异常错误
+        /// </summary>
+        /// <param name="e">异常</param>
+        void Exception(Exception e);
     }
 }

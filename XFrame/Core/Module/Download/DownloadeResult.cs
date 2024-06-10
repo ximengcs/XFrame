@@ -26,6 +26,13 @@ namespace XFrame.Modules.Download
         /// </summary>
         public string ErrorReason { get; }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="isSuccess">是否成功</param>
+        /// <param name="text">文本</param>
+        /// <param name="data">二进制数据</param>
+        /// <param name="errorReason">错误原因</param>
         public DownloadResult(bool isSuccess, string text, byte[] data, string errorReason)
         {
             IsSuccess = isSuccess;

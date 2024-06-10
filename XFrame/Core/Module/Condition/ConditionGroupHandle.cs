@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
 using XFrame.Core;
-using XFrame.Modules.Archives;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Archives;
+using System.Collections.Generic;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Conditions
 {
-    /// <summary>
-    /// 条件组句柄，一个实例的条件控制句柄，一个实例可以有多个条件。
-    /// <para>
-    /// </para>
-    /// </summary>
     internal class ConditionGroupHandle : IConditionGroupHandle
     {
+        private bool m_Disposed;
         private bool m_Complete;
         private IDataProvider m_Data;
         private JsonArchive m_Archive;
@@ -22,42 +18,33 @@ namespace XFrame.Modules.Conditions
         private List<IConditionHandle> m_AllInfos;
         private Action<IConditionGroupHandle> m_CompleteEvent;
         private Dictionary<int, List<IConditionHandle>> m_NotInfos;
+        private ConditionModule m_Module;
 
-        /// <summary>
-        /// 条件组名称
-        /// </summary>
         public string Name => m_Setting.Name;
 
-        /// <summary>
-        /// 条件是否完成
-        /// </summary>
+        public bool IsDisposed => m_Disposed;
+
         public bool Complete => m_Complete;
 
-        /// <summary>
-        /// 条件配置
-        /// </summary>
+        public int InstanceId => m_Setting.HelperSetting.UseInstance;
+
         public ConditionSetting Setting => m_Setting;
 
-        /// <summary>
-        /// 组内所有的条件
-        /// </summary>
         public List<IConditionHandle> AllInfo => m_AllInfos;
 
-        /// <summary>
-        /// 组内还未达成的条件
-        /// </summary>
         public Dictionary<int, List<IConditionHandle>> NotInfo => m_NotInfos;
 
-        internal ConditionGroupHandle(ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
+        internal ConditionGroupHandle(ConditionModule module, ConditionSetting setting, Action<IConditionGroupHandle> completeCallback = null)
         {
             m_Setting = setting;
             m_Complete = false;
+            m_Module = module;
             m_CompleteEvent = completeCallback;
             m_AllInfos = new List<IConditionHandle>();
             m_NotInfos = new Dictionary<int, List<IConditionHandle>>();
 
             ConditionHelperSetting helperSetting = setting.HelperSetting;
-            m_Helper = ConditionModule.Inst.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
+            m_Helper = m_Module.GetOrNewHelper(setting.UseGroupHelper, helperSetting.UseInstance);
             if (helperSetting.UsePersistData)
             {
                 InnerEnsureArchive();
@@ -74,7 +61,7 @@ namespace XFrame.Modules.Conditions
                 ConditionHandle handle = new ConditionHandle(this, node.Value);
                 int target = handle.Target;
                 ConditionHelperSetting conditionSetting = setting.GetConditionHelperSettting(target);
-                IConditionCompare compare = ConditionModule.Inst.GetOrNewCompare(target, conditionSetting.UseInstance);
+                CompareInfo compare = m_Module.GetOrNewCompare(target, conditionSetting.UseInstance);
                 IDataProvider dataProvider;
                 if (conditionSetting.UsePersistData)
                 {
@@ -97,11 +84,24 @@ namespace XFrame.Modules.Conditions
                     }
                     conds.Add(handle);
                 }
+                else
+                {
+                    ConditionHandle realHandle = handle as ConditionHandle;
+                    realHandle.MarkComplete();
+                }
             }
+
+            if (m_Helper == null)
+                Log.Debug(Log.Condition, $"warning -> condition {Name} helper is null");
 
             if (m_Helper != null && m_Helper.CheckFinish(this))
             {
                 m_Complete = true;
+                foreach (IConditionHandle tmp in m_AllInfos)
+                {
+                    ConditionHandle handle = (ConditionHandle)tmp;
+                    handle.MarkComplete();
+                }
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
@@ -115,32 +115,13 @@ namespace XFrame.Modules.Conditions
         {
             if (m_Archive != null)
                 return;
-            m_Archive = ArchiveModule.Inst.GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
-        }
-
-        internal void InnerTrigger(IConditionHandle handle, object param)
-        {
-            if (m_NotInfos.TryGetValue(handle.Target, out List<IConditionHandle> handles))
-            {
-                int index = handles.IndexOf(handle);
-                if (index != -1)
-                {
-                    ConditionHandle realHandle = (ConditionHandle)handle;
-                    if (realHandle.InnerCheckComplete(param))
-                    {
-                        realHandle.MarkComplete();
-                        handles.RemoveAt(index);
-                    }
-                }
-
-                if (handles.Count == 0)
-                    m_NotInfos.Remove(handle.Target);
-                InnerCheckComplete();
-            }
+            m_Archive = m_Module.Domain.GetModule<ArchiveModule>().GetOrNew<JsonArchive>($"condition_group_{m_Setting.Name}_{m_Setting.HelperSetting.UseInstance}");
         }
 
         internal void InnerTrigger(int target, object param)
         {
+            if (m_Complete)
+                return;
             if (m_NotInfos.TryGetValue(target, out List<IConditionHandle> handles))
             {
                 for (int i = handles.Count - 1; i >= 0; i--)
@@ -163,17 +144,16 @@ namespace XFrame.Modules.Conditions
             if (m_NotInfos.Count == 0)
             {
                 m_Complete = true;
-                m_Helper?.MarkFinish(this);
+                m_Helper.MarkFinish(this);
                 m_CompleteEvent?.Invoke(this);
                 m_CompleteEvent = null;
             }
         }
 
-        /// <summary>
-        /// 释放条件实例
-        /// </summary>
         internal void Dispose()
         {
+            if (m_Disposed)
+                return;
             if (m_Setting.HelperSetting.IsUseInstance)
                 References.Release(m_Helper);
 
@@ -183,24 +163,26 @@ namespace XFrame.Modules.Conditions
                 handle.Dispose();
             }
 
-            if (m_Data is JsonArchive archvie)
-                archvie.Delete();
-
-            m_Data = null;
-            m_AllInfos = null;
-            m_NotInfos = null;
+            m_Disposed = true;
+            m_Helper = null;
         }
 
-        /// <summary>
-        /// 注册完成回调
-        /// </summary>
-        /// <param name="callback">回调</param>
         public void OnComplete(Action<IConditionGroupHandle> callback)
         {
             if (m_Complete)
                 callback?.Invoke(this);
             else
                 m_CompleteEvent += callback;
+        }
+
+        public bool HasData<T>()
+        {
+            return m_Data.HasData<T>();
+        }
+
+        public bool HasData<T>(string name)
+        {
+            return m_Data.HasData<T>(name);
         }
 
         public void SetData<T>(T value)

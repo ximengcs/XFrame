@@ -1,21 +1,16 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.Tasks;
-using XFrame.Modules.XType;
-using XFrame.Modules.Config;
-using XFrame.Modules.Diagnotics;
-using System.Collections.Generic;
-using System.Collections;
 using XFrame.Collections;
+using XFrame.Modules.Config;
+using System.Collections.Generic;
+using XFrame.Tasks;
 
 namespace XFrame.Modules.Resource
 {
-    /// <summary>
-    /// 资源模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
-    [RequireModule(typeof(TaskModule))]
-    public class ResModule : SingletonModule<ResModule>, IResModule
+    [XType(typeof(IResModule))]
+    public class ResModule : ModuleBase, IResModule
     {
         #region Inner Fields
         private IResourceHelper m_ResHelper;
@@ -23,114 +18,107 @@ namespace XFrame.Modules.Resource
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            InnerEnsurePreload();
-            if (!string.IsNullOrEmpty(XConfig.DefaultRes))
+            m_PreLoadRes = new Dictionary<string, object>();
+            if (IsDefaultModule && !string.IsNullOrEmpty(XConfig.DefaultRes))
             {
-                Type type = TypeModule.Inst.GetType(XConfig.DefaultRes);
-                InnerSetHelper(type);
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultRes);
+                SetHelper(type);
             }
         }
 
-        protected IResourceHelper InnerSetHelper(Type type)
+        /// <summary>
+        /// 设置资源辅助器
+        /// </summary>
+        /// <param name="type">辅助器类型</param>
+        /// <returns>辅助器实例</returns>
+        public IResourceHelper SetHelper(Type type)
         {
-            m_ResHelper = TypeModule.Inst.CreateInstance(type) as IResourceHelper;
+            m_ResHelper = Domain.TypeModule.CreateInstance(type) as IResourceHelper;
             m_ResHelper.OnInit(XConfig.ResPath);
             return m_ResHelper;
         }
         #endregion
 
         #region Interface
-        public ITask Preload(IEnumerable resPaths, Type type)
-        {
-            InnerEnsurePreload();
+        /// <inheritdoc/>
+        public IResourceHelper Helper => m_ResHelper;
 
-            XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
+        /// <inheritdoc/>
+        public async XTask Preload(IEnumerable<string> resPaths, Type type)
+        {
             foreach (string path in resPaths)
             {
                 if (m_PreLoadRes.ContainsKey(path))
                     continue;
-                ResLoadTask loadTask = LoadAsync(path, type);
-                loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
-                allTask.Add(loadTask);
+                object asset = await LoadAsync(path, type);
+                if (asset != null)
+                    m_PreLoadRes.Add(path, asset);
             }
-            return allTask;
         }
 
-        public ITask Preload(IXEnumerable<string> resPaths, Type type)
+        /// <inheritdoc/>
+        public async XTask Preload(string resPath, Type type)
         {
-            return Preload((IEnumerable)resPaths, type);
+            if (m_PreLoadRes.ContainsKey(resPath))
+                return;
+            object asset = await LoadAsync(resPath, type);
+            if (asset != null)
+                m_PreLoadRes.Add(resPath, asset);
         }
 
-        public ITask Preload(string[] resPaths, Type type)
+        /// <inheritdoc/>
+        public bool HasPreload(string resPath)
         {
-            return Preload((IEnumerable)resPaths, type);
+            return m_PreLoadRes.ContainsKey(resPath);
         }
 
-        public ITask Preload<T>(IEnumerable resPaths)
-        {
-            InnerEnsurePreload();
-            XTask allTask = TaskModule.Inst.GetOrNew<XTask>();
-            foreach (string path in resPaths)
-            {
-                if (m_PreLoadRes.ContainsKey(path))
-                    continue;
-                ResLoadTask<T> loadTask = LoadAsync<T>(path);
-                loadTask.OnComplete((asset) => m_PreLoadRes.Add(path, asset));
-                allTask.Add(loadTask);
-            }
-
-            return allTask;
-        }
-
-        public ITask Preload<T>(string[] resPaths)
-        {
-            return Preload<T>((IEnumerable)resPaths);
-        }
-
-        public ITask Preload<T>(IXEnumerable<string> resPaths)
-        {
-            return Preload<T>((IEnumerable)resPaths);
-        }
-
+        /// <inheritdoc/>
         public object Load(string resPath, Type type)
         {
-            InnerEnsurePreload();
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
                 return asset;
             else
                 return m_ResHelper.Load(resPath, type);
         }
 
+        /// <inheritdoc/>
         public T Load<T>(string resPath)
         {
-            InnerEnsurePreload();
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
+            {
                 return (T)asset;
+            }
             else
+            {
                 return m_ResHelper.Load<T>(resPath);
+            }
         }
 
+        /// <inheritdoc/>
         public ResLoadTask LoadAsync(string resPath, Type type)
         {
             return m_ResHelper.LoadAsync(resPath, type);
         }
 
+        /// <inheritdoc/>
         public ResLoadTask<T> LoadAsync<T>(string resPath)
         {
             return m_ResHelper.LoadAsync<T>(resPath);
         }
 
+        /// <inheritdoc/>
         public void Unload(object target)
         {
             m_ResHelper.Unload(target);
         }
 
+        /// <inheritdoc/>
         public void UnloadPre(string resPath)
         {
-            InnerEnsurePreload();
             if (m_PreLoadRes.TryGetValue(resPath, out object asset))
             {
                 Unload(asset);
@@ -138,24 +126,19 @@ namespace XFrame.Modules.Resource
             }
         }
 
+        /// <inheritdoc/>
         public void UnloadAll()
         {
             m_ResHelper.UnloadAll();
         }
 
+        /// <inheritdoc/>
         public void UnloadAllPre()
         {
-            InnerEnsurePreload();
             foreach (object asset in m_PreLoadRes.Values)
                 m_ResHelper.Unload(asset);
             m_PreLoadRes.Clear();
         }
         #endregion
-
-        private void InnerEnsurePreload()
-        {
-            if (m_PreLoadRes == null)
-                m_PreLoadRes = new Dictionary<string, object>();
-        }
     }
 }

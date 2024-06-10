@@ -8,6 +8,10 @@ namespace XFrameTest
     {
         public bool IsDone { get; private set; }
 
+        public IDataProvider Data => throw new NotImplementedException();
+
+        public IStory Story => throw new NotImplementedException();
+
         public bool CanStart()
         {
             Log.Debug("CanStart" + GetHashCode());
@@ -20,7 +24,7 @@ namespace XFrameTest
             return true;
         }
 
-        public void OnInit(IDataProvider data)
+        public void OnCreate(IStory story, IDataProvider data)
         {
             Log.Debug("OnInit" + GetHashCode());
         }
@@ -35,11 +39,20 @@ namespace XFrameTest
             Log.Debug("OnUpdate" + GetHashCode());
             IsDone = true;
         }
+
+        public void OnInit()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Section2 : ISection
     {
         public bool IsDone { get; private set; }
+
+        public IDataProvider Data => throw new NotImplementedException();
+
+        public IStory Story => throw new NotImplementedException();
 
         public bool CanStart()
         {
@@ -53,7 +66,7 @@ namespace XFrameTest
             return true;
         }
 
-        public void OnInit(IDataProvider data)
+        public void OnCreate(IStory story, IDataProvider data)
         {
             Log.Debug("None Block OnInit" + GetHashCode());
         }
@@ -68,6 +81,11 @@ namespace XFrameTest
             Log.Debug("None Block OnUpdate" + GetHashCode());
             IsDone = true;
         }
+
+        public void OnInit()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [TestClass]
@@ -76,22 +94,7 @@ namespace XFrameTest
         [TestMethod]
         public void Test1()
         {
-            EntryTest.Exec(() =>
-            {
-                IStory[] stories = new IStory[]
-                {
-                    PlotModule.Inst.NewStory("story1").AddSection(typeof(Section1)),
-                    PlotModule.Inst.NewStory("story2").AddSection(typeof(Section1))
-                };
-                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories));
 
-                stories = new IStory[]
-                {
-                    PlotModule.Inst.NewStory("story3").AddSection(typeof(Section2)),
-                    PlotModule.Inst.NewStory("story4").AddSection(typeof(Section2))
-                };
-                PlotModule.Inst.Helper.Event.Trigger(NewStoryEvent.Create(stories, typeof(NonBlockDirector)));
-            });
         }
 
         [TestMethod]

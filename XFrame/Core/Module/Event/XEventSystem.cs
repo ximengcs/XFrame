@@ -17,6 +17,9 @@ namespace XFrame.Modules.Event
             public bool Empty => Handler1 == null && Handler2 == null;
 
             int IPoolObject.PoolKey => default;
+            public string MarkName { get; set; }
+
+            IPool IPoolObject.InPool { get; set; }
 
             public void Do(XEvent e)
             {

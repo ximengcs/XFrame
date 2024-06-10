@@ -1,7 +1,8 @@
 ﻿
-using System.Reflection;
+using System.Text;
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 
 namespace XFrameTest
 {
@@ -41,11 +42,11 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>() == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(9) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(9.9f) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance<C1>(true) == null);
-                Log.Debug(TypeModule.Inst.CreateInstance(typeof(C1).FullName, 1, 2) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>() == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(9) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(9.9f) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance<C1>(true) == null);
+                Log.Debug(Entry.GetModule<ITypeModule>().CreateInstance(typeof(C1).FullName, 1, 2) == null);
             });
         }
 
@@ -57,6 +58,12 @@ namespace XFrameTest
             Console.WriteLine(t1.IsAssignableFrom(t2));
             Console.WriteLine(t2.IsAssignableFrom(t1));
             Console.WriteLine(t1 == t2);
+        }
+
+        [TestMethod]
+        public void Test3()
+        {
+            Console.WriteLine(string.Format("{a} {0} {1} ", 9, 9));
         }
     }
 }

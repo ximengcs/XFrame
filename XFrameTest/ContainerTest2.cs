@@ -1,8 +1,8 @@
 ﻿
 using NUnit.Framework.Internal;
+using XFrame.Core;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Tasks;
 
 namespace XFrameTest
 {
@@ -12,30 +12,6 @@ namespace XFrameTest
         #region Container1
         public class Container1 : Container
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Container1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Container1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Container1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Container1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -51,7 +27,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -68,32 +44,8 @@ namespace XFrameTest
         #endregion
 
         #region Com1
-        public class Com1 : Com
+        public class Com1 : Container
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Com1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Com1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Com1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Com1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -101,9 +53,9 @@ namespace XFrameTest
                 AddCom<Com2>();
 
                 string master = "null";
-                if (Master != null)  master = Master.GetHashCode().ToString();
+                if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("Com1 Master " + master);
                 Log.Debug("Com1 Owner " + owner);
 
@@ -111,7 +63,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -128,32 +80,8 @@ namespace XFrameTest
         #endregion
 
         #region Com2
-        private class Com2 : Com
+        private class Com2 : Container
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("Com2 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("Com2 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("Com2 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("Com2 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -163,7 +91,7 @@ namespace XFrameTest
                 string master = "null";
                 if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("Com2 Master " + master);
                 Log.Debug("Com2 Owner " + owner);
 
@@ -171,7 +99,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -188,32 +116,8 @@ namespace XFrameTest
         #endregion
 
         #region 
-        public class ShareCom1 : ShareCom
+        public class ShareCom1 : ShareContainer
         {
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug("ShareCom1 OnCreateFromPool " + GetHashCode());
-            }
-
-            protected override void OnRequestFromPool()
-            {
-                base.OnRequestFromPool();
-                Log.Debug("ShareCom1 OnRequestFromPool " + GetHashCode());
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug("ShareCom1 OnReleaseFromPool " + GetHashCode());
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug("ShareCom1 OnDestroyFromPool " + GetHashCode());
-            }
-
             protected override void OnInit()
             {
                 base.OnInit();
@@ -224,7 +128,7 @@ namespace XFrameTest
                 string master = "null";
                 if (Master != null) master = Master.GetHashCode().ToString();
                 string owner = "null";
-                if (Owner != null) owner = Owner.GetHashCode().ToString();
+                if (Parent != null) owner = Parent.GetHashCode().ToString();
                 Log.Debug("ShareCom1 Master " + master);
                 Log.Debug("ShareCom1 Owner " + owner);
 
@@ -232,7 +136,7 @@ namespace XFrameTest
             }
 
             bool update;
-            protected override void OnUpdate(float elapseTime)
+            protected override void OnUpdate(double elapseTime)
             {
                 base.OnUpdate(elapseTime);
                 if (update) return;
@@ -248,7 +152,7 @@ namespace XFrameTest
         }
         #endregion
 
-        public class Com3 : Com
+        public class Com3 : Container
         {
 
         }
@@ -259,14 +163,14 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Log.Debug("Start");
-                IContainer c1 = ContainerModule.Inst.New<Container1>();
+                //IContainer c1 = Entry.GetModule<IContainerModule>().New<Container1>();
 
-                TaskModule.Inst.GetOrNew<DelayTask>().Add(1, () =>
-                {
-                    ContainerModule.Inst.Remove(c1);
-                    Log.Debug("Complete");
-                    IContainer c2 = ContainerModule.Inst.New<Container1>();
-                }).Start();
+                //XModule.Task.GetOrNew<ActionTask>().Add(1, () =>
+                //{
+                //    XModule.Container.Remove(c1);
+                //    Log.Debug("Complete");
+                //    IContainer c2 = XModule.Container.New<Container1>();
+                //}).Start();
             });
         }
     }

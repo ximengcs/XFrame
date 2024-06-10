@@ -1,5 +1,6 @@
 ﻿
 using XFrame.Collections;
+using XFrame.Core;
 using XFrame.Modules.Archives;
 using XFrame.Modules.Config;
 using XFrame.Modules.Diagnotics;
@@ -16,8 +17,8 @@ namespace XFrameTest
             //测试前关闭加密
             EntryTest.Exec(() =>
             {
-                ArchiveModule.Inst.Delete("lang");
-                CsvArchive archive = ArchiveModule.Inst.GetOrNew<CsvArchive>("lang");
+                Entry.GetModule<ArchiveModule>().Delete("lang");
+                CsvArchive archive = Entry.GetModule<ArchiveModule>().GetOrNew<CsvArchive>("lang");
                 Csv<string>.Line line = archive.Data.Add();
                 line[0] = "1"; line[1] = "English"; line[2] = "ChineseSimplified";
 
@@ -48,13 +49,14 @@ namespace XFrameTest
         {
             EntryTest.Exec(() =>
             {
-                LocalizeModule.Inst.SetFormater(new IdFormatter());
-                LocalizeModule.Inst.Lang = Language.ChineseSimplified;
-                Log.Debug($"{LocalizeModule.Inst.GetValueParam(3, 0, 1, 2)}");
-                Log.Debug($"{LocalizeModule.Inst.GetValue(3, "q", "w", "e")}");
+                Log.ToQueue = false;
+                Entry.GetModule<ILocalizeModule>().SetFormater(new IdFormatter());
+                Entry.GetModule<ILocalizeModule>().Lang = Language.ChineseSimplified;
+                Log.Debug($"{Entry.GetModule<ILocalizeModule>().GetValueParam(3, 0, 1, 2)}");
+                Log.Debug($"{Entry.GetModule<ILocalizeModule>().GetValue(3, "q", "w", "e")}");
 
-                LocalizeModule.Inst.Lang = Language.English;
-                Log.Debug($"{LocalizeModule.Inst.GetValue(3, "q", "w", "e")}");
+                Entry.GetModule<ILocalizeModule>().Lang = Language.English;
+                Log.Debug($"{Entry.GetModule<ILocalizeModule>().GetValue(3, "q", "w", "e")}");
             });
         }
     }

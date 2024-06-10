@@ -1,7 +1,9 @@
 ﻿
+using XFrame.Core;
 using XFrame.Modules.Containers;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Tasks;
+using XFrame.Modules.Entities;
+using XFrame.Modules.Event;
 
 namespace XFrameTest
 {
@@ -16,32 +18,40 @@ namespace XFrameTest
 
             public EntityA()
             {
-                m_Coms = ContainerModule.Inst.New();
-                Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
-
-                m_Coms.GetOrAddCom<Com1>();
-                m_Coms.GetOrAddCom<Com2>((com) =>
-                {
-                    com.SetData(98259);
-                });
-                m_Coms.GetOrAddCom<Com3>();
-                m_Coms.GetOrAddCom<Com1>();
+                //m_Coms = Entry.GetModule<IContainerModule>().New();
+                //Log.Debug($"{m_Coms.GetHashCode()} + {m_Coms.GetCom<Com1>() == null}");
+                //
+                //m_Coms.GetOrAddCom<Com1>();
+                //m_Coms.GetOrAddCom<Com2>((com) =>
+                //{
+                //    com.SetData(98259);
+                //});
+                //m_Coms.GetOrAddCom<Com3>();
+                //m_Coms.GetOrAddCom<Com1>();
             }
 
             public void Destroy()
             {
-                ContainerModule.Inst.Remove(m_Coms);
+                Entry.GetModule<IContainerModule>().Remove(m_Coms);
                 m_Coms = default;
             }
         }
 
-        private interface IT : ICom
+        private interface IT : IEntity
         {
 
         }
 
-        private class Com1 : Com, IT
+        private class Com1 : Container, IT
         {
+            public IEventSystem Event => throw new NotImplementedException();
+
+            IEntity IEntity.Master => throw new NotImplementedException();
+
+            IEntity IEntity.Parent => throw new NotImplementedException();
+
+            public IScene Scene => throw new NotImplementedException();
+
             protected override void OnInit()
             {
                 base.OnInit();
@@ -49,7 +59,7 @@ namespace XFrameTest
                 Log.Debug($"Com1 OnInit " + (Master == null));
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com1 OnUpdate");
@@ -60,27 +70,9 @@ namespace XFrameTest
                 base.OnDestroy();
                 Log.Debug($"Com1 OnDestroy");
             }
-
-            protected override void OnCreateFromPool()
-            {
-                base.OnCreateFromPool();
-                Log.Debug($"Com1 OnCreateFromPool");
-            }
-
-            protected override void OnReleaseFromPool()
-            {
-                base.OnReleaseFromPool();
-                Log.Debug($"Com1 OnReleaseFromPool");
-            }
-
-            protected override void OnDestroyFromPool()
-            {
-                base.OnDestroyFromPool();
-                Log.Debug($"Com1 OnDestroyFromPool");
-            }
         }
 
-        private class Com2 : Com
+        private class Com2 : Entity
         {
             protected override void OnInit()
             {
@@ -88,7 +80,7 @@ namespace XFrameTest
                 Log.Debug($"Com2 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com2 OnUpdate");
@@ -101,7 +93,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com3 : ShareCom
+        private class Com3 : ShareContainer
         {
             protected override void OnInit()
             {
@@ -109,7 +101,7 @@ namespace XFrameTest
                 Log.Debug($"Com3 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com3 OnUpdate");
@@ -122,7 +114,7 @@ namespace XFrameTest
             }
         }
 
-        private class Com4 : ShareCom
+        private class Com4 : ShareContainer
         {
             protected override void OnInit()
             {
@@ -130,7 +122,7 @@ namespace XFrameTest
                 Log.Debug($"Com4 OnInit");
             }
 
-            protected override void OnUpdate(float elpseTime)
+            protected override void OnUpdate(double elpseTime)
             {
                 base.OnUpdate(elpseTime);
                 Log.Debug($"Com4 OnUpdate");
@@ -162,12 +154,11 @@ namespace XFrameTest
             EntryTest.Exec(() =>
             {
                 Console.WriteLine("New");
-                Container container = ContainerModule.Inst.New();
-                TaskModule.Inst.GetOrNew<DelayTask>()
-                .Add(0, () =>
-                {
-                    ContainerModule.Inst.Remove(container);
-                }).Start();
+                //XModule.Task.GetOrNew<ActionTask>()
+                //.Add(() =>
+                //{
+                //    XModule.Container.Remove(container);
+                //}, true).Start();
             });
         }
     }

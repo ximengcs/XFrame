@@ -1,9 +1,7 @@
 ﻿using System;
-using XFrame.Utility;
 using XFrame.Modules.Serialize;
 using XFrame.Modules.Diagnotics;
 using System.Collections.Generic;
-using XFrame.Modules.XType;
 
 namespace XFrame.Modules.Datas
 {
@@ -21,8 +19,14 @@ namespace XFrame.Modules.Datas
             }
         }
 
+        private DataModule m_Module;
         private Dictionary<int, TypeInfo> m_TableTypes;
         private Dictionary<Type, List<IDataTable>> m_Tables;
+
+        public DefaultDataHelper(DataModule module)
+        {
+            m_Module = module;
+        }
 
         void IDataHelper.OnInit()
         {
@@ -34,11 +38,11 @@ namespace XFrame.Modules.Datas
         {
             if (!type.IsGenericType)
             {
-                Log.Debug("XFrame", "Data table type error");
+                Log.Debug(Log.XFrame, "Data table type error");
                 return;
             }
 
-            TableAttribute attr = TypeModule.Inst.GetAttribute<TableAttribute>(type);
+            TableAttribute attr = m_Module.Domain.TypeModule.GetAttribute<TableAttribute>(type);
             if (attr != null)
             {
                 Type jsonType = attr != null ? attr.JsonType : null;
@@ -54,7 +58,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Debug("XFrame", $"Add data error. data type not has handler class.");
+                Log.Debug(Log.XFrame, $"Add data error. data type not has handler class.");
                 return default;
             }
         }
@@ -67,7 +71,7 @@ namespace XFrame.Modules.Datas
             }
             else
             {
-                Log.Debug("XFrame", $"Get data error. data type not has handler class.");
+                Log.Debug(Log.XFrame, $"Get data error. data type not has handler class.");
                 list = null;
                 return false;
             }
@@ -78,7 +82,7 @@ namespace XFrame.Modules.Datas
             tbType = null;
             jsonType = null;
 
-            DataAttribute attr = TypeModule.Inst.GetAttribute<DataAttribute>(dataType);
+            DataAttribute attr = m_Module.Domain.TypeModule.GetAttribute<DataAttribute>(dataType);
             int tableType = attr != null ? attr.TableType : TableType.List;
             if (m_TableTypes.TryGetValue(tableType, out TypeInfo info))
             {
@@ -101,8 +105,12 @@ namespace XFrame.Modules.Datas
 
         private IDataTable InnerAdd(Type tbType, Type jsonType, string json, int textType)
         {
-            object data = SerializeModule.Inst.DeserializeToObject(json, textType, jsonType);
-            IDataTable table = (IDataTable)TypeModule.Inst.CreateInstance(tbType);
+            ISerializeModule serializeModule = m_Module.Domain.GetModule<ISerializeModule>();
+            if (serializeModule == null)
+                serializeModule = m_Module.Domain.GetModule<ISerializeModule>(m_Module.Id);
+
+            object data = serializeModule.DeserializeToObject(json, textType, jsonType);
+            IDataTable table = (IDataTable)m_Module.Domain.TypeModule.CreateInstance(tbType);
             table.OnInit(data);
 
             List<IDataTable> list;

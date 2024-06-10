@@ -1,12 +1,10 @@
 ﻿
-using XFrame.Modules.Tasks;
-
 namespace XFrame.Modules.Download
 {
     /// <summary>
     /// 下载辅助器
     /// </summary>
-    public interface IDownloadHelper : ITaskHandler
+    public interface IDownloadHelper
     {
         /// <summary>
         /// 下载是否完成，成功或失败完成时为true
@@ -24,9 +22,13 @@ namespace XFrame.Modules.Download
         string Url { get; set; }
 
         /// <summary>
+        /// 备用地址
+        /// </summary>
+        string[] ReserveUrl { get; set; }
+
+        /// <summary>
         /// 请求下载
         /// </summary>
-        /// <param name="url"></param>
         protected internal void Request();
 
         /// <summary>

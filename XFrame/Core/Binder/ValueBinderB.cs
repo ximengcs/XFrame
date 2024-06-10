@@ -78,6 +78,7 @@ namespace XFrame.Core.Binder
         /// 添加一个数值变更处理委托
         /// </summary>
         /// <param name="handler">更新时的处理委托</param>
+        /// <param name="atonceInvoke">是否自动执行一次</param>
         public void AddHandler(Action<T> handler, bool atonceInvoke = false)
         {
             if (handler == null)
@@ -121,11 +122,19 @@ namespace XFrame.Core.Binder
             m_CondUpdateHandler.Remove(handler);
         }
 
+        /// <summary>
+        /// 返回绑定的值
+        /// </summary>
+        /// <param name="binder">绑定的值</param>
         public static implicit operator T(ValueBinder<T, VT> binder)
         {
             return binder.Value;
         }
 
+        /// <summary>
+        /// 返回持有值的字符串
+        /// </summary>
+        /// <returns>持有值的字符串</returns>
         public override string ToString()
         {
             return Value.ToString();

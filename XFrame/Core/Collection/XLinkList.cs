@@ -4,13 +4,10 @@ using XFrame.Modules.Pools;
 namespace XFrame.Collections
 {
     /// <summary>
-    /// Ë«ÏòÁ´±í
-    /// ×¢Òâµã£º	1.Á´±íÊ¹ÓÃ¶ÔÏó³Ø£¬ĞèÒªµ÷ÓÃÕßÊ¹ÓÃÍêÖ®ºóµ÷ÓÃDisposeÊÍ·Å³Ø
-    ///			2.Á´±í¿ÉÒÔµ÷ÓÃNode½ÚµãµÄDeleteÖ±½ÓÉ¾³ı½Úµã
-    ///	Ê¹ÓÃ³¡¾°£ºĞèÒªË³Ğòµü´ú£¬ĞèÒªËæÊ±É¾³ı½Úµã£¬²»ĞèÒªËæ»ú·ÃÎÊ
+    /// åŒå‘é“¾è¡¨
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>
+    /// <typeparam name="T">æŒæœ‰ç±»å‹</typeparam>
+    public partial class XLinkList<T> : IPoolObject, IXEnumerable<XLinkNode<T>>, IXEnumerable<T>
     {
         #region Inner Fields
         private XLinkNode<T> m_First;
@@ -22,14 +19,17 @@ namespace XFrame.Collections
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// æ„é€ ä¸€ä¸ªåŒå‘é“¾è¡¨, ä¸ä½¿ç”¨å¯¹è±¡æ± 
+        /// </summary>
         public XLinkList() : this(false)
         {
         }
 
         /// <summary>
-        /// ¹¹ÔìÒ»¸öÁ´±í
-        /// usePool ÄÚ²¿Ê¹ÓÃÒ»¸öËù¸øÈİÁ¿µÄ¶ÔÏó³Ø
+        /// æ„é€ ä¸€ä¸ªåŒå‘é“¾è¡¨
         /// </summary>
+        /// <param name="usePool">æ˜¯å¦ä½¿ç”¨å¯¹è±¡æ± </param>
         public XLinkList(bool usePool = true)
         {
             UsePool = usePool;
@@ -37,10 +37,10 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ»¸öÊı¾İµ½Á´±íÎ²
+        /// æ·»åŠ å…ƒç´ åˆ°å°¾éƒ¨
         /// </summary>
-        /// <param name="data">ÒªÌí¼ÓµÄÊı¾İ</param>
-        /// <returns>Ìí¼ÓµÄ½Úµã</returns>
+        /// <param name="data">æ•°æ®</param>
+        /// <returns></returns>
         public XLinkNode<T> AddLast(T data)
         {
             XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
@@ -68,7 +68,7 @@ namespace XFrame.Collections
 
         #region Interface
         /// <summary>
-        /// Á´±íµÚÒ»¸ö½Úµã
+        /// é¦–ä¸ªå…ƒç´ 
         /// </summary>
         public XLinkNode<T> First
         {
@@ -77,7 +77,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Á´±í×îºóÒ»¸ö½Úµã
+        /// æœ€åä¸€ä¸ªå…ƒç´ 
         /// </summary>
         public XLinkNode<T> Last
         {
@@ -86,7 +86,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Á´±í½ÚµãÊıÁ¿
+        /// å…ƒç´ æ•°é‡
         /// </summary>
         public int Count
         {
@@ -95,14 +95,14 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÊÇ·ñ¿Õ
+        /// åˆ—è¡¨æ˜¯å¦ä¸ºç©º
         /// </summary>
         public bool Empty => m_Count == 0;
 
         /// <summary>
-        /// Î²²¿²åÈëÒ»¸ö½Úµã
+        /// åœ¨åˆ—è¡¨å°¾æ·»åŠ ä¸€ä¸ªèŠ‚ç‚¹
         /// </summary>
-        /// <param name="node">½Úµã</param>
+        /// <param name="node">èŠ‚ç‚¹</param>
         public void AddLast(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -124,9 +124,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıµÚÒ»¸ö½Úµã
+        /// ç§»é™¤ç¬¬ä¸€ä¸ªå…ƒç´ 
         /// </summary>
-        /// <returns>ÒÆ³ıµôµÄÊı¾İ</returns>
+        /// <returns>ç§»é™¤çš„å…ƒç´ </returns>
         public T RemoveFirst()
         {
             if (m_First == null)
@@ -149,9 +149,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıµÚÒ»¸ö½Úµã
+        /// ç§»é™¤ç¬¬ä¸€ä¸ªèŠ‚ç‚¹
         /// </summary>
-        /// <returns>ÒÆ³ıµÄ½Úµã</returns>
+        /// <returns>ç§»é™¤çš„èŠ‚ç‚¹</returns>
         public XLinkNode<T> RemoveFirstNode()
         {
             if (m_First == null)
@@ -174,10 +174,10 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ»¸öÊı¾İµ½Á´±íÍ·
+        /// åœ¨è¡¨å¤´æ·»åŠ ä¸€ä¸ªå…ƒç´ 
         /// </summary>
-        /// <param name="data">ÒªÌí¼ÓµÄÊı¾İ</param>
-        /// <returns>Ìí¼ÓµÄ½Úµã</returns>
+        /// <param name="data">å…ƒç´ </param>
+        /// <returns>èŠ‚ç‚¹</returns>
         public XLinkNode<T> AddFirst(T data)
         {
             XLinkNode<T> node = UsePool ? References.Require<XLinkNode<T>>() : new XLinkNode<T>();
@@ -203,9 +203,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÔÚÒ»¸ö½ÚµãÖ®Ç°²åÈëÒ»¸ö½Úµã
+        /// åœ¨è¡¨å¤´æ·»åŠ ä¸€ä¸ªèŠ‚ç‚¹
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="node">æ·»åŠ çš„èŠ‚ç‚¹</param>
         public void AddFirst(XLinkNode<T> node)
         {
             node.m_List = this;
@@ -228,9 +228,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ı×îºóÒ»¸öÔªËØ
+        /// ç§»é™¤æœ€åä¸€ä¸ªå…ƒç´ 
         /// </summary>
-        /// <returns>ÒÆ³ıµÄÔªËØ</returns>
+        /// <returns>ç§»é™¤çš„å…ƒç´ </returns>
         public T RemoveLast()
         {
             if (m_Last == null)
@@ -253,9 +253,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ı×îºóÒ»¸ö½Úµã
+        /// ç§»é™¤æœ€åä¸€ä¸ªèŠ‚ç‚¹
         /// </summary>
-        /// <returns>ÒÆ³ıµÄ½Úµã</returns>
+        /// <returns>ç§»é™¤çš„èŠ‚ç‚¹</returns>
         public XLinkNode<T> RemoveLastNode()
         {
             if (m_Last == null)
@@ -278,9 +278,9 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// ÒÆ³ıÒ»¸öÔªËØ
+        /// ç§»é™¤å…ƒç´ 
         /// </summary>
-        /// <param name="value">´ıÒÆ³ıµÄÔªËØ</param>
+        /// <param name="value">å…ƒç´ </param>
         public void Remove(T value)
         {
             foreach (XLinkNode<T> node in this)
@@ -294,7 +294,7 @@ namespace XFrame.Collections
         }
 
         /// <summary>
-        /// Çå³ıÁ´±í
+        /// æ¸…é™¤å…ƒç´ 
         /// </summary>
         public void Clear()
         {
@@ -308,11 +308,13 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;
         }
 
+        /// <inheritdoc/>
         public IEnumerator<XLinkNode<T>> GetEnumerator()
         {
             switch (m_ItType)
@@ -322,9 +324,24 @@ namespace XFrame.Collections
                 default: return default;
             }
         }
+
+        IEnumerator<T> IXEnumerable<T>.GetEnumerator()
+        {
+            switch (m_ItType)
+            {
+                case XItType.Forward: return new ElementForwardIt(this);
+                case XItType.Backward: return new ElementBackwardIt(this);
+                default: return default;
+            }
+        }
         #endregion
 
         #region Pool Life Fun
+        /// <inheritdoc/>
+        public string MarkName { get; set; }
+
+        IPool IPoolObject.InPool { get; set; }
+
         int IPoolObject.PoolKey => 0;
 
         void IPoolObject.OnCreate()

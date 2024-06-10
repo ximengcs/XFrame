@@ -1,14 +1,22 @@
-﻿using XFrame.Modules.Event;
+﻿using XFrame.Core;
+using XFrame.Modules.Event;
 using XFrame.Modules.Pools;
 
 namespace XFrame.Modules.Conditions
 {
     /// <summary>
     /// 条件事件
+    /// <para>
+    /// 此事件会影响所有条件组
+    /// </para>
     /// </summary>
     public class ConditionEvent : XEvent
     {
         private static int s_EventId;
+
+        /// <summary>
+        /// 事件Id
+        /// </summary>
         public static int EventId
         {
             get
@@ -25,9 +33,11 @@ namespace XFrame.Modules.Conditions
         public int Target { get; private set; }
 
         /// <summary>
-        /// 触发参数，可为数量等，触发时会执行<see cref="IConditionCompare.Check(ConditionHandle, object)"/>生命周期方法，
-        /// 其中<see cref="ConditionHandle.Target"/>句柄参数即和<see cref="Target"/>条件目标匹配的句柄，第二个参数传入此参数<see cref="Param"/>，
-        /// 可由<see cref="IConditionCompare"/>的具体实现类解析判断。
+        /// 触发参数
+        /// <para>
+        /// 可为数量等, 定义为<see cref="IConditionCompare{T}.OnEventTrigger"/>和
+        /// <see cref="IConditionCompare{T}.Check"/>的接受参数, 由<see cref="IConditionCompare"/>的具体实现类解析判断。
+        /// </para>
         /// </summary>
         public object Param { get; private set; }
 
@@ -39,18 +49,20 @@ namespace XFrame.Modules.Conditions
         /// <returns>事件实例</returns>
         public static ConditionEvent Create(int target, object param)
         {
-            ConditionEvent evt = PoolModule.Inst.GetOrNew<ConditionEvent>().Require();
+            ConditionEvent evt = References.Require<ConditionEvent>();
             evt.Target = target;
             evt.Param = param;
             return evt;
         }
 
+        /// <inheritdoc/>
         protected internal override void OnRequestFromPool()
         {
             base.OnRequestFromPool();
             Id = EventId;
         }
 
+        /// <inheritdoc/>
         protected internal override void OnReleaseFromPool()
         {
             base.OnReleaseFromPool();

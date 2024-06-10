@@ -7,7 +7,6 @@ using XFrame.Modules.Pools;
 using System.IO;
 using System.Globalization;
 using CsvHelper;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace XFrame.Collections
 {
@@ -25,19 +24,12 @@ namespace XFrame.Collections
         private Dictionary<int, XLinkNode<Line>> m_LinesWithIndex;
         #endregion
 
-        #region Const Fields
-        private const int DEFAULT_COLUMN = 8;
-        private const int REQUIRE = 1;
-        private const string CSV_PATTERN = "(?:,|\\n|^)(\"(?:(?:\"\")*[^\"]*)*\"|[^\",\\n]*|(?:\\n|$))";
-        //private const string CSV_PATTERN = "\"([^\"]+?)\",?|([^,]+),?|,";
-        #endregion
-
         #region Constructor
         /// <summary>
         /// 构造一个 <paramref name="column"/> 列的Csv
         /// </summary>
-        /// <param name="column"></param>
-        public Csv(int column = DEFAULT_COLUMN)
+        /// <param name="column">列数</param>
+        public Csv(int column = 8)
         {
             m_Column = column;
             m_Lines =  References.Require<XLinkList<Line>>();
@@ -101,7 +93,7 @@ namespace XFrame.Collections
         {
             if (line.Count != m_Column)
             {
-                Log.Error("XFrame", $"csv inset column error.");
+                Log.Error(Log.XFrame, $"csv inset column error.");
                 return line;
             }
 
@@ -141,7 +133,7 @@ namespace XFrame.Collections
         public Line Get(int row)
         {
             if (row < 0)
-                Log.Debug("CSV", $"get csv data error.row out of bounds. cur {row} max {m_Row}");
+                Log.Debug(Log.CSV, $"get csv data error.row out of bounds. cur {row} max {m_Row}");
             return m_LinesWithIndex[row].Value;
         }
 
@@ -154,20 +146,28 @@ namespace XFrame.Collections
         public T Get(int row, int column)
         {
             if (row < 0 || row >= m_Row)
-                Log.Debug("CSV", $"get csv data error.row out of bounds. cur {row} max {m_Row}");
+                Log.Debug(Log.CSV, $"get csv data error.row out of bounds. cur {row} max {m_Row}");
             Line rowContent = m_LinesWithIndex[row].Value;
             if (column < 0 | column >= rowContent.Count)
-                Log.Debug("CSV", $"get csv data error.column out of bounds. cur {column} max {rowContent.Count}");
+                Log.Debug(Log.CSV, $"get csv data error.column out of bounds. cur {column} max {rowContent.Count}");
             return rowContent[column];
         }
         #endregion
 
         #region IXEnumerable Interface
+        /// <summary>
+        /// 获取迭代器
+        /// </summary>
+        /// <returns>迭代器</returns>
         public IEnumerator<Line> GetEnumerator()
         {
             return new Enumerator(m_Lines);
         }
 
+        /// <summary>
+        /// 设置迭代器类型
+        /// </summary>
+        /// <param name="type">迭代器类型</param>
         public void SetIt(XItType type)
         {
             m_Lines.SetIt(type);
@@ -186,7 +186,7 @@ namespace XFrame.Collections
         private void InnerInit(string raw, IParser<T> parser)
         {
             m_Row = 0;
-            CsvReader csvReader = new CsvReader(new StringReader(raw), CultureInfo.CurrentCulture);
+            CsvReader csvReader = new CsvReader(new StringReader(raw), CultureInfo.InvariantCulture);
             while (csvReader.Read())
             {
                 m_Column = csvReader.Parser.Count;
@@ -205,6 +205,10 @@ namespace XFrame.Collections
         }
         #endregion
 
+        /// <summary>
+        /// 获取Csv数据字符串形式，以换行符分隔
+        /// </summary>
+        /// <returns>构造字符串</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -217,6 +221,9 @@ namespace XFrame.Collections
             return sb.ToString();
         }
 
+        /// <summary>
+        /// 释放
+        /// </summary>
         public void Dispose()
         {
             References.Release(m_Lines);
@@ -224,6 +231,11 @@ namespace XFrame.Collections
             m_LinesWithIndex = null;
         }
 
+        /// <summary>
+        /// 返回csv字符串形式
+        /// </summary>
+        /// <param name="csv">csv实例</param>
+        /// <returns>字符串形式</returns>
         public static implicit operator string(Csv<T> csv)
         {
             return csv.ToString();

@@ -18,6 +18,11 @@ namespace XFrameTest
             Console.WriteLine(content);
         }
 
+        public void Exception(Exception e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Fatal(params object[] content)
         {
             Console.WriteLine(content);
@@ -34,6 +39,8 @@ namespace XFrameTest
         public int Name;
 
         int IPoolObject.PoolKey => 0;
+        string IPoolObject.MarkName { get; set; }
+        IPool IPoolObject.InPool { get; set; }
 
         void IPoolObject.OnCreate()
         {

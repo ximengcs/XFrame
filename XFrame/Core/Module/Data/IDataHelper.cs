@@ -24,6 +24,7 @@ namespace XFrame.Modules.Datas
         /// </summary>
         /// <param name="json">需要被序列化的数据</param>
         /// <param name="datatype">数据表持有数据类型</param>
+        /// <param name="textType">文本类型</param>
         /// <returns>数据表</returns>
         IDataTable Add(string json, Type datatype, int textType);
 

@@ -6,6 +6,9 @@ namespace XFrame.Modules.StateMachine
     /// </summary>
     public abstract class FsmState<T>
     {
+        /// <summary>
+        /// 持有状态机
+        /// </summary>
         protected IFsm<T> m_Fsm;
 
         /// <summary>

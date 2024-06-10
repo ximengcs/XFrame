@@ -1,5 +1,6 @@
 ﻿using XFrame.Core;
 using XFrame.Modules.Config;
+using XFrameTest.Common;
 
 namespace XFrameTest
 {
@@ -13,8 +14,7 @@ namespace XFrameTest
         public static void Exec(int times, Action runCallback)
         {
             XConfig.ArchiveEncrypt = false;
-            XConfig.UseClassModule = new string[] { "XFrameTest" };
-            XConfig.DefaultSerializer = typeof(TestJsonSerializer).FullName;
+            XConfig.TypeChecker = new DefaultTypeChecker();
             XConfig.DefaultLogger = typeof(ConsoleLogger).FullName;
             XConfig.ArchivePath = "D:\\TestXFrame";
             XConfig.DefaultDownloadHelper = typeof(TestDownloadHelper).FullName;
@@ -23,7 +23,7 @@ namespace XFrameTest
             Entry.OnRun += runCallback;
             Entry.Start();
             for (int i = 0; i < times; i++)
-                Entry.Update(0.16f);
+                Entry.Trigger<IUpdater>(0.16f);
             Entry.ShutDown();
         }
     }

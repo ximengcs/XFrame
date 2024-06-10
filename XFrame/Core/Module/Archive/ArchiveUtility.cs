@@ -1,53 +1,54 @@
-﻿using System.IO;
-using XFrame.Modules.Config;
+﻿using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 
 namespace XFrame.Modules.Archives
 {
     internal class ArchiveUtility
     {
-        public static byte[] ReadBytes(string path)
+        public static IArchiveUtilityHelper Helper { get; set; }
+
+        public static byte[] ReadBytes(IArchiveModule module, string path)
         {
             byte[] result;
             if (XConfig.ArchiveEncrypt)
             {
-                byte[] data = File.ReadAllBytes(path);
-                ICryptor cryptor = CryptoModule.Inst.New();
+                byte[] data = Helper.ReadAllBytes(path);
+                ICryptor cryptor = module.Domain.GetModule<ICryptoModule>().New();
                 cryptor.BeginDecrypty(data);
                 result = cryptor.EndDecrypty();
                 cryptor.Dispose();
             }
             else
             {
-                result = File.ReadAllBytes(path);
+                result = Helper.ReadAllBytes(path);
             }
             return result;
         }
 
-        public static void WriteBytes(string path, byte[] buffer)
+        public static void WriteBytes(IArchiveModule module, string path, byte[] buffer)
         {
             if (XConfig.ArchiveEncrypt)
             {
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = module.Domain.GetModule<ICryptoModule>().New();
                 cryptor.BeginEncrypt();
                 cryptor.Writer.BaseStream.Write(buffer, 0, buffer.Length);
                 byte[] data = cryptor.EndEncrypt();
-                File.WriteAllBytes(path, data);
+                Helper.WriteAllBytes(path, data);
                 cryptor.Dispose();
             }
             else
             {
-                File.WriteAllBytes(path, buffer);
+                Helper.WriteAllBytes(path, buffer);
             }
         }
 
-        public static string ReadText(string path)
+        public static string ReadText(IArchiveModule module, string path)
         {
             string result;
             if (XConfig.ArchiveEncrypt)
             {
-                byte[] data = File.ReadAllBytes(path);
-                ICryptor cryptor = CryptoModule.Inst.New();
+                byte[] data = Helper.ReadAllBytes(path);
+                ICryptor cryptor = module.Domain.GetModule<ICryptoModule>().New();
                 cryptor.BeginDecrypty(data);
                 cryptor.EndDecrypty();
                 result = cryptor.Reader.ReadToEnd();
@@ -55,25 +56,25 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                result = File.ReadAllText(path);
+                result = Helper.ReadAllText(path);
             }
             return result;
         }
 
-        public static void WriteText(string path, string text)
+        public static void WriteText(IArchiveModule module, string path, string text)
         {
             if (XConfig.ArchiveEncrypt)
             {
-                ICryptor cryptor = CryptoModule.Inst.New();
+                ICryptor cryptor = module.Domain.GetModule<ICryptoModule>().New();
                 cryptor.BeginEncrypt();
                 cryptor.Writer.Write(text);
                 byte[] data = cryptor.EndEncrypt();
-                File.WriteAllBytes(path, data);
+                Helper.WriteAllBytes(path, data);
                 cryptor.Dispose();
             }
             else
             {
-                File.WriteAllText(path, text);
+                Helper.WriteAllText(path, text);
             }
         }
     }

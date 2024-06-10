@@ -1,30 +1,39 @@
 ﻿using System;
+using XFrame.Collections;
 using XFrame.Core;
+using XFrame.Modules.Config;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.ID
 {
-    /// <summary>
-    /// Id模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
-    public class IdModule : SingletonModule<IdModule>
+    [XType(typeof(IIdModule))]
+    public class IdModule : ModuleBase, IIdModule
     {
-        private int m_Time;
-        private int m_Count;
+        private IIDNumberHelper m_Helper;
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            m_Time =(int)(DateTime.Now.Ticks / 1000);
+            if (!string.IsNullOrEmpty(XConfig.DefaultIDHelper))
+            {
+                Type type = Domain.TypeModule.GetType(XConfig.DefaultIDHelper);
+                if (type != null)
+                {
+                    m_Helper = (IIDNumberHelper)Domain.TypeModule.CreateInstance(type);
+                }
+            }
+
+            if (m_Helper == null)
+                m_Helper = new DefaultIDNumberHelper();
         }
 
-        /// <summary>
-        /// 生成一个Id
-        /// </summary>
-        /// <returns>生成的Id</returns>
+        /// <inheritdoc/>
         public int Next()
         {
-            return m_Time + m_Count++;
+            return m_Helper.Next();
         }
     }
 }

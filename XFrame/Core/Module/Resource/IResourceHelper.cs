@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Resource
 {
@@ -11,7 +12,13 @@ namespace XFrame.Modules.Resource
         /// 资源加载初始化生命周期
         /// </summary>
         /// <param name="rootPath">资源根路径</param>
-        protected internal void OnInit(string rootPath);
+        void OnInit(string rootPath);
+
+        /// <summary>
+        /// 设置资源重定向辅助器
+        /// </summary>
+        /// <param name="helper">辅助器</param>
+        void SetResDirectHelper(IResRedirectHelper helper);
 
         /// <summary>
         /// 加载资源
@@ -55,5 +62,11 @@ namespace XFrame.Modules.Resource
         /// 卸载所有资源
         /// </summary>
         void UnloadAll();
+
+        /// <summary>
+        /// 查看当前缓存的所有对象
+        /// </summary>
+        /// <returns>资源对象列表</returns>
+        List<object> DumpAll();
     }
 }

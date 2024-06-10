@@ -1,22 +1,45 @@
 ﻿using System;
-using XFrame.Modules.Tasks;
+using XFrame.Core;
+using XFrame.Tasks;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Resource
 {
-    public interface IResModule
+    /// <summary>
+    /// 资源模块
+    /// </summary>
+    public interface IResModule : IModule
     {
         /// <summary>
-        /// 资源预加载(在预加载完成之后，可调用同步方法直接获取资源，在一些不支持同步方法的接口可预加载以便必要时同步加载资源)
+        /// 资源辅助器
         /// </summary>
-        /// <param name="resPaths">需要加载的资源列表</param>
-        /// <param name="types">资源类型列表</param>
-        /// <returns>加载任务</returns>
-        ITask Preload(string[] resPaths, Type type);
-
-        ITask Preload<T>(string[] resPaths);
+        IResourceHelper Helper { get; }
 
         /// <summary>
-        /// 加载资源(同步)
+        /// 预加载资源
+        /// </summary>
+        /// <param name="resPaths">资源路径列表</param>
+        /// <param name="type">资源类型</param>
+        /// <returns>异步加载任务</returns>
+        XTask Preload(IEnumerable<string> resPaths, Type type);
+
+        /// <summary>
+        /// 预加载资源
+        /// </summary>
+        /// <param name="resPath">资源路径</param>
+        /// <param name="type">资源类型</param>
+        /// <returns>异步加载任务</returns>
+        XTask Preload(string resPath, Type type);
+
+        /// <summary>
+        /// 是否已经预加载资源
+        /// </summary>
+        /// <param name="resPath">资源路径</param>
+        /// <returns>true表示已预加载</returns>
+        bool HasPreload(string resPath);
+
+        /// <summary>
+        /// 加载资源
         /// </summary>
         /// <param name="resPath">资源路径</param>
         /// <param name="type">资源类型</param>
@@ -24,7 +47,7 @@ namespace XFrame.Modules.Resource
         object Load(string resPath, Type type);
 
         /// <summary>
-        /// 加载资源(同步)
+        /// 加载资源
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="resPath">资源路径</param>
@@ -32,25 +55,25 @@ namespace XFrame.Modules.Resource
         T Load<T>(string resPath);
 
         /// <summary>
-        /// 加载资源(异步)
+        /// 异步加载资源
         /// </summary>
         /// <param name="resPath">资源路径</param>
         /// <param name="type">资源类型</param>
-        /// <returns>加载任务</returns>
+        /// <returns>加载到的资源</returns>
         ResLoadTask LoadAsync(string resPath, Type type);
 
         /// <summary>
-        /// 加载资源(异步)
+        /// 异步加载资源
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="resPath">资源路径</param>
-        /// <returns>加载任务</returns>
+        /// <returns>加载到的资源</returns>
         ResLoadTask<T> LoadAsync<T>(string resPath);
 
         /// <summary>
         /// 卸载资源
         /// </summary>
-        /// <param name="target">要卸载的目标</param>
+        /// <param name="target">资源对象</param>
         void Unload(object target);
 
         /// <summary>
@@ -60,7 +83,7 @@ namespace XFrame.Modules.Resource
         void UnloadPre(string resPath);
 
         /// <summary>
-        /// 卸载所有已经加载的资源
+        /// 卸载所有资源
         /// </summary>
         void UnloadAll();
 

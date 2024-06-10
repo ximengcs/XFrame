@@ -1,6 +1,9 @@
-﻿using XFrame.Core;
+﻿using Newtonsoft.Json;
+using XFrame.Core;
 using XFrame.Modules.Diagnotics;
-using XFrame.Modules.Serialize;
+using XFrame.Modules.Local;
+using XFrame.Modules.Pools;
+using XFrame.Utility;
 
 namespace XFrameTest
 {
@@ -10,6 +13,13 @@ namespace XFrameTest
         enum Enum1
         {
             A, B, C, D,
+        }
+
+        [TestMethod]
+        public void NullTest()
+        {
+            IntParser parser = null;
+            int value = parser;
         }
 
         [TestMethod]
@@ -158,6 +168,13 @@ namespace XFrameTest
             Console.WriteLine(parser.Has(kv3));
         }
 
+        [TestMethod]
+        public void Test10()
+        {
+            float value = JsonConvert.DeserializeObject<float>("0.001");
+            Console.WriteLine(value);
+        }
+
         class Test4Data
         {
             public string A;
@@ -215,6 +232,71 @@ namespace XFrameTest
                 test.Parse("{{\"A\":\"T9\",\"B\":98259};999}");
                 Log.Debug(test.Value.Item1);
                 Log.Debug(test.Value.Item2);
+            });
+        }
+
+        [TestMethod]
+        public void MapTest()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                //MapParser<IntParser, StringParser> parser = new MapParser<IntParser, StringParser>();
+                //parser.Parse("1|name1,2|name2");
+                //Log.Debug(parser.Get(1));
+                //Log.Debug(parser.Get(2));
+                //Log.Debug(parser.Get(3));
+            });
+        }
+
+        [TestMethod]
+        public void UtilityTest()
+        {
+            Console.WriteLine(TypeUtility.GetSimpleName(typeof(EnumParser<Language>)));
+            Console.WriteLine(TypeUtility.GetSimpleName(typeof(Action<Language, XCore>)));
+        }
+
+        [TestMethod]
+        public void NumAreaTest1()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                AreaParser parser = References.Require<AreaParser>();
+                parser.Parse("add#1-10@remove#3@add#190-192");
+            });
+        }
+
+        [TestMethod]
+        public void NumAreaTest2()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                Names names = References.Require<Names>();
+                names.Parse("yanying_series#add~1-10@remove~3_layer#add~2-4_dir#add~l@add~r");
+                foreach (string name in names)
+                {
+                    Console.WriteLine(name);
+                }
+                Console.WriteLine(names.Has("yanying_series#1_layer#2_dir#l"));
+                Console.WriteLine(names.Has("yanying_series#1_layer#2_dir#a"));
+                Console.WriteLine(names.Has(Name.Create("yanying_series#1_layer#2_dir#l")));
+            });
+        }
+
+        [TestMethod]
+        public void NameAreaTest3()
+        {
+            EntryTest.Exec(() =>
+            {
+                Log.ToQueue = false;
+                Names names = References.Require<Names>();
+                names.Parse("shen_chushi^layer#~shen_chushi^series#add!5-10@add!18-32");
+                foreach (string name in names)
+                {
+                    Console.WriteLine(name);
+                }
             });
         }
     }

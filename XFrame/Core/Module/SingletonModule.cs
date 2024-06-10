@@ -1,4 +1,6 @@
 ﻿
+using XFrame.Modules.Diagnotics;
+
 namespace XFrame.Core
 {
     /// <summary>
@@ -12,10 +14,18 @@ namespace XFrame.Core
         /// </summary>
         public static T Inst { get; private set; }
 
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
-            Inst = (T)this;
+            if (Inst == null)
+            {
+                Inst = (T)this;
+            }
+            else
+            {
+                Log.Debug(Log.XFrame, $"SingletonModule {typeof(T).FullName} add multi instance.");
+            }
         }
     }
 }

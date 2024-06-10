@@ -1,23 +1,11 @@
 ﻿using System;
 using XFrame.Core;
-using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Pools;
+using XFrame.Modules.Diagnotics;
 
 namespace XFrame.Modules.Conditions
 {
-    /// <summary>
-    /// 条件句柄(单个条件)
-    /// <para>
-    /// 在初始化时会调用<see cref="IConditionCompare.CheckFinish(ConditionHandle)"/>检查条件完成状态
-    /// </para>
-    /// <para>
-    /// 当触发<see cref="ConditionEvent"/>事件时，会调用<see cref="IConditionCompare.Check(ConditionHandle, object)"/>检查完成条件，第二个参数为事件参数
-    /// </para>
-    /// <para>
-    /// 需要实现类<see cref="IConditionCompare"/>去执行<see cref="Trigger(object, object)"/>来触发更新<see cref="OnComplete(Action{ConditionHandle})"/>事件
-    /// </para>
-    /// </summary>
-    internal class ConditionHandle : DataProvider, IConditionHandle
+    internal partial class ConditionHandle : IConditionHandle
     {
         private int m_Target;
         private UniversalParser m_Param;
@@ -29,59 +17,47 @@ namespace XFrame.Modules.Conditions
         private object m_Value;
 
         private ConditionHelperSetting m_Setting;
-        private IConditionCompare m_Helper;
+        private CompareInfo m_HandleInfo;
 
-        /// <summary>
-        /// 条件目标
-        /// <para>
-        /// <see cref="ConditionEvent.Target"/> 触发的目标会根据此值匹配句柄实例
-        /// </para>
-        /// <para>
-        /// <see cref="IConditionCompare.Target"/> 具体的实现类会匹配到此值
-        /// </para>
-        /// </summary>
         public int Target => m_Target;
 
-        /// <summary>
-        /// 条件需要达成的目标参数，如数量等
-        /// </summary>
+        public bool IsComplete => m_Complete;
+
         public UniversalParser Param => m_Param;
 
-        /// <summary>
-        /// 条件句柄所有条件组
-        /// </summary>
         public IConditionGroupHandle Group => m_Group;
 
-        /// <summary>
-        /// 条件句柄数据提供器
-        /// </summary>
-        public IDataProvider Data => m_Data;
+        public int InstanceId => m_Setting.UseInstance;
 
-        internal ConditionHandle(ConditionGroupHandle group, PairParser<IntParser, UniversalParser> parser)
+        internal ConditionHandle(ConditionGroupHandle group, PairParser<IntOrHashParser, UniversalParser> parser)
         {
             m_Group = group;
-            Pair<IntParser, UniversalParser> pair = parser;
+            Pair<IntOrHashParser, UniversalParser> pair = parser;
             m_Target = pair.Key;
             m_Param = pair.Value;
             m_Complete = false;
         }
 
-        internal void OnInit(ConditionHelperSetting setting, IConditionCompare helper, IDataProvider dataProvider)
+        internal void OnInit(ConditionHelperSetting setting, CompareInfo helper, IDataProvider dataProvider)
         {
             m_Setting = setting;
-            m_Helper = helper;
+            m_HandleInfo = helper;
             m_Data = dataProvider;
         }
 
         internal void Dispose()
         {
             if (m_Setting.IsUseInstance)
-                References.Release(m_Helper);
-            m_Helper = null;
+            {
+                References.Release(m_HandleInfo.Inst);
+                m_HandleInfo = default;
+            }
         }
 
         internal void MarkComplete()
         {
+            if (m_Complete)
+                return;
             m_Complete = true;
             m_OnComplete?.Invoke(this);
             m_OnComplete = null;
@@ -89,43 +65,32 @@ namespace XFrame.Modules.Conditions
 
         internal bool InnerCheckComplete()
         {
-            if (m_Helper == null)
+            if (!m_HandleInfo.Valid)
             {
-                Log.Error("Condition", $"Target {Target} compare is null");
+                Log.Error(Log.Condition, $"Target {Target} compare is null");
                 return false;
             }
 
-            return m_Helper.CheckFinish(this);
+            return m_HandleInfo.CheckFinish(this);
         }
 
         internal bool InnerCheckComplete(object param)
         {
-            if (m_Helper == null)
+            if (!m_HandleInfo.Valid)
             {
-                Log.Error("Condition", $"Target {Target} compare is null");
+                Log.Error(Log.Condition, $"Target {Target} compare is null");
                 return false;
             }
-            if (m_Setting.IsUseInstance)
-                m_Helper.OnEventTrigger(param);
-            return m_Helper.Check(this, param);
+
+            return m_HandleInfo.Check(this, param);
         }
 
-        /// <summary>
-        /// 调用此方法触发条件句柄的更新(通过<see cref="OnComplete(Action{ConditionHandle})注册的事件"/>)事件，
-        /// 一般通过<see cref="IConditionCompare"/>实现类来触发。
-        /// </summary>
-        /// <param name="oldValue">旧值</param>
-        /// <param name="newValue">新值</param>
         public void Trigger(object oldValue, object newValue)
         {
             m_Value = newValue;
             m_UpdateEvent?.Invoke(oldValue, newValue);
         }
 
-        /// <summary>
-        /// 条件更新事件，若提前触发了更新事件，则会立即触发一次更新，并使用上次的值执行回调
-        /// </summary>
-        /// <param name="callback">回调</param>
         public void OnUpdate(Action<object, object> callback)
         {
             if (m_Value != null)
@@ -133,10 +98,6 @@ namespace XFrame.Modules.Conditions
             m_UpdateEvent += callback;
         }
 
-        /// <summary>
-        /// 条件完成事件，当条件已经完成时，会立刻执行回调
-        /// </summary>
-        /// <param name="callback">回调</param>
         public void OnComplete(Action<IConditionHandle> callback)
         {
             if (m_Complete)
@@ -147,6 +108,41 @@ namespace XFrame.Modules.Conditions
             {
                 m_OnComplete += callback;
             }
+        }
+
+        public bool HasData<T>()
+        {
+            return m_Data.HasData<T>();
+        }
+
+        public bool HasData<T>(string name)
+        {
+            return m_Data.HasData<T>(name);
+        }
+
+        public void SetData<T>(T value)
+        {
+            m_Data.SetData(value);
+        }
+
+        public T GetData<T>()
+        {
+            return m_Data.GetData<T>();
+        }
+
+        public void SetData<T>(string name, T value)
+        {
+            m_Data.SetData(name, value);
+        }
+
+        public T GetData<T>(string name)
+        {
+            return m_Data.GetData<T>(name);
+        }
+
+        public void ClearData()
+        {
+            m_Data.ClearData();
         }
     }
 }

@@ -1,26 +1,98 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using XFrame.Core;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Conditions
 {
+    /// <summary>
+    /// 条件辅助器配置
+    /// <para>
+    /// 用于配置条件组<see cref="IConditionHelper"/>辅助器或条件<see cref="IConditionCompare"/>辅助器
+    /// </para>
+    /// </summary>
     public struct ConditionHelperSetting
     {
+        /// <summary>
+        /// 全局辅助器实例Id
+        /// </summary>
         public const int DEFAULT_INSTANCE = 0;
 
-        public int UseInstance;
-        public bool UsePersistData;
+        /// <summary>
+        /// 使用的辅助器实例
+        /// </summary>
+        public int UseInstance { get; }
 
+        /// <summary>
+        /// 是否使用持久化的数据
+        /// </summary>
+        public bool UsePersistData { get; }
+
+        /// <summary>
+        /// 是否使用非全局辅助器
+        /// </summary>
         public bool IsUseInstance => UseInstance != DEFAULT_INSTANCE;
 
-        private ConditionHelperSetting(int useInstance, bool usePersistData)
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="useInstance">使用实例</param>
+        /// <param name="usePersistData">数据是否持久化</param>
+        public ConditionHelperSetting(int useInstance, bool usePersistData)
         {
             UseInstance = useInstance;
             UsePersistData = usePersistData;
         }
 
-        public static ConditionHelperSetting Create(int useInstance = DEFAULT_INSTANCE, bool usePersistData = false)
+        /// <summary>
+        /// 构造器，使用默认实例
+        /// </summary>
+        /// <param name="usePersistData">数据是否持久化</param>
+        public ConditionHelperSetting(bool usePersistData)
         {
-            return new ConditionHelperSetting(useInstance, usePersistData);
+            UseInstance = DEFAULT_INSTANCE;
+            UsePersistData = usePersistData;
+        }
+
+        /// <summary>
+        /// 比较连个配置是否相等
+        /// </summary>
+        /// <param name="obj">其它配置</param>
+        /// <returns>true为相等</returns>
+        public override bool Equals(object obj)
+        {
+            ConditionHelperSetting other = (ConditionHelperSetting)obj;
+            return UseInstance == other.UseInstance && UsePersistData == other.UsePersistData;
+        }
+
+        /// <summary>
+        /// 获取hash码
+        /// </summary>
+        /// <returns>hash码</returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(UseInstance, UsePersistData);
+        }
+
+        /// <summary>
+        /// 判断连个配置是否相等
+        /// </summary>
+        /// <param name="a">配置a</param>
+        /// <param name="b">配置b</param>
+        /// <returns>true为相等</returns>
+        public static bool operator ==(ConditionHelperSetting a, ConditionHelperSetting b)
+        {
+            return a.UseInstance == b.UseInstance && a.UsePersistData == b.UsePersistData;
+        }
+
+        /// <summary>
+        /// 判断连个配置是否不相等
+        /// </summary>
+        /// <param name="a">配置a</param>
+        /// <param name="b">配置b</param>
+        /// <returns>true为不相等</returns>
+        public static bool operator !=(ConditionHelperSetting a, ConditionHelperSetting b)
+        {
+            return a.UseInstance != b.UseInstance || a.UsePersistData != b.UsePersistData;
         }
     }
 
@@ -29,33 +101,32 @@ namespace XFrame.Modules.Conditions
     /// </summary>
     public struct ConditionSetting
     {
+        private Dictionary<int, ConditionHelperSetting> m_ConditionHelperInstance;
+
         /// <summary>
         /// 条件名称
         /// </summary>
-        public string Name;
+        public string Name { get; }
 
         /// <summary>
-        /// 使用的辅助器 <see cref="IConditionHelper"/>, 
-        /// 当注册条件时，若指定的辅助器存在(此字段匹配<see cref="IConditionHelper.Type"/>),
-        /// 条件组初始化时会调用 <see cref="IConditionHelper.CheckFinish(string)"/>检查条件是否是完成状态，若为完成状态，则此条件组会进入完成状态，
-        /// 若未完成，会开始监听组内所有未达成的条件，当所有条件达成时，条件组进入完成状态，同时调用<see cref="IConditionHelper.MarkFinish(string)"/>
-        /// 标记条件组完成。调用者可根据实际需求实现定制的条件组辅助器，如需要持久化状态的辅助器。
-        /// 当指定的辅助器不存在时会自动忽略 <see cref="IConditionHelper.CheckFinish"/> 和 <see cref="IConditionHelper.MarkFinish(string)"/> 操作
+        /// 条件组使用的辅助器 <see cref="IConditionHelper"/> 类型，与<see cref="IConditionHelper.Type"/>相匹配
         /// </summary>
-        public int UseGroupHelper;
+        public int UseGroupHelper { get; }
 
-        public ConditionHelperSetting HelperSetting;
-        public Dictionary<int, ConditionHelperSetting> ConditionHelperInstance;
+        /// <summary>
+        /// 条件组辅助器配置
+        /// </summary>
+        public ConditionHelperSetting HelperSetting { get; }
 
         /// <summary>
         /// 在条件组完成时自动清理并从模块移除
-        /// 当为 true 时，在条件达成时自动从<see cref="ConditionModule"/>模块中移除此条件，会调用<see cref="ConditionGroupHandle.Dispose"/>清理监听，
-        /// 此时通过<see cref="ConditionModule.Get(string)"/>将获取不到条件实例。
-        /// 当为 false 时，在条件达成时不会自动从<see cref="ConditionModule"/>模块中移除此条件，但仍会调用<see cref="ConditionGroupHandle.Dispose"/>清理。
-        /// 置为false时，需要调用者在不使用条件句柄后手动调用<see cref="ConditionModule.UnRegister"/>移除条件的句柄，
-        /// 否则将一直存在于条件模块<see cref="ConditionModule"/>中
+        /// 当为 true 时，在条件达成时自动从<see cref="IConditionModule"/>模块中移除此条件，会调用<see cref="ConditionGroupHandle.Dispose"/>清理监听，
+        /// 此时通过<see cref="IConditionModule.Get(string)"/>将获取不到条件实例。
+        /// 当为 false 时，在条件达成时不会自动从<see cref="IConditionModule"/>模块中移除此条件，但仍会调用<see cref="ConditionGroupHandle.Dispose"/>清理。
+        /// 置为false时，需要调用者在不使用条件句柄后手动调用<see cref="IConditionModule.UnRegister(string)"/>移除条件的句柄，
+        /// 否则将一直存在于条件模块<see cref="IConditionModule"/>中
         /// </summary>
-        public bool AutoRemove;
+        public bool AutoRemove { get; }
 
         /// <summary>
         /// 原始条件数据
@@ -66,44 +137,66 @@ namespace XFrame.Modules.Conditions
         /// </summary>
         public ConditionData Data;
 
-        public ConditionHelperSetting GetConditionHelperSettting(int target)
+        /// <summary>
+        /// 设置条件项辅助器配置
+        /// </summary>
+        /// <param name="target">条件项目标类型</param>
+        /// <param name="settting">辅助器配置</param>
+        public void SetConditionHelperSetting(int target, ConditionHelperSetting settting)
         {
-            if (ConditionHelperInstance == null)
-                return ConditionHelperSetting.Create();
-            if (ConditionHelperInstance.TryGetValue(target, out ConditionHelperSetting settting))
-                return settting;
-            return ConditionHelperSetting.Create();
+            if (m_ConditionHelperInstance == null)
+                m_ConditionHelperInstance = new Dictionary<int, ConditionHelperSetting>();
+            if (m_ConditionHelperInstance.ContainsKey(target))
+                m_ConditionHelperInstance[target] = settting;
+            else
+                m_ConditionHelperInstance.Add(target, settting);
         }
 
         /// <summary>
-        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 <see cref="true"/>, <see cref="UseGroupHelper"/> 为 0
+        /// 获取条件项辅助器配置
+        /// </summary>
+        /// <param name="target">条件项目标类型</param>
+        /// <returns>辅助器配置</returns>
+        public ConditionHelperSetting GetConditionHelperSettting(int target)
+        {
+            if (m_ConditionHelperInstance == null)
+                return new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false);
+            if (m_ConditionHelperInstance.TryGetValue(target, out ConditionHelperSetting settting))
+                return settting;
+            return new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false);
+        }
+
+        /// <summary>
+        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 true, <see cref="UseGroupHelper"/> 为 0
         /// </summary>
         /// <param name="name">条件名称</param>
         /// <param name="data">原始条件配置</param>
-        public ConditionSetting(string name, ConditionData data)
+        /// <param name="helper">条件辅助器设置</param>
+        public ConditionSetting(string name, ConditionData data, ConditionHelperSetting helper = default)
         {
             Name = name;
             Data = data;
             AutoRemove = true;
             UseGroupHelper = 0;
-            HelperSetting = ConditionHelperSetting.Create();
-            ConditionHelperInstance = null;
+            HelperSetting = helper;
+            m_ConditionHelperInstance = null;
         }
 
         /// <summary>
-        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 <see cref="true"/>
+        /// 构造条件配置，默认<see cref="AutoRemove"/> 为 true
         /// </summary>
         /// <param name="name">条件名称</param>
         /// <param name="data">原始条件配置</param>
-        /// <param name="useHelper">使用辅助器</param>
-        public ConditionSetting(string name, ConditionData data, int useHelper)
+        /// <param name="useHelper">使用条件组辅助器</param>
+        /// <param name="helper">使用条件辅助器</param>
+        public ConditionSetting(string name, ConditionData data, int useHelper, ConditionHelperSetting helper = default)
         {
             Name = name;
             Data = data;
             AutoRemove = true;
             UseGroupHelper = useHelper;
-            HelperSetting = ConditionHelperSetting.Create();
-            ConditionHelperInstance = null;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
+            m_ConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -112,14 +205,15 @@ namespace XFrame.Modules.Conditions
         /// <param name="name">条件名称</param>
         /// <param name="data">原始条件配置</param>
         /// <param name="autoRemove">是否自动移除</param>
-        public ConditionSetting(string name, ConditionData data, bool autoRemove)
+        /// <param name="helper">条件辅助设置</param>
+        public ConditionSetting(string name, ConditionData data, bool autoRemove, ConditionHelperSetting helper = default)
         {
             Name = name;
             Data = data;
             AutoRemove = autoRemove;
             UseGroupHelper = 0;
-            HelperSetting = ConditionHelperSetting.Create();
-            ConditionHelperInstance = null;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
+            m_ConditionHelperInstance = null;
         }
 
         /// <summary>
@@ -128,15 +222,16 @@ namespace XFrame.Modules.Conditions
         /// <param name="name">条件名称</param>
         /// <param name="data">原始条件配置</param>
         /// <param name="autoRemove">是否自动移除</param>
-        /// <param name="useHelper">使用辅助器</param>
-        public ConditionSetting(string name, ConditionData data, bool autoRemove, int useHelper)
+        /// <param name="useHelper">使用条件组辅助器</param>
+        /// <param name="helper">使用条件辅助器</param>
+        public ConditionSetting(string name, ConditionData data, bool autoRemove, int useHelper, ConditionHelperSetting helper = default)
         {
             Name = name;
             Data = data;
             AutoRemove = autoRemove;
             UseGroupHelper = useHelper;
-            HelperSetting = ConditionHelperSetting.Create();
-            ConditionHelperInstance = null;
+            HelperSetting = helper == default ? new ConditionHelperSetting(ConditionHelperSetting.DEFAULT_INSTANCE, false) : helper;
+            m_ConditionHelperInstance = null;
         }
     }
 }

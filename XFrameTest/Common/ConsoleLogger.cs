@@ -15,6 +15,11 @@ namespace XFrameTest
             Console.WriteLine(string.Concat(content));
         }
 
+        public void Exception(Exception e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Fatal(params object[] content)
         {
             Console.WriteLine(string.Concat(content));

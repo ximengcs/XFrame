@@ -21,10 +21,21 @@ namespace XFrame.Core
         object Parse(string pattern);
     }
 
+    /// <summary>
+    /// 解析器
+    /// </summary>
     public interface IParser<T> : IParser
     {
+        /// <summary>
+        /// 值
+        /// </summary>
         new T Value { get; }
 
+        /// <summary>
+        /// 解析
+        /// </summary>
+        /// <param name="pattern">源数据</param>
+        /// <returns>结果</returns>
         new T Parse(string pattern);
     }
 }

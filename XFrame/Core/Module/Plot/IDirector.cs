@@ -1,10 +1,16 @@
-﻿namespace XFrame.Modules.Plots
+﻿
+namespace XFrame.Modules.Plots
 {
     /// <summary>
     /// 故事导演
     /// </summary>
     public interface IDirector
     {
+        /// <summary>
+        /// 所属模块
+        /// </summary>
+        IPlotModule Module { get; }
+
         /// <summary>
         /// 播放一组故事
         /// </summary>
@@ -30,9 +36,15 @@
         void Remove(string storyName);
 
         /// <summary>
+        /// 创建一个数据提供器
+        /// </summary>
+        /// <returns>数据提供器</returns>
+        internal IPlotDataProvider CreateDataProvider(IStory story);
+
+        /// <summary>
         /// 初始化生命周期
         /// </summary>
-        internal void OnInit();
+        internal void OnInit(IPlotModule module);
 
         /// <summary>
         /// 更新生命周期

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Xml.Linq;
 
 namespace XFrame.Modules.Archives
 {
@@ -12,21 +11,23 @@ namespace XFrame.Modules.Archives
         #region InnerField
         private const int FILE_CODE = default;
 
+        private IArchiveModule m_Module;
         private string m_Path;
         private Node m_Root;
         private BytesBuilder m_Builder;
         #endregion
 
         #region Archive Interface
-        void IArchive.OnInit(string path, string name, object param)
+        void IArchive.OnInit(IArchiveModule module, string path, string name, object param)
         {
             Name = name;
             m_Path = path;
+            m_Module = module;
             m_Builder = new BytesBuilder(FILE_CODE);
 
             if (File.Exists(m_Path))
             {
-                byte[] buffer = ArchiveUtility.ReadBytes(m_Path);
+                byte[] buffer = ArchiveUtility.ReadBytes(m_Module, m_Path);
                 m_Root = m_Builder.From(buffer);
             }
             else
@@ -35,14 +36,16 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void Save()
         {
             string dir = Path.GetDirectoryName(m_Path);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            ArchiveUtility.WriteBytes(m_Path, ToBytes());
+            ArchiveUtility.WriteBytes(m_Module, m_Path, ToBytes());
         }
 
+        /// <inheritdoc/>
         public void Delete()
         {
             m_Root.Delete("_");
@@ -50,6 +53,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public string Name { get; private set; }
 
         /// <summary>

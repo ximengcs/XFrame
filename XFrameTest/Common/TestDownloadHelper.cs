@@ -1,5 +1,6 @@
 ﻿
 using System.Net;
+using XFrame.Modules.Diagnotics;
 using XFrame.Modules.Download;
 
 namespace XFrameTest
@@ -11,6 +12,8 @@ namespace XFrameTest
         private string m_Url;
         private HttpClient m_Request;
         private HttpResponseMessage m_Response;
+
+        public string[] ReserveUrl { get; set; }
 
         bool IDownloadHelper.IsDone => m_IsDone;
 

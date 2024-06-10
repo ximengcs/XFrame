@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using XFrame.Modules.Archives;
-using XFrame.Modules.XType;
 using XFrame.SimpleJSON;
+using XFrame.Modules.Archives;
+using System.Collections.Generic;
 
 namespace XFrame.Modules.Plots
 {
@@ -25,13 +24,17 @@ namespace XFrame.Modules.Plots
             JSONObject node = new JSONObject();
             map.Add(story.Name, node);
             JSONArray sections = new JSONArray();
+            node.Add("story_type", story.Director.GetType().FullName);
+
+            IStoryHelper helper = story.Helper;
+            if (helper != null)
+                node.Add("story_helper_type", story.Helper.GetType().FullName);
             node.Add("sections", sections);
-            Type[] types = story.GetSections();
-            foreach (Type type in types)
-                sections.Add(type.FullName);
+            foreach (ISection section in story.Sections)
+                sections.Add(section.GetType().FullName);
         }
 
-        public static IStory[] InnerRestoreStories(JsonArchive archive)
+        public static IStory[] InnerRestoreStories(IPlotModule module, JsonArchive archive)
         {
             List<IStory> stories = new List<IStory>();
             JSONObject map = archive.GetOrNewObject("stories");
@@ -39,12 +42,21 @@ namespace XFrame.Modules.Plots
             while (it.MoveNext())
             {
                 var item = it.Current;
-                IStory story = PlotModule.Inst.NewStory(item.Key);
+                JSONNode storyTypeNode = item.Value["story_type"];
+                Type storyHelperType = null;
+                if (item.Value.HasKey("story_helper_type"))
+                {
+                    JSONNode storyHelperTypeNode = item.Value["story_helper_type"];
+                    storyHelperType = module.Domain.TypeModule.GetType(storyHelperTypeNode);
+                }
+                Type storyType = module.Domain.TypeModule.GetType(storyTypeNode);
+                IStory story = module.NewStory(storyType, storyHelperType, item.Key);
                 JSONNode sections = item.Value["sections"];
                 foreach (JSONNode section in sections)
                 {
-                    Type type = TypeModule.Inst.GetType(section);
-                    story.AddSection(type);
+                    Type type = module.Domain.TypeModule.GetType(section);
+                    if (type != null)
+                        story.AddSection(type);
                 }
                 stories.Add(story);
             }

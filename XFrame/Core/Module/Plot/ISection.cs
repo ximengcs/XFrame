@@ -8,6 +8,16 @@ namespace XFrame.Modules.Plots
     public interface ISection
     {
         /// <summary>
+        /// 所属故事
+        /// </summary>
+        IStory Story { get; }
+
+        /// <summary>
+        /// 数据提供器
+        /// </summary>
+        IDataProvider Data { get; }
+
+        /// <summary>
         /// 情节是否结束
         /// </summary>
         bool IsDone { get; }
@@ -15,8 +25,14 @@ namespace XFrame.Modules.Plots
         /// <summary>
         /// 初始化生命周期
         /// </summary>
+        /// <param name="story">故事</param>
         /// <param name="data">数据提供器</param>
-        void OnInit(IDataProvider data);
+        void OnCreate(IStory story, IDataProvider data);
+
+        /// <summary>
+        /// 初始化生命周期
+        /// </summary>
+        void OnInit();
 
         /// <summary>
         /// 是否可以开始播放

@@ -12,6 +12,10 @@ namespace XFrame.Modules.Plots
         /// </summary>
         public bool Default { get; }
 
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="ifDefault">是否为默认导演</param>
         public DirectorAttribute(bool ifDefault = false)
         {
             Default = ifDefault;

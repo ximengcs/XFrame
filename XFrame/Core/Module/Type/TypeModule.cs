@@ -1,17 +1,17 @@
 ﻿using System;
 using XFrame.Core;
 using System.Reflection;
+using XFrame.Collections;
 using XFrame.Modules.Config;
-using System.Collections.Generic;
-using XFrame.Modules.ID;
 using XFrame.Modules.Diagnotics;
+using System.Collections.Generic;
+using XFrame.Modules.Pools;
 
-namespace XFrame.Modules.XType
+namespace XFrame.Modules.Reflection
 {
-    /// <summary>
-    /// 类型模块
-    /// </summary>
-    public partial class TypeModule : SingletonModule<TypeModule>
+    /// <inheritdoc/>
+    [XType(typeof(ITypeModule))]
+    public partial class TypeModule : ModuleBase, ITypeModule
     {
         #region Inner Fields
         private Action m_OnTypeChange;
@@ -25,12 +25,14 @@ namespace XFrame.Modules.XType
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             InnerInit();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -62,12 +64,15 @@ namespace XFrame.Modules.XType
                 {
                     find = true;
                 }
-                else if (XConfig.UseClassModule != null)
+                else if (XConfig.TypeChecker.AssemblyList != null)
                 {
-                    foreach (string name in XConfig.UseClassModule)
+                    foreach (string name in XConfig.TypeChecker.AssemblyList)
                     {
                         if (assemblyName == name)
+                        {
                             find = true;
+                            break;
+                        }
                     }
                 }
 
@@ -77,6 +82,8 @@ namespace XFrame.Modules.XType
                 foreach (TypeInfo typeInfo in assembly.DefinedTypes)
                 {
                     Type type = typeInfo.AsType();
+                    if (!XConfig.TypeChecker.CheckType(type))
+                        continue;
                     Attribute[] attrs = Attribute.GetCustomAttributes(type);
                     m_TypesAllAttrs.Add(type, attrs);
                     foreach (Attribute attr in attrs)
@@ -102,16 +109,19 @@ namespace XFrame.Modules.XType
         #endregion
 
         #region Interface
+        /// <inheritdoc/>
         public T CreateInstance<T>(params object[] args)
         {
             return (T)InnerCreateInstance(typeof(T), args);
         }
 
+        /// <inheritdoc/>
         public object CreateInstance(Type type, params object[] args)
         {
             return InnerCreateInstance(type, args);
         }
 
+        /// <inheritdoc/>
         public object CreateInstance(string typeName, params object[] args)
         {
             Type type = GetType(typeName);
@@ -123,10 +133,14 @@ namespace XFrame.Modules.XType
         private object InnerCreateInstance(Type type, params object[] args)
         {
             object instance = default;
-            if (!m_Constructors.TryGetValue(type, out ConstructorInfo[] ctors))
+            ConstructorInfo[] ctors;
+            lock (m_Constructors)
             {
-                ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                m_Constructors.Add(type, ctors);
+                if (!m_Constructors.TryGetValue(type, out ctors))
+                {
+                    ctors = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    m_Constructors.Add(type, ctors);
+                }
             }
 
             foreach (ConstructorInfo ctor in ctors)
@@ -156,34 +170,25 @@ namespace XFrame.Modules.XType
 
             if (instance == null)
             {
-                Log.Error("XFrame", $"Create instance failure, {type.FullName}");
+                Log.Error(Log.XFrame, $"Create instance failure, {type.FullName}");
             }
             return instance;
         }
 
-        /// <summary>
-        /// 加载程序集
-        /// </summary>
-        /// <param name="data"></param>
+        /// <inheritdoc/>
         public void LoadAssembly(byte[] data)
         {
             Assembly.Load(data);
             InnerAssemblyUpdateHandle();
         }
 
-        /// <summary>
-        /// 程序集改变事件
-        /// </summary>
+        /// <inheritdoc/>
         public void OnTypeChange(Action handler)
         {
             m_OnTypeChange += handler;
         }
 
-        /// <summary>
-        /// 获取类型
-        /// </summary>
-        /// <param name="name">类型名</param>
-        /// <returns>获取到的类型</returns>
+        /// <inheritdoc/>
         public Type GetType(string name)
         {
             foreach (Assembly assembly in m_Assemblys)
@@ -195,44 +200,37 @@ namespace XFrame.Modules.XType
             return default;
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都具有所给定的属性类
-        /// </summary>
-        /// <typeparam name="T">Attribute属性类</typeparam>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNewWithAttr<T>() where T : Attribute
         {
             return GetOrNewWithAttr(typeof(T));
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都具有所给定的属性类
-        /// </summary>
-        /// <param name="pType">Attribute属性类</param>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNewWithAttr(Type pType)
         {
             TypeSystem module;
             if (m_ClassRegister.TryGetValue(pType, out module))
                 return module;
 
-            module = new TypeSystem(pType);
-            m_ClassRegister.Add(pType, module);
-            foreach (var item in m_TypesWithAttrs)
+            module = new TypeSystem(this, pType);
+            lock (m_ClassRegister)
             {
-                if (item.Key.IsSubclassOf(pType) || item.Key == pType)
+                m_ClassRegister.Add(pType, module);
+                foreach (var item in m_TypesWithAttrs)
                 {
-                    foreach (Type subType in item.Value)
+                    if (item.Key.IsSubclassOf(pType) || item.Key == pType)
                     {
-                        Attribute attr = GetAttribute(subType, pType);
-                        if (attr != null)
+                        foreach (Type subType in item.Value)
                         {
-                            module.AddSubClass(subType);
-                            XAttribute xAttr = attr as XAttribute;
-                            if (xAttr != null)
-                                module.AddKey(xAttr.Id, subType);
+                            Attribute attr = GetAttribute(subType, pType);
+                            if (attr != null)
+                            {
+                                module.AddSubClass(subType);
+                                XAttribute xAttr = attr as XAttribute;
+                                if (xAttr != null)
+                                    module.AddKey(xAttr.Id, subType);
+                            }
                         }
                     }
                 }
@@ -241,21 +239,67 @@ namespace XFrame.Modules.XType
             return module;
         }
 
+        /// <inheritdoc/>
         public bool HasAttribute<T>(Type classType) where T : Attribute
         {
             return GetAttribute(classType, typeof(T)) != null;
         }
 
+        /// <inheritdoc/>
         public bool HasAttribute(Type classType, Type pType)
         {
             return GetAttribute(classType, pType) != null;
         }
 
+        /// <inheritdoc/>
         public T GetAttribute<T>(Type classType) where T : Attribute
         {
             return (T)GetAttribute(classType, typeof(T));
         }
 
+        /// <inheritdoc/>
+        public T[] GetAttributes<T>(Type classType) where T : Attribute
+        {
+            Type pType = typeof(T);
+            List<T> list;
+            CommonPoolObject<List<T>> container = null;
+            if (References.Available)
+            {
+                container = References.Require<CommonPoolObject<List<T>>>();
+                if (!container.Valid)
+                {
+                    list = new List<T>(8);
+                    container.Target = list;
+                }
+                else
+                {
+                    list = container.Target;
+                }
+            }
+            else
+            {
+                list = new List<T>(8);
+            }
+
+            if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
+            {
+                foreach (Attribute attr in values)
+                {
+                    Type attrType = attr.GetType();
+                    if (attrType.IsSubclassOf(pType) || attrType == pType)
+                        list.Add((T)attr);
+                }
+            }
+            T[] result = list.ToArray();
+            if (container != null)
+            {
+                list.Clear();
+                References.Release(container);
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
         public Attribute GetAttribute(Type classType, Type pType)
         {
             if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
@@ -270,48 +314,80 @@ namespace XFrame.Modules.XType
             return default;
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都是所给定的类型或子类
-        /// </summary>
-        /// <typeparam name="T">基类</typeparam>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
+        public Attribute[] GetAttributes(Type classType, Type pType)
+        {
+            List<Attribute> list;
+            CommonPoolObject<List<Attribute>> container = null;
+            if (References.Available)
+            {
+                container = References.Require<CommonPoolObject<List<Attribute>>>();
+                if (!container.Valid)
+                {
+                    list = new List<Attribute>(8);
+                    container.Target = list;
+                }
+                else
+                {
+                    list = container.Target;
+                }
+            }
+            else
+            {
+                list = new List<Attribute>(8);
+            }
+
+            if (m_TypesAllAttrs.TryGetValue(classType, out Attribute[] values))
+            {
+                foreach (Attribute attr in values)
+                {
+                    Type attrType = attr.GetType();
+                    if (attrType.IsSubclassOf(pType) || attrType == pType)
+                        list.Add(attr);
+                }
+            }
+            Attribute[] result = list.ToArray();
+            if (container != null)
+            {
+                list.Clear();
+                References.Release(container);
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
         public TypeSystem GetOrNew<T>() where T : class
         {
             return GetOrNew(typeof(T));
         }
 
-        /// <summary>
-        /// 获取(不存在时创建)一个类型系统
-        /// 类型都是所给定的类型或子类
-        /// </summary>
-        /// <param name="baseType">基类</param>
-        /// <returns>获取到的类型系统</returns>
+        /// <inheritdoc/>
         public TypeSystem GetOrNew(Type baseType)
         {
             TypeSystem module;
             if (m_ClassRegister.TryGetValue(baseType, out module))
                 return module;
 
-            module = new TypeSystem(baseType);
-            m_ClassRegister.Add(baseType, module);
-            foreach (Type type in m_Types)
+            module = new TypeSystem(this, baseType);
+            lock (m_ClassRegister)
             {
-                if (baseType != type && baseType.IsAssignableFrom(type))
+                m_ClassRegister.Add(baseType, module);
+                foreach (Type type in m_Types)
                 {
-                    module.AddSubClass(type);
-                    XAttribute attr = TypeModule.Inst.GetAttribute<XAttribute>(type);
-                    if (attr != null)
-                        module.AddKey(attr.Id, type);
+                    if (baseType != type && baseType.IsAssignableFrom(type))
+                    {
+                        module.AddSubClass(type);
+                        XAttribute attr = GetAttribute<XAttribute>(type);
+                        if (attr != null)
+                            module.AddKey(attr.Id, type);
+                    }
                 }
             }
+
             return module;
         }
 
-        /// <summary>
-        /// 获取所有类型
-        /// </summary>
-        /// <returns>类型列表</returns>
+        /// <inheritdoc/>
         public Type[] GetAllType()
         {
             return m_Types;

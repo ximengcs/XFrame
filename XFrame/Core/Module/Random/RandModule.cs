@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using XFrame.Core;
+using XFrame.Collections;
+using System.Collections.Generic;
 
-namespace XFrame.Module.Rand
+namespace XFrame.Modules.Rand
 {
-    /// <summary>
-    /// 随机模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
-    public class RandModule : SingletonModule<RandModule>
+    [XType(typeof(IRandModule))]
+    public class RandModule : ModuleBase, IRandModule
     {
         #region Inner Fields
         private HashSet<char> m_InValidChars;
@@ -17,6 +17,7 @@ namespace XFrame.Module.Rand
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -33,11 +34,7 @@ namespace XFrame.Module.Rand
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 随机产生 <paramref name="num"/> 长度的字符串
-        /// </summary>
-        /// <param name="num">字符串长度</param>
-        /// <returns>字符串</returns>
+        /// <inheritdoc/>
         public string RandString(int num = 8)
         {
             char[] chars = new char[num];
@@ -46,6 +43,7 @@ namespace XFrame.Module.Rand
             return string.Concat(chars);
         }
 
+        /// <inheritdoc/>
         public string RandPath(int num = 8)
         {
             char[] chars = new char[num];
@@ -61,6 +59,7 @@ namespace XFrame.Module.Rand
             return string.Concat(chars);
         }
 
+        /// <inheritdoc/>
         public T RandEnum<T>(params T[] exlusion) where T : Enum
         {
             Array values = typeof(T).GetEnumValues();

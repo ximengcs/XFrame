@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using XFrame.Core;
-using XFrame.Utility;
-using XFrame.Modules.XType;
+using XFrame.Modules.Reflection;
 using XFrame.Modules.Times;
 using XFrame.Modules.Config;
 using XFrame.Modules.Crypto;
 using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Archives
 {
@@ -15,7 +15,8 @@ namespace XFrame.Modules.Archives
     /// </summary>
     [CoreModule]
     [RequireModule(typeof(CryptoModule))]
-    public class ArchiveModule : SingletonModule<ArchiveModule>
+    [XType(typeof(IArchiveModule))]
+    public class ArchiveModule : ModuleBase, IArchiveModule
     {
         #region Inner Field
         private const int SAVE_KEY = 0;
@@ -28,20 +29,33 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
             m_Timer = CDTimer.Create();
+            m_Timer.MarkName = nameof(ArchiveModule);
             m_Timer.Record(SAVE_KEY, SAVE_GAP);
             m_Archives = new Dictionary<string, IArchive>();
             m_ArchiveTypes = new Dictionary<string, Type>();
 
+            Type type;
+            if (!string.IsNullOrEmpty(XConfig.ArchiveUtilityHelper))
+            {
+                type = Domain.TypeModule.GetType(XConfig.ArchiveUtilityHelper);
+            }
+            else
+            {
+                type = typeof(DefaultArchiveUtilityHelper);
+            }
+            IArchiveUtilityHelper helper = (IArchiveUtilityHelper)Domain.TypeModule.CreateInstance(type);
+            ArchiveUtility.Helper = helper;
             InnerInit();
         }
 
         private void InnerInit()
         {
-            TypeSystem system = TypeModule.Inst.GetOrNewWithAttr<ArchiveAttribute>();
+            TypeSystem system = Domain.TypeModule.GetOrNewWithAttr<ArchiveAttribute>();
             foreach (Type type in system)
                 InnerAddType(type);
             InnerRefreshFiles();
@@ -49,7 +63,7 @@ namespace XFrame.Modules.Archives
 
         private void InnerAddType(Type type)
         {
-            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = Domain.TypeModule.GetAttribute<ArchiveAttribute>(type);
             if (attri != null)
             {
                 if (!m_ArchiveTypes.ContainsKey(attri.Suffix))
@@ -69,13 +83,14 @@ namespace XFrame.Modules.Archives
             }
         }
 
-        protected override void OnUpdate(float escapeTime)
+        /// <inheritdoc/>
+        public void OnUpdate(double escapeTime)
         {
-            base.OnUpdate(escapeTime);
             if (m_Timer.Check(SAVE_KEY, true))
                 InnerSaveAll();
         }
 
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -84,12 +99,7 @@ namespace XFrame.Modules.Archives
         #endregion
 
         #region Interface
-        /// <summary>
-        /// 获取或创建一个存档实例
-        /// </summary>
-        /// <typeparam name="T">存档类型</typeparam>
-        /// <param name="name">存档名</param>
-        /// <returns>存档实例</returns>
+        /// <inheritdoc/>
         public T GetOrNew<T>(string name, object param = null) where T : IArchive
         {
             return (T)InnerGetOrNew(name, typeof(T), param);
@@ -103,10 +113,7 @@ namespace XFrame.Modules.Archives
             InnerSaveAll();
         }
 
-        /// <summary>
-        /// 删除一份存档
-        /// </summary>
-        /// <param name="name"></param>
+        /// <inheritdoc/>
         public void Delete(string name)
         {
             if (m_Archives.TryGetValue(name, out IArchive source))
@@ -116,6 +123,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void Delete(IArchive archive)
         {
             if (m_Archives.ContainsKey(archive.Name))
@@ -125,6 +133,7 @@ namespace XFrame.Modules.Archives
             }
         }
 
+        /// <inheritdoc/>
         public void DeleteAll()
         {
             foreach (IArchive archive in m_Archives.Values)
@@ -138,7 +147,7 @@ namespace XFrame.Modules.Archives
         #region Inner Implement
         private string InnerGetPath(Type type, string name)
         {
-            ArchiveAttribute attri = TypeModule.Inst.GetAttribute<ArchiveAttribute>(type);
+            ArchiveAttribute attri = Domain.TypeModule.GetAttribute<ArchiveAttribute>(type);
             return Path.Combine(m_RootPath, $"{name}{attri.Suffix}");
         }
 
@@ -167,8 +176,8 @@ namespace XFrame.Modules.Archives
             }
             else
             {
-                IArchive source = (IArchive)TypeModule.Inst.CreateInstance(archiveType);
-                source.OnInit(InnerGetPath(archiveType, name), name, param);
+                IArchive source = (IArchive)Domain.TypeModule.CreateInstance(archiveType);
+                source.OnInit(this, InnerGetPath(archiveType, name), name, param);
                 m_Archives.Add(name, source);
                 return source;
             }

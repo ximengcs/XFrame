@@ -1,34 +1,32 @@
 ﻿using XFrame.Core;
 using System.Collections.Generic;
+using XFrame.Collections;
 
 namespace XFrame.Modules.Times
 {
-    /// <summary>
-    /// 时间模块
-    /// </summary>
+    /// <inheritdoc/>
     [BaseModule]
-    public class TimeModule : SingletonModule<TimeModule>
+    [XType(typeof(ITimeModule))]
+    public class TimeModule : ModuleBase, ITimeModule
     {
-        private float m_Time;
-        private float m_EscapeTime;
-        private int m_Frame;
+        private double m_Time;
+        private double m_EscapeTime;
+        private long m_Frame;
         private List<CDTimer> m_AnonymousTimers;
         private Dictionary<string, CDTimer> m_Timers;
 
         #region Interface
-        /// <summary>
-        /// 当前时间
-        /// </summary>
-        public float Time => m_Time;
+        /// <inheritdoc/>
+        public double Time => m_Time;
 
-        /// <summary>
-        /// 上帧到此帧逃逸时间
-        /// </summary>
-        public float EscapeTime => m_EscapeTime;
+        /// <inheritdoc/>
+        public double EscapeTime => m_EscapeTime;
 
-        public int Frame => m_Frame;
+        /// <inheritdoc/>
+        public long Frame => m_Frame;
         #endregion
 
+        /// <inheritdoc/>
         public CDTimer[] GetTimers()
         {
             CDTimer[] timers = new CDTimer[m_Timers.Count];
@@ -41,26 +39,44 @@ namespace XFrame.Modules.Times
         internal void InnerAddTimer(CDTimer timer)
         {
             if (string.IsNullOrEmpty(timer.Name))
-                m_AnonymousTimers.Add(timer);
+            {
+                lock (m_AnonymousTimers)
+                {
+                    m_AnonymousTimers.Add(timer);
+                }
+            }
             else
-                m_Timers.Add(timer.Name, timer);
+            {
+                lock (m_Timers)
+                {
+                    if (!m_Timers.ContainsKey(timer.Name))
+                        m_Timers.Add(timer.Name, timer);
+                }
+            }
         }
 
         internal void InnerRemove(CDTimer timer)
         {
             if (string.IsNullOrEmpty(timer.Name))
             {
-                if (m_AnonymousTimers.Contains(timer))
-                    m_AnonymousTimers.Remove(timer);
+                lock (m_AnonymousTimers)
+                {
+                    if (m_AnonymousTimers.Contains(timer))
+                        m_AnonymousTimers.Remove(timer);
+                }
             }
             else
             {
-                if (m_Timers.ContainsKey(timer.Name))
-                    m_Timers.Remove(timer.Name);
+                lock (m_Timers)
+                {
+                    if (m_Timers.ContainsKey(timer.Name))
+                        m_Timers.Remove(timer.Name);
+                }
             }
         }
 
         #region Life Fun
+        /// <inheritdoc/>
         protected override void OnInit(object data)
         {
             base.OnInit(data);
@@ -68,9 +84,9 @@ namespace XFrame.Modules.Times
             m_Timers = new Dictionary<string, CDTimer>();
         }
 
-        protected override void OnUpdate(float escapeTime)
+        /// <inheritdoc/>
+        public void OnUpdate(double escapeTime)
         {
-            base.OnUpdate(escapeTime);
             m_Time += escapeTime;
             m_EscapeTime = escapeTime;
             m_Frame++;

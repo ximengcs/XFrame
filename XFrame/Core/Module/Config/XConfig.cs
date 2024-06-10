@@ -1,4 +1,4 @@
-﻿using XFrame.Modules.Local;
+﻿using XFrame.Modules.Reflection;
 
 namespace XFrame.Modules.Config
 {
@@ -15,12 +15,17 @@ namespace XFrame.Modules.Config
         /// <summary>
         /// 类型系统使用类型
         /// </summary>
-        public static string[] UseClassModule;
+        public static ITypeCheckHelper TypeChecker;
 
         /// <summary>
         /// 存档路径
         /// </summary>
         public static string ArchivePath;
+
+        /// <summary>
+        /// 存档辅助器
+        /// </summary>
+        public static string ArchiveUtilityHelper;
 
         /// <summary>
         /// 存档是否加密
@@ -43,11 +48,6 @@ namespace XFrame.Modules.Config
         public static string DefaultRes;
 
         /// <summary>
-        /// 默认Json序列化处理器
-        /// </summary>
-        public static string DefaultSerializer;
-
-        /// <summary>
         /// 默认下载辅助器
         /// </summary>
         public static string DefaultDownloadHelper;
@@ -66,5 +66,7 @@ namespace XFrame.Modules.Config
         /// 默认Plot辅助器
         /// </summary>
         public static string DefaultPlotHelper;
+
+        public static string DefaultIDHelper;
     }
 }

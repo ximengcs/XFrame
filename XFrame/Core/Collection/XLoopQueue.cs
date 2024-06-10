@@ -26,7 +26,7 @@ namespace XFrame.Collections
         {
             m_L = 0;
             m_R = 0;
-            m_Capacity = capacity;
+            m_Capacity = capacity + 1;
             m_Objects = new T[m_Capacity];
         }
         #endregion
@@ -36,6 +36,24 @@ namespace XFrame.Collections
         /// 容量
         /// </summary>
         public int Capacity => m_Capacity;
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                if (Empty)
+                    return 0;
+
+                int gap = m_R - m_L;
+                if (gap > 0)
+                    return gap;
+                else
+                    return m_Capacity + gap;
+            }
+        }
 
         /// <summary>
         /// 队列是否空
@@ -56,7 +74,7 @@ namespace XFrame.Collections
         {
             if (Full)
             {
-                Log.Error("XFrame", "XLoopQueue add first element error. queue is full.");
+                Log.Error(Log.XFrame, "XLoopQueue add first element error. queue is full.");
                 return;
             }
 
@@ -73,7 +91,7 @@ namespace XFrame.Collections
         {
             if (Empty)
             {
-                Log.Error("XFrame", "XLoopQueue remove first element error. queue is empty.");
+                Log.Error(Log.XFrame, "XLoopQueue remove first element error. queue is empty.");
                 return default;
             }
 
@@ -101,7 +119,7 @@ namespace XFrame.Collections
         {
             if (Full)
             {
-                Log.Error("XFrame", "XLoopQueue add last element error. queue is full.");
+                Log.Error(Log.XFrame, "XLoopQueue add last element error. queue is full.");
                 return;
             }
 
@@ -118,7 +136,7 @@ namespace XFrame.Collections
         {
             if (Empty)
             {
-                Log.Error("XFrame", "XLoopQueue remove last element error. queue is empty.");
+                Log.Error(Log.XFrame, "XLoopQueue remove last element error. queue is empty.");
                 return default;
             }
 
@@ -139,6 +157,7 @@ namespace XFrame.Collections
         #endregion
 
         #region IXEnumerable Interface
+        /// <inheritdoc/>
         public IEnumerator<T> GetEnumerator()
         {
             switch (m_ItType)
@@ -149,6 +168,7 @@ namespace XFrame.Collections
             }
         }
 
+        /// <inheritdoc/>
         public void SetIt(XItType type)
         {
             m_ItType = type;

@@ -39,6 +39,11 @@ namespace XFrame.Modules.Datas
         /// <returns>获取到的数据</returns>
         T Get(int id);
 
+        /// <summary>
+        /// 通过下标获取数据
+        /// </summary>
+        /// <param name="index">下标</param>
+        /// <returns>数据</returns>
         T GetByIndex(int index);
 
         /// <summary>
