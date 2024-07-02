@@ -57,7 +57,7 @@ namespace XFrame.Modules.Containers
             m_Containers.Add(id, container);
             m_ContainersList.Add(container);
             if (updateTrusteeship)
-                m_UpdateList.Add(container.Id, container);
+                m_UpdateList.Add(id, container);
 
             container.OnInit(this, id, master, onReady);
             Log.Debug(Log.Container, $"({Id})there is container added. {container.GetType().Name} {container.Id}");
