@@ -1,4 +1,5 @@
 ﻿using XFrame.Collections;
+using XFrame.Core.NewXCore;
 
 namespace XFrame.Core
 {
@@ -18,6 +19,8 @@ namespace XFrame.Core
         /// <param name="data">初始化数据</param>
         /// <param name="configCallback">初始化之前可进行模块配置的回调</param>
         protected internal void OnInit(object data, ModuleConfigAction configCallback = null);
+
+        protected internal void OnInit2(int moduleId, ICore domain, object userData);
 
         /// <summary>
         /// 开始运行生命周期
